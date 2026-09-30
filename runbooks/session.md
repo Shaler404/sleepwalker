@@ -129,10 +129,22 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    A mechanic you have not met yet: read the game's own rules first (tutorial, "How to play") and
    write them into the playbook *before* the first move — goal, controls, what blocks a move, how you
    lose — and plan from them.
-2. **Play in batches.** From one screenshot, plan every move you can already see and send them in one
-   call: `sw.py taps "120,340 410,340 88,610>88,300" --why "three free pairs"` (`X,Y` is a tap,
-   `X1,Y1>X2,Y2` a swipe). One screenshot per batch, not per tap. Look at the board again when the
-   batch is done or something unexpected happened.
+2. **Think ahead, then batch the safe moves.** On one screenshot, list the moves you can make and
+   for each one think a move or two ahead: what it unblocks, what it blocks, what it uses up, what it
+   reveals. Sort them:
+   - **safe** — its result is known and it cannot hurt: nothing hidden is revealed, no limited slot,
+     move or resource is used, no option is closed. Example (tray mahjong): two free identical tiles;
+   - **risky** — it cannot be undone and can cost the level (fills a slot of a limited tray, spends one
+     of a few moves, blocks other pieces), or its result decides the next moves (reveals covered
+     pieces, triggers a random refill or a cascade). Example: a lone tile into the tray.
+
+   Order the safe moves so that each keeps the most options open, and send them in one call; a risky
+   move goes last, marked with `!`, and ends the batch:
+   `sw.py taps "120,340 410,340 88,610>88,300 !600,900" --why "two safe pairs, then the lone dragon into the tray"`
+   (`X,Y` is a tap, `X1,Y1>X2,Y2` a swipe). Then look at what the risky move changed before planning
+   further. When there is no safe move, choose the risky one that keeps the most options open, and
+   play it alone. One screenshot per batch, not per tap. The batch stops by itself if anything but the
+   game comes on screen (a store or payment sheet, a browser from an ad, a system prompt).
 3. **Rethink, do not grind.** Every reply shows the level clock (`level`). When a plan has not worked
    for 2 minutes the harness says so: stop trying moves, find what blocks you, fix the rules in the
    playbook and write the new plan: `sw.py level plan "..."`. Hints and other boosters are features to
@@ -144,12 +156,26 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    slow levels in a row mark it `broken`. When levels stay slow, change the method, not the effort:
    - **solver** — logic puzzles where every piece is visible (mahjong, sudoku-like, light-up,
      arrows). Write `state/<game>/solvers/<mechanic>.py` with
-     `solve(image, board=None, frame_scale=1.0) -> {"moves": [[x, y], [x1, y1, x2, y2], ...], "note": "..."}`
+     `solve(image, board=None, frame_scale=1.0) -> {"moves": [...], "note": "...", "rescan": bool, "done": bool}`
      — moves in pixels of the full-resolution image (schema, section 10). Read the board from the image
      with numpy/OpenCV, or write down the board you see as JSON and pass it with `--board FILE`.
-     `sw.py solve <mechanic>` draws the moves on the frame: check them, then `sw.py solve <mechanic> --run`
-     plays them. Then `sw.py mechanic <id> --method solver`. A solver only computes: code that touches
-     files, the network or processes is refused;
+     A solver does not play head-on, taking the first legal move:
+     - it models the rules from the playbook exactly, including how a level is lost (a full tray, no
+       moves left);
+     - it searches ahead (depth-first with backtracking, or a beam of the best lines) and prefers moves
+       that keep options open: unblock the most pieces, keep limited slots free, leave pairs available;
+     - it returns only the moves whose outcome it knows. At the first move that depends on something
+       hidden (covered pieces, a random refill) it stops, returns the moves up to it (that move
+       included, if it is the best choice) and `rescan: true`, so it gets a fresh frame;
+     - `note` says what it read and why it chose this line, e.g. "14 free tiles, 5 safe pairs, stopped
+       before the tray move".
+
+     Develop it on frames you already have: `sw.py solve <mechanic> --image raw/<game>/<session>/shots/00042.jpg`
+     draws its moves without touching the phone. On the phone, `sw.py solve <mechanic>` draws the moves
+     on a fresh frame; when they are right, `sw.py solve <mechanic> --run --rounds 20` plays rounds of
+     frame → solver → moves until the level is done, the solver has no moves, the moves change nothing
+     or the level runs over its time. Then `sw.py mechanic <id> --method solver`. A solver only
+     computes: code that touches files, the network or processes is refused;
    - **heuristic** — games with randomness (match-3, block puzzles): a short list of rules in the
      playbook, e.g. "moves that make a special piece first";
    - **manual** — physics and reaction games: what to look at and in which order.

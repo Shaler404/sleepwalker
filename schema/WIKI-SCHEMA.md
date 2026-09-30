@@ -303,8 +303,8 @@ consolidates it.
   → `mechanics`. Status: `studying` → `mastered` after two levels in a row within
   `play.level_budget_min` (5 minutes, the time a human needs) → `broken` after two levels in a row
   lost or over the budget. `sw.py` changes the status itself.
-- **Level cycle** — `level start --plan` (plan from the playbook and one look at the board), moves in
-  batches (`taps`), `level plan` when the plan has not worked for `play.level_rethink_min` minutes,
+- **Level cycle** — `level start --plan` (plan from the playbook and one look at the board), safe
+  moves in batches and a risky one (`!X,Y`) last (`taps`), `level plan` when the plan has not worked for `play.level_rethink_min` minutes,
   `level end --note` (what worked, what to change) and a playbook update right after.
 - **Playbook** — `wiki/<game>/agent/playbook.md`, one section per mechanic: goal, controls, rules,
   method, level plan, pitfalls, level times. The player works in the local copy
@@ -317,11 +317,19 @@ consolidates it.
   def solve(image, board=None, frame_scale=1.0):
       # image: PIL.Image, the full-resolution screenshot; board: the JSON the model wrote (--board) or None;
       # frame_scale: full-resolution pixels per pixel of the frame the model sees
-      return {"moves": [[x, y], [x1, y1, x2, y2]], "note": "what the solver read and decided"}
+      return {"moves": [[x, y], [x1, y1, x2, y2]],  # only the moves whose outcome is known
+              "note": "what the solver read and why it chose this line",
+              "rescan": True,   # the next move depends on what these moves reveal: look again
+              "done": False}    # these moves finish the level
   ```
 
   Moves are in pixels of the full-resolution image: `[x, y]` is a tap, `[x1, y1, x2, y2]` a swipe.
-  `sw.py solve <mechanic>` draws them on the frame for checking; `--run` plays them. A solver only
+  A solver models the rules exactly (including how a level is lost), searches ahead instead of taking
+  the first legal move, prefers moves that keep options open, and stops at the first move that depends
+  on something hidden. `sw.py solve <mechanic>` draws its moves on a fresh frame; `--image FRAME`
+  does the same on a saved frame without the phone; `--run --rounds N` plays rounds of frame → solver
+  → moves until the level is done, the solver has no moves, the moves change nothing or the level runs
+  over its time. A solver only
   computes: it may import numpy, OpenCV, PIL and the standard library for math, but code that opens
   files, touches the network, starts processes or runs dynamic code is refused by `sw.py solve` and
   by `check-zones`, and the critic reads every solver. It runs on every machine that merges it.

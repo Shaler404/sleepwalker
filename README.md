@@ -77,10 +77,12 @@ itself. Until there is such a phone, the task stays in the "Needs a human" secti
 
 **How the agent learns to play — in the session, not overnight.** A new kind of level is learned the
 moment the agent meets it: it reads the game's rules, writes them into the game's playbook, plans the
-level before the first move, plays the moves it can see in one batch, stops to rethink when a plan
-has not worked for two minutes, and after the level writes down what worked. The target is the time a
+level before the first move, thinks through the consequences of each move, plays the safe ones in
+one batch and a risky one (that cannot be undone or reveals something) alone, then looks; it stops
+to rethink when a plan has not worked for two minutes, and after the level writes down what worked. The target is the time a
 human needs, 5 minutes a level. When levels stay slow it changes the method: for logic puzzles it
-writes a solver (a small program that reads the board from the screenshot and returns the moves).
+writes a solver: a small program that reads the board from the screenshot, searches ahead with the
+game's rules and returns only the moves whose outcome it knows.
 Two levels in a row within the target mark the mechanic mastered.
 
 **Models by role.** A strong model (`study`) learns new gameplay; a fast one (`play`) plays what is

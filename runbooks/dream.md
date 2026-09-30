@@ -165,8 +165,9 @@ in `project.yaml`), no more than 5 at a time
    - frames contain no personal data: nicknames, email, avatars, notifications, other apps;
    - lessons are verifiable and do not contradict each other;
    - routes and skills agree;
-   - every solver in `solvers/` only computes (no files, network, processes, dynamic code) and
-     matches the playbook's description of the mechanic;
+   - every solver in `solvers/` only computes (no files, network, processes, dynamic code),
+     matches the playbook's description of the mechanic (including how a level is lost), searches
+     ahead rather than taking the first legal move, and stops with `rescan` before hidden outcomes;
    - `tasks.md` and `features.md` match `research.yaml`; "needs a human" tasks say clearly what to
      provide.
 3. FAIL — fix and go back to the critic. At most three rounds; after the third, what is unresolved

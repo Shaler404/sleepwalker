@@ -14,14 +14,15 @@ Session
   device-state fresh|progressed [--note] the game on this phone: fresh install or progressed
   shot [--hi] | wait SEC | launch         screenshot (--hi: full resolution) / wait, then screenshot / bring the game back
   tap X Y --why ... | swipe X1 Y1 X2 Y2 --why ... | key back --why ... | text "..." --why ...
-  taps "X,Y X,Y X1,Y1>X2,Y2" --why ...   several moves planned from one screenshot, one screenshot at the end
+  taps "X,Y X,Y X1,Y1>X2,Y2 !X,Y" --why ...  safe moves from one screenshot in a row, a risky one (!) last
 Levels: think first, then play fast
   playbook                               how to play this game: rules and methods per mechanic, level times
   level start "level 12" --mechanic ID --plan "..." [--value 12] [--hi]
   level plan "new plan"                  rethink: what blocks you, what you do differently now
   level end won|lost|quit --note "what worked, what to change"
   mechanic ID "Name" [--status studying|mastered|broken] [--method manual|heuristic|solver] [--note ...]
-  solve MECHANIC [--board FILE] [--run] --why ...   the mechanic's solver: moves from the screenshot
+  solve MECHANIC [--board FILE] [--run [--rounds N]] | solve MECHANIC --image FRAME
+                                         the mechanic's solver: check its moves, play them, or test it on a frame
   ask "question"                         one-shot advice from a stronger model on the last screenshot
   note TYPE "fact" | mark "title" "description" | clip begin "title" | clip end "description"
   feature ID "Name" [--status seen|in_progress|documented]
@@ -606,46 +607,59 @@ def action(args, name: str, fn, rec: dict, points: tuple = ()) -> None:
     out(info)
 
 
-def parse_moves(spec: str) -> list[tuple[float, ...]]:
-    """"X,Y" is a tap, "X1,Y1>X2,Y2" a swipe; moves are separated by spaces or semicolons."""
-    moves = []
+def parse_moves(spec: str) -> tuple[list[tuple[float, ...]], list[bool]]:
+    """"X,Y" is a tap, "X1,Y1>X2,Y2" a swipe; moves are separated by spaces or semicolons. A leading "!"
+    marks a risky move: one that cannot be undone or can cost the level, or whose result decides the next
+    moves. It may only be the last move of a batch."""
+    moves, risky = [], []
     for tok in re.split(r"[\s;]+", spec.strip()):
         if not tok:
             continue
+        r = tok.startswith("!")
+        body = tok.lstrip("!")
         try:
-            nums = tuple(float(v) for v in re.split(r"[,>]", tok))
+            nums = tuple(float(v) for v in re.split(r"[,>]", body))
         except ValueError:
-            fail(f"bad move {tok!r}: a tap is X,Y and a swipe X1,Y1>X2,Y2")
-        if len(nums) not in (2, 4) or (len(nums) == 4) != (">" in tok):
-            fail(f"bad move {tok!r}: a tap is X,Y and a swipe X1,Y1>X2,Y2")
+            fail(f"bad move {tok!r}: a tap is X,Y, a swipe X1,Y1>X2,Y2, a risky move starts with !")
+        if len(nums) not in (2, 4) or (len(nums) == 4) != (">" in body):
+            fail(f"bad move {tok!r}: a tap is X,Y, a swipe X1,Y1>X2,Y2, a risky move starts with !")
         moves.append(nums)
+        risky.append(r)
     if not moves:
         fail("no moves given")
-    return moves
+    return moves, risky
 
 
-def run_moves(cur: dict, dev, moves: list[tuple], k: float, gap: float) -> int:
-    """Moves in a row without a screenshot between them. Stops at once if the owner takes the phone."""
+def run_moves(cur: dict, dev, moves: list[tuple], k: float, gap: float) -> tuple[int, str | None]:
+    """Moves in a row without a screenshot between them. Stops at once if the owner takes the phone, and
+    if anything but the game comes on screen (a payment sheet, a store or browser opened by an ad, a
+    system prompt): the next taps would land on it."""
     s = lambda v: int(round(v * k))  # noqa: E731
     done = 0
     for m in moves:
         if held(cur["device"]) or read_json(session_path(cur["device"])).get("stop_requested"):
-            break
+            return done, "owner"
         if len(m) == 2:
             dev.tap(s(m[0]), s(m[1]))
         else:
             dev.swipe(s(m[0]), s(m[1]), s(m[2]), s(m[3]))
         done += 1
         time.sleep(gap)
-    return done
+        app = app_on_screen(cur)
+        if app and app != cur["game"]:
+            return done, f"{app} came on screen after move {done}: the rest of the batch was not played"
+    return done, None
 
 
 def cmd_taps(args) -> None:
     cur = pick_session(args)
-    moves = parse_moves(args.moves)
+    moves, risky = parse_moves(args.moves)
     cap = P()["play"]["batch_max"]
     if len(moves) > cap:
         fail(f"at most {cap} moves per call: split the batch")
+    if any(risky[:-1]):
+        fail("a risky move (!X,Y) ends a batch: play the safe moves and the risky one last, look at its result, "
+             "then plan the next moves from what it changed")
     w, h = cur.get("model_size") or (10 ** 6, 10 ** 6)
     bad = [m for m in moves if any(not 0 <= v <= (w if i % 2 == 0 else h) for i, v in enumerate(m))]
     if bad:
@@ -653,20 +667,25 @@ def cmd_taps(args) -> None:
     guard(cur)
     gap = gap_s(cur)
     dev = open_device(cur)
-    done = run_moves(cur, dev, moves, cur["scale"], args.gap if args.gap is not None else P()["play"]["batch_gap_s"])
+    done, stopped = run_moves(cur, dev, moves, cur["scale"],
+                              args.gap if args.gap is not None else P()["play"]["batch_gap_s"])
     cur["step"] += 1
     cur["moves"] = cur.get("moves", 0) + done
     cur["last_action"] = time.time()
     time.sleep(args.settle)
     size = cur.get("model_size")
     info = take_shot(cur, dev, args.hi)
-    log_step(cur, {"type": "taps", "moves": [list(m) for m in moves[:done]], "n": done, "why": args.why,
-                   "model_size": size, "settle": args.settle, "shot": info["shot_n"], "same": info["same_as_prev"],
-                   "app": info["app"], "hash": cur["last_hash"], "gap_s": gap})
+    log_step(cur, {"type": "taps", "moves": [list(m) for m in moves[:done]], "n": done, "risky": risky[-1],
+                   "why": args.why, "model_size": size, "settle": args.settle, "shot": info["shot_n"],
+                   "same": info["same_as_prev"], "app": info["app"], "hash": cur["last_hash"], "gap_s": gap,
+                   **({"stopped": stopped} if stopped else {})})
     save_session(cur)
-    if done < len(moves):
+    if stopped == "owner":
         fail(STOP_MSG, 6, done=done, hint="sw.py end --status interrupted --summary ...")
-    out({"moves_done": done, **info})
+    res = {"moves_done": done, **({"stopped": stopped} if stopped else {}), **info}
+    if risky[-1] and done == len(moves):
+        res["risky_move"] = "the last move was risky: check its result on this frame before the next batch"
+    out(res)
 
 
 # --- screen recording and clips -----------------------------------------------------------
@@ -1240,6 +1259,8 @@ merges it into `wiki/{game}/agent/playbook.md`. Level times: `sw.py playbook`.
 - Goal: what wins the level.
 - Controls: what a tap or a swipe does.
 - Rules: what blocks a move, what is lost, what the counters mean.
+- Risks: which moves cannot be undone or can cost the level, or change what comes next (they end a
+  batch: `!X,Y`); which moves are safe to play in a row.
 - Method: manual | heuristic | solver (state/{game}/solvers/<mechanic-id>.py).
 - Level plan: what to look at first, in which order to move.
 - Pitfalls: what cost levels or time, and what to do instead.
@@ -1756,9 +1777,11 @@ def cmd_discovery(args) -> None:
 def level_hint(m: dict, game: str) -> str:
     sp = solver_path(game, m["id"])
     if m.get("status") == "mastered" and sp:
-        return f"mastered with a solver: sw.py solve {m['id']} (check the drawn moves), then solve {m['id']} --run"
+        return (f"mastered with a solver: sw.py solve {m['id']} (check the drawn moves), then "
+                f"solve {m['id']} --run --rounds 20")
     if m.get("status") == "mastered":
-        return "mastered: follow the playbook; plan every move you can see and send them in one taps call"
+        return ("mastered: follow the playbook. Think a move or two ahead: play the safe moves in one taps call, "
+                "a risky move (!X,Y) last, then look")
     return ("learn it before playing it: write its rules and your method into the playbook first. If every piece "
             "is visible (a logic puzzle), a solver beats playing by eye: state/<game>/solvers/<mechanic>.py")
 
@@ -1857,8 +1880,9 @@ def run_solver(game: str, mech: str, image: Path, board: str | None, scale: floa
     sp = solver_path(game, mech)
     if not sp:
         fail(f"no solver for {mech}", hint=f"write state/{game}/solvers/{mech}.py with "
-             "solve(image, board, frame_scale) -> {\"moves\": [[x, y], [x1, y1, x2, y2], ...], \"note\": \"...\"} "
-             "in pixels of the full-resolution image (schema/WIKI-SCHEMA.md, section 10)")
+             "solve(image, board, frame_scale) -> {\"moves\": [[x, y], [x1, y1, x2, y2], ...], \"note\": \"...\", "
+             "\"rescan\": bool, \"done\": bool} in pixels of the full-resolution image (schema/WIKI-SCHEMA.md, "
+             "section 10). Search ahead with the game's rules; return only the moves whose outcome you know")
     bad = solver_problems(sp.read_text(encoding="utf-8"))
     if bad:
         fail(f"solver {sp} is refused: it may only compute, found {bad}")
@@ -1879,49 +1903,108 @@ def run_solver(game: str, mech: str, image: Path, board: str | None, scale: floa
     return res
 
 
+def solver_moves(res: dict, w: int, h: int) -> list[tuple[float, ...]]:
+    moves = [tuple(float(v) for v in m) for m in res.get("moves") or []]
+    if any(len(m) not in (2, 4) or any(not 0 <= v <= (w if i % 2 == 0 else h) for i, v in enumerate(m))
+           for m in moves):
+        fail("the solver returned moves outside the screen or of a bad shape", moves=[list(m) for m in moves[:5]])
+    return moves
+
+
+def draw_moves(src: Path, moves: list[tuple], dest: Path) -> Path:
+    from perception import annotate
+
+    img = annotate(Image.open(src).convert("RGB"), [(int(m[0]), int(m[1]), str(i + 1)) for i, m in enumerate(moves[:80])])
+    small, _ = prepare_for_model(img, SHOT_TOKENS)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    small.save(dest, quality=85)
+    return dest
+
+
+def changed_px(a: Path, b: Path) -> int:
+    """How many pixels of a small grayscale copy changed noticeably between two frames: 0 means the moves
+    did nothing (unlike pHash, this sees two small tiles disappear)."""
+    from PIL import ImageChops
+
+    ta, tb = (Image.open(p).convert("L").resize((90, 195)) for p in (a, b))
+    return ImageChops.difference(ta, tb).point(lambda v: 255 if v > 25 else 0).histogram()[255]
+
+
 def cmd_solve(args) -> None:
-    """Run the mechanic's solver on a fresh full-resolution screenshot. Without --run the moves are only
-    drawn on the frame for checking; with --run they are played in a row."""
+    """Run the mechanic's solver. Without --run the moves are only drawn on a fresh full-resolution frame
+    for checking. With --run, rounds of frame -> solver -> moves until the solver has no moves or says the
+    level is done, the moves change nothing, something else comes on screen, or --rounds are used up.
+    --image checks the solver on a saved frame without the phone."""
+    mech = slug(args.mechanic)
+    if args.image:
+        game = args.game or pick_session(args)["game"]
+        src = Path(args.image)
+        with Image.open(src) as im:
+            w, h = im.size
+        res = run_solver(game, mech, src, args.board, args.scale)
+        moves = solver_moves(res, w, h)
+        dest = draw_moves(src, moves, STATE() / game / "solvers" / "_check" / f"{src.stem}-{mech}.jpg")
+        return out({"solver": res["solver"], "moves": len(moves), "note": res.get("note"),
+                    "rescan": bool(res.get("rescan")), "done": bool(res.get("done")), "drawn": str(dest)})
     cur = pick_session(args)
     guard(cur)
     gap = gap_s(cur)
     dev = open_device(cur)
     info = take_shot(cur, dev)
-    full = Path(cur["dir"]) / "shots" / f"{cur['last_shot']:05d}.jpg"
-    res = run_solver(cur["game"], slug(args.mechanic), full, args.board, cur["scale"])
-    moves = [tuple(float(v) for v in m) for m in res.get("moves") or []]
-    W, H = cur["phys"]
-    if any(len(m) not in (2, 4) or any(not 0 <= v <= (W if i % 2 == 0 else H) for i, v in enumerate(m))
-           for m in moves):
-        fail("the solver returned moves outside the screen or of a bad shape", moves=[list(m) for m in moves[:5]])
+    frame = lambda: Path(cur["dir"]) / "shots" / f"{cur['last_shot']:05d}.jpg"  # noqa: E731
     if not args.run:
-        from perception import annotate
-
-        img = annotate(Image.open(full).convert("RGB"), [(int(m[0]), int(m[1]), str(i + 1))
-                                                         for i, m in enumerate(moves[:80])])
-        small, _ = prepare_for_model(img, SHOT_TOKENS)
-        dest = full.with_name(f"{cur['last_shot']:05d}_solve.jpg")
-        small.save(dest, quality=85)
-        log_step(cur, {"type": "solve_check", "mechanic": args.mechanic, "n": len(moves), "note": res.get("note"),
+        res = run_solver(cur["game"], mech, frame(), args.board, cur["scale"])
+        moves = solver_moves(res, *cur["phys"])
+        dest = draw_moves(frame(), moves, frame().with_name(f"{cur['last_shot']:05d}_solve.jpg"))
+        log_step(cur, {"type": "solve_check", "mechanic": mech, "n": len(moves), "note": res.get("note"),
                        "gap_s": gap})
         save_session(cur)
-        return out({"solver": res["solver"], "moves": len(moves), "note": res.get("note"), "drawn": str(dest),
-                    "hint": "open the drawn frame: numbers are the moves in order. Right: solve --run. Wrong: fix "
-                            "the solver or the board, or play by the playbook"})
-    cap = P()["play"]["batch_max"] * 5
-    done = run_moves(cur, dev, moves[:cap], 1.0, args.gap if args.gap is not None else P()["play"]["batch_gap_s"])
-    cur["step"] += 1
-    cur["moves"] = cur.get("moves", 0) + done
-    cur["last_action"] = time.time()
-    time.sleep(args.settle)
-    info = take_shot(cur, dev, args.hi)
-    log_step(cur, {"type": "solve", "mechanic": args.mechanic, "n": done, "note": res.get("note"), "why": args.why,
-                   "shot": info["shot_n"], "same": info["same_as_prev"], "app": info["app"], "hash": cur["last_hash"],
-                   "gap_s": gap})
-    save_session(cur)
-    if done < min(len(moves), cap):
-        fail(STOP_MSG, 6, done=done, hint="sw.py end --status interrupted --summary ...")
-    out({"solver": res["solver"], "moves_done": done, "note": res.get("note"), **info})
+        return out({"solver": res["solver"], "moves": len(moves), "note": res.get("note"),
+                    "rescan": bool(res.get("rescan")), "done": bool(res.get("done")), "drawn": str(dest),
+                    "hint": "open the drawn frame: numbers are the moves in order. Right: solve --run --rounds N. "
+                            "Wrong: fix the solver (check it on saved frames with --image) or play by the playbook"})
+    cap, pause = P()["play"]["batch_max"] * 5, args.gap if args.gap is not None else P()["play"]["batch_gap_s"]
+    total, stop, notes, n = 0, None, [], 0
+    for n in range(1, max(1, args.rounds) + 1):
+        before = frame()
+        res = run_solver(cur["game"], mech, before, args.board if n == 1 else None, cur["scale"])
+        moves = solver_moves(res, *cur["phys"])
+        notes.append(res.get("note"))
+        if not moves:
+            stop = "solved" if res.get("done") else f"the solver has no moves: {res.get('note') or 'no note'}"
+            break
+        done, stopped = run_moves(cur, dev, moves[:cap], 1.0, pause)
+        total += done
+        cur["step"] += 1
+        cur["moves"] = cur.get("moves", 0) + done
+        cur["last_action"] = time.time()
+        time.sleep(args.settle)
+        info = take_shot(cur, dev, args.hi)
+        log_step(cur, {"type": "solve", "mechanic": mech, "round": n, "n": done, "note": res.get("note"),
+                       "rescan": bool(res.get("rescan")), "done": bool(res.get("done")), "why": args.why,
+                       "shot": info["shot_n"], "same": info["same_as_prev"], "app": info["app"],
+                       "hash": cur["last_hash"], "gap_s": gap if n == 1 else None,
+                       **({"stopped": stopped} if stopped else {})})
+        save_session(cur)
+        if stopped:
+            stop = stopped
+            break
+        if res.get("done"):
+            stop = "the solver says these moves finish the level"
+            break
+        if changed_px(before, frame()) == 0:
+            stop = "the moves changed nothing on screen: the solver misreads the board"
+            break
+        lv = cur.get("level")
+        if lv and time.time() - lv["t0"] > P()["play"]["level_budget_min"] * 60:
+            stop = "the level is over its time budget: look at the board yourself"
+            break
+    else:
+        stop = f"{args.rounds} round(s) played" + ("; the solver wants another look (rescan)" if res.get("rescan") else "")
+    if stop == "owner":
+        fail(STOP_MSG, 6, done=total, hint="sw.py end --status interrupted --summary ...")
+    out({"solver": solver_path(cur["game"], mech).as_posix(), "rounds": n, "moves_done": total, "stopped": stop,
+         "notes": notes[-3:], **info})
 
 
 def cmd_ask(args) -> None:
@@ -2520,7 +2603,8 @@ def main() -> None:
     p = sub.add_parser("text")
     p.add_argument("value")
     p = sub.add_parser("taps")
-    p.add_argument("moves", help='"X,Y X,Y X1,Y1>X2,Y2": taps and swipes in pixels of the last screenshot')
+    p.add_argument("moves", help='"X,Y X,Y X1,Y1>X2,Y2 !X,Y": taps and swipes in pixels of the last screenshot; '
+                                 '! marks the risky move that ends the batch')
     p.add_argument("--gap", type=float, help="seconds between moves (default from project.yaml)")
     for name in ("tap", "swipe", "key", "text", "taps"):
         sp = sub.choices[name]
@@ -2556,6 +2640,11 @@ def main() -> None:
     p.add_argument("mechanic")
     p.add_argument("--board", help="a JSON file with the board you read from the frame, if the solver takes one")
     p.add_argument("--run", action="store_true", help="play the moves; without it they are only drawn for checking")
+    p.add_argument("--rounds", type=int, default=1,
+                   help="with --run: repeat frame -> solver -> moves up to N times (until solved or stuck)")
+    p.add_argument("--image", help="check the solver on a saved frame, without the phone")
+    p.add_argument("--game", help="with --image outside a session")
+    p.add_argument("--scale", type=float, default=1.0, help="with --image: frame_scale passed to the solver")
     p.add_argument("--gap", type=float)
     p.add_argument("--settle", type=float, default=1.0)
     p.add_argument("--hi", action="store_true")
