@@ -18,6 +18,7 @@ maintainers: [Shaler404]
 session:
   budget_min:                # session budget per task kind, minutes; the session budget is the sum, at most max_session_min
     analyze: 30
+    survey: 15
     update: 25
     ftue: 30
     replay: 20
@@ -32,3 +33,5 @@ research:
   version_check_hours: 6     # how often to check the version on Google Play
   ftue_refresh_days: 180     # new version + from-scratch playthrough older than this = check FTUE again
   country: us                # Google Play country for the version check
+  survey_every_sessions: 2   # a screen survey after this many analysis sessions (and whenever a gate blocks advancing)
+  discovery_clean_surveys: 2 # the dream closes the search after this many surveys in a row found no new entry points

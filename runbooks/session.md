@@ -14,6 +14,7 @@ now. Whatever you did not finish or cannot do now, turn into a task for later se
 Task kinds:
 - `analyze` — analyze the game, version X;
 - `update` — update the docs for a new version;
+- `survey` — walk every screen and map each entry point to a feature (section 3);
 - `ftue` — play the game from scratch;
 - `replay` — replay a stretch of the game from a fresh install;
 - `followup` — check no earlier than a given time;
@@ -81,7 +82,37 @@ Task kinds:
    A human sees these tasks in `tasks.md` under "Needs a human", and a session on a phone with a
    fresh install does them.
 
-## 3. Play
+## 3. Play: advance first
+
+The repository's job is to collect complete information as fast as possible. The session's `mode`
+(in the answers of `claim` and `start`) says how to play:
+
+- **`advance`** — not all features are found yet. Move through the content as fast as you can:
+  levels, the main loop, new sections. Register every new feature the moment you see it (`feature`,
+  `mark`) and write down every branch you notice as a case (`case` without `--done`) or a task, but
+  do not test them now — unless it costs one or two actions on your way. After each milestone record
+  where you are: `sw.py progress "level 12" --value 12` (new features remember where they were
+  found). Use every free way to go faster: skips such as "Jump to level", free boosters, rewarded ads
+  that give energy or lives. Currency earned in the game may be spent to keep going; real money never.
+- **Advancing is blocked** (out of energy or lives, content behind a timer, a paywall). First try the
+  free ways to continue (a rewarded ad for a refill, a free daily refill, gifts). If there are none,
+  record the gate: `sw.py gate lives --after-minutes 30 --note "0/5 lives, +1 every 30 min"` (types:
+  energy, lives, timer, content, paywall, other; or `--at <ISO>`). The mode becomes `cases`: slow down
+  on purpose and verify open cases that need no progress (menus, shop, collections, settings, event
+  rules). If there is nothing to verify, end the session: the phone goes to another game, and this
+  game comes back when the gate opens. `sw.py gate clear` if it opened earlier.
+- **`cases`** — all features are found (or a gate is on). Go through the open cases of each feature
+  one by one: do it, observe, `case … --done`, numbers into `note`. A feature is `documented` when
+  its cases are done.
+- **Survey task** (`survey-N`) — do it first. Do not advance: walk every screen reachable from where
+  you are — the main screen, the map, every button, icon, badge, tab and popup — `mark` each screen
+  with a title starting with `survey:` and map every entry point to a known feature (`sw.py research
+  <game>`). An entry point that maps to nothing is a new feature: `feature <id> "Name"` right away.
+  Close it with `task done survey-N --new-entries <how many new> --note "<screens walked, what is new>"`.
+  The dream compares the survey frames with the feature map and earlier surveys and decides when the
+  search for features is over — so nobody has to grind 700 levels when everything appears by level 100.
+- `discovery closed` — only when you reached the end of the content ("coming soon", no next level).
+  Otherwise the dream decides.
 
 1. Loop: frame → one action → the reply has a new frame → open it and compare with what you expected.
    - `tap X Y --why "what I expect"`: X, Y are pixels of the frame you see.
@@ -96,7 +127,6 @@ Task kinds:
    - `case <feature> <id> "what to check"` — a user case: every player action and every branch
      (success, failure, not enough resources, repeat, cancel, first time, again);
      `--done` — verified at this step;
-   - `discovery closed` — all sections of the game are found and registered as features.
 3. **Tasks for later:**
    - timer: `task add <id> "Open the chest after the timer" --after-hours 8 --feature chest`;
      exact moment — `--at 2026-10-02T09:00`;

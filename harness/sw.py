@@ -20,6 +20,9 @@ Session
   task add ID "what to do" [--kind followup|daily|replay|ftue] [--feature F] [--requires fresh]
            [--after-hours N | --at ISO] [--days N] [--note ...]
   task done ID [--note ...] | task cancel ID --reason ...
+  progress "level 12" [--value 12]       progress reached (new features remember where they were found)
+  gate TYPE [--after-minutes N | --at ISO] [--note ...] | gate clear
+                                         advancing is blocked (energy, lives, timer, content, paywall) until then
   discovery open|closed                  whether all sections of the game have been found
   skill list | skill run NAME --why ...
   end --status ok|stuck|crashed|blocked|interrupted --summary "..."
@@ -63,8 +66,8 @@ from perception import hash_distance, is_same_screen, prepare_for_model, save_fo
 
 ROOT = HERE.parent
 OPEN_STATUSES = ("seen", "in_progress", "recheck")
-TASK_KINDS = ("analyze", "update", "ftue", "replay", "followup", "daily")
-TASK_RANK = {"update": 0, "analyze": 1, "ftue": 2, "replay": 3, "followup": 4, "daily": 4}
+TASK_KINDS = ("analyze", "update", "survey", "ftue", "replay", "followup", "daily")
+TASK_RANK = {"update": 0, "survey": 1, "analyze": 2, "ftue": 3, "replay": 4, "followup": 5, "daily": 5}
 SHOT_TOKENS = 1500
 HASH_MATCH = 12  # pHash distance at which the screen counts as the same
 # Windows over the game that do not mean the agent has left it
@@ -79,9 +82,11 @@ NO_WINDOW = 0x08000000 if os.name == "nt" else 0  # CREATE_NO_WINDOW
 
 PROJECT_DEFAULTS = {
     "maintainers": [], "repo": "",
-    "session": {"budget_min": {"analyze": 30, "update": 25, "ftue": 30, "replay": 20, "followup": 10, "daily": 10},
+    "session": {"budget_min": {"analyze": 30, "update": 25, "survey": 15, "ftue": 30, "replay": 20, "followup": 10,
+                                "daily": 10},
                 "max_session_min": 45, "steps_per_min": 4, "hard_limit": 1.5, "stale_min": 20},
-    "research": {"version_check_hours": 6, "ftue_refresh_days": 180, "country": "us"},
+    "research": {"version_check_hours": 6, "ftue_refresh_days": 180, "country": "us", "survey_every_sessions": 2,
+                 "discovery_clean_surveys": 2},
 }
 LOCAL_DEFAULTS = {
     "machine": "",
@@ -709,7 +714,8 @@ def research_path(game: str) -> Path:
 def global_research(game: str, base: Path | None = None) -> dict:
     snap = read_yaml(base or research_path(game))
     for k, v in (("game", game), ("version", None), ("play_version", None), ("play_checked", None),
-                 ("discovery", "open"), ("ftue_verified", None), ("synced", {}), ("features", []), ("tasks", [])):
+                 ("discovery", "open"), ("ftue_verified", None), ("progress", None), ("gate", None), ("synced", {}),
+                 ("features", []), ("tasks", [])):
         snap.setdefault(k, v)
     return snap
 
@@ -746,7 +752,10 @@ TASK_FIELDS = ("title", "kind", "version", "requires", "feature", "not_before", 
 def apply_op(view: dict, op: dict) -> None:
     kind = op["op"]
     if kind == "feature":
+        new = find_feature(view, op["id"], create=False) is None
         f = find_feature(view, op["id"])
+        if new and view.get("progress"):  # where in the game the feature first showed up
+            f["found_at"] = {k: view["progress"].get(k) for k in ("text", "value")}
         for k in ("name", "status", "page"):
             if op.get(k):
                 f[k] = op[k]
@@ -771,6 +780,12 @@ def apply_op(view: dict, op: dict) -> None:
             f["status"] = "in_progress"
     elif kind == "discovery":
         view["discovery"] = op["value"]
+    elif kind == "progress":
+        view["progress"] = {"text": op.get("text"), "value": op.get("value"), "at": now_iso(op["t"]),
+                            "session": op.get("session")}
+    elif kind == "gate":
+        view["gate"] = None if op.get("clear") else {"type": op.get("type"), "until": op.get("until"),
+                                                     "note": op.get("note"), "set": now_iso(op["t"])}
     elif kind == "version":
         if not view.get("version"):
             view["version"] = op["value"]
@@ -805,6 +820,9 @@ def apply_op(view: dict, op: dict) -> None:
         t["closed_by"] = op.get("source") or op.get("session")
         if op.get("note"):
             t["note"] = op["note"]
+        if op.get("new_entries") is not None:
+            t["new_entries"] = op["new_entries"]
+            t["at_progress"] = (view.get("progress") or {}).get("text")
         if kind == "task_done" and t.get("kind") == "ftue":
             view["ftue_verified"] = now_iso(op["t"])[:10]
 
@@ -827,18 +845,54 @@ def research_complete(view: dict) -> bool:
         not any(f.get("status") in OPEN_STATUSES for f in view["features"])
 
 
+def gate_active(view: dict, now: float) -> dict | None:
+    g = view.get("gate")
+    return g if g and iso_to_t(g.get("until")) > now else None
+
+
+def open_cases(view: dict) -> int:
+    """Case work available without advancing: unchecked cases, and open features with no cases yet."""
+    n = 0
+    for f in view["features"]:
+        n += sum(1 for c in f.get("cases", []) if not c.get("done"))
+        if f.get("status") in OPEN_STATUSES and not f.get("cases"):
+            n += 1
+    return n
+
+
+def research_mode(view: dict, now: float) -> tuple[str, str]:
+    """advance — rush through the content while features are still being found; cases — verify
+    cases slowly: all features are found, or advancing is blocked by a gate for now."""
+    g = gate_active(view, now)
+    if view["discovery"] == "closed":
+        return "cases", "all features are found: verify the open cases one by one"
+    if g:
+        return "cases", (f"advancing is blocked ({g['type']}) until {g['until']}: meanwhile verify open cases "
+                         "that need no progress; if there are none, end the session")
+    return "advance", ("move through the content as fast as possible; register every new feature and write down "
+                       "every branch as a case or task for later, do not test them now")
+
+
+def advance_blocked(view: dict, now: float) -> dict | None:
+    """The gate blocks the analysis task entirely when there is also nothing to verify meanwhile."""
+    g = gate_active(view, now)
+    return g if g and view["discovery"] != "closed" and open_cases(view) == 0 else None
+
+
 def game_status(view: dict, now: float) -> tuple[str, str]:
     ot = open_tasks(view)
     if not view["tasks"]:
         return "new", "new game: tasks appear on the first phone claim"
     if not ot:
         return "sleeping", "all done: sleeping until a new version"
-    ready = [t for t in ot if iso_to_t(t.get("not_before")) <= now and t.get("requires", "any") != "fresh"]
+    g, blocked = gate_active(view, now), advance_blocked(view, now)
+    ready = [t for t in ot if iso_to_t(t.get("not_before")) <= now and t.get("requires", "any") != "fresh"
+             and not (blocked and t["kind"] in ("analyze", "update"))]
     if ready:
-        return "active", f"ready now: {len(ready)}"
-    waiting = [t for t in ot if iso_to_t(t.get("not_before")) > now]
-    if waiting:
-        return "waiting", f"waiting until {min(t['not_before'] for t in waiting)}"
+        return "active", f"ready now: {len(ready)}" + (f"; advancing blocked by {g['type']} until {g['until']}" if g else "")
+    waits = [t["not_before"] for t in ot if iso_to_t(t.get("not_before")) > now] + ([blocked["until"]] if blocked else [])
+    if waits:
+        return "waiting", f"waiting until {min(waits)}" + (f" ({blocked['type']} gate)" if blocked else "")
     return "needs_human", "needs a human: " + FRESH_HINT
 
 
@@ -898,6 +952,8 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
             write_op(game, {"op": "task_done", "id": t["id"], "source": "planner",
                             "note": "all sections found, all features documented"})
     view = research_view(game)
+    plan_survey(game, view, now)
+    view = research_view(game)
     analyze = find_task(view, "analyze")
     if analyze and analyze.get("status") == "done" and not any(t["kind"] == "ftue" and t.get("status") == "open"
                                                                for t in view["tasks"]):
@@ -905,6 +961,30 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
             write_op(game, {"op": "task", "id": "ftue", "title": "Play from scratch: FTUE and how features unlock",
                             "kind": "ftue", "requires": "fresh", "source": "external",
                             "note": "FTUE has never been played from a fresh install"})
+
+
+def plan_survey(game: str, view: dict, now: float) -> None:
+    """Whether new features still appear is decided by looking, not by grinding levels: a survey walks
+    every screen reachable without advancing and maps each entry point to a feature. It is set after
+    every survey_every_sessions analysis sessions, and when advancing is blocked and there is nothing
+    else to verify (the waiting time is used for looking)."""
+    if view["discovery"] == "closed" or not any(t["kind"] in ("analyze", "update") for t in open_tasks(view)):
+        return
+    surveys = [t for t in view["tasks"] if t["kind"] == "survey"]
+    if any(t.get("status", "open") == "open" for t in surveys):
+        return
+    last = max((iso_to_t(t.get("closed")) for t in surveys), default=0.0)
+    since = [x for x in read_jsonl(STATE() / game / "sessions.jsonl")
+             if iso_to_t(x["started"]) > last and {"analyze", "update"} & set(x.get("tasks") or [])
+             and x.get("steps")]
+    blocked = advance_blocked(view, now)
+    every = P()["research"]["survey_every_sessions"]
+    if len(since) >= every or (blocked and iso_to_t(blocked.get("set")) > last):
+        n = len(surveys) + 1
+        write_op(game, {"op": "task", "id": f"survey-{n}", "kind": "survey", "requires": "any", "source": "external",
+                        "title": "Survey every screen: capture all entry points and map them to features",
+                        "note": ("advancing is blocked: use the wait to look around" if blocked and len(since) < every
+                                 else f"{len(since)} analysis sessions since the last survey")})
 
 
 def eligible(t: dict, state: str, installed_v: str | None, now: float) -> tuple[bool, str | None]:
@@ -925,17 +1005,24 @@ def session_tasks(game: str, dev: str, platform: str, now: float) -> dict:
     info = package_info(dev, game) if platform == "android" else {"version": None, "install_time": None}
     state = game_state(dev, game, info)
     ready, blocked = [], []
+    gated = advance_blocked(view, now)
+    mode, mode_why = research_mode(view, now)
     for t in open_tasks(view):
         ok, why = eligible(t, state, info["version"], now)
+        if ok and gated and t["kind"] in ("analyze", "update"):
+            ok, why = False, f"advancing is blocked by {gated['type']} until {gated['until']} and there are no cases to verify"
         if ok:
             item = {k: t.get(k) for k in ("id", "title", "kind", "feature", "note") if t.get(k)}
+            if t["kind"] in ("analyze", "update"):
+                item["mode"] = mode
             if t.get("requires") == "fresh":
                 item["only_if_fresh"] = True  # game state on the phone is unknown: check it at the start
             ready.append(item)
         elif why:
             blocked.append({"id": t["id"], "why": why})
     ready.sort(key=lambda t: (TASK_RANK.get(t["kind"], 9), t["id"]))
-    return {"ready": ready, "blocked": blocked, "state": state, "info": info, "view": view}
+    return {"ready": ready, "blocked": blocked, "state": state, "info": info, "view": view, "mode": mode,
+            "mode_why": mode_why}
 
 
 def budget_for(tasks: list[dict]) -> int:
@@ -970,6 +1057,8 @@ def summary_of(view: dict) -> dict:
             "documented": sum(f.get("status") == "documented" for f in view["features"]),
             "open_features": [f["id"] for f in view["features"] if f.get("status") in OPEN_STATUSES],
             "discovery": view["discovery"], "ftue_verified": view.get("ftue_verified"),
+            "mode": research_mode(view, now)[0], "gate": gate_active(view, now), "progress": view.get("progress"),
+            "open_cases": open_cases(view),
             "tasks_open": [t["id"] for t in ot],
             "tasks_waiting": {t["id"]: t["not_before"] for t in ot if iso_to_t(t.get("not_before")) > now},
             "tasks_need_fresh": [t["id"] for t in ot if t.get("requires") == "fresh"]}
@@ -1049,6 +1138,7 @@ def cmd_claim(args) -> None:
             busy_games.add(e["id"])
             res.append({"device": dev, "action": "play", "game": e["id"], "title": e.get("title", e["id"]),
                         "device_state": st["state"], "installed_version": st["info"]["version"],
+                        "mode": st["mode"], "mode_hint": st["mode_why"],
                         "tasks": st["ready"], "budget_min": budget,
                         "max_steps": budget * P()["session"]["steps_per_min"], "focus": e["focus"],
                         "read_first": read_first(e["id"])})
@@ -1203,8 +1293,10 @@ def cmd_start(args) -> None:
                        "fresh install or progressed, and record it: sw.py device-state fresh|progressed --note \"...\"",
             "fresh": "fresh install: play FTUE from the start and record how features unlock",
             "progressed": "progressed game: document what is unlocked; add tasks with --requires fresh for what only a fresh start shows"}
+    view = research_view(args.game)
+    mode, mode_why = research_mode(view, time.time())
     out({"session": sid, "device": dev, "version": cur["version"], "device_state": state, "hint": hint[state],
-         "tasks": tasks, "research": summary_of(research_view(args.game)), **shot})
+         "mode": mode, "mode_hint": mode_why, "tasks": tasks, "research": summary_of(view), **shot})
 
 
 def cmd_device_state(args) -> None:
@@ -1340,10 +1432,38 @@ def cmd_task(args) -> None:
             ids.append(tid)
         return out({"ok": True, "tasks": [find_task(research_view(cur["game"]), i) for i in ids]})
     if args.task_cmd == "done":
-        log_op(cur, {"op": "task_done", "id": tid, "source": f"{cur['id']}#{cur['step']}", "note": args.note})
+        t = find_task(research_view(cur["game"]), tid)
+        if t and t.get("kind") == "survey" and args.new_entries is None:
+            fail("a survey is closed with --new-entries N: how many entry points did not map to known features")
+        log_op(cur, {"op": "task_done", "id": tid, "source": f"{cur['id']}#{cur['step']}", "note": args.note,
+                     **({"new_entries": args.new_entries} if args.new_entries is not None else {})})
     else:
         log_op(cur, {"op": "task_cancel", "id": tid, "source": f"{cur['id']}#{cur['step']}", "note": args.reason})
     out({"ok": True, "task": find_task(research_view(cur["game"]), tid)})
+
+
+def cmd_progress(args) -> None:
+    cur = pick_session(args)
+    log_op(cur, {"op": "progress", "text": args.text, "value": args.value})
+    out({"ok": True, "progress": research_view(cur["game"]).get("progress")})
+
+
+def cmd_gate(args) -> None:
+    cur = pick_session(args)
+    if args.type == "clear":
+        log_op(cur, {"op": "gate", "clear": True})
+    else:
+        if args.at:
+            until = dt.datetime.fromisoformat(args.at).isoformat(timespec="seconds")
+        elif args.after_minutes is not None:
+            until = now_iso(time.time() + args.after_minutes * 60)
+        else:
+            fail("give --after-minutes N or --at ISO: when advancing becomes possible again")
+        log_op(cur, {"op": "gate", "type": args.type, "until": until, "note": args.note})
+    view = research_view(cur["game"])
+    mode, why = research_mode(view, time.time())
+    out({"ok": True, "gate": gate_active(view, time.time()), "mode": mode, "mode_hint": why,
+         "open_cases": open_cases(view)})
 
 
 def cmd_discovery(args) -> None:
@@ -1630,7 +1750,7 @@ def cmd_snapshot(args) -> None:
 
 STATUS_LABEL = {"new": "🆕 new", "active": "▶️ active", "waiting": "⏳ waiting",
                 "needs_human": "🙋 needs a human", "sleeping": "💤 sleeping until a new version"}
-KIND_LABEL = {"analyze": "analysis", "update": "update", "ftue": "from scratch", "replay": "replay",
+KIND_LABEL = {"analyze": "analysis", "update": "update", "survey": "survey", "ftue": "from scratch", "replay": "replay",
               "followup": "check", "daily": "daily"}
 SOURCE_LABEL = {"external": "external", "game": "from the game", "session": "knowledge gap"}
 
@@ -1651,8 +1771,18 @@ def render_game(gd: Path, title: str) -> dict:
     human_rows = [t for t in ot if t.get("requires") == "fresh" and t not in wait_rows]
     done_rows = sorted([t for t in view["tasks"] if t.get("status") in ("done", "cancelled")],
                        key=lambda t: t.get("closed") or "", reverse=True)
+    mode, mode_why = research_mode(view, now)
+    g = gate_active(view, now)
+    found = [f["found_at"]["text"] for f in view["features"] if f.get("found_at", {}).get("text")]
     L_ = [f"# Tasks: {title}", "",
           f"Status: **{STATUS_LABEL[status]}** — {why}", "",
+          f"Mode: **{mode}** — {mode_why}" + (f" · gate: **{g['type']}** until {g['until']}"
+                                              + (f" ({g['note']})" if g.get("note") else "") if g else ""), "",
+          f"Progress reached: **{(view.get('progress') or {}).get('text') or '—'}** · "
+          f"last new feature found at: **{found[-1] if found else '—'}**", "",
+          "Screen surveys: " + (", ".join(f"{t.get('at_progress') or '?'} — {t['new_entries']} new"
+                                          for t in view["tasks"] if t["kind"] == "survey" and "new_entries" in t)
+                                or "none yet"), "",
           f"Google Play version: **{view.get('play_version') or '—'}** "
           f"(checked {(view.get('play_checked') or '—').replace('T', ' ')}) · "
           f"analyzed version: **{view.get('version') or '—'}** · "
@@ -1692,11 +1822,12 @@ def render_game(gd: Path, title: str) -> dict:
          f"cases closed: **{sum(c.get('done', False) for c in cases)} / {len(cases)}** · "
          f"all sections found: **{'yes' if view['discovery'] == 'closed' else 'no'}**", "",
          "Generated from [`research.yaml`](research.yaml) by `sw.py render`. Tasks: [tasks.md](tasks.md).", "",
-         "| Feature | Status | Cases | Open tasks | Version |", "|---|---|---|---|---|"]
+         "| Feature | Found at | Status | Cases | Open tasks | Version |", "|---|---|---|---|---|---|"]
     for f in view["features"]:
         fc = f.get("cases", [])
         ft = [t["title"] for t in ot if t.get("feature") == f["id"]]
-        F.append(f"| {fname(f['id'])} | {icon.get(f.get('status'), f.get('status'))} | "
+        F.append(f"| {fname(f['id'])} | {(f.get('found_at') or {}).get('text') or ''} | "
+                 f"{icon.get(f.get('status'), f.get('status'))} | "
                  f"{sum(c.get('done', False) for c in fc)} / {len(fc)} | {'; '.join(ft)} | {f.get('version_seen') or ''} |")
     (gd / "features.md").write_text("\n".join(F) + "\n", encoding="utf-8")
     return {"game": gd.name, "title": title, "status": status, "why": why, "now": len(now_rows),
@@ -1869,11 +2000,20 @@ def main() -> None:
     q.add_argument("--days", type=int, help="daily activity: one task for each of the next N days")
     q.add_argument("--note")
     q = ts.add_parser("done")
+    q.add_argument("--new-entries", type=int, help="surveys: entry points that did not map to known features")
     q.add_argument("id")
     q.add_argument("--note")
     q = ts.add_parser("cancel")
     q.add_argument("id")
     q.add_argument("--reason", required=True)
+    p = sub.add_parser("progress")
+    p.add_argument("text", help='where you are, e.g. "level 12" or "chapter 3, area 2"')
+    p.add_argument("--value", type=float, help="the same as a number, if the game has one (level number)")
+    p = sub.add_parser("gate")
+    p.add_argument("type", choices=["energy", "lives", "timer", "content", "paywall", "other", "clear"])
+    p.add_argument("--after-minutes", type=float)
+    p.add_argument("--at", help="when advancing becomes possible again, e.g. 2026-10-01T21:30")
+    p.add_argument("--note")
     p = sub.add_parser("discovery")
     p.add_argument("value", choices=["open", "closed"])
     p = sub.add_parser("skill")
@@ -1925,7 +2065,7 @@ def main() -> None:
         "claim": cmd_claim, "status": cmd_status, "stop": cmd_stop, "resume": cmd_resume, "sync": cmd_sync, "start": cmd_start,
         "device-state": cmd_device_state, "shot": cmd_shot, "wait": cmd_wait, "launch": cmd_launch,
         "note": cmd_note, "mark": cmd_mark, "clip": cmd_clip, "feature": cmd_feature, "case": cmd_case,
-        "task": cmd_task, "discovery": cmd_discovery, "skill": cmd_skill, "end": cmd_end, "games": cmd_games,
+        "task": cmd_task, "progress": cmd_progress, "gate": cmd_gate, "discovery": cmd_discovery, "skill": cmd_skill, "end": cmd_end, "games": cmd_games,
         "research": cmd_research, "features": cmd_research, "pending": cmd_pending, "stats": cmd_stats,
         "snapshot": cmd_snapshot, "render": cmd_render, "check-zones": cmd_check_zones, "wiki-img": cmd_wiki_img,
         "wiki-clip": cmd_wiki_clip, "gc": cmd_gc, "install-agents": cmd_install_agents, "_rec": cmd_rec,

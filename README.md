@@ -63,6 +63,18 @@ whether the install is fresh:
 Only a phone with a fresh install of the game gets such tasks: `sw.py` notices a reinstall by
 itself. Until there is such a phone, the task stays in the "Needs a human" section.
 
+**How a game is played — advance first.** The goal is complete information as fast as possible:
+- while not all features are found, the agent moves through the content as fast as it can and writes
+  every branch down as a case or task for later instead of testing it on the spot;
+- when advancing is blocked (energy, lives, a timer, a paywall), it slows down on purpose and verifies
+  the cases that need no progress; if there are none, the phone goes to another game until the gate
+  opens;
+- whether new features can still appear is decided by looking, not by grinding levels: regular
+  **screen surveys** map every entry point on every screen to a feature, and the dream compares
+  surveys with each other and with a genre checklist. Two clean surveys at different progress points
+  and a covered checklist close the search, so the agent does not play 700 levels when everything
+  appears by level 100.
+
 When there are no open tasks, the game **sleeps until a new version**.
 
 ## How memory works
