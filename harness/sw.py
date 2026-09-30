@@ -101,7 +101,7 @@ PROJECT_DEFAULTS = {
     # consult: one-shot advice (sw.py ask); analyst and critic: the dream's subagents
     "models": {"study": "opus", "play": "sonnet", "consult": "opus", "analyst": "opus", "critic": "opus"},
     "play": {"level_budget_min": 5, "level_rethink_min": 2, "batch_max": 40, "batch_gap_s": 0.35,
-             "hi_tokens": 4784, "solver_timeout_s": 60},
+             "hi_tokens": 4784, "hi_max_edge": 2000, "solver_timeout_s": 60},
 }
 LOCAL_DEFAULTS = {
     "machine": "",
@@ -521,7 +521,11 @@ def take_shot(cur: dict, dev, hi: bool = False) -> dict:
     img.save(shots / f"{k:05d}.jpg", quality=90)
     # --hi (or a level started with --hi): full resolution for reading a board of small pieces
     hi = hi or bool((cur.get("level") or {}).get("hi"))
-    small, scale = prepare_for_model(img, P()["play"]["hi_tokens"] if hi else SHOT_TOKENS)
+    # The long edge stays within what the image viewer shows unscaled (a 1080x2340 frame was shown 923 wide
+    # and the agent had to convert coordinates): the pixels the model sees are the pixels it taps.
+    pl = P()["play"]
+    small, scale = (prepare_for_model(img, pl["hi_tokens"], {"max_edge": pl["hi_max_edge"], "max_tokens": pl["hi_tokens"]})
+                    if hi else prepare_for_model(img, SHOT_TOKENS))
     small_path = shots / f"{k:05d}_m.jpg"
     small.save(small_path, quality=85)
     h = screen_hash(img)
@@ -530,7 +534,8 @@ def take_shot(cur: dict, dev, hi: bool = False) -> dict:
     cur.update(last_hash=h, scale=scale, last_shot=k, last_app=app, model_size=[small.width, small.height],
                phys=[img.width, img.height])
     elapsed = (time.time() - cur["t0"]) / 60
-    info = {"shot": str(small_path), "shot_n": k, "size": [small.width, small.height], "app": app,
+    info = {"shot": str(small_path), "shot_n": k, "size": [small.width, small.height],
+            "coords": f"tap in pixels of this {small.width}x{small.height} frame", "app": app,
             "same_as_prev": same, "same_streak": cur["same_streak"],
             "time": f"{elapsed:.1f} / {cur['budget_min']} min", "steps": f"{cur['step']} / {cur['max_steps']}"}
     warn = []

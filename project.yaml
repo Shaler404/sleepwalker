@@ -51,5 +51,6 @@ play:
   level_rethink_min: 2       # a plan that has not worked for this long: stop and rethink
   batch_max: 40              # moves per sw.py taps call
   batch_gap_s: 0.35          # pause between moves in a batch
-  hi_tokens: 4784            # image tokens of a full-resolution screenshot (shot --hi): 1080x2340 fits whole
+  hi_tokens: 4784            # image tokens of a sharp screenshot (shot --hi)
+  hi_max_edge: 2000          # its long edge: the image viewer shows larger frames downscaled, and taps would miss
   solver_timeout_s: 60
