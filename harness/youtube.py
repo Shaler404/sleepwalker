@@ -61,18 +61,19 @@ def upload(path: Path, title: str, description: str, cfg: dict) -> str:
 
 def main() -> None:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from sw import RAW, local_cfg
+    sys.stdout.reconfigure(encoding="utf-8")
+    from sw import RAW, L
 
-    cfg = local_cfg()["youtube"]
+    cfg = L()["youtube"]
     if sys.argv[1:] == ["auth"]:
         credentials(cfg, interactive=True)
         print("ok")
     elif sys.argv[1:] == ["upload-pending"]:
-        for meta_path in RAW.glob("*/*/session.json"):
+        for meta_path in RAW().glob("*/*/session.json"):
             meta, original = json.loads(meta_path.read_text(encoding="utf-8")), meta_path.with_name("original.mkv")
             if meta.get("youtube") or not original.exists():
                 continue
-            meta["youtube"] = upload(original, f"{meta['game']} · {meta['kind']} · {meta['id'][:8]}",
+            meta["youtube"] = upload(original, f"{meta['game']} · {meta['kind']} · {meta['id'][:15]}",
                                      f"sleepwalker session {meta['id']}\n{meta.get('summary', '')}", cfg)
             meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
             original.unlink()
