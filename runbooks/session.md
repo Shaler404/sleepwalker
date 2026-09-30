@@ -45,6 +45,10 @@ Task kinds:
     work (`task add` works without the phone) and immediately `end --status interrupted`.
 - You write only to `state/<game>/progress.md`, `inbox.md`, `playbook.md` and `solvers/*.py`.
   `sw.py` maintains everything else for you.
+- **Every phone action goes through `sw.py`; never call `adb` yourself.** `sw.py` logs each step for the
+  dream, stops at once when the owner takes the phone, and cuts a batch short when a payment sheet or
+  another app comes up; a direct `adb` tap does none of that. If `sw.py` lacks something you need (a
+  gesture, a timing), use the closest command and write it into `inbox.md` as `Harness gap: …`.
 - **Language:** everything you write — feature and case names, task titles, notes, marks, clip
   titles, `progress.md`, `inbox.md`, the wiki, reports — is in English. The only exception is a quote
   of in-game text from a game localized only in Russian: quote it in the original and add an English
@@ -141,7 +145,7 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    Order the safe moves so that each keeps the most options open, and send them in one call; a risky
    move goes last, marked with `!`, and ends the batch:
    `sw.py taps "120,340 410,340 88,610>88,300 !600,900" --why "two safe pairs, then the lone dragon into the tray"`
-   (`X,Y` is a tap, `X1,Y1>X2,Y2` a swipe). Then look at what the risky move changed before planning
+   (`X,Y` is a tap, `X,Y:2` a double tap, `X1,Y1>X2,Y2` a swipe; one tap: `tap X Y [--double]`). Then look at what the risky move changed before planning
    further. When there is no safe move, choose the risky one that keeps the most options open, and
    play it alone. One screenshot per batch, not per tap. The batch stops by itself if anything but the
    game comes on screen (a store or payment sheet, a browser from an ad, a system prompt).
