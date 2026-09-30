@@ -1,0 +1,76 @@
+# Список игр и целей. Рутина перечитывает файл перед каждой сессией: правки действуют сразу,
+# в том числе сделанные на GitHub (рутина делает git pull).
+#
+# Поля игры:
+#   id        package из Google Play (игра должна стоять на телефоне)
+#   title     название
+#   priority  меньше — важнее (по умолчанию — порядок в списке)
+#   enabled   false — не играть
+#   goals     что изучить в этой игре; дописываются к общим целям из defaults
+#
+# Вид сессии выбирается сам:
+#   onboard       игра ещё не изучена в первом приближении
+#   update_diff   телефон обновил игру — что изменилось
+#   event_scan    раз в event_scan_hours — события, попапы, магазин
+#   deep_revisit  раз в revisit_hours — открытые цели и вопросы из вики
+# Открытые вопросы, которые находит «сон», становятся целями следующих сессий сами.
+
+defaults:
+  event_scan_hours: 24
+  revisit_hours: 72
+  budget_min: {onboard: 30, update_diff: 20, event_scan: 10, deep_revisit: 25}
+  goals:
+    - Пройти обучение (FTUE) и описать его по шагам с кадрами
+    - "Разобрать основной игровой цикл: что игрок делает, за что получает награду, где проигрывает"
+    - "Разобрать экономику: валюты, источники и стоки, цены, таймеры, жизни и энергия"
+    - "Разобрать монетизацию: магазин, офферы и когда они появляются, реклама за награду, баттл-пасс"
+    - Отметить клипами ключевые моменты — основной цикл, победу и поражение, событие
+  kind_goals:
+    event_scan:
+      - "Короткий осмотр: попапы при входе, раздел событий и новостей, магазин. Для каждого события — название, условия, награды, таймер. Ничего не проходить"
+    update_diff:
+      - Пройти по известным экранам из вики и отметить, что изменилось после обновления (NEW / CHANGED в заголовке mark)
+
+games:
+  - id: com.maroieqrwlk.unpin
+    title: Pull the Pin
+
+  - id: com.block.juggle
+    title: Block Blast!
+
+  - id: com.king.candycrushsaga
+    title: Candy Crush Saga
+
+  - id: com.vitastudio.mahjong
+    title: Vita Mahjong
+
+  - id: com.oakever.arrows
+    title: Amaze GO!
+
+  - id: com.oakever.meowdoku
+    title: "Meowdoku: Brain Puzzle Games"
+
+  - id: com.oakever.akari
+    title: MeowTrail
+
+  - id: com.crypt.gram.puzz
+    title: "Cryptogram: Word Logic Puzzles"
+
+  - id: com.SpektraGames.HighwayRacerPro.traffic.car.racing.game
+    title: Highway Racer Pro
+
+  - id: com.psv.drivex.racing.unlimited
+    title: "Drive X Unlimited: Car Racing"
+
+  - id: com.psv.racing_games.trafic.pro.racer
+    title: Traffic Pro Racer
+
+  - id: com.crime.superchero.open.world.war
+    title: Superhero Crime Open World War
+
+  - id: com.starplay.spider.fighter.openworld
+    title: "Spider Fighter 3: Action Game"
+
+  - id: com.nvsgames.snap
+    title: "MARVEL SNAP"
+    enabled: false         # PvP с живыми игроками: агент не играет против людей

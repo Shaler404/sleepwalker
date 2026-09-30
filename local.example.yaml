@@ -1,0 +1,32 @@
+# Настройки этой машины и телефона. Скопируйте в local.yaml (он в .gitignore и не попадает на GitHub).
+
+android:
+  serials: []              # пусто — первый телефон из `adb devices`
+  hours: "0-24"            # часы, когда можно занимать телефон, например "1-8"
+  dnd: true                # «Не беспокоить: только будильники» на время сессии, потом прежний режим
+  max_temp_c: 42           # горячее — пауза
+  min_battery: 20          # меньше и без зарядки — пауза
+
+tools:
+  ffmpeg: ffmpeg           # полный путь, если ffmpeg не в PATH
+  ffprobe: ffprobe
+
+video:
+  record: true             # записывать экран сессии: оригинал для YouTube и нарезки клипов
+  record_short_edge: 720   # на полном разрешении screenrecord многих телефонов не стартует
+  record_bitrate: 2500000
+  clip_max_seconds: 20     # клип длиннее режется на несколько
+  clip_max_mb: 8           # GitHub предупреждает с 50 МБ и блокирует со 100 МБ
+  clip_long_edge: 720      # клипы — анимированный WebP: GitHub проигрывает его прямо в статье
+  clip_fps: 12
+  clip_quality: 70
+
+youtube:
+  enabled: false
+  client_secret: E:/secrets/sleepwalker/youtube-client.json
+  token: E:/secrets/sleepwalker/youtube-token.json
+  privacy: unlisted        # без аудита проекта Google YouTube всё равно сделает private
+
+raw:
+  keep_originals_days: 3   # оригинал, который не ушёл на YouTube, удаляется через столько дней
+  keep_shots_days: 14      # кадры и клипы сессии после «сна»
