@@ -167,6 +167,9 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
      - it returns only the moves whose outcome it knows. At the first move that depends on something
        hidden (covered pieces, a random refill) it stops, returns the moves up to it (that move
        included, if it is the best choice) and `rescan: true`, so it gets a fresh frame;
+     - it checks that what it read is plausible before moving (the board size, the number of regions
+       or pieces, the counts the rules imply) and returns no moves with a `note` when it is not: a
+       misread board, a popup or a win screen must not get blind taps;
      - `note` says what it read and why it chose this line, e.g. "14 free tiles, 5 safe pairs, stopped
        before the tray move".
 

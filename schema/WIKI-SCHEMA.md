@@ -326,7 +326,9 @@ consolidates it.
   Moves are in pixels of the full-resolution image: `[x, y]` is a tap, `[x1, y1, x2, y2]` a swipe.
   A solver models the rules exactly (including how a level is lost), searches ahead instead of taking
   the first legal move, prefers moves that keep options open, and stops at the first move that depends
-  on something hidden. `sw.py solve <mechanic>` draws its moves on a fresh frame; `--image FRAME`
+  on something hidden. It checks that what it read is plausible (board size, number of regions or
+  pieces) and returns no moves when it is not. Rounds also stop when the solver repeats the moves of
+  the previous round. `sw.py solve <mechanic>` draws its moves on a fresh frame; `--image FRAME`
   does the same on a saved frame without the phone; `--run --rounds N` plays rounds of frame → solver
   → moves until the level is done, the solver has no moves, the moves change nothing or the level runs
   over its time. A solver only

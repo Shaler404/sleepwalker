@@ -2047,7 +2047,7 @@ def cmd_solve(args) -> None:
                     "hint": "open the drawn frame: numbers are the moves in order. Right: solve --run --rounds N. "
                             "Wrong: fix the solver (check it on saved frames with --image) or play by the playbook"})
     cap, pause = P()["play"]["batch_max"] * 5, args.gap if args.gap is not None else P()["play"]["batch_gap_s"]
-    total, stop, notes, n = 0, None, [], 0
+    total, stop, notes, n, prev = 0, None, [], 0, None
     for n in range(1, max(1, args.rounds) + 1):
         before = frame()
         res = run_solver(cur["game"], mech, before, args.board if n == 1 else None, cur["scale"])
@@ -2056,6 +2056,12 @@ def cmd_solve(args) -> None:
         if not moves:
             stop = "solved" if res.get("done") else f"the solver has no moves: {res.get('note') or 'no note'}"
             break
+        if moves == prev:
+            # the same moves after playing them: the solver does not see their result (a misread board,
+            # another screen on top); tapping them again would be blind
+            stop = f"the solver repeats the moves of the previous round: its reading does not change ({res.get('note')})"
+            break
+        prev = moves
         done, stopped = run_moves(cur, dev, moves[:cap], 1.0, pause)
         total += done
         cur["step"] += 1
