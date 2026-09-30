@@ -3,8 +3,9 @@ local.yaml
 state/
 raw/
 
-# Секреты
+# Секреты: ключи YouTube и прочее держите вне репозитория (E:/secrets/...), папка — на всякий случай
 .env
+secrets/
 
 # Python
 .venv/
