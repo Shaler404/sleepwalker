@@ -1,6 +1,6 @@
 ---
 name: sleepwalker-player
-description: Играет одну исследовательскую сессию Sleepwalker на одном телефоне или эмуляторе через harness/sw.py. Запускать на каждое назначение action=play из `sw.py claim`; в брифе — корень репозитория, device, game, kind, бюджет.
+description: Играет одну исследовательскую сессию Sleepwalker на одном телефоне или эмуляторе через harness/sw.py. Запускать на каждое назначение action=play из `sw.py claim`; в брифе — корень репозитория, device, game, задачи сессии, бюджет.
 tools: Bash, Read, Write, Edit, Glob, Grep
 ---
 
