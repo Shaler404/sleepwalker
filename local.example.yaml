@@ -1,11 +1,18 @@
-# Настройки этой машины и телефона. Скопируйте в local.yaml (он в .gitignore и не попадает на GitHub).
+# Настройки одной машины. Скопируйте в local.yaml — он в .gitignore и на GitHub не попадает.
+# Всё локальное лежит рядом: state/ (журналы, заметки, блокировки) и raw/ (записи сессий).
+
+machine: ""                # имя машины в id сессий и в отчётах «сна»; пусто — имя компьютера
+games: []                  # пусто — все игры из games.yaml; иначе только эти (чтобы поделить игры между машинами)
 
 android:
-  serials: []              # пусто — первый телефон из `adb devices`
-  hours: "0-24"            # часы, когда можно занимать телефон, например "1-8"
+  serials: []              # пусто — все телефоны и эмуляторы из `adb devices`
+  hours: "0-24"            # часы, когда можно занимать телефоны, например "1-8"
   dnd: true                # «Не беспокоить: только будильники» на время сессии, потом прежний режим
   max_temp_c: 42           # горячее — пауза
   min_battery: 20          # меньше и без зарядки — пауза
+
+# Проверка без телефона: имя -> папка с картинками-кадрами
+fake_devices: {}
 
 tools:
   ffmpeg: ffmpeg           # полный путь, если ffmpeg не в PATH
@@ -21,7 +28,7 @@ video:
   clip_fps: 12
   clip_quality: 70
 
-youtube:
+youtube:                   # ключи лежат только на этой машине
   enabled: false
   client_secret: E:/secrets/sleepwalker/youtube-client.json
   token: E:/secrets/sleepwalker/youtube-token.json

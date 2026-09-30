@@ -1,4 +1,4 @@
-# Рутина Claude Code (harness/sw.py)
+# harness/sw.py
 pyyaml
 pillow
 imagehash
@@ -7,11 +7,3 @@ adbutils
 # Оригиналы на YouTube (harness/youtube.py), по желанию
 google-api-python-client
 google-auth-oauthlib
-
-# Путь через API (explorer.py, reflect.py, compile_wiki.py, scheduler.py): нужен ANTHROPIC_API_KEY
-anthropic>=1.9
-pydantic>=2
-uiautomator2
-google-play-scraper
-rapidocr-onnxruntime
-numpy
