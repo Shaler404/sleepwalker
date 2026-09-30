@@ -799,9 +799,10 @@ def play_store_version(game: str) -> str | None:
 
 
 def plan_game(game: str, installed_versions: list[str], now: float) -> None:
-    """Планировщик задач игры. Внешние источники задач: версия в Google Play (разбор этой версии,
-    обновление документации под новую) и давность FTUE. Задачи из самой игры (таймеры,
-    ежедневные активности, пробелы в знаниях) ставит игрок во время сессии."""
+    """Планировщик задач игры. Внешний источник задач — версия в Google Play: разбор этой версии,
+    обновление документации под новую и, если с прохождения с нуля прошло больше
+    ftue_refresh_days, проверка FTUE в новой версии (без новой версии FTUE не перепроверяется).
+    Задачи из самой игры (таймеры, ежедневные активности, пробелы в знаниях) ставит игрок."""
     R = P()["research"]
     view = research_view(game)
     if now - iso_to_t(view.get("play_checked")) > R["version_check_hours"] * 3600:
@@ -818,6 +819,13 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
         if target:
             write_op(game, {"op": "version", "value": target})
     elif target and view.get("version") and vkey(target) > vkey(view["version"]):
+        fv = view.get("ftue_verified")
+        if fv and now - iso_to_t(fv) > R["ftue_refresh_days"] * 86400 and not find_task(view, f"ftue-{target}"):
+            days = int((now - iso_to_t(fv)) / 86400)
+            write_op(game, {"op": "task", "id": f"ftue-{target}",
+                            "title": f"Проверить, изменился ли FTUE в версии {target}", "kind": "ftue",
+                            "requires": "fresh", "version": target, "source": "external",
+                            "note": f"вышла новая версия, а с нуля игру проходили {days} дн. назад"})
         if analyze.get("status") == "open":
             # разбор ещё идёт, а вышла новая версия: разбирать сразу её
             write_op(game, {"op": "new_version", "from": view["version"], "to": target})
@@ -840,16 +848,10 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
     analyze = find_task(view, "analyze")
     if analyze and analyze.get("status") == "done" and not any(t["kind"] == "ftue" and t.get("status") == "open"
                                                                for t in view["tasks"]):
-        fv = view.get("ftue_verified")
-        if not fv and not find_task(view, "ftue"):
+        if not view.get("ftue_verified") and not find_task(view, "ftue"):
             write_op(game, {"op": "task", "id": "ftue", "title": "Пройти игру с нуля: FTUE и как открываются фичи",
                             "kind": "ftue", "requires": "fresh", "source": "external",
                             "note": "FTUE ни разу не проходили со свежей установки"})
-        elif fv and now - iso_to_t(fv) > R["ftue_refresh_days"] * 86400:
-            days = int((now - iso_to_t(fv)) / 86400)
-            write_op(game, {"op": "task", "id": f"ftue-{dt.date.today():%Y%m}",
-                            "title": f"Перепройти игру с нуля: FTUE проверяли {days} дн. назад", "kind": "ftue",
-                            "requires": "fresh", "source": "external"})
 
 
 def eligible(t: dict, state: str, installed_v: str | None, now: float) -> tuple[bool, str | None]:
