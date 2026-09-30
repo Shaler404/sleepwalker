@@ -29,6 +29,7 @@ session:
   hard_limit: 1.5            # after budget × hard_limit, actions are blocked
   stale_min: 20              # a session idle for longer is abandoned; the phone and the game are free
   max_in_a_row: 2            # sessions of one game in a row on a phone while other games have ready tasks
+  turn_hours: 2              # a game with ready tasks not played for this long (or never) goes first
 
 research:
   version_check_hours: 6     # how often to check the version on Google Play

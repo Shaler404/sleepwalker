@@ -13,7 +13,8 @@
 #   id        package from Google Play (required)
 #   title     title (for humans)
 #   priority  lower = more important (default: order in the list); still, a game gets at most
-#             session.max_in_a_row sessions in a row (project.yaml) while other games have work
+#             session.max_in_a_row sessions in a row (project.yaml) while other games have work, and a
+#             game not played for session.turn_hours (or never) gets its turn first
 #   enabled   false = do not analyze
 #   focus     what to look at first (optional)
 #

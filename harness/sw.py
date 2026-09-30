@@ -95,7 +95,8 @@ PROJECT_DEFAULTS = {
     "maintainers": [], "repo": "",
     "session": {"budget_min": {"analyze": 30, "update": 25, "survey": 15, "ftue": 30, "replay": 20, "followup": 10,
                                 "daily": 10},
-                "max_session_min": 45, "steps_per_min": 4, "hard_limit": 1.5, "stale_min": 20, "max_in_a_row": 2},
+                "max_session_min": 45, "steps_per_min": 4, "hard_limit": 1.5, "stale_min": 20, "max_in_a_row": 2,
+                "turn_hours": 2},
     "research": {"version_check_hours": 6, "ftue_refresh_days": 180, "country": "us", "survey_every_sessions": 2,
                  "discovery_clean_surveys": 2},
     # study: learns new gameplay (strong); play: plays learned gameplay and checks cases (fast);
@@ -1450,7 +1451,10 @@ def cmd_claim(args) -> None:
                     if last.get("status") == "handoff" and \
                             now - iso_to_t(last["started"]) - last.get("minutes", 0) * 60 < 1800:
                         rank = -1  # handed off to the strong model: continue this game right away
-                    cands.append((rank, e["priority"], last_session_t(e["id"]), e, st))
+                    # a game not played for turn_hours (or never) gets its turn before the priority order
+                    last_t = last_session_t(e["id"])
+                    turn = 0 if now - last_t > P()["session"]["turn_hours"] * 3600 else 1
+                    cands.append((rank, turn, e["priority"], last_t, e, st))
                 else:
                     other.append({"game": e["id"], "state": st["state"], "why": game_status(st["view"], now)[1],
                                   "blocked": st["blocked"][:3]})
@@ -1462,10 +1466,10 @@ def cmd_claim(args) -> None:
             # sessions in a row the other games with ready tasks go first (a handoff still continues at once).
             sg, sn = device_streak(dev)
             rotated = None
-            if sn >= P()["session"]["max_in_a_row"] and len({c[3]["id"] for c in cands}) > 1:
-                cands = [((c[0] + 10) if c[3]["id"] == sg and c[0] >= 0 else c[0], *c[1:]) for c in cands]
+            if sn >= P()["session"]["max_in_a_row"] and len({c[4]["id"] for c in cands}) > 1:
+                cands = [((c[0] + 10) if c[4]["id"] == sg and c[0] >= 0 else c[0], *c[1:]) for c in cands]
                 rotated = f"{sg} had {sn} sessions in a row: other games go first"
-            _, _, _, e, st = min(cands, key=lambda c: c[:3])
+            _, turn, _, _, e, st = min(cands, key=lambda c: c[:4])
             budget = budget_for(st["ready"])
             role, role_why = model_role(st["view"], st["ready"])
             model = models()[role]
@@ -1477,6 +1481,8 @@ def cmd_claim(args) -> None:
                         "device_state": st["state"], "installed_version": st["info"]["version"],
                         "model": model, "model_role": role, "model_why": role_why,
                         **({"rotation": rotated} if rotated and e["id"] != sg else {}),
+                        **({"turn": f"not played for {P()['session']['turn_hours']} h or never: its turn"}
+                           if turn == 0 and e["id"] != sg else {}),
                         "mode": st["mode"], "mode_hint": st["mode_why"],
                         "tasks": st["ready"], "budget_min": budget,
                         "max_steps": budget * P()["session"]["steps_per_min"], "focus": e["focus"],
