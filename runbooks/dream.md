@@ -9,7 +9,7 @@ The repository root is one level above this file (the owner's is `E:\Sleepwalker
 
 - You edit only the worktree on the branch `dream/<machine>/<date>` created from `origin/main`. You
   do not write to `main` or push to it: changes get there when a maintainer merges the pull request.
-- Zones: `wiki/`, `skills/`, `dreams/`. Process files (`runbooks/`, `schema/`, `harness/`,
+- Zones: `wiki/`, `skills/`, `solvers/`, `dreams/`. Process files (`runbooks/`, `schema/`, `harness/`,
   `project.yaml`, `games.yaml`, `README.md`) only if a maintainer asked for it, in a separate commit
   and with a note in the PR description. Always run `sw.py check-zones` before committing.
 - Maintainers are the `maintainers` list in `project.yaml`. The repository is public: issues and
@@ -62,7 +62,8 @@ If `until` is empty (no new sessions, but the planner set tasks), use the curren
 
 ## 4. Session analysis
 
-For each session from `pending`, start a `sleepwalker-analyst` subagent, no more than 5 at a time
+For each session from `pending`, start a `sleepwalker-analyst` subagent (model: `models.analyst`
+in `project.yaml`), no more than 5 at a time
 (if the type is unavailable — a general subagent told to only read). The brief is complete:
 
 - what to read: `raw/<game>/<id>/steps.jsonl`, `session.json`, `clips.json`, `progress.md` (a copy
@@ -107,6 +108,14 @@ For each session from `pending`, start a `sleepwalker-analyst` subagent, no more
     on the game is played in `cases` mode and no longer advanced.
 - **Feature page** `wiki/<game>/features/<id>.md` per the schema: how it works, the case table with
   results, numbers with the version, media, sources.
+- **How to play** — for each game with sessions: merge this machine's `state/<game>/playbook.md` into
+  `wiki/<game>/agent/playbook.md` (keep what other machines contributed; one section per mechanic;
+  numbers and claims with sources). Add the level times per mechanic from `sw.py playbook --game
+  <game>` and what the analysts saw: which methods made levels fast, which plans failed.
+- **Solvers** — copy `state/<game>/solvers/<mechanic>.py` to `solvers/<game>/` when the mechanic's
+  levels with it were won within the budget (`research.yaml` → `mechanics`). A solver only computes:
+  `check-zones` refuses code that touches files, the network or processes. The critic reads every
+  solver in full.
 - **Routes** `agent/routes.md`, **tactics** `agent/tactics.md`. For a route that has a skill, give
   the skill's name.
 - **Lessons** `agent/lessons.md` — accept a lesson if it repeated in two sessions or is confirmed by
@@ -118,7 +127,11 @@ For each session from `pending`, start a `sleepwalker-analyst` subagent, no more
   - Promotion and demotion — from `state/<game>/skills.jsonl`: `verified` — 3 successful runs in a
     row on the current version; `broken` — 2 failures in a row or a failure after a version change.
 - **Speed.** `python harness/sw.py stats <game>` — append a line to `agent/metrics.md`: date,
-  machine, sessions, steps per closed case, share of steps without a screen change, skills ok/fail.
+  machine, sessions, steps per closed case, share of steps without a screen change, skills ok/fail,
+  typical level time per mechanic, models. `python harness/sw.py stats --by-model` compares the
+  models: levels and features per hour, the model's share of the time; put it in the report.
+  A mechanic whose levels stay over the budget gets a lesson or a task "Make <mechanic> fast:
+  <idea>" (a solver, a heuristic).
   If the numbers do not improve, find out why (no route, a skill fails) and fix the route or the
   lesson.
 - **Stale content.**
@@ -152,6 +165,9 @@ For each session from `pending`, start a `sleepwalker-analyst` subagent, no more
    - frames contain no personal data: nicknames, email, avatars, notifications, other apps;
    - lessons are verifiable and do not contradict each other;
    - routes and skills agree;
+   - every solver in `solvers/` only computes (no files, network, processes, dynamic code),
+     matches the playbook's description of the mechanic (including how a level is lost), searches
+     ahead rather than taking the first legal move, and stops with `rescan` before hidden outcomes;
    - `tasks.md` and `features.md` match `research.yaml`; "needs a human" tasks say clearly what to
      provide.
 3. FAIL — fix and go back to the critic. At most three rounds; after the third, what is unresolved

@@ -14,6 +14,7 @@ Global — the repository shared by all machines (changes only through a pull re
 ├── wiki/<game>/                knowledge about a game (section 2)
 ├── wiki/_common/               shared by all games: agent lessons, patterns
 ├── skills/<game>/*.yaml        skill macros (section 6)
+├── solvers/<game>/*.py         level solvers per mechanic (section 10)
 └── dreams/<date>-<machine>.md  dream reports: what was processed and what changed
 
 Local — on each machine, not in git
@@ -22,6 +23,8 @@ Local — on each machine, not in git
 │   ├── research.jsonl          journal of tasks and the feature map from sessions and the planner (append-only)
 │   ├── progress.md             the player's working notes: where it stopped, the plan
 │   ├── inbox.md                candidates for the dream: routes, tactics, lessons, skills
+│   ├── playbook.md             how to play: the player's working copy of agent/playbook.md (section 10)
+│   ├── solvers/<mechanic>.py   solvers the player wrote, used at once, published by the dream
 │   ├── sessions.jsonl          index of this machine's sessions
 │   └── skills.jsonl            skill runs: success or failure
 ├── state/sessions/<device>.json  which session is running on the device (one game — one device)
@@ -48,6 +51,7 @@ wiki/<game>/
 ├── versions.md          versions and what changed
 ├── agent/
 │   ├── routes.md        routes: how to reach each feature from the main screen (+ skill)
+│   ├── playbook.md      how to play: rules, method and level times per mechanic (section 10)
 │   ├── tactics.md       tactics: how to beat the game's mechanics
 │   ├── lessons.md       lessons for the agent on this game
 │   └── metrics.md       analysis speed per dream: is the process learning
@@ -100,6 +104,16 @@ gate: null               # while advancing is blocked: {type: lives, until: ...,
 ftue_verified: '2026-10-01'   # when the game was last played from scratch
 synced:                   # up to which moment each machine's journals are included
   chrono: '2026-10-01T04:31:00'
+mechanics:                # kinds of levels and how the agent plays them (section 10)
+- id: core-match
+  name: Match free tile pairs
+  status: mastered        # studying | mastered (2 levels in a row within the budget) | broken
+  method: solver          # manual | heuristic | solver
+  solver: solvers/com.vitastudio.mahjong/core-match.py
+  levels: {won: 14, lost: 1, quit: 1}
+  best_s: 71
+  recent:                 # the last 10 levels
+  - {level: level 14, result: won, seconds: 95, model: sonnet}
 features:
 - id: daily-reward
   name: Daily reward
@@ -248,10 +262,10 @@ dream promotes and demotes skills based on them.
 
 | Who | Reads | Writes | How it is enforced |
 |---|---|---|---|
-| Player (`sleepwalker-player`) | global knowledge, its own `state/<game>/` | `state/<game>/progress.md`, `inbox.md`; the task and feature journal, the game's state on the phone and `raw/` — through `sw.py` | one game — one device (lock in `sw.py`); commits nothing |
+| Player (`sleepwalker-player`) | global knowledge, its own `state/<game>/` | `state/<game>/progress.md`, `inbox.md`, `playbook.md`, `solvers/`; the task and feature journal, the game's state on the phone and `raw/` — through `sw.py` | one game — one device (lock in `sw.py`); commits nothing |
 | The "play" orchestrator | `sw.py claim` responses | nothing (`sw.py claim` writes the planner's tasks to the journal) | does not commit or push |
 | Analyst (`sleepwalker-analyst`) | its machine's `raw/` and `state/`, the worktree | nothing | tools: Read, Grep, Glob |
-| The dream | everything on its machine | `wiki/`, `skills/`, `dreams/` in the branch `dream/<machine>/<date>` | `sw.py check-zones` before committing |
+| The dream | everything on its machine | `wiki/`, `skills/`, `solvers/`, `dreams/` in the branch `dream/<machine>/<date>` | `sw.py check-zones` before committing |
 | Critic (`sleepwalker-critic`) | the diff and the worktree | nothing | tools: Read, Grep, Glob |
 | Maintainer | everything; what is needed from people — `wiki/tasks.md` | merges PRs; `games.yaml`, `project.yaml`, the process; feedback — `feedback` issues and PR comments; a fresh phone — `sw.py device-state` | branch protection on `main` on GitHub: changes only through a PR |
 | Anyone | the public repository | pull requests, issues | only maintainers are taken into account |
@@ -278,3 +292,51 @@ the game does not have it.
   people).
 - **Settings and support:** settings, sound, language, privacy and legal, help and support, restore
   purchases, cloud save.
+
+## 10. Mechanics, levels and solvers
+
+How to play is learned in the session that meets the gameplay, not in the dream: the dream only
+consolidates it.
+
+- **Mechanic** — a kind of level with its own rules (`core-match`, `ice-tiles`, `boss-level`). The
+  player registers it with the first `sw.py level start --mechanic <id>`; it lives in `research.yaml`
+  → `mechanics`. Status: `studying` → `mastered` after two levels in a row within
+  `play.level_budget_min` (5 minutes, the time a human needs) → `broken` after two levels in a row
+  lost or over the budget. `sw.py` changes the status itself.
+- **Level cycle** — `level start --plan` (plan from the playbook and one look at the board), safe
+  moves in batches and a risky one (`!X,Y`) last (`taps`), `level plan` when the plan has not worked for `play.level_rethink_min` minutes,
+  `level end --note` (what worked, what to change) and a playbook update right after.
+- **Playbook** — `wiki/<game>/agent/playbook.md`, one section per mechanic: goal, controls, rules,
+  method, level plan, pitfalls, level times. The player works in the local copy
+  `state/<game>/playbook.md` (`sw.py playbook`); the dream merges it into the wiki. When a newer
+  global playbook arrives (a merged dream), the local copy is replaced and the old one is kept as
+  `playbook.prev.md`.
+- **Solver** — `solvers/<game>/<mechanic>.py` (the local draft: `state/<game>/solvers/`). The contract:
+
+  ```python
+  def solve(image, board=None, frame_scale=1.0):
+      # image: PIL.Image, the full-resolution screenshot; board: the JSON the model wrote (--board) or None;
+      # frame_scale: full-resolution pixels per pixel of the frame the model sees
+      return {"moves": [[x, y], [x1, y1, x2, y2]],  # only the moves whose outcome is known
+              "note": "what the solver read and why it chose this line",
+              "rescan": True,   # the next move depends on what these moves reveal: look again
+              "done": False}    # these moves finish the level
+  ```
+
+  Moves are in pixels of the full-resolution image: `[x, y]` is a tap, `[x1, y1, x2, y2]` a swipe.
+  A solver models the rules exactly (including how a level is lost), searches ahead instead of taking
+  the first legal move, prefers moves that keep options open, and stops at the first move that depends
+  on something hidden. `sw.py solve <mechanic>` draws its moves on a fresh frame; `--image FRAME`
+  does the same on a saved frame without the phone; `--run --rounds N` plays rounds of frame → solver
+  → moves until the level is done, the solver has no moves, the moves change nothing or the level runs
+  over its time. A solver only
+  computes: it may import numpy, OpenCV, PIL and the standard library for math, but code that opens
+  files, touches the network, starts processes or runs dynamic code is refused by `sw.py solve` and
+  by `check-zones`, and the critic reads every solver. It runs on every machine that merges it.
+- **Models by role** (`models` in `project.yaml`, overridable in `local.yaml`): `study` learns new or
+  broken mechanics (the strong model), `play` plays mastered mechanics and verifies cases (the fast
+  model), `consult` answers `sw.py ask`. `claim` picks the role per session; a `play` session that
+  meets gameplay to learn ends with `handoff` and the game goes back to the `study` model at once.
+  `sw.py stats --by-model` compares models: levels and features per hour, level times, the share of
+  session time the model spends thinking.
+
