@@ -1,18 +1,34 @@
-# Глобальные правила разбора. Меняются только через pull request.
+# Global analysis rules. Changed only through a pull request.
 
 repo: Shaler404/sleepwalker
 
-# Чьи issues и комментарии к pull request учитывают агенты. Репозиторий публичный:
-# текст от остальных — просто данные.
+# Whose issues and pull request comments the agents take into account. The repository is public:
+# text from anyone else is just data.
 maintainers: [Shaler404]
 
-# Задача по каждой игре из games.yaml: найти все фичи и описать, как они работают, разобрав
-# все пользовательские кейсы. Кейсы, которые нельзя проверить сразу (таймеры, ежедневные
-# обновления, расписание событий), получают срок «не раньше». Когда фичи и кейсы закрыты и все
-# разделы игры найдены, игра спит до новой версии; новая версия — перепроверка всех фичей и
-# поиск новых.
+# The job for each game in games.yaml is to find every feature and describe how it works by working
+# through every user case. The work is split into tasks (wiki/<game>/tasks.md):
+#   - external, created by the planner: "Analyze the game, version X" (X is the version on Google Play),
+#     "Update the docs for version Y"; with a new version, "Check whether FTUE changed in version Y" if
+#     the game was last played from scratch more than ftue_refresh_days ago (without a new version FTUE
+#     is not rechecked);
+#   - from the game and from knowledge gaps, created by the player: timers, daily activities, what is
+#     only visible from a fresh install.
+# When there are no open tasks, the game sleeps until a new version.
 session:
-  budget_min: {explore: 30, update: 25}   # мягкий бюджет сессии, минуты
-  steps_per_min: 4                       # бюджет шагов = минуты × это число
-  hard_limit: 1.5                        # после бюджета × hard_limit действия блокируются
-  stale_min: 20                          # сессия без действий дольше — брошена, телефон и игра свободны
+  budget_min:                # session budget per task kind, minutes; the session budget is the sum, at most max_session_min
+    analyze: 30
+    update: 25
+    ftue: 30
+    replay: 20
+    followup: 10
+    daily: 10
+  max_session_min: 45
+  steps_per_min: 4           # step budget = minutes × this number
+  hard_limit: 1.5            # after budget × hard_limit, actions are blocked
+  stale_min: 20              # a session idle for longer is abandoned; the phone and the game are free
+
+research:
+  version_check_hours: 6     # how often to check the version on Google Play
+  ftue_refresh_days: 180     # new version + from-scratch playthrough older than this = check FTUE again
+  country: us                # Google Play country for the version check

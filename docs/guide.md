@@ -1,703 +1,702 @@
-# Руководство: 24/7 наигрыш игр с накоплением знаний и вики
+# Guide: playing games 24/7 while building knowledge and a wiki
 
-> **Это исследовательское руководство: обоснование, справка по устройствам, восприятию, стоимости и рискам.**
-> Как система работает сейчас — [README](../README.md), [схема знаний](../schema/WIKI-SCHEMA.md) и
-> [инструкции рутин](../runbooks/). Код пути через Anthropic API (`explorer.py`, `reflect.py`,
-> `compile_wiki.py`, `scheduler.py`) и промпты ролей удалены 2026-09-30: их заменили рутины Claude Code
-> и `sw.py`. Разделы 7, 9.2, 11 и 12 описывают тот путь; код лежит в коммите `09d48d1`.
+> **This is a research guide: rationale and reference on devices, perception, cost and risks.**
+> For how the system works today, see the [README](../README.md), the [knowledge schema](../schema/WIKI-SCHEMA.md) and
+> the [routine instructions](../runbooks/). The Anthropic API path code (`explorer.py`, `reflect.py`,
+> `compile_wiki.py`, `scheduler.py`) and the role prompts were removed on 2026-09-30, replaced by Claude Code
+> routines and `sw.py`. Sections 7, 9.2, 11 and 12 describe that path; the code is in commit `09d48d1`.
 
-Руководство по построению системы, которая круглосуточно проходит список мобильных игр
-(изучает новые, перепроверяет известные после обновлений и во время временных событий),
-запоминает уроки, накапливает знания и публикует по каждой игре вики с картинками.
+A guide to building a system that plays through a list of mobile games around the clock
+(exploring new ones, rechecking known ones after updates and during limited-time events),
+remembers lessons, accumulates knowledge and publishes an illustrated wiki for each game.
 
-Сопутствующие файлы:
+Companion files:
 
-- [`schema/WIKI-SCHEMA.md`](../schema/WIKI-SCHEMA.md) — схема вики: слои данных, каталог, формат страниц, правила изображений, lint.
-- [`runbooks/`](../runbooks/) — инструкции рутин Claude Code: «играть» (каждый час) и «сон» (ночью).
-- [`harness/`](../harness/) — код: `sw.py` (руки и глаза агента на телефоне), драйвер телефона, восприятие, путь через API.
+- [`schema/WIKI-SCHEMA.md`](../schema/WIKI-SCHEMA.md) — the wiki schema: data layers, catalog, page format, image rules, lint.
+- [`runbooks/`](../runbooks/) — Claude Code routine instructions: "play" (hourly) and "dream" (nightly).
+- [`harness/`](../harness/) — code: `sw.py` (the agent's hands and eyes on the phone), the phone driver, perception, the API path.
 
-Содержание: [0. Источники](#0-источники) · [1. Результат](#1-что-должно-получиться) ·
-[2. Идея](#2-главная-идея-играет-агент-а-учится-память) · [3. Архитектура](#3-архитектура) ·
-[4. Железо](#4-устройства-и-окружение) · [5. Устройства](#5-слой-устройств) · [6. Восприятие](#6-восприятие) ·
-[7. Explorer](#7-агент-исследователь-explorer) · [8. Память](#8-память-и-обучение) · [9. Вики](#9-вики) ·
-[10. Обновления и события](#10-обновления-и-события) · [11. 24/7](#11-оркестрация-247) · [12. Стоимость](#12-стоимость) ·
-[13. Риски](#13-риски-правила-и-этика) · [14. Метрики](#14-метрики-и-оценка) · [15. Дорожная карта](#15-дорожная-карта) ·
-[Приложения](#приложение-a-чек-лист-телефона-для-круглосуточной-работы)
+Contents: [0. Sources](#0-sources) · [1. Result](#1-expected-result) ·
+[2. Idea](#2-main-idea-the-agent-plays-memory-learns) · [3. Architecture](#3-architecture) ·
+[4. Hardware](#4-devices-and-environment) · [5. Devices](#5-device-layer) · [6. Perception](#6-perception) ·
+[7. Explorer](#7-explorer-agent) · [8. Memory](#8-memory-and-learning) · [9. Wiki](#9-wiki) ·
+[10. Updates and events](#10-updates-and-events) · [11. 24/7](#11-247-orchestration) · [12. Cost](#12-cost) ·
+[13. Risks](#13-risks-rules-and-ethics) · [14. Metrics](#14-metrics-and-evaluation) · [15. Roadmap](#15-roadmap) ·
+[Appendices](#appendix-a-phone-checklist-for-247-operation)
 
 ---
 
-## 0. Источники
+## 0. Sources
 
-Руководство собрано из трёх источников и практики игровых агентов.
+The guide draws on three sources and on hands-on practice with game-playing agents.
 
-1. **Доклад Lamis Mukta (Anthropic) «Learning while you Sleep: Beyond Memory to Dreaming»**,
-   AI DevCon, 2026: видео из поста `x.com/HeyShobhan/status/2103472783598764525`, 31 минута,
-   просмотрено целиком. Главное для нас:
-   - память — это файлы markdown; агент ищет по ним grep и подгружает постепенно (frontmatter,
-     как у навыков); что записывать, лучше решает сам агент;
-   - в продакшене памяти нужны версии (автор, сессия, время, откат), проверка хэша перед записью,
-     права (общие правила только на чтение, своя память на запись) и переносимость («это просто
-     файлы»). Такие примитивы стоит зашить в харнесс, а не изобретать заново;
-   - память «в сессии» упирается в три стены: агент делит внимание между задачей и памятью, не
-     видит паттернов между сессиями и агентами, заметки устаревают;
-   - выход — «сон»: отдельный пакетный процесс вне сессий. Хранилище памяти клонируется, на каждый
-     транскрипт сессии запускается субагент, оркестратор оставляет паттерны, которые встречаются
-     достаточно часто, и предлагает правки с примерами транскриптов и частотой, а человек их
-     принимает или отклоняет. Три действия: проверить, упорядочить, обогатить;
-   - «сну» отдают только транскрипты с тем же набором прав, что у хранилища.
-2. **Статья Khairallah AL-Awady «How to Build Your First Team of AI Agents Using Claude Opus 5.5»**:
-   команда — это оркестратор, узкие специалисты и критик только на чтение; субагенту нужен полный
-   бриф, потому что он не видит разговора; каждой роли минимум прав; лимиты на глубину,
-   параллельность, деньги и время; необратимое — только через человека; начинать с одного агента и
-   «зарабатывать» каждого следующего.
-3. Исследования паттернов памяти и игровых агентов — таблица ниже.
+1. **Lamis Mukta's (Anthropic) talk "Learning while you Sleep: Beyond Memory to Dreaming"**,
+   AI DevCon, 2026: the video from the post `x.com/HeyShobhan/status/2103472783598764525`, 31 minutes,
+   watched in full. What matters for us:
+   - memory is markdown files; the agent searches them with grep and loads them progressively (frontmatter,
+     as with skills); the agent itself is better at deciding what to record;
+   - production memory needs versioning (author, session, time, rollback), a hash check before writing,
+     permissions (shared rules read-only, own memory writable) and portability ("it's just
+     files"). These primitives are worth building into the harness rather than reinventing;
+   - in-session memory hits three walls: the agent splits its attention between the task and memory, it
+     cannot see patterns across sessions and agents, and notes go stale;
+   - the way out is the dream: a separate batch process outside sessions. The memory store is cloned, a
+     subagent runs on each session transcript, the orchestrator keeps the patterns that occur
+     often enough and proposes edits with example transcripts and frequencies, and a human accepts
+     or rejects them. Three actions: verify, organize, enrich;
+   - the dream is given only transcripts with the same permission set as the store.
+2. **Khairallah AL-Awady's article "How to Build Your First Team of AI Agents Using Claude Opus 5.5"**:
+   a team is an orchestrator, narrow specialists and a read-only critic; a subagent needs a full
+   brief because it does not see the conversation; each role gets minimal permissions; set limits on depth,
+   parallelism, money and time; anything irreversible goes through a human; start with one agent and
+   make every next one "earn" its place.
+3. Research on memory patterns and game-playing agents — see the table below.
 
-Как это легло в систему: рутина «играть» пишет транскрипт и рабочую память, рутина «сон» раз в сутки
-разбирает транскрипты субагентами и открывает pull request, критик проверяет, владелец мержит
-(разделы 8.4 и 11).
+How this maps onto the system: the play routine writes a transcript and working memory, the dream routine
+analyzes the transcripts with subagents once a day and opens a pull request, the critic checks it, the owner
+merges (sections 8.4 and 11).
 
-Что взято откуда (полный список ссылок — в [Приложении C](#приложение-c-источники)):
+What comes from where (the full list of links is in [Appendix C](#appendix-c-sources)):
 
-| Источник | Что берём |
+| Source | What we take |
 |---|---|
-| Karpathy, *LLM Wiki* (gist) | три слоя (raw → wiki → schema), `index.md` + `log.md`, ingest/query/lint, «модель ведёт бухгалтерию, человек читает» |
-| *LLM Wiki v2* (rohitg00) | уверенность и supersession фактов, уровни консолидации (рабочая → эпизодическая → семантическая → процедурная память), «схема — главный продукт» |
-| Google Research + Virginia Tech, *WikiSkill* (arXiv 2608.27454, авг. 2026) | сырые трассы → вики паттернов успеха/провала → пересборка навыков; навык принимается только если валидация улучшилась |
-| *ACE: Agentic Context Engineering* (ICLR 2026) | роли Generator / Reflector / Curator; уроки дописываются инкрементально («grow-and-refine»), а не переписываются целиком |
-| Reflexion, ExpeL, Agent Workflow Memory | вербальная рефлексия после эпизода; извлечение инсайтов из успешных и провальных трасс; индукция воркфлоу из повторяющихся действий |
-| Anthropic, *Claude Plays Pokémon* | намеренно простой харнесс: скриншот → модель → кнопка; база знаний, которую модель ведёт сама; суммаризация каждые ~30 шагов; файлы «навигационный гид», «уроки из провалов» |
-| Cradle (ICML 2025), Voyager | шесть модулей агента (сбор информации, саморефлексия, выбор задачи, курирование навыков, планирование действий, память); навыки как код с проверкой |
-| Anthropic docs: memory tool, context editing, vision/coordinates, computer use, Dreams | инструменты, на которых собран каркас в `harness/` |
-| Mobile-агенты 2026: MobileUse, Mobilerun (ex-DroidRun), Ghost in the Droid, Open-AutoGLM | иерархическая рефлексия, проактивное исследование, ADB + скриншоты, навыки как YAML/Python |
-| Автотестирование игр LLM-агентами (TITAN, Lap, SMART, GBQA) | метрики покрытия экранов, обнаружение багов, ограничения зрения на Unity-играх |
-| Google: Play Games on PC Developer Emulator / FAQ | `adb connect localhost:6520`, только sideload, один экземпляр и одна игра, x86-64 или ARM через Intel Bridge |
+| Karpathy, *LLM Wiki* (gist) | three layers (raw → wiki → schema), `index.md` + `log.md`, ingest/query/lint, "the model keeps the books, the human reads" |
+| *LLM Wiki v2* (rohitg00) | confidence and supersession of facts, consolidation levels (working → episodic → semantic → procedural memory), "the schema is the main product" |
+| Google Research + Virginia Tech, *WikiSkill* (arXiv 2608.27454, Aug 2026) | raw traces → a wiki of success/failure patterns → skill rebuild; a skill is accepted only if validation improved |
+| *ACE: Agentic Context Engineering* (ICLR 2026) | Generator / Reflector / Curator roles; lessons are appended incrementally ("grow-and-refine") rather than rewritten wholesale |
+| Reflexion, ExpeL, Agent Workflow Memory | verbal reflection after an episode; extracting insights from successful and failed traces; inducing workflows from repeated actions |
+| Anthropic, *Claude Plays Pokémon* | a deliberately simple harness: screenshot → model → button; a knowledge base the model maintains itself; summarization every ~30 steps; "navigation guide" and "lessons from failures" files |
+| Cradle (ICML 2025), Voyager | six agent modules (information gathering, self-reflection, task selection, skill curation, action planning, memory); skills as code with verification |
+| Anthropic docs: memory tool, context editing, vision/coordinates, computer use, Dreams | the tools the scaffold in `harness/` is built on |
+| Mobile agents 2026: MobileUse, Mobilerun (ex-DroidRun), Ghost in the Droid, Open-AutoGLM | hierarchical reflection, proactive exploration, ADB + screenshots, skills as YAML/Python |
+| Game autotesting with LLM agents (TITAN, Lap, SMART, GBQA) | screen coverage metrics, bug detection, vision limits on Unity games |
+| Google: Play Games on PC Developer Emulator / FAQ | `adb connect localhost:6520`, sideload only, one instance and one game, x86-64 or ARM via Intel Bridge |
 
 ---
 
-## 1. Что должно получиться
+## 1. Expected result
 
-**Вход.** Список игр (package id из Google Play), пул устройств (телефоны по USB, ПК с Google
-Play Games), дневной бюджет на модель.
+**Input.** A list of games (package ids from Google Play), a device pool (phones over USB, PCs with Google
+Play Games), a daily model budget.
 
-**Выход.**
+**Output.**
 
-- По каждой игре — вики в git (markdown + изображения): обзор, обучение, карта экранов с
-  кадрами, механики, экономика, монетизация, прогрессия, календарь событий, история версий,
-  открытые вопросы. Вики обновляется после каждой ночи и после каждого обновления игры.
-- По каждой сессии — сырая трасса (кадры, действия, заметки) и рефлексия (факты, уроки).
-- Для агента — файлы уроков и проверенных навыков, из-за которых следующие сессии идут
-  быстрее и дешевле.
-- Для человека — сайт вики (MkDocs) и чат по вики («как устроен баттл-пасс в игре X?»).
+- For each game, a wiki in git (markdown + images): overview, tutorial, a screen map with
+  screenshots, mechanics, economy, monetization, progression, event calendar, version history,
+  open questions. The wiki is updated after every night and after every game update.
+- For each session, a raw trace (screenshots, actions, notes) and a reflection (facts, lessons).
+- For the agent, files of lessons and verified skills that make the next sessions
+  faster and cheaper.
+- For humans, a wiki site (MkDocs) and a chat over the wiki ("how does the battle pass work in game X?").
 
-**Критерий готовности v1.** Одно устройство, три игры, система работает неделю без ручного
-вмешательства, по каждой игре есть вики ≥ 15 страниц с ≥ 30 кадрами, обновление одной из игр
-обнаружено и задокументировано автоматически, стоимость в пределах бюджета.
-
----
-
-## 2. Главная идея: играет агент, а «учится» память
-
-Вы пишете, что «строите нейросеть, которая будет сама наигрывать игры». Для задачи «зайти в
-любую игру, разобраться и описать» практический ответ 2026 года — не обучать сеть весами, а
-взять готовую мультимодальную модель (VLM) как «мозг» агента и сделать так, чтобы **обучение
-происходило в памяти**: в трассах, уроках, навыках и вики. Причины:
-
-- Обучение с подкреплением на одну игру стоит недели и не даёт вики; VLM-агент играет в
-  незнакомую игру с первого запуска и объясняет, что видит.
-- Уроки в виде текста и навыков переносятся между играми и версиями, их можно прочитать,
-  проверить и откатить. Веса — нет.
-- Когда трасс накопится много, из них можно дообучить *маленькие* модели под узкие задачи
-  (детектор кнопок, классификатор экранов) — это дешёвая «нейросеть» внутри пайплайна, но она
-  появляется на этапе 5, а не 1.
-
-Цикл, который делает систему самоулучшающейся:
-
-```
-      ┌──────────── играть (Explorer) ────────────┐
-      │  скриншот → решение → действие → проверка │  пишет raw/: кадры, действия, заметки
-      └───────────────────┬───────────────────────┘
-                          ▼
-      ┌────────── рефлексировать (Reflector) ─────┐
-      │  факты + уроки + заявки в вики + навыки   │  пишет reflection.json, кандидаты уроков
-      └───────────────────┬───────────────────────┘
-                          ▼
-      ┌──────── консолидировать («сон», ночью) ───┐
-      │  вики компилируется, уроки сливаются,     │  правит wiki/, agent/lessons.md, skills/
-      │  навыки проверяются на устройстве         │
-      └───────────────────┬───────────────────────┘
-                          ▼
-      следующая сессия получает: уроки в промпт, навыки как быстрые действия,
-      открытые вопросы как цели  ──────────────────────────────────────────▶ играть лучше
-```
-
-Три слоя данных (как в LLM Wiki и WikiSkill): **raw** неизменяем, **wiki** пишет только
-компилятор, **skills** пересобираются из вики и принимаются только после проверки на устройстве.
+**v1 done criterion.** One device, three games, the system runs for a week without manual
+intervention, each game has a wiki of ≥ 15 pages with ≥ 30 screenshots, an update to one of the games
+is detected and documented automatically, cost stays within budget.
 
 ---
 
-## 3. Архитектура
+## 2. Main idea: the agent plays, memory "learns"
+
+You say you are "building a neural network that will play games by itself". For the task "open any
+game, figure it out and describe it", the practical 2026 answer is not to train a network's weights but
+to take a ready-made multimodal model (VLM) as the agent's "brain" and make **learning happen in
+memory**: in traces, lessons, skills and the wiki. Reasons:
+
+- Reinforcement learning on a single game takes weeks and produces no wiki; a VLM agent plays an
+  unfamiliar game from the first launch and explains what it sees.
+- Lessons as text and skills carry over between games and versions; they can be read,
+  checked and rolled back. Weights cannot.
+- Once enough traces pile up, they can be used to fine-tune *small* models for narrow tasks
+  (a button detector, a screen classifier) — a cheap "neural network" inside the pipeline, but it
+  arrives at stage 5, not stage 1.
+
+The loop that makes the system self-improving:
 
 ```
-┌─────────────────────────────────────── ХОСТ («мозг», Linux или Windows) ───────────────────────────────────────┐
-│                                                                                                               │
-│  Планировщик 24/7 ──▶ очередь задач (SQLite): onboard / update_diff / event_scan / deep_revisit                │
-│        │                                                                                                      │
-│        ▼  на каждое устройство — воркер                                                                        │
-│  ┌──────────────┐   Device API    ┌────────────┐   кадры    ┌──────────────┐  tool calls  ┌───────────────┐ │
-│  │  Драйвер     │◀───────────────▶│ Восприятие │──────────▶ │   Explorer   │◀────────────▶│  Claude API   │ │
-│  │ ADB / окно   │  tap/swipe/…    │ resize,    │            │ (tool runner │  memory tool  │  Opus 5.5 /   │ │
-│  │ GPG на ПК    │                 │ pHash, OCR │            │  + память)   │              │  Sonnet 5.5   │ │
-│  └──────────────┘                 └────────────┘            └──────┬───────┘              └───────────────┘ │
+      ┌───────────── play (Explorer) ─────────────┐
+      │  screenshot → decide → act → verify       │  writes raw/: screenshots, actions, notes
+      └───────────────────┬───────────────────────┘
+                          ▼
+      ┌─────────── reflect (Reflector) ───────────┐
+      │  facts + lessons + wiki requests + skills │  writes reflection.json, lesson candidates
+      └───────────────────┬───────────────────────┘
+                          ▼
+      ┌───── consolidate ("dream", at night) ─────┐
+      │  wiki is compiled, lessons merged,        │  edits wiki/, agent/lessons.md, skills/
+      │  skills are tested on the device          │
+      └───────────────────┬───────────────────────┘
+                          ▼
+      the next session gets: lessons in the prompt, skills as fast actions,
+      open questions as goals  ────────────────────────────────────────────▶ play better
+```
+
+Three data layers (as in LLM Wiki and WikiSkill): **raw** is immutable, **wiki** is written only by the
+compiler, **skills** are rebuilt from the wiki and accepted only after a check on the device.
+
+---
+
+## 3. Architecture
+
+```
+┌────────────────────────────────────── HOST ("brain", Linux or Windows) ──────────────────────────────────────┐
+│                                                                                                              │
+│  24/7 planner ──▶ task queue (SQLite): onboard / update_diff / event_scan / deep_revisit                     │
+│        │                                                                                                     │
+│        ▼  one worker per device                                                                              │
+│  ┌──────────────┐   Device API    ┌────────────┐   frames   ┌──────────────┐  tool calls  ┌───────────────┐  │
+│  │  Driver      │◀───────────────▶│ Perception │──────────▶ │   Explorer   │◀────────────▶│  Claude API   │  │
+│  │ ADB / window │  tap/swipe/…    │ resize,    │            │ (tool runner │  memory tool │  Opus 5.5 /   │  │
+│  │ GPG on PC    │                 │ pHash, OCR │            │  + memory)   │              │  Sonnet 5.5   │  │
+│  └──────────────┘                 └────────────┘            └──────┬───────┘              └───────────────┘  │
 │                                                                    │ raw/<game>/<session>/                   │
-│                                                                    ▼                                          │
+│                                                                    ▼                                         │
 │                                         ┌──────────────┐  reflection.json  ┌──────────────────────────────┐  │
-│                                         │  Reflector   │─────────────────▶ │ Ночная консолидация:         │  │
-│                                         │ (structured  │                   │ компилятор вики, линтер,     │  │
-│                                         │  output)     │                   │ skill proposer + тесты       │  │
+│                                         │  Reflector   │─────────────────▶ │ Nightly consolidation:       │  │
+│                                         │ (structured  │                   │ wiki compiler, linter,       │  │
+│                                         │  output)     │                   │ skill proposer + tests       │  │
 │                                         └──────────────┘                   └──────────────┬───────────────┘  │
 │                                                                                           ▼                  │
-│                                              wiki/<game>/*.md + img/  ──▶  git  ──▶  MkDocs сайт / чат       │
-└───────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-        ▲ USB / adb tcpip                     ▲ окно Windows                       ▲ adb connect localhost:6520
-   телефоны Android                    Google Play Games на ПК                  GPG Developer Emulator
+│                                              wiki/<game>/*.md + img/  ──▶  git  ──▶  MkDocs site / chat      │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+        ▲ USB / adb tcpip                     ▲ Windows window                     ▲ adb connect localhost:6520
+   Android phones                      Google Play Games on PC                  GPG Developer Emulator
 ```
 
-| Компонент | Роль | Реализация в `harness/` |
+| Component | Role | Implementation in `harness/` |
 |---|---|---|
-| Драйвер устройства | единый интерфейс: кадр, тап, свайп, текст, клавиши, запуск, версия, установка из стора | `device.py` (ADB) |
-| Восприятие | уменьшение кадра под модель с сохранением масштаба, сигнатура экрана (pHash), OCR, аннотации | `perception.py` |
-| Explorer | цикл «наблюдение → решение → действие», инструменты, память между сессиями, запись трассы | `explorer.py` |
-| Reflector | трасса → факты, уроки, заявки в вики, кандидаты в навыки (структурированный вывод) | `reflect.py` |
-| Компилятор вики + линтер | точечные правки страниц через memory tool, импорт изображений, `index.md`/`log.md`, lint | `compile_wiki.py` |
-| Планировщик, сторож | очередь, приоритеты, воркеры, восстановление, проверка версий в сторе, ночные задания | `scheduler.py` |
-| Публикация | статический сайт вики | MkDocs Material (раздел 9) |
+| Device driver | a single interface: screenshot, tap, swipe, text, keys, launch, version, install from the store | `device.py` (ADB) |
+| Perception | downscaling the screenshot for the model while keeping the scale, screen signature (pHash), OCR, annotations | `perception.py` |
+| Explorer | the "observe → decide → act" loop, tools, memory across sessions, trace recording | `explorer.py` |
+| Reflector | trace → facts, lessons, wiki requests, skill candidates (structured output) | `reflect.py` |
+| Wiki compiler + linter | targeted page edits via the memory tool, image import, `index.md`/`log.md`, lint | `compile_wiki.py` |
+| Planner, watchdog | queue, priorities, workers, recovery, store version checks, nightly jobs | `scheduler.py` |
+| Publishing | a static wiki site | MkDocs Material (section 9) |
 
-Основной путь запуска — рутины Claude Code на ПК с телефоном по USB: `runbooks/play.md` каждый час
-играет одну сессию через `harness/sw.py`, `runbooks/dream.md` ночью разбирает сессии (раздел 11).
-`sw.py` проверен на реальном телефоне: запуск игры, кадры, тапы, запись экрана, нарезка клипов.
-Модули `explorer.py`, `reflect.py`, `compile_wiki.py`, `scheduler.py` — путь через Anthropic API для
-масштаба (нужен ключ); они проверены на компиляцию и на прогон с поддельным устройством.
+The main way to run it is Claude Code routines on a PC with a phone connected over USB: `runbooks/play.md`
+plays one session every hour through `harness/sw.py`, and `runbooks/dream.md` analyzes the sessions at night
+(section 11). `sw.py` has been tested on a real phone: game launch, screenshots, taps, screen recording, clip
+cutting. The `explorer.py`, `reflect.py`, `compile_wiki.py` and `scheduler.py` modules are the Anthropic API
+path for scale (an API key is required); they were checked for compilation and a run against a fake device.
 
 ---
 
-## 4. Устройства и окружение
+## 4. Devices and environment
 
-### 4.1 Где играть
+### 4.1 Where to play
 
-| Вариант | ADB | Установка из Play Store | Архитектура | Риск детекта эмулятора | Годится для |
+| Option | ADB | Install from Play Store | Architecture | Emulator detection risk | Good for |
 |---|---|---|---|---|---|
-| **Телефон по USB** (режим разработчика) | да | да, через UI стора | ARM, всё работает | нет | основной вариант: новые игры, события, обновления |
-| **Google Play Games на ПК** (потребительский клиент) | **нет** | через UI клиента GPG | x86-64 или ARM через Intel Bridge | это официальная платформа, но каталог только из игр, которые разработчик включил для ПК | игры, у которых есть PC-версия; удобно для больших экранов |
-| **GPG Developer Emulator** | да, `adb connect localhost:6520` | **нет, только sideload APK** | как выше | как выше | свои сборки, APK партнёров |
-| Android Emulator (AVD, образ с Google Play) | да | да | x86-64 + трансляция ARM | средний: Play Integrity и античиты часто режут | массовые быстрые прогоны, где игра не проверяет устройство |
-| Redroid / docker-android на Linux-сервере | да | ограниченно | x86-64 + трансляция | высокий | headless-ферма для игр без проверок |
+| **Phone over USB** (developer mode) | yes | yes, via the store UI | ARM, everything works | none | the main option: new games, events, updates |
+| **Google Play Games on PC** (consumer client) | **no** | via the GPG client UI | x86-64 or ARM via Intel Bridge | it is an official platform, but the catalog only has games the developer enabled for PC | games that have a PC version; handy for large screens |
+| **GPG Developer Emulator** | yes, `adb connect localhost:6520` | **no, APK sideload only** | as above | as above | your own builds, partner APKs |
+| Android Emulator (AVD, Google Play image) | yes | yes | x86-64 + ARM translation | medium: Play Integrity and anti-cheats often block it | fast mass runs where the game does not check the device |
+| Redroid / docker-android on a Linux server | yes | limited | x86-64 + translation | high | a headless farm for games without checks |
 
-Факты про Google Play Games на ПК, которые влияют на дизайн: только один экземпляр эмулятора
-и одна игра одновременно; потребительский клиент ADB не даёт, поэтому его драйвер — захват
-окна и события мыши (клиент сам превращает клики в тапы); Developer Emulator ставит игры только
-через `adb install`, а sideload-игры при target API 30+ не видят Play Services, если в манифесте
-нет `<queries><package android:name="com.android.vending"/></queries>`.
+Facts about Google Play Games on PC that affect the design: only one emulator instance and one game
+at a time; the consumer client does not expose ADB, so its driver is window capture and mouse events
+(the client itself turns clicks into taps); the Developer Emulator installs games only via
+`adb install`, and sideloaded games targeting API 30+ do not see Play Services unless the manifest
+has `<queries><package android:name="com.android.vending"/></queries>`.
 
-Рекомендация: **телефон по USB** — основной и пока единственный путь в `sw.py`. Google Play Games
-на ПК проверен 2026-09-30 и убран: игры запускаются ссылкой `googleplaygames://launch/?id=<package>`,
-но окно клиента перекрывает игру, Esc не работает как «назад», а главное — агенту приходится
-двигать настоящую мышь. На телефоне игра, управление и запись экрана в одном месте.
+Recommendation: **a phone over USB** is the main and, so far, the only path in `sw.py`. Google Play Games
+on PC was tested on 2026-09-30 and dropped: games launch via the `googleplaygames://launch/?id=<package>` link,
+but the client window covers the game, Esc does not work as "back", and, most importantly, the agent has to
+move the real mouse. On a phone, the game, the controls and screen recording are all in one place.
 
-### 4.2 Хост и периферия
+### 4.2 Host and peripherals
 
-- Хост «мозга»: любой Linux/Windows ПК или мини-ПК; нагрузка — Python + сеть. GPU нужен только
-  для OCR/OmniParser, и то не обязательно (RapidOCR работает на CPU).
-- USB-хаб с **питанием на каждый порт** (промышленный, 2–2.4 A на порт), иначе телефоны под
-  нагрузкой разряжаются. Резервный канал — `adb tcpip 5555` по Wi-Fi.
-- Охлаждение: подставки с обдувом; телефон под игрой сутками греется и троттлит.
-- Батарея: включить ограничение заряда 80 % (Pixel «Adaptive/limit», Samsung «Protect battery»),
-  иначе через год-два батарея вздувается.
-- Экран: не гасить на зарядке, яркость минимальная (см. Приложение A).
-- Отдельные Google-аккаунты для лаборатории, отдельная сеть, VPN не нужен.
+- The "brain" host: any Linux/Windows PC or mini PC; the load is Python plus network. A GPU is only needed
+  for OCR/OmniParser, and even then it is optional (RapidOCR runs on the CPU).
+- A USB hub with **power on every port** (industrial, 2–2.4 A per port); otherwise phones under
+  load drain their batteries. Backup channel: `adb tcpip 5555` over Wi-Fi.
+- Cooling: stands with fans; a phone running a game for days heats up and throttles.
+- Battery: turn on the 80 % charge limit (Pixel "Adaptive/limit", Samsung "Protect battery"),
+  otherwise the battery swells within a year or two.
+- Screen: keep it on while charging, at minimum brightness (see Appendix A).
+- Separate Google accounts for the lab, a separate network; no VPN needed.
 
 ---
 
-## 5. Слой устройств
+## 5. Device layer
 
-### 5.1 Интерфейс
+### 5.1 Interface
 
-Агент не знает, где он играет. Всё, что ему нужно, описано протоколом `Device` в
+The agent does not know where it is playing. Everything it needs is described by the `Device` protocol in
 `harness/device.py`: `screenshot`, `tap`, `long_press`, `swipe`, `type_text`, `key`, `launch`,
-`stop`, `current_app`, `app_version`, `install_from_store`, `healthy`. Координаты — физические
-пиксели экрана; пересчёт из координат модели делает Explorer.
+`stop`, `current_app`, `app_version`, `install_from_store`, `healthy`. Coordinates are physical
+screen pixels; the Explorer converts them from model coordinates.
 
-### 5.2 Android через ADB (`AndroidDevice`)
+### 5.2 Android via ADB (`AndroidDevice`)
 
-- `adbutils`: `screenshot()` (0.2–0.5 с), `click`, `swipe`, `keyevent`, `app_start/app_stop/app_current`,
-  `list_packages`, `window_size`, `get_state`. Для нескольких устройств — по серийному номеру.
-- Версия игры: `dumpsys package <pkg>` → `versionName`.
-- **Установка и обновление из Play Store** — через `uiautomator2`: у Play Store есть дерево UI,
-  кнопки «Установить/Обновить/Открыть» находятся по тексту. Игры на Unity так автоматизировать
-  нельзя (дерево пустое), для них только зрение.
-- Unicode-ввод: `adb shell input text` не умеет кириллицу; ставьте ADBKeyboard и шлите текст
-  broadcast'ом (см. `type_text`).
-- Быстрые кадры (шутеры, ритм-игры): `ScrcpyScreen` на `scrcpy-client` даёт 15–60 fps; помните,
-  что кадр уменьшен до `max_width`, и масштабируйте координаты.
+- `adbutils`: `screenshot()` (0.2–0.5 s), `click`, `swipe`, `keyevent`, `app_start/app_stop/app_current`,
+  `list_packages`, `window_size`, `get_state`. With several devices, address them by serial number.
+- Game version: `dumpsys package <pkg>` → `versionName`.
+- **Installing and updating from the Play Store** goes through `uiautomator2`: the Play Store has a UI tree,
+  and the "Install/Update/Open" buttons can be found by text. Unity games cannot be automated this way
+  (the tree is empty); for them only vision works.
+- Unicode input: `adb shell input text` cannot type Cyrillic; install ADBKeyboard and send the text
+  as a broadcast (see `type_text`).
+- Fast screenshots (shooters, rhythm games): `ScrcpyScreen` on top of `scrcpy-client` gives 15–60 fps; remember
+  that the frame is downscaled to `max_width`, and scale the coordinates.
 
-Проверено на Samsung SM-A276B (Android 16) 2026-09-30:
+Tested on a Samsung SM-A276B (Android 16) on 2026-09-30:
 
-- `pm list packages` без `--user 0` падает: у Samsung есть второй пользователь (Secure Folder).
-- `screenrecord` на полном разрешении 1080×2340 не стартует («Encoder failed»), на 720×1560 пишет.
-  Кадры идут только при изменении экрана, а длительность в файле может не проставляться, поэтому
-  `sw.py` запоминает время сегментов по часам.
-- При первом запуске игра просит разрешение на уведомления: это окно
-  `com.google.android.permissioncontroller`, агент отвечает «Don't allow».
-- «Защита от случайных касаний» Samsung затемняет экран и глотает касания, когда закрыт датчик
-  приближения (окно `IgniteTouchProtectionPresenter`). `sw.py` это распознаёт и не начинает сессию.
+- `pm list packages` fails without `--user 0`: Samsung has a second user (Secure Folder).
+- `screenrecord` at the full 1080×2340 resolution does not start ("Encoder failed"); at 720×1560 it records.
+  Frames are produced only when the screen changes, and the file may lack a duration, so
+  `sw.py` tracks segment times by the clock.
+- On first launch the game asks for notification permission: this is the
+  `com.google.android.permissioncontroller` window, and the agent answers "Don't allow".
+- Samsung's "Accidental touch protection" dims the screen and swallows touches when the proximity sensor
+  is covered (the `IgniteTouchProtectionPresenter` window). `sw.py` detects this and does not start a session.
 
-### 5.3 Google Play Games на ПК (не используется)
+### 5.3 Google Play Games on PC (not used)
 
-Драйвер окна удалён из `harness/`; раздел оставлен как справка.
+The window driver has been removed from `harness/`; this section is kept for reference.
 
-Игра — окно Windows с названием игры. Драйвер: `win32gui` (клиентская область), `mss` (захват),
-`pyautogui` (мышь; Unicode — через буфер обмена). Запускать в интерактивной сессии пользователя,
-окно держать на переднем плане и не перекрывать. Установка и запуск игр в клиенте — через его
-собственный UI: либо вручную при добавлении игры в список, либо тем же агентом, но с
-инструментами для рабочего стола (для Windows-десктопа подходит официальный
-`computer_toolset_20260801`, реализовать действия под Windows придётся самим; для телефонов он не
-подходит — это только десктоп).
+The game is a Windows window titled with the game's name. Driver: `win32gui` (client area), `mss` (capture),
+`pyautogui` (mouse; Unicode goes through the clipboard). Run it in the user's interactive session, and keep
+the window in the foreground and unobstructed. Games are installed and launched in the client through its
+own UI: either manually when a game is added to the list, or by the same agent equipped with
+desktop tools (for the Windows desktop the official `computer_toolset_20260801` fits, but you have to
+implement the actions for Windows yourself; it does not fit phones — it is desktop-only).
 
-Альтернатива для своих сборок — Developer Emulator: `adb connect localhost:6520`, дальше это
-обычный `AndroidDevice("localhost:6520")`.
+For your own builds, the alternative is the Developer Emulator: `adb connect localhost:6520`, after which it is
+a regular `AndroidDevice("localhost:6520")`.
 
-### 5.4 Гигиена устройства
+### 5.4 Device hygiene
 
-Полный чек-лист — в Приложении A. Минимум: экран не гаснет на зарядке, автоповорот выключен,
-уведомления в «не беспокоить», автообновление приложений **выключено** (обновления ставит
-планировщик, когда сам их обнаружит и запишет старую версию), блокировка экрана отключена,
-Play Protect не мешает.
+The full checklist is in Appendix A. The minimum: the screen stays on while charging, auto-rotate is off,
+notifications are on Do Not Disturb, app auto-update is **off** (the planner installs updates
+once it has detected them itself and recorded the old version), screen lock is disabled,
+Play Protect does not interfere.
 
 ---
 
-## 6. Восприятие
+## 6. Perception
 
-### 6.1 Игры на Unity видны только глазами
+### 6.1 Unity games can only be seen
 
-`uiautomator dump` у Unity/Unreal-игр возвращает один `SurfaceView` без элементов. Значит:
-скриншот → модель, а всё, что можно посчитать локально (текст, числа, таймеры, «тот же ли
-экран»), считаем локально и дёшево.
+`uiautomator dump` for Unity/Unreal games returns a single `SurfaceView` with no elements. So:
+screenshot → model, and everything that can be computed locally (text, numbers, timers, "is this the same
+screen") is computed locally and cheaply.
 
-### 6.2 Кадр для модели и координаты
+### 6.2 Screenshots for the model and coordinates
 
-Из документации Claude (Vision / Coordinates):
+From the Claude docs (Vision / Coordinates):
 
-- изображение стоит `ceil(w/28) × ceil(h/28)` визуальных токенов; телефонный кадр 1080×2400 —
-  3354 токена, 720×1600 — 1508, 540×1200 — 860;
-- Opus/Sonnet 5.x не уменьшают кадры до 2576 px / 4784 токенов, Haiku 4.5 — до 1568 px / 1568;
-- модель возвращает координаты **в пикселях того изображения, которое видит**. Поэтому кадр
-  уменьшаем сами (`prepare_for_model`), храним масштаб и умножаем на него при тапе. Просите
-  «пиксельные координаты `[x, y]`», не нормализованные;
-- для мелкого текста — `zoom_crop`: вырезать область в полном разрешении и показать отдельно
-  (координаты на кропе + смещение).
+- an image costs `ceil(w/28) × ceil(h/28)` visual tokens; a 1080×2400 phone screenshot is
+  3354 tokens, 720×1600 is 1508, 540×1200 is 860;
+- Opus/Sonnet 5.x do not downscale images up to 2576 px / 4784 tokens; Haiku 4.5, up to 1568 px / 1568;
+- the model returns coordinates **in pixels of the image it sees**. So we downscale the screenshot
+  ourselves (`prepare_for_model`), store the scale and multiply by it when tapping. Ask for
+  "pixel coordinates `[x, y]`", not normalized ones;
+- for small text, use `zoom_crop`: cut out a region at full resolution and show it separately
+  (coordinates on the crop + offset).
 
-Практический бюджет: 1500 токенов на кадр для Explorer'а, 700 — для кадров в рефлексии.
+Practical budget: 1500 tokens per screenshot for the Explorer, 700 for screenshots in reflection.
 
-### 6.3 Сигнатура экрана и граф экранов
+### 6.3 Screen signature and screen graph
 
-pHash (64 бит) кадра почти не меняется от таймеров и счётчиков, но меняется от смены экрана.
-На нём держится: детектор «экран не изменился» (защита от зацикливания), дедупликация кадров
-для вики, **граф экранов** (узел — кластер хэшей с названием из `mark_screen`, ребро — действие).
-Из графа получаются: метрика покрытия («сколько узлов имеют неисследованные рёбра»), список
-целей для следующих сессий и картинка `screens/_map.png` для вики (Graphviz).
+A screenshot's pHash (64 bits) barely changes with timers and counters but does change when the screen changes.
+It powers the "screen has not changed" detector (loop protection), screenshot deduplication for the wiki,
+and the **screen graph** (a node is a cluster of hashes named via `mark_screen`, an edge is an action).
+The graph yields a coverage metric ("how many nodes have unexplored edges"), a list of
+goals for the next sessions, and the `screens/_map.png` picture for the wiki (Graphviz).
 
-### 6.4 Локальные уровни восприятия
+### 6.4 Local perception levels
 
-| Уровень | Что | Стоимость | Когда |
+| Level | What | Cost | When |
 |---|---|---|---|
-| 0 | pHash: «тот же экран / известный экран / новый» | ~0 | каждый кадр |
-| 1 | OCR (RapidOCR / PaddleOCR): цены, таймеры, названия, кнопки по тексту | CPU, ~0.1–0.3 с | каждый кадр; нужен для навыков и таблиц вики |
-| 2 | Шаблоны (OpenCV `matchTemplate`): «крестик закрытия», иконки валют | ~0 | внутри навыков |
-| 3 | OmniParser v2: боксы интерактивных элементов + подписи (Set-of-Mark) | GPU желателен, ~0.5–1 с | если модель промахивается по мелким элементам |
-| 4 | VLM (Claude): понимание, решение, описание | токены | новый экран или нужно решение |
+| 0 | pHash: "same screen / known screen / new" | ~0 | every screenshot |
+| 1 | OCR (RapidOCR / PaddleOCR): prices, timers, names, buttons by text | CPU, ~0.1–0.3 s | every screenshot; needed for skills and wiki tables |
+| 2 | Templates (OpenCV `matchTemplate`): "close X", currency icons | ~0 | inside skills |
+| 3 | OmniParser v2: boxes of interactive elements + labels (Set-of-Mark) | GPU preferred, ~0.5–1 s | if the model misses small elements |
+| 4 | VLM (Claude): understanding, decision, description | tokens | a new screen or a decision is needed |
 
-Правило дешёвой системы: уровни 0–2 решают, нужен ли уровень 4. Известный экран + есть навык →
-модель не вызывается вообще.
+The rule of a cheap system: levels 0–2 decide whether level 4 is needed. Known screen + an existing skill →
+the model is not called at all.
 
 ---
 
-## 7. Агент-исследователь (Explorer)
+## 7. Explorer agent
 
-### 7.1 Анатомия сессии
+### 7.1 Anatomy of a session
 
-1. Планировщик выбирает игру и тип задачи, запускает игру, стартует сторожа.
-2. Explorer получает: системный промпт (кэшируется), первое сообщение с целью, бюджетом,
-   уроками из `agent/lessons.md` и открытыми вопросами из вики.
-3. Модель читает `/memories` (memory tool; каталог `memory/<game>`), делает `screenshot`
-   и идёт по циклу инструментов. Каждое действие возвращает свежий кадр.
-4. Остановка: `finish`, исчерпан бюджет минут/шагов, 20 шагов без изменения экрана или отказ
-   классификатора. Перед концом модель обновляет `/memories/progress.md`.
-5. Трасса лежит в `raw/<game>/<session>/`: `steps.jsonl`, `shots/*.png`, `marked.json`.
+1. The planner picks a game and a task type, launches the game and starts the watchdog.
+2. The Explorer receives the system prompt (cached) and a first message with the goal, the budget,
+   lessons from `agent/lessons.md` and open questions from the wiki.
+3. The model reads `/memories` (memory tool; directory `memory/<game>`), takes a `screenshot`
+   and runs the tool loop. Every action returns a fresh screenshot.
+4. Stop conditions: `finish`, the minutes/steps budget is exhausted, 20 steps without a screen change, or a
+   classifier refusal. Before ending, the model updates `/memories/progress.md`.
+5. The trace lives in `raw/<game>/<session>/`: `steps.jsonl`, `shots/*.png`, `marked.json`.
 
-### 7.2 Инструменты
+### 7.2 Tools
 
-| Инструмент | Назначение | Замечание |
+| Tool | Purpose | Note |
 |---|---|---|
-| `screenshot` | кадр | всегда первый шаг |
-| `tap`, `long_press`, `swipe` | действия с параметром `why` (ожидание) | `why` пишется в трассу — Reflector сверяет ожидание и результат |
-| `type_text`, `press` | ввод и системные клавиши | `back` — самый частый выход из зацикливания |
-| `wait` | анимации, загрузки, таймеры | не больше 30 с |
-| `note` | факт с типом (economy, mechanic, ui, event, bug, question) | пишется сразу, не «в конце» |
-| `mark_screen` | пометить кадр для вики | только помеченные кадры попадают в `img/` |
-| `finish` | итог и статус целей | обязателен |
-| `memory` | `/memories` — заметки между сессиями | Anthropic сам добавляет в промпт «сначала читай память» |
-| (позже) `run_skill` | выполнить проверенный навык из `skills/<game>/` | одна вызовом вместо 3–6 шагов |
+| `screenshot` | a screenshot | always the first step |
+| `tap`, `long_press`, `swipe` | actions with a `why` parameter (the expectation) | `why` goes into the trace — the Reflector compares expectation and result |
+| `type_text`, `press` | text input and system keys | `back` is the most common way out of a loop |
+| `wait` | animations, loading, timers | 30 s at most |
+| `note` | a typed fact (economy, mechanic, ui, event, bug, question) | written right away, not "at the end" |
+| `mark_screen` | mark a screenshot for the wiki | only marked screenshots end up in `img/` |
+| `finish` | summary and goal status | mandatory |
+| `memory` | `/memories` — notes across sessions | Anthropic itself adds "read memory first" to the prompt |
+| (later) `run_skill` | run a verified skill from `skills/<game>/` | one call instead of 3–6 steps |
 
-### 7.3 Правила промпта
+### 7.3 Prompt rules
 
-См. `PROMPTS.md`, раздел 1. Главные: одно действие за шаг и проверка ожидания; три шага без
-изменений — смена стратегии; попапы и офферы — контент, сначала `mark_screen`; факты — сразу
-через `note`; запрет покупок, смены настроек аккаунта и общения с игроками.
+See `PROMPTS.md`, section 1. The main ones: one action per step, then check the expectation; three steps without
+change mean a change of strategy; popups and offers are content, so `mark_screen` them first; facts go in right
+away via `note`; no purchases, no account setting changes, no talking to other players.
 
-### 7.4 Контекст, кэш, модели
+### 7.4 Context, cache, models
 
-- **Контекст.** Кадры — самое тяжёлое. `context_management` с `clear_tool_uses_20250919`
-  вычищает старые результаты инструментов, оставляя последние 8 кадров (в примере: порог
-  80 k токенов). Заметки и память из очистки исключены. Плюс жёсткий лимит шагов на сессию
-  (150): длинные задачи режутся на сессии, связанные через `/memories/progress.md` — так же
-  делала «суммаризация каждые ~30 шагов» в Claude Plays Pokémon.
-- **Кэш.** Системный промпт с `cache_control`, хвост диалога — автоматическим кэшированием
-  (`cache_control` верхнего уровня). Проверяйте `usage.cache_read_input_tokens`: если ноль —
-  что-то ломает префикс (дата в промпте, меняющийся список инструментов).
-- **Модели.** `claude-opus-5-5` для решений и рефлексии (мышление всегда включено, глубина
-  через `output_config.effort`: `medium` в цикле, `high` в рефлексии и компиляции).
-  `claude-sonnet-5-5` для рутинных шагов, когда экран известен; `claude-haiku-4-5` для
-  классификации экранов и OCR-постобработки. В примерах включён серверный fallback
-  (`fallbacks="default"`): при отказе классификатора запрос дорабатывает запасная модель;
-  если это не нужно — уберите параметр и beta-заголовок.
-- **Иерархия.** Начинайте с одного цикла (Anthropic сознательно «недоинженерил» харнесс
-  Pokémon). Когда сессии станут длинными, добавьте Planner (раз в сессию ставит 3–5 целей из
-  открытых вопросов и графа экранов) и Critic (по кадрам подтверждает выполнение цели).
+- **Context.** Screenshots are the heaviest part. `context_management` with `clear_tool_uses_20250919`
+  clears old tool results and keeps the last 8 screenshots (in the example, with an 80 k token
+  threshold). Notes and memory are excluded from clearing. On top of that there is a hard step limit per session
+  (150): long tasks are split into sessions linked through `/memories/progress.md` — the same job that
+  "summarization every ~30 steps" did in Claude Plays Pokémon.
+- **Cache.** The system prompt uses `cache_control`, the conversation tail uses automatic caching
+  (top-level `cache_control`). Check `usage.cache_read_input_tokens`: if it is zero,
+  something is breaking the prefix (a date in the prompt, a changing tool list).
+- **Models.** `claude-opus-5-5` for decisions and reflection (thinking is always on; depth is set
+  via `output_config.effort`: `medium` in the loop, `high` in reflection and compilation).
+  `claude-sonnet-5-5` for routine steps when the screen is known; `claude-haiku-4-5` for
+  screen classification and OCR post-processing. The examples enable the server-side fallback
+  (`fallbacks="default"`): if the classifier refuses, a fallback model finishes the request;
+  if you don't need that, remove the parameter and the beta header.
+- **Hierarchy.** Start with a single loop (Anthropic deliberately "under-engineered" the Pokémon
+  harness). When sessions get long, add a Planner (once per session it sets 3–5 goals from
+  open questions and the screen graph) and a Critic (it confirms goal completion from screenshots).
 
-### 7.5 Зацикливание и застревание
+### 7.5 Loops and getting stuck
 
-Три уровня защиты: текст в результате инструмента («экран не меняется уже N шагов»), стоп
-сессии при 20 шагах без изменений, сторож планировщика (игра не на переднем плане → перезапуск).
-Типовые ловушки: реклама за награду (ждать до 60 с, потом искать крестик), запрос разрешений
-Android (кнопки видны uiautomator'у — обрабатывайте вне модели), обновление в сторе при запуске.
+Three levels of protection: text in the tool result ("the screen has not changed for N steps"), stopping
+the session after 20 steps without change, and the planner's watchdog (game not in the foreground → restart).
+Typical traps: rewarded ads (wait up to 60 s, then look for the close X), Android permission
+requests (their buttons are visible to uiautomator — handle them outside the model), a store update on launch.
 
 ---
 
-## 8. Память и обучение
+## 8. Memory and learning
 
-### 8.1 Четыре вида памяти
+### 8.1 Four kinds of memory
 
-| Память | Что хранит | Где | Кто пишет | Срок жизни |
+| Memory | What it stores | Where | Who writes | Lifetime |
 |---|---|---|---|---|
-| Рабочая | текущий диалог, последние кадры | контекст модели | Explorer | сессия |
-| Эпизодическая | трассы, кадры, рефлексии | `raw/<game>/<session>/` | Explorer, Reflector | навсегда, неизменяема |
-| Семантическая | факты об игре, карта экранов, экономика, события | `wiki/<game>/` | компилятор | до противоречия (старое помечается, не удаляется) |
-| Процедурная | уроки и навыки | `wiki/<game>/agent/lessons.md`, `skills/<game>/` | Reflector → компилятор; skill proposer | навык живёт, пока проходит тест |
+| Working | the current conversation, the latest screenshots | model context | Explorer | a session |
+| Episodic | traces, screenshots, reflections | `raw/<game>/<session>/` | Explorer, Reflector | forever, immutable |
+| Semantic | facts about the game, screen map, economy, events | `wiki/<game>/` | compiler | until contradicted (the old fact is marked, not deleted) |
+| Procedural | lessons and skills | `wiki/<game>/agent/lessons.md`, `skills/<game>/` | Reflector → compiler; skill proposer | a skill lives as long as it passes its test |
 
-Между сессиями связку держат `/memories` (заметки самой модели: где остановился, что не вышло)
-и `agent/lessons.md` (проверенные правила в промпт).
+Continuity between sessions comes from `/memories` (the model's own notes: where it stopped, what didn't work)
+and `agent/lessons.md` (verified rules that go into the prompt).
 
-### 8.2 Уроки (lessons)
+### 8.2 Lessons
 
-Формат: «в ситуации X делай Y, потому что Z», с уверенностью, источником и областью
-(`game` / `general`). Reflector **дописывает** кандидаты в конец файла, компилятор ночью
-**сливает**: объединяет дубли, повышает уверенность повторяющимся, помечает устаревшие
-(`deprecated: v1.42`), держит ≤ 60 пунктов, сортирует по (уверенность, свежесть). Это принцип
-ACE: инкрементальные дельты вместо переписывания, иначе память «схлопывается» в общие фразы.
-Общие уроки (`general`) поднимаются в `wiki/_common/agent-lessons.md` и попадают в промпт для
-всех игр.
+Format: "in situation X do Y because Z", with confidence, source and scope
+(`game` / `general`). The Reflector **appends** candidates to the end of the file; at night the compiler
+**merges** them: it combines duplicates, raises confidence for recurring ones, marks outdated ones
+(`deprecated: v1.42`), keeps ≤ 60 items and sorts by (confidence, freshness). This is the ACE
+principle: incremental deltas instead of rewrites, otherwise memory "collapses" into generic phrases.
+General lessons (`general`) are promoted to `wiki/_common/agent-lessons.md` and go into the prompt for
+all games.
 
-### 8.3 Навыки (skills)
+### 8.3 Skills
 
-Навык — детерминированный макрос: предусловие по экрану (OCR-текст и/или шаблон), шаги в
-относительных координатах, постусловие. Источник — `skill_candidates` из рефлексий
-(последовательности, повторившиеся ≥ 2 раз с ожидаемым результатом), формат — YAML из
-`PROMPTS.md`, раздел 6. Принятие как в WikiSkill: **навык включается только после теста на
-устройстве** (постусловие выполнено ≥ 3 раз подряд) и **выключается**, как только тест
-падает после обновления игры. Индекс с датой последней проверки — `agent/skills.md`.
-Экономика: навык «закрыть ежедневный оффер» заменяет 3–6 вызовов модели каждой сессией.
+A skill is a deterministic macro: a screen precondition (OCR text and/or a template), steps in
+relative coordinates, a postcondition. The source is `skill_candidates` from reflections
+(sequences repeated ≥ 2 times with the expected result); the format is the YAML from
+`PROMPTS.md`, section 6. Acceptance works as in WikiSkill: **a skill is enabled only after a test on the
+device** (postcondition met ≥ 3 times in a row) and **disabled** as soon as the test
+fails after a game update. The index with the date of the last check is `agent/skills.md`.
+Economics: a "close the daily offer" skill replaces 3–6 model calls every session.
 
-### 8.4 Консолидация («сон»)
+### 8.4 Consolidation (the dream)
 
-«Сон» — отдельный процесс раз в сутки (`runbooks/dream.md`), устроенный как в докладе Anthropic:
+The dream is a separate process that runs once a day (`runbooks/dream.md`), built as in the Anthropic talk:
 
-1. Клон памяти: `git worktree` на ветке `dream/<дата>`. `main` не трогается.
-2. На каждую новую сессию — субагент: читает транскрипт `steps.jsonl`, кадры, клипы, `progress.md`,
-   `inbox.md` и возвращает факты, уроки, ошибки агента, вопросы, медиа и устаревшее.
-3. Оркестратор считает частоту: урок игры — если подтверждён двумя сессиями или явным кадром,
-   общий урок — если встретился в двух играх. Правит вики по схеме.
-4. Критик (только чтение) проверяет источники, медиа, личные данные: PASS или FAIL, до трёх кругов.
-5. Pull request с примерами сессий и частотой паттернов. Владелец мержит или закрывает; замечания
-   владельца следующий «сон» читает и учитывает (`dreams/feedback.md`).
+1. Memory clone: a `git worktree` on a `dream/<date>` branch. `main` is not touched.
+2. A subagent per new session: it reads the `steps.jsonl` transcript, screenshots, clips, `progress.md` and
+   `inbox.md`, and returns facts, lessons, agent mistakes, questions, media and outdated items.
+3. The orchestrator counts frequency: a game lesson is kept if two sessions or an explicit screenshot confirm it,
+   a general lesson if it appeared in two games. It edits the wiki according to the schema.
+4. The critic (read-only) checks sources, media and personal data: PASS or FAIL, up to three rounds.
+5. A pull request with example sessions and pattern frequencies. The owner merges or closes it; the next dream
+   reads the owner's comments and takes them into account (`dreams/feedback.md`).
 
-Откат смерженного «сна» — `git revert`. Если позже перейдёте на Claude Managed Agents с их memory
-stores, «сны» можно заказывать у Anthropic, но телефон всё равно живёт у вас, так что основной
-вариант — свой процесс.
+A merged dream is rolled back with `git revert`. If you later move to Claude Managed Agents with their memory
+stores, dreams can be run by Anthropic, but the phone still lives with you, so the main
+option is your own process.
 
-### 8.5 Чего не делать
+### 8.5 What not to do
 
-- Не давать Explorer'у писать в вики: он видит одну сессию, а компилятор — все.
-- Не хранить в вики каждый кадр: только помеченные, с дедупликацией по pHash.
-- Не верить факту без кадра/шага-источника: линтер такие помечает, компилятор не вставляет.
-- Не переписывать `lessons.md` целиком и не позволять модели «упрощать» его.
-- Не обновлять игры автоматически через Play Store: обновление — событие, которое сначала
-  фиксируется (старая версия, дата), потом ставится, потом описывается.
-
----
-
-## 9. Вики
-
-Схема — в [`WIKI-SCHEMA.md`](WIKI-SCHEMA.md); она целиком подаётся компилятору и линтеру, и
-это главный документ, который вы будете править по мере роста системы.
-
-### 9.1 Картинки и клипы
-
-Правила — в `schema/WIKI-SCHEMA.md`, раздел 4. Коротко:
-
-1. Во время игры агент помечает кадры (`sw.py mark`) и отрезки для клипов (`sw.py clip begin/end`).
-   Экран записывается всю сессию (`screenrecord` сегментами по 3 минуты).
-2. В конце сессии `sw.py` режет клипы: анимированный WebP до 20 с, 720 px, до 8 МБ. GitHub не
-   проигрывает `<video>` из репозитория, а WebP играет прямо в статье.
-3. Оригинал записи уходит на YouTube (`harness/youtube.py`) и с диска удаляется; клипы ссылаются на
-   него с таймкодом. Пока проект Google не прошёл аудит, ролики, загруженные через API, приватные.
-4. В вики медиа переносит «сон» (`sw.py wiki-img`, `sw.py wiki-clip`); кадры — WebP до 1080 px.
-5. Кадр не из игры (уведомление, другое приложение) отметить нельзя; личные данные в вики не идут.
-
-### 9.2 Компиляция
-
-Компилятор (путь через API) правит `wiki/<game>/` через **memory tool** (каталог `/memories` отображается на
-папку вики): `view`, `create`, `str_replace`, `insert`, `delete`, `rename` — ровно то, что
-нужно для точечных правок, и SDK даёт готовую файловую реализацию. Вход: схема (кэшируется),
-JSON рефлексий новых сессий, манифест изображений. Выход: изменённые страницы, `index.md`,
-`log.md`, слитые уроки и отчёт о нерешённых противоречиях. После — `git commit`.
-
-Массовые пересборки (например, переписать все страницы экранов под новую схему) выгодно гнать
-через Batches API (50 % цены), по одной странице на запрос.
-
-### 9.3 Lint и запросы
-
-Линтер раз в неделю (и после большой компиляции) исправляет механику и пишет `agent/lint.md`
-с задачами для сессий: «перепроверить цену набора X на экране магазина». Задачи попадают в
-`open-questions.md`, а оттуда — в цели `deep_revisit`. Запросы человека («чем отличается
-монетизация игры A от B?») — отдельный режим того же компилятора: ответ с цитатами страниц;
-ценные ответы сохраняются как страницы `analysis/`.
-
-### 9.4 Публикация
-
-Репозиторий публичный: вики читается прямо на GitHub, картинки и клипы видны в статьях. MkDocs
-Material или Obsidian — по желанию, фронтматтер совместим с обоими.
+- Don't let the Explorer write to the wiki: it sees one session, while the compiler sees them all.
+- Don't store every screenshot in the wiki: only marked ones, deduplicated by pHash.
+- Don't trust a fact without a source screenshot/step: the linter flags such facts and the compiler doesn't insert them.
+- Don't rewrite `lessons.md` wholesale and don't let the model "simplify" it.
+- Don't update games automatically through the Play Store: an update is an event that is first
+  recorded (old version, date), then installed, then described.
 
 ---
 
-## 10. Обновления и события
+## 9. Wiki
 
-### 10.1 Обнаружение обновлений
+The schema is in [`WIKI-SCHEMA.md`](WIKI-SCHEMA.md); it is fed in full to the compiler and the linter, and
+it is the main document you will keep editing as the system grows.
 
-- Раз в час: `google_play_scraper.app(pkg, lang, country)` → `version`, `updated`,
-  `lastUpdatedOn`. Поле `recentChanges` в текущей версии библиотеки (1.2.7) не извлекается —
-  «что нового» агент читает в самой игре.
-- Установленная версия: `dumpsys package` → `versionName`. Расхождение → задача `update_diff`.
-- Порядок: записать старую версию и дату → поставить обновление (кнопка «Обновить» в сторе)
-  → сессия `update_diff` по всем известным экранам из графа → пары кадров «до/после» через
-  промпт детектора изменений (`PROMPTS.md`, раздел 7) → запись в `versions.md` с кадрами →
-  перепроверка навыков.
+### 9.1 Images and clips
 
-### 10.2 События (LiveOps)
+The rules are in `schema/WIKI-SCHEMA.md`, section 4. In short:
 
-Ежедневная короткая сессия `event_scan` (≤ 10 минут): попапы при входе, раздел
-новостей/событий/акций, магазин. Для каждого события — название, условия, награды, таймер
-(OCR даёт точное «осталось 2д 13:05:12», из него считается дата окончания). Всё пишется в
-`events.md` как календарь; перед концом события планировщик ставит повторный осмотр
-(изменились ли награды, появился ли «последний шанс»). Прошедшие события остаются в истории —
-это и есть ценность вики через полгода.
+1. While playing, the agent marks screenshots (`sw.py mark`) and segments for clips (`sw.py clip begin/end`).
+   The screen is recorded for the whole session (`screenrecord` in 3-minute segments).
+2. At the end of the session `sw.py` cuts the clips: animated WebP up to 20 s, 720 px, up to 8 MB. GitHub does not
+   play `<video>` from the repository, but WebP plays right in the article.
+3. The original recording goes to YouTube (`harness/youtube.py`) and is deleted from disk; clips link to
+   it with a timestamp. Until the Google project passes an audit, videos uploaded through the API are private.
+4. The dream moves media into the wiki (`sw.py wiki-img`, `sw.py wiki-clip`); screenshots are WebP up to 1080 px.
+5. A screenshot that is not from the game (a notification, another app) cannot be marked; personal data never goes into the wiki.
 
-### 10.3 Расписание по умолчанию
+### 9.2 Compilation
 
-| Тип сессии | Когда | Бюджет | Цель |
+The compiler (API path) edits `wiki/<game>/` through the **memory tool** (the `/memories` directory is mapped to the
+wiki folder): `view`, `create`, `str_replace`, `insert`, `delete`, `rename` — exactly what is
+needed for targeted edits, and the SDK provides a ready-made file-based implementation. Input: the schema (cached),
+the reflection JSON of new sessions, an image manifest. Output: changed pages, `index.md`,
+`log.md`, merged lessons and a report of unresolved contradictions. Then `git commit`.
+
+Mass rebuilds (for example, rewriting all screen pages for a new schema) are best run
+through the Batches API (50 % of the price), one page per request.
+
+### 9.3 Lint and queries
+
+The linter runs once a week (and after a big compilation), fixes mechanical issues and writes `agent/lint.md`
+with tasks for sessions: "recheck the price of bundle X on the shop screen". These tasks go into
+`open-questions.md`, and from there into `deep_revisit` goals. Human queries ("how does monetization
+in game A differ from B?") are a separate mode of the same compiler: an answer that cites pages;
+valuable answers are saved as `analysis/` pages.
+
+### 9.4 Publishing
+
+The repository is public: the wiki is read directly on GitHub, and images and clips show up in the articles. MkDocs
+Material or Obsidian are optional; the frontmatter is compatible with both.
+
+---
+
+## 10. Updates and events
+
+### 10.1 Detecting updates
+
+- Hourly: `google_play_scraper.app(pkg, lang, country)` → `version`, `updated`,
+  `lastUpdatedOn`. The current library version (1.2.7) does not extract the `recentChanges` field, so
+  the agent reads "what's new" in the game itself.
+- Installed version: `dumpsys package` → `versionName`. A mismatch → an `update_diff` task.
+- Order: record the old version and the date → install the update (the "Update" button in the store)
+  → an `update_diff` session over all known screens from the graph → "before/after" screenshot pairs through
+  the change detector prompt (`PROMPTS.md`, section 7) → an entry in `versions.md` with screenshots →
+  recheck the skills.
+
+### 10.2 Events (LiveOps)
+
+A short daily `event_scan` session (≤ 10 minutes): login popups, the
+news/events/promotions section, the shop. For each event: name, conditions, rewards, timer
+(OCR gives an exact "2d 13:05:12 left", from which the end date is computed). Everything goes into
+`events.md` as a calendar; before an event ends, the planner schedules a revisit
+(did the rewards change, did a "last chance" offer appear). Past events stay in the history —
+that is exactly what makes the wiki valuable six months later.
+
+### 10.3 Default schedule
+
+| Session type | When | Budget | Goal |
 |---|---|---|---|
-| `onboard` | игра новая | 40 мин (сериями по 15) | FTUE, меню, магазин, 3–5 раундов |
-| `update_diff` | версия в сторе ≠ установленной | 25 мин | diff по известным экранам |
-| `event_scan` | каждые 24 ч | 10 мин | попапы, события, магазин |
-| `deep_revisit` | каждые 7 дней или по задачам линтера | 30 мин | открытые вопросы, прогрессия |
-| компиляция | ночью, если есть новые рефлексии | — | вики, уроки |
-| lint + тесты навыков | раз в неделю | — | здоровье вики, навыки |
+| `onboard` | the game is new | 40 min (in batches of 15) | FTUE, menus, shop, 3–5 rounds |
+| `update_diff` | store version ≠ installed version | 25 min | diff over the known screens |
+| `event_scan` | every 24 h | 10 min | popups, events, shop |
+| `deep_revisit` | every 7 days or on linter tasks | 30 min | open questions, progression |
+| compilation | nightly, if there are new reflections | — | wiki, lessons |
+| lint + skill tests | once a week | — | wiki health, skills |
 
 ---
 
-## 11. Оркестрация 24/7
+## 11. 24/7 orchestration
 
-Основной путь — две запланированные задачи Claude Code в приложении на ПК, к которому подключён
-телефон:
+The main path is two scheduled Claude Code tasks in the app on the PC that the phone is
+connected to:
 
-- **«играть»** — каждый час: `runbooks/play.md`. `sw.py next` выбирает игру и вид сессии по
-  `games.yaml` и состоянию `memory/<game>/state.json`; если телефон занят, заблокирован, горячий или
-  играть нечего, запуск заканчивается за секунды;
-- **«сон»** — раз в сутки: `runbooks/dream.md`, результат — pull request.
+- **"play"** — every hour: `runbooks/play.md`. `sw.py next` picks a game and a session kind based on
+  `games.yaml` and the state in `memory/<game>/state.json`; if the phone is busy, locked or hot, or there is
+  nothing to play, the run ends within seconds;
+- **"dream"** — once a day: `runbooks/dream.md`; the result is a pull request.
 
-Задачи работают, пока приложение Claude открыто; пропущенный запуск выполнится при следующем
-открытии. Путь через API (`harness/scheduler.py`) остаётся для масштаба, когда телефонов станет
-несколько. Ниже — устройство этого планировщика.
+The tasks run while the Claude app is open; a missed run executes the next time it is
+opened. The API path (`harness/scheduler.py`) remains for scale, once there are several
+phones. How that planner works is described below.
 
-- **Очередь** в SQLite (`scheduler.py`): таблицы `games` и `sessions`; выбор задачи по
-  приоритету (новая > обновление > событие > плановое углубление). Один воркер на устройство,
-  устройства независимы.
-- **Сторож**: игра не на переднем плане → перезапуск; ADB отвалился → `recover` (переподключение,
-  ожидание); экран не меняется → сессия завершается сама, следующая начнёт с памяти.
-- **Каждая сессия заканчивается рефлексией** сразу (пока кадры на диске), компиляция — ночью.
-- **Отказоустойчивость**: ошибка сессии не роняет воркер, а пишется в `games.last_error`;
-  тот же пакет не берётся повторно раньше, чем через минуту; после трёх подряд ошибок игру
-  стоит переводить в состояние `paused` и слать уведомление (добавьте счётчик).
-- **Деплой**: хост-сервис (`systemd` на Linux, NSSM/Task Scheduler на Windows), логи в файл,
-  уведомления в Telegram о падениях и о завершённых компиляциях, простая страница статуса
-  (последний кадр с каждого устройства, очередь, стоимость за сутки). Бэкап `raw/` и `wiki/`.
-- **Расписание для GPG на ПК**: одна игра одновременно, поэтому воркер `gpg-pc` перед сессией
-  закрывает предыдущую игру и запускает нужную через UI клиента.
+- **Queue** in SQLite (`scheduler.py`): tables `games` and `sessions`; tasks are picked by
+  priority (new > update > event > scheduled deep dive). One worker per device;
+  devices are independent.
+- **Watchdog**: game not in the foreground → restart; ADB dropped → `recover` (reconnect,
+  wait); screen not changing → the session ends by itself and the next one starts from memory.
+- **Every session ends with reflection** right away (while the screenshots are still on disk); compilation happens at night.
+- **Fault tolerance**: a session error does not crash the worker but is written to `games.last_error`;
+  the same package is not picked again for at least a minute; after three errors in a row the game
+  should be moved to the `paused` state and a notification sent (add a counter).
+- **Deployment**: a host service (`systemd` on Linux, NSSM/Task Scheduler on Windows), logs to a file,
+  Telegram notifications about crashes and finished compilations, a simple status page
+  (the latest screenshot from each device, the queue, the daily cost). Back up `raw/` and `wiki/`.
+- **Scheduling for GPG on PC**: one game at a time, so before a session the `gpg-pc` worker
+  closes the previous game and launches the needed one through the client UI.
 
-Типовые отказы и реакции:
+Typical failures and responses:
 
-| Отказ | Признак | Реакция |
+| Failure | Sign | Response |
 |---|---|---|
-| Игра вылетела | `current_app` ≠ пакет | перезапуск, заметка в трассе (это баг для вики) |
-| Реклама/внешний браузер | пакет `com.android.chrome` и т. п. | `back`, затем перезапуск игры |
-| Обновление Play Store поверх сессии | попап «Обновить» | автообновление выключено; запись в очередь `update_diff` |
-| Телефон перегрелся | `dumpsys battery` temperature > 45 °C | пауза воркера 15 мин |
-| USB отвалился | `get_state` ≠ `device` | `recover`, потом Wi-Fi ADB |
-| Отказ модели (`refusal`) | `stop_reason` | сессия завершается, задача помечается, человек смотрит |
-| Лимиты API (429) | исключение SDK | SDK ретраит; при повторе — пауза воркера |
+| The game crashed | `current_app` ≠ package | restart, a note in the trace (it is a bug for the wiki) |
+| An ad/external browser | package `com.android.chrome` etc. | `back`, then restart the game |
+| A Play Store update over a session | an "Update" popup | auto-update is off; queue an `update_diff` |
+| The phone overheated | `dumpsys battery` temperature > 45 °C | pause the worker for 15 min |
+| USB dropped | `get_state` ≠ `device` | `recover`, then Wi-Fi ADB |
+| Model refusal (`refusal`) | `stop_reason` | the session ends, the task is flagged, a human takes a look |
+| API limits (429) | an SDK exception | the SDK retries; if it repeats, pause the worker |
 
 ---
 
-## 12. Стоимость
+## 12. Cost
 
-Токены на кадр: `ceil(w/28)×ceil(h/28)`. Цены (первая сторона, сентябрь 2026): Opus 5.5
-$4/$20 за млн (чтение кэша $0.20), Sonnet 5.5 $2/$10 (кэш $0.20), Haiku 4.5 $1/$5.
+Tokens per screenshot: `ceil(w/28)×ceil(h/28)`. Prices (first party, September 2026): Opus 5.5
+$4/$20 per million (cache read $0.20), Sonnet 5.5 $2/$10 (cache $0.20), Haiku 4.5 $1/$5.
 
-Оценка одного шага Explorer'а на Opus 5.5 (кадр 720×1600 ≈ 1.5 k токенов + ~1 k нового
-текста, ~30 k истории из кэша, ~300 токенов ответа): ≈ $0.006 + $0.004 + $0.006 + $0.006 ≈
-**$0.02**. Это грубая оценка; настоящие числа берите из `usage` каждой сессии (в трассе они
-пишутся).
+An estimate of one Explorer step on Opus 5.5 (a 720×1600 screenshot ≈ 1.5 k tokens + ~1 k tokens of new
+text, ~30 k of history from the cache, ~300 response tokens): ≈ $0.006 + $0.004 + $0.006 + $0.006 ≈
+**$0.02**. This is a rough estimate; take the real numbers from each session's `usage` (they are written
+to the trace).
 
-| Конфигурация | Шагов/час на устройство | $/час | $/сутки на устройство |
+| Configuration | Steps/hour per device | $/hour | $/day per device |
 |---|---|---|---|
-| Наивная: каждый шаг Opus 5.5, полная история | ~400 | ~9 | ~210 |
-| Sonnet 5.5 в цикле, Opus в рефлексии/компиляции | ~400 | ~5 | ~120 |
-| + очистка старых кадров (8 последних), кадры 720 px | ~400 | ~3.5 | ~85 |
-| + локальные уровни 0–2 и навыки закрывают ~60 % шагов | ~400 (160 к модели) | ~1.5 | ~35 |
+| Naive: every step on Opus 5.5, full history | ~400 | ~9 | ~210 |
+| Sonnet 5.5 in the loop, Opus for reflection/compilation | ~400 | ~5 | ~120 |
+| + clearing old screenshots (last 8 kept), 720 px screenshots | ~400 | ~3.5 | ~85 |
+| + local levels 0–2 and skills handle ~60 % of steps | ~400 (160 go to the model) | ~1.5 | ~35 |
 
-Плюс рефлексии (≈ 80 сессий/сутки × ~$0.2 ≈ $15 на Opus) и ночная компиляция (≈ $1–2 на игру).
-Рычаги по убыванию эффекта: не звать модель на известных экранах; чистить кадры из контекста;
-уменьшать кадры; кэш системного промпта и хвоста; Batches для массовых пересборок; effort
-`low/medium` в цикле; Sonnet/Haiku там, где решение простое. Судите по стоимости
-**за новый факт в вики**, а не за шаг.
-
----
-
-## 13. Риски, правила и этика
-
-- **Условия использования игр.** Почти все онлайн-игры запрещают ботов и сторонние программы,
-  многие — эмуляторы; Play Integrity и античиты умеют детектировать автоматизацию и аномальную
-  активность. Последствия — бан аккаунта или устройства. Снижение риска: отдельные аккаунты и
-  устройства, темп, похожий на человеческий (паузы 1–3 с, не 24 часа подряд в одной игре),
-  никакого влияния на других игроков (не PvP, не чат, не гильдии), собственные игры — без
-  ограничений. Для конкурентного анализа проконсультируйтесь с юристом: где вы, какие игры,
-  что публикуете.
-- **Деньги.** Запрет на покупки в промпте плюс аккаунт без платёжного средства. Если хотите
-  описывать покупки — подарочные карты с лимитом и явный список разрешённых действий.
-- **Данные и публичность.** Репозиторий публичный. На кадрах бывают ники, почта, аватары,
-  уведомления: такие кадры в вики не идут, критик «сна» это проверяет. Кадры и клипы чужих игр в
-  публичной вики — обзорное использование, но это вопрос авторского права; если издатель попросит,
-  уберите игру. Оригиналы на YouTube могут ловить Content ID.
-- **Личный телефон.** Если телефон ваш личный, агент играет на ваших аккаунтах и тратит мягкую
-  валюту и жизни. На время сессии `sw.py` включает «Не беспокоить: только будильники» и потом
-  возвращает прежний режим; сессия не начнётся, пока вы пользуетесь телефоном.
-- **Безопасность модели.** Игра может показать текст, похожий на инструкцию («отправь код
-  сюда»); инструменты агента ограничены устройством и файлами вики, у него нет сети и
-  платёжных средств — держите это так.
-- **Аварийный стоп.** Один файл-флаг или команда в Telegram, останавливающая все воркеры.
+Add reflections (≈ 80 sessions/day × ~$0.2 ≈ $15 on Opus) and the nightly compilation (≈ $1–2 per game).
+Levers in order of decreasing effect: don't call the model on known screens; clear screenshots from the context;
+downscale screenshots; cache the system prompt and the tail; use Batches for mass rebuilds; effort
+`low/medium` in the loop; Sonnet/Haiku where the decision is simple. Judge by the cost
+**per new fact in the wiki**, not per step.
 
 ---
 
-## 14. Метрики и оценка
+## 13. Risks, rules and ethics
 
-| Метрика | Как считать | Зачем |
+- **Game terms of service.** Almost all online games ban bots and third-party software,
+  and many ban emulators; Play Integrity and anti-cheats can detect automation and abnormal
+  activity. The consequence is an account or device ban. To lower the risk: separate accounts and
+  devices, a human-like pace (1–3 s pauses, not 24 hours straight in one game),
+  no impact on other players (no PvP, no chat, no guilds); your own games have no
+  restrictions. For competitive analysis, consult a lawyer: where you are, which games,
+  what you publish.
+- **Money.** A purchase ban in the prompt plus an account with no payment method. If you want to
+  document purchases, use gift cards with a limit and an explicit list of allowed actions.
+- **Data and publicity.** The repository is public. Screenshots can contain nicknames, email addresses, avatars,
+  notifications: such screenshots do not go into the wiki, and the dream's critic checks this. Screenshots and clips
+  of other people's games in a public wiki are review use, but this is a copyright question; if a publisher asks,
+  remove the game. The originals on YouTube may trigger Content ID.
+- **Personal phone.** If the phone is your personal one, the agent plays on your accounts and spends soft
+  currency and lives. For the duration of a session `sw.py` turns on "Do Not Disturb: alarms only" and afterwards
+  restores the previous mode; a session will not start while you are using the phone.
+- **Model safety.** A game may show text that looks like an instruction ("send the code
+  here"); the agent's tools are limited to the device and the wiki files, and it has no network access and no
+  payment methods — keep it that way.
+- **Emergency stop.** A single flag file or a Telegram command that stops all workers.
+
+---
+
+## 14. Metrics and evaluation
+
+| Metric | How to compute | Why |
 |---|---|---|
-| Новые экраны/час | узлы графа экранов, впервые увиденные | эффективность исследования |
-| Доля шагов без изменения экрана | из трассы | зацикливание, качество координат |
-| Доля шагов, закрытых навыками/локально | из трассы | стоимость |
-| Точность вики | еженедельно 20 случайных утверждений проверяет человек | доверие к вики |
-| Задержка обнаружения обновления/события | время от `updated` в сторе до записи в `versions.md` | актуальность |
-| Проблемы lint | из `agent/lint.md` | здоровье вики |
-| $ за новый факт | стоимость сессий / принятые факты | экономика |
+| New screens/hour | screen graph nodes seen for the first time | exploration efficiency |
+| Share of steps without a screen change | from the trace | looping, coordinate quality |
+| Share of steps handled by skills/locally | from the trace | cost |
+| Wiki accuracy | a human checks 20 random claims every week | trust in the wiki |
+| Update/event detection latency | time from `updated` in the store to the entry in `versions.md` | freshness |
+| Lint issues | from `agent/lint.md` | wiki health |
+| $ per new fact | session cost / accepted facts | economics |
 
-**Эталонный тест.** Возьмите игру, которую вы знаете до мелочей, и сравните вики агента со своим
-знанием: какие механики, экраны и правила он нашёл, какие пропустил, где ошибся. Используйте её как
-регрессионный тест при каждом изменении инструкций и схемы.
+**Reference test.** Take a game you know inside out and compare the agent's wiki with your own
+knowledge: which mechanics, screens and rules it found, which it missed, where it got things wrong. Use it as a
+regression test for every change to the instructions and the schema.
 
 ---
 
-## 15. Дорожная карта
+## 15. Roadmap
 
-| Этап | Что делаем | Готово, когда |
+| Stage | What we do | Done when |
 |---|---|---|
-| 0. Ручной цикл (2–3 дня) | телефон по USB, рутина «играть» на одной игре, смотрим трассы | агент проходит обучение и меню сам, трасса читаема |
-| 1. Память и рефлексия (неделя) | `/memories`, `reflect.py`, уроки в промпт, `mark_screen` | вторая сессия продолжает первую; уроки видны и полезны |
-| 2. Вики (неделя) | `compile_wiki.py`, схема, импорт изображений, MkDocs, lint | по первой игре ≥ 10 страниц с кадрами, сверены человеком |
-| 3. 24/7 (1–2 недели) | `scheduler.py`, сторож, версии в сторе, `event_scan`, три игры | неделя без ручного вмешательства, одно обновление задокументировано |
-| 4. Навыки и экономия | OCR, pHash-граф, skill proposer + тесты, Sonnet/Haiku в цикле | стоимость на шаг ↓ ≥ 3×, доля шагов без модели ≥ 50 % |
-| 5. Масштаб | несколько телефонов, дашборд, кросс-игровые паттерны, дообучение детектора элементов на своих трассах | 10+ игр, стоимость в бюджете, точность вики ≥ 90 % |
+| 0. Manual loop (2–3 days) | a phone over USB, the play routine on one game, reviewing traces | the agent gets through the tutorial and menus on its own, the trace is readable |
+| 1. Memory and reflection (a week) | `/memories`, `reflect.py`, lessons in the prompt, `mark_screen` | the second session picks up where the first left off; lessons are visible and useful |
+| 2. Wiki (a week) | `compile_wiki.py`, schema, image import, MkDocs, lint | the first game has ≥ 10 pages with screenshots, checked by a human |
+| 3. 24/7 (1–2 weeks) | `scheduler.py`, watchdog, store versions, `event_scan`, three games | a week without manual intervention, one update documented |
+| 4. Skills and savings | OCR, pHash graph, skill proposer + tests, Sonnet/Haiku in the loop | cost per step down ≥ 3×, share of steps without the model ≥ 50 % |
+| 5. Scale | several phones, a dashboard, cross-game patterns, fine-tuning an element detector on our own traces | 10+ games, cost within budget, wiki accuracy ≥ 90 % |
 
 ---
 
-## Приложение A. Чек-лист телефона для круглосуточной работы
+## Appendix A. Phone checklist for 24/7 operation
 
-- Режим разработчика, отладка по USB, «не выключать экран при зарядке» (`settings put global stay_on_while_plugged_in 7`).
-- Блокировка экрана: нет; яркость минимальная; автоповорот выключен; «Не беспокоить» постоянно.
-- Play Store: автообновление приложений — **нет**; Play Protect — оставить, но не мешает.
-- Ограничение заряда 80 %; обдув; температура через `dumpsys battery`.
-- Отдельный Google-аккаунт, язык и регион устройства как у целевой аудитории игры.
-- Для кириллического ввода — ADBKeyboard как текущая клавиатура.
-- Samsung: «Защита от случайных касаний» блокирует касания, когда закрыт датчик приближения. Держите телефон экраном вверх с открытым верхним краем или отключите её.
-- Wi-Fi ADB как резерв: `adb tcpip 5555`, затем `adb connect <ip>:5555`.
-- Уведомления других приложений выключены, чтобы попапы были только игровые.
+- Developer mode, USB debugging, "Stay awake while charging" (`settings put global stay_on_while_plugged_in 7`).
+- Screen lock: none; minimum brightness; auto-rotate off; Do Not Disturb always on.
+- Play Store: app auto-update **off**; Play Protect stays on but does not interfere.
+- 80 % charge limit; a cooling fan; temperature via `dumpsys battery`.
+- A separate Google account; device language and region matching the game's target audience.
+- For Cyrillic input, ADBKeyboard set as the current keyboard.
+- Samsung: "Accidental touch protection" blocks touches when the proximity sensor is covered. Keep the phone face up with the top edge uncovered, or turn the feature off.
+- Wi-Fi ADB as a backup: `adb tcpip 5555`, then `adb connect <ip>:5555`.
+- Notifications from other apps are off, so the only popups come from the game.
 
-## Приложение B. Полезные команды
+## Appendix B. Useful commands
 
 ```bash
-adb devices -l                                   # серийники и модели
-adb -s SERIAL exec-out screencap -p > shot.png    # кадр без adbutils
+adb devices -l                                   # serials and models
+adb -s SERIAL exec-out screencap -p > shot.png    # screenshot without adbutils
 adb -s SERIAL shell dumpsys package PKG | grep versionName
-adb -s SERIAL shell dumpsys window | grep mCurrentFocus   # что на переднем плане
+adb -s SERIAL shell dumpsys window | grep mCurrentFocus   # what is in the foreground
 adb -s SERIAL shell am start -a android.intent.action.VIEW -d market://details?id=PKG
-adb -s SERIAL shell monkey -p PKG 1              # запустить игру
+adb -s SERIAL shell monkey -p PKG 1              # launch the game
 adb -s SERIAL shell am force-stop PKG
-adb -s SERIAL logcat -d | grep -i "FATAL\|ANR"   # вылеты за сессию
+adb -s SERIAL logcat -d | grep -i "FATAL\|ANR"   # crashes during the session
 adb -s SERIAL shell dumpsys battery | grep temperature
 adb connect localhost:6520                       # GPG Developer Emulator
 ```
 
-## Приложение C. Источники
+## Appendix C. Sources
 
-Паттерны памяти и самоулучшения
+Memory and self-improvement patterns
 
 - Karpathy, *LLM Wiki* — https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
 - *LLM Wiki v2* (rohitg00) — https://gist.github.com/rohitg00/2067ab416f7bbe447c1977edaaa681e2
-- *WikiSkill: Compiling Agent Experience into Persistent Knowledge* (Google Research, Virginia Tech, 2026) — https://arxiv.org/abs/2608.27454; референсная реализация — https://github.com/kenhuangus/wikiskill
+- *WikiSkill: Compiling Agent Experience into Persistent Knowledge* (Google Research, Virginia Tech, 2026) — https://arxiv.org/abs/2608.27454; reference implementation — https://github.com/kenhuangus/wikiskill
 - *Agentic Context Engineering* (ICLR 2026) — https://arxiv.org/abs/2510.04618
-- *Hindsight* (память агента, обучающаяся на опыте) — https://github.com/vectorize-io/hindsight
-- Anthropic, Dreams для Managed Agents — https://platform.claude.com/docs/en/managed-agents/dreams
+- *Hindsight* (agent memory that learns from experience) — https://github.com/vectorize-io/hindsight
+- Anthropic, Dreams for Managed Agents — https://platform.claude.com/docs/en/managed-agents/dreams
 - Anthropic, memory tool — https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool
 - Anthropic, context editing — https://platform.claude.com/docs/en/build-with-claude/context-editing
-- Anthropic, vision и coordinates — https://platform.claude.com/docs/en/build-with-claude/vision, https://platform.claude.com/docs/en/build-with-claude/vision-coordinates
+- Anthropic, vision and coordinates — https://platform.claude.com/docs/en/build-with-claude/vision, https://platform.claude.com/docs/en/build-with-claude/vision-coordinates
 - Anthropic, computer use tool — https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool
 
-Игровые агенты
+Game agents
 
-- Claude Plays Pokémon: разбор харнесса — https://michaelyliu6.github.io/posts/claude-plays-pokemon/; интервью с автором — https://www.latent.space/p/how-claude-plays-pokemon-was-made
+- Claude Plays Pokémon: a breakdown of the harness — https://michaelyliu6.github.io/posts/claude-plays-pokemon/; an interview with the author — https://www.latent.space/p/how-claude-plays-pokemon-was-made
 - Cradle: General Computer Control — https://arxiv.org/abs/2403.03186, https://github.com/cuddIle/Cradle
-- Voyager, JARVIS-1, Reflexion и др. — обзор https://github.com/git-disl/awesome-LLM-game-agent-papers
+- Voyager, JARVIS-1, Reflexion and others — survey at https://github.com/git-disl/awesome-LLM-game-agent-papers
 - DeepMind SIMA 2 — https://deepmind.google/blog/sima-2-an-agent-that-plays-reasons-and-learns-with-you-in-virtual-3d-worlds/
-- LLM-агенты как тестировщики игр (TITAN, Lap, SMART, GBQA) — https://arxiv.org/abs/2512.12706, https://arxiv.org/abs/2604.02648
+- LLM agents as game testers (TITAN, Lap, SMART, GBQA) — https://arxiv.org/abs/2512.12706, https://arxiv.org/abs/2604.02648
 
-Мобильная автоматизация
+Mobile automation
 
 - MobileUse — https://github.com/MadeAgents/mobile-use
 - Mobilerun (ex-DroidRun) — https://github.com/droidrun/droidrun
@@ -709,15 +708,15 @@ adb connect localhost:6520                       # GPG Developer Emulator
 - google-play-scraper — https://github.com/JoMingyu/google-play-scraper
 - Redroid — https://hub.docker.com/r/redroid/redroid
 
-Google Play Games на ПК
+Google Play Games on PC
 
 - Developer Emulator — https://developer.android.com/games/playgames/pg-emulator
-- FAQ (один экземпляр, одна игра, sideload и Play Services) — https://developer.android.com/games/playgames/faq
+- FAQ (one instance, one game, sideload and Play Services) — https://developer.android.com/games/playgames/faq
 - Start (ABI, Intel Bridge) — https://developer.android.com/games/playgames/start
-- PlayBridge (ADB-эмуляция для потребительского клиента) — https://github.com/ACK72/PlayBridge
+- PlayBridge (ADB emulation for the consumer client) — https://github.com/ACK72/PlayBridge
 - Integrity protection for Google Play Games on PC — https://developer.android.com/games/playgames/integrity
 
-Риски
+Risks
 
 - Play Integrity API — https://developer.android.com/google/play/integrity/overview
-- Эмуляторы в играх: угрозы и детект — https://docs.talsec.app/appsec-articles/articles/emulators-in-gaming-threats-and-detections
+- Emulators in games: threats and detection — https://docs.talsec.app/appsec-articles/articles/emulators-in-gaming-threats-and-detections

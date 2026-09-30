@@ -1,9 +1,9 @@
-# Локальное: настройки машины, журналы и рабочие заметки, сырые записи сессий
+# Local: machine settings, journals and working notes, raw session recordings
 local.yaml
 state/
 raw/
 
-# Секреты: ключи YouTube и прочее держите вне репозитория (E:/secrets/...), папка — на всякий случай
+# Secrets: keep YouTube keys and the like outside the repository (E:/secrets/...); this folder is just in case
 .env
 secrets/
 
@@ -12,5 +12,5 @@ secrets/
 __pycache__/
 *.pyc
 
-# Сборка MkDocs
+# MkDocs build
 site/

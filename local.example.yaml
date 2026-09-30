@@ -1,39 +1,39 @@
-# Настройки одной машины. Скопируйте в local.yaml — он в .gitignore и на GitHub не попадает.
-# Всё локальное лежит рядом: state/ (журналы, заметки, блокировки) и raw/ (записи сессий).
+# Settings for one machine. Copy to local.yaml — it is in .gitignore and never reaches GitHub.
+# Everything local lives next to it: state/ (journals, notes, locks) and raw/ (session recordings).
 
-machine: ""                # имя машины в id сессий и в отчётах «сна»; пусто — имя компьютера
-games: []                  # пусто — все игры из games.yaml; иначе только эти (чтобы поделить игры между машинами)
+machine: ""                # machine name in session ids and "dream" reports; empty = the computer name
+games: []                  # empty = all games from games.yaml; otherwise only these (to split games between machines)
 
 android:
-  serials: []              # пусто — все телефоны и эмуляторы из `adb devices`
-  hours: "0-24"            # часы, когда можно занимать телефоны, например "1-8"
-  dnd: true                # «Не беспокоить: только будильники» на время сессии, потом прежний режим
-  max_temp_c: 42           # горячее — пауза
-  min_battery: 20          # меньше и без зарядки — пауза
+  serials: []              # empty = all phones and emulators from `adb devices`
+  hours: "0-24"            # hours when sessions may use the phones, e.g. "1-8"
+  dnd: true                # "Do Not Disturb: alarms only" during a session, then the previous mode
+  max_temp_c: 42           # hotter = pause
+  min_battery: 20          # lower and not charging = pause
 
-# Проверка без телефона: имя -> папка с картинками-кадрами
+# Testing without a phone: name -> folder with screenshot images
 fake_devices: {}
 
 tools:
-  ffmpeg: ffmpeg           # полный путь, если ffmpeg не в PATH
+  ffmpeg: ffmpeg           # full path if ffmpeg is not in PATH
   ffprobe: ffprobe
 
 video:
-  record: true             # записывать экран сессии: оригинал для YouTube и нарезки клипов
-  record_short_edge: 720   # на полном разрешении screenrecord многих телефонов не стартует
+  record: true             # record the session screen: the original for YouTube and for cutting clips
+  record_short_edge: 720   # at full resolution, screenrecord does not start on many phones
   record_bitrate: 2500000
-  clip_max_seconds: 20     # клип длиннее режется на несколько
-  clip_max_mb: 8           # GitHub предупреждает с 50 МБ и блокирует со 100 МБ
-  clip_long_edge: 720      # клипы — анимированный WebP: GitHub проигрывает его прямо в статье
+  clip_max_seconds: 20     # a longer clip is split into several
+  clip_max_mb: 8           # GitHub warns from 50 MB and blocks from 100 MB
+  clip_long_edge: 720      # clips are animated WebP: GitHub plays it right in the article
   clip_fps: 12
   clip_quality: 70
 
-youtube:                   # ключи лежат только на этой машине
+youtube:                   # the keys live only on this machine
   enabled: false
   client_secret: E:/secrets/sleepwalker/youtube-client.json
   token: E:/secrets/sleepwalker/youtube-token.json
-  privacy: unlisted        # без аудита проекта Google YouTube всё равно сделает private
+  privacy: unlisted        # without a Google project audit, YouTube makes it private anyway
 
 raw:
-  keep_originals_days: 3   # оригинал, который не ушёл на YouTube, удаляется через столько дней
-  keep_shots_days: 14      # кадры и клипы сессии после «сна»
+  keep_originals_days: 3   # an original that was not uploaded to YouTube is deleted after this many days
+  keep_shots_days: 14      # session screenshots and clips after the "dream"

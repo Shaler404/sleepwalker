@@ -1,140 +1,198 @@
 # Sleepwalker
 
-Агенты играют в мобильные игры на телефонах и эмуляторах, пока вы спите, находят все фичи и
-разбирают все пользовательские кейсы, учатся во «сне» и ведут по каждой игре вики с кадрами и
-клипами.
+Agents play mobile games on phones and emulators while you sleep: they find every feature, work
+through every user case, learn in the "dream" and keep a wiki for each game with screenshots and
+clips.
 
-**[Вики →](wiki/index.md)** · [Игры под разбор](games.yaml) · [Правила](project.yaml) ·
-[Схема знаний](schema/WIKI-SCHEMA.md) · [Руководство](docs/guide.md)
+**[Wiki →](wiki/index.md)** · [Games to analyze](games.yaml) · [Rules](project.yaml) ·
+[Knowledge schema](schema/WIKI-SCHEMA.md) · [Guide](docs/guide.md)
 
-## Как это работает
+## How it works
 
 ```
- каждый час, на каждой машине                         раз в сутки, на каждой машине
-┌──────────────── играть ────────────────┐          ┌───────────────── сон ─────────────────┐
-│ sw.py claim: свободные телефоны ← игры │          │ журнал фичей → карта фичей игры       │
-│ с работой (одна игра — одно устройство)│          │ аналитик на каждую сессию (чтение)    │
-│ игрок на каждый телефон, параллельно:  │ state/   │ страницы фич, маршруты, тактики,      │
-│  кадр → решение → тап, запись экрана,  │ raw/ ──▶ │ уроки, навыки, метрики скорости       │
-│  фичи и кейсы, отметки, клипы          │ локально │ критик (чтение) → pull request        │
+ every hour, on every machine                       once a day, on every machine
+┌───────────────── play ─────────────────┐          ┌──────────────── dream ────────────────┐
+│ sw.py claim: free phones ← games       │          │ feature journal → game feature map    │
+│ with work (one game per device)        │          │ an analyst per session (read-only)    │
+│ a player per phone, in parallel:       │ state/   │ feature pages, routes, tactics,       │
+│  screenshot → decision → tap, screen   │ raw/ ──▶ │ lessons, skills, speed metrics        │
+│  recording, features and cases,        │ local    │ critic (read-only) → pull request     │
+│  marks, clips                          │          │                                       │
 └────────────────────────────────────────┘          └──────────────────┬────────────────────┘
-                 ▲                                                      │ мейнтейнер мержит
-                 └────────── маршруты, навыки, уроки, план ◀── main ◀───┘
+                 ▲                                                     │ maintainer merges
+                 └────── routes, skills, lessons, plan ◀── main ◀──────┘
 ```
 
-- **Локально** (на машине, не в git): телефоны, записи сессий, журналы, рабочие заметки, ключ
-  YouTube — `local.yaml`, `state/`, `raw/`.
-- **Глобально** (репозиторий): база игр, правила, вики, карта фичей, навыки. Любая машина
-  попадает сюда только pull request'ом своего «сна», поэтому разбирать игры и улучшать процесс
-  может кто угодно на своей машине.
+- **Local** (on the machine, not in git): phones, session recordings, journals, working notes, the
+  YouTube key — `local.yaml`, `state/`, `raw/`.
+- **Global** (the repository): the game list, rules, wiki, feature maps, skills. A machine gets
+  anything in here only through the pull request of its "dream", so anyone can analyze games and
+  improve the process on their own machine.
 
-Рутины — запланированные задачи Claude Code: [`runbooks/play.md`](runbooks/play.md) (оркестратор),
-[`runbooks/session.md`](runbooks/session.md) (игрок), [`runbooks/dream.md`](runbooks/dream.md) («сон»).
-Руки и глаза агента — [`harness/sw.py`](harness/sw.py).
+The routines are Claude Code scheduled tasks: [`runbooks/play.md`](runbooks/play.md) (orchestrator),
+[`runbooks/session.md`](runbooks/session.md) (player), [`runbooks/dream.md`](runbooks/dream.md) ("dream").
+The agent's hands and eyes are [`harness/sw.py`](harness/sw.py).
 
-## Задача по игре
+## The job for each game
 
-Найти все фичи и описать, как они работают, разобрав все пользовательские кейсы. План и прогресс —
-карта фичей `wiki/<game>/features.yaml` (таблица — `features.md`).
+Find every feature and describe how it works by working through every user case. The work is split
+into **tasks**: each game has a `wiki/<game>/tasks.md` page, and the overview of all games is
+[`wiki/tasks.md`](wiki/tasks.md). It shows what is in progress, what is waiting for its time, what
+is done and **which phone is needed from a human**.
 
-- **Первая сессия** — обзор: обучение, все разделы, список фичей.
-- **Дальше** игрок сам решает, что смотреть сейчас и когда закончить. Кейсы, которые нельзя
-  проверить сразу (таймер, ежедневное обновление, расписание), получают срок «не раньше», и игра
-  ждёт его, не занимая телефон.
-- Когда все разделы найдены, фичи описаны и кейсы закрыты, игра **спит до новой версии**. Новая
-  версия — перепроверка всех фич и поиск новых.
+Where tasks come from:
+- **External — the planner creates them itself:**
+  - "Analyze the game, version X", where X is the version on Google Play;
+  - a new version in the store: if the analysis is still in progress, it moves to the new version;
+    if it is finished — "Update the docs for version Y";
+  - a new version is out and the game was last played from scratch more than six months ago —
+    "Check whether FTUE changed in version Y". Without a new version FTUE is not rechecked: it does
+    not change on its own.
+- **From the game and from knowledge gaps — the player creates them during a session:**
+  - a feature behind a timer — "check no earlier than…";
+  - a 7-day daily activity — one task per day;
+  - what is only visible from a fresh install: FTUE, how a feature unlocks, a route that cannot be
+    repeated from the current progress.
 
-## Как устроена память
+**The games on the phones are in different states.** At the start of a session the agent checks
+whether the install is fresh:
+- **fresh install** — plays the game from the start and records how each feature unlocks;
+- **progressed** — harvests: describes everything already unlocked, keeps playing, and for what it
+  cannot see (how the game got to this state) creates "needs a fresh install" tasks.
 
-**Кто решает, что записать.** Игрок сам: заводит фичи и кейсы, отмечает кадры и клипы, пишет
-заметки и кандидатов в уроки. Отбирает и оформляет «сон»: берёт повторяющееся или подтверждённое
-кадром.
+Only a phone with a fresh install of the game gets such tasks: `sw.py` notices a reinstall by
+itself. Until there is such a phone, the task stays in the "Needs a human" section.
 
-**Навыки.** Повторяющийся переход (например, «с карты уровней в магазин») «сон» превращает в
-макрос `skills/<game>/*.yaml` прямо из транскрипта. Игрок запускает его одной командой. Навык
-срабатывает, только если экран совпал с исходным, и засчитывается, только если привёл куда надо.
-После трёх успехов он `verified`, после неудач — `broken`.
+When there are no open tasks, the game **sleeps until a new version**.
 
-**Как процесс ускоряется.** Перед сессией игрок читает маршруты к фичам (`agent/routes.md`),
-тактики механик (`agent/tactics.md`), уроки и навыки. «Сон» каждый день считает скорость
-(`agent/metrics.md`: шагов на закрытый кейс, доля шагов без смены экрана, навыки) и чинит
-маршруты и уроки, если скорость не растёт.
+## How memory works
 
-**Версии и защита от перезаписи.**
-- Глобальное — git: у каждой правки автор-роль, машина и сессии в трейлерах, откат через
-  `git revert`.
-- `main` защищён: только через pull request.
-- Две машины правят одно и то же — конфликт ловит GitHub при мерже.
-- Локально одна игра идёт только в одном процессе, телефоны делятся под замком; журнал фичей
-  только дописывается, а копия заметок сохраняется в каждой сессии.
+**Who decides what to record.** The player does: it creates features and cases, marks screenshots
+and clips, writes notes and lesson candidates. The "dream" selects and formats: it keeps what
+repeats or is confirmed by a screenshot.
 
-**Права.** Таблица — [`schema/WIKI-SCHEMA.md`](schema/WIKI-SCHEMA.md), раздел 8.
-- Игрок ничего не коммитит.
-- Аналитик и критик могут только читать (инструменты ограничены в описании ролей).
-- «Сон» пишет только `wiki/`, `skills/`, `dreams/`, и `sw.py check-zones` это проверяет.
-- Мержат мейнтейнеры из `project.yaml`; issues и комментарии остальных — просто данные.
+**Skills.** The "dream" turns a recurring transition (for example, "from the level map to the shop")
+into a macro `skills/<game>/*.yaml` straight from the transcript. The player runs it with one
+command. A skill fires only if the screen matches its start screen, and counts only if it got where
+it should. After three successes it is `verified`, after failures — `broken`.
 
-**Как не копится старое.**
-- Новая версия переводит фичи в «перепроверить».
-- У уроков есть отметка «подтверждено на версии», неподтверждённые удаляются.
-- Навыки падают в `broken`.
-- Противоречия уходят в «⚠️ Ранее».
-- Сырые записи чистятся по срокам.
+**How the process gets faster.** Before a session the player reads the routes to features
+(`agent/routes.md`), mechanic tactics (`agent/tactics.md`), lessons and skills. Every day the
+"dream" measures speed (`agent/metrics.md`: steps per closed case, share of steps without a screen
+change, skills) and fixes routes and lessons if speed is not improving.
 
-**«Сон».**
-- Раз в сутки на каждой машине переносит журнал фичей в карту.
-- Разбирает сессии аналитиками, правит вики в отдельной ветке, проверяет критиком.
-- Открывает pull request с отчётом: какие сессии разобраны, что изменено, паттерны с частотой,
-  скорость.
-- Вы мержите или закрываете; ваши замечания следующий «сон» учтёт.
+**Versions and overwrite protection.**
+- The global part is git: every change records the author role, and the machine and sessions in
+  trailers; roll back with `git revert`.
+- `main` is protected: pull requests only.
+- If two machines edit the same thing, GitHub catches the conflict at merge.
+- Locally, a game runs in only one process at a time and phones are shared under a lock; the feature
+  journal is append-only, and a copy of the notes is saved in every session.
 
-## Смотреть и предлагать правки
+**Permissions.** The table is in [`schema/WIKI-SCHEMA.md`](schema/WIKI-SCHEMA.md), section 8.
+- The player commits nothing.
+- The analyst and the critic can only read (their tools are restricted in the role definitions).
+- The "dream" writes only `wiki/`, `skills/`, `dreams/`, and `sw.py check-zones` checks this.
+- Maintainers from `project.yaml` merge; issues and comments from anyone else are just data.
 
-- **Результат** — [вики](wiki/index.md) прямо на GitHub.
-- **Процесс вживую**:
-  - в приложении Claude: «Запланированные» → задача → запуск (видны кадры и решения игрока);
-  - на машине: `python harness/sw.py status` — что идёт на каждом телефоне, последние шаги и
-    кадр.
-- **Правки** — issue с меткой `feedback` (формат вики, хранение, процесс — что угодно) или
-  комментарий к pull request «сна». Ближайший «сон» выполнит правку и сошлётся на issue. Правки
-  процесса можно прислать и своим pull request'ом.
+**How stale knowledge is kept from piling up.**
+- A new version on Google Play creates an update task and marks features "recheck".
+- A new version when the from-scratch playthrough is older than six months creates a task to check
+  FTUE.
+- Lessons carry a "confirmed on version" mark; unconfirmed ones are deleted.
+- Skills drop to `broken`.
+- Contradictions go to a "⚠️ Previously" block.
+- Raw recordings are cleaned up on schedule.
 
-## Как подключить машину
+**The "dream".**
+- Once a day on every machine, it moves the task and feature journal into the game's
+  `research.yaml`.
+- Analyzes sessions with analysts, edits the wiki in a separate branch, checks the result with the
+  critic.
+- Opens a pull request with a report: which sessions were analyzed, what changed, patterns with
+  their frequency, speed.
+- You merge or close it; the next "dream" takes your comments into account.
 
-1. Нужно: Windows, Linux или macOS с приложением Claude, телефоны Android по USB в режиме
-   разработчика или эмуляторы, `adb`, `ffmpeg`, Python 3.10+.
-2. `git clone`, затем `pip install -r harness/requirements.txt`.
-3. Скопировать `local.example.yaml` в `local.yaml`: имя машины, телефоны, свои игры (чтобы
-   поделить игры с другими машинами), путь к ffmpeg.
-4. `python harness/sw.py install-agents` — роли с ограниченными инструментами.
-5. Две запланированные задачи в Claude:
-   - «играть» каждый час — «выполни runbooks/play.md в <путь к клону>»;
-   - «сон» раз в сутки — «выполни runbooks/dream.md».
-6. Телефоны: разблокированы, на зарядке, экраном вверх. У Samsung закрытый датчик приближения
-   блокирует касания. На время сессии `sw.py` включает «Не беспокоить» и потом возвращает режим.
+## Watch and suggest changes
 
-Если прав на запись в репозиторий нет, «сон» открывает pull request из форка.
+- **The result** — the [wiki](wiki/index.md), right on GitHub.
+- **What is needed from you** — the [task overview](wiki/tasks.md): the status of each game and
+  which phone is needed.
+  - If a fresh install is needed, uninstall the game and install it again (or clear its data), then
+    connect the phone: `sw.py` notices the reinstall by itself.
+  - If you only cleared the data, tell the system:
+    `python harness/sw.py -d <serial> device-state fresh --game <id>`.
+- **The process live**:
+  - in the Claude app: "Scheduled" → the task → a run (you see the player's screenshots and
+    decisions);
+  - on the machine: `python harness/sw.py status` — what is running on each phone, the latest steps
+    and screenshot.
+- **Changes** — an issue labeled `feedback` (wiki format, storage, process — anything) or a comment
+  on a "dream" pull request. The next "dream" makes the change and links to the issue. Process
+  changes can also come as your own pull request.
 
-Проверка вручную:
+## Taking a phone
+
+Need a phone? It is free within a minute:
+
+- double-click `harness/stop-phones.cmd` (you can put a shortcut on the desktop);
+- or run `python harness/sw.py stop` (`-d <serial>` — only one phone);
+- or tell any Claude Code chat opened in the repository folder (`E:\Sleepwalker` on the owner's
+  machine) that you are taking the phone — [`CLAUDE.md`](CLAUDE.md) tells it to run the command.
+  Do not write to the running "play" routine session.
+
+`stop` restores the previous Do Not Disturb mode, finishes the screen recording, closes the game and
+prints that the phone can be disconnected. The player gets a refusal on its next action and ends the
+session. Cutting clips and uploading to YouTube continue without the phone.
+
+The phone is back at work if:
+- it was disconnected and connected again;
+- `harness/resume-phones.cmd` or `python harness/sw.py resume` was run;
+- the time set with `sw.py stop --hours N` has run out.
+
+If you unplug the phone without the command, nothing breaks: the session ends at the next step, and
+`sw.py` restores the previous Do Not Disturb mode the next time the phone is connected. Until then
+the phone stays on "alarms only".
+
+## Connecting a machine
+
+1. You need: Windows, Linux or macOS with the Claude app, Android phones over USB in developer mode
+   or emulators, `adb`, `ffmpeg`, Python 3.10+.
+2. `git clone`, then `pip install -r harness/requirements.txt`.
+3. Copy `local.example.yaml` to `local.yaml`: machine name, phones, your games (to split games with
+   other machines), path to ffmpeg.
+4. `python harness/sw.py install-agents` — roles with restricted tools.
+5. Two scheduled tasks in Claude:
+   - "play" every hour — "run runbooks/play.md in <path to the clone>". The task text must say:
+     "do not call change_directory, run every command as cd <path> && …". Otherwise the background
+     run hangs on the folder confirmation;
+   - "dream" once a day — "run runbooks/dream.md".
+6. Phones: unlocked, charging, screen up. On Samsung, a covered proximity sensor blocks touches. For
+   the duration of a session `sw.py` turns on Do Not Disturb and then restores the previous mode.
+
+If you have no write access to the repository, the "dream" opens a pull request from a fork.
+
+Manual check:
 
 ```
 python harness/sw.py claim
-python harness/sw.py -d <serial> start <game> explore --budget 5
-python harness/sw.py -d <serial> tap 540 1200 --why "откроется уровень"
-python harness/sw.py -d <serial> end --status ok --summary "проверка"
+python harness/sw.py -d <serial> start <game> --budget 5
+python harness/sw.py -d <serial> tap 540 1200 --why "the level opens"
+python harness/sw.py -d <serial> end --status ok --summary "manual check"
 ```
 
-## Картинки и клипы
+## Images and clips
 
-- Без Git LFS и без MP4: GitHub не проигрывает `<video>` из репозитория, поэтому клип —
-  анимированный WebP до 20 с и 8 МБ, он играет прямо в статье. Кадры — WebP до 1080 px.
-- Оригиналы записей — на YouTube ([`harness/youtube.py`](harness/youtube.py)); пока проект Google
-  не прошёл аудит, загруженные через API ролики приватные.
+- No Git LFS and no MP4: GitHub does not play `<video>` from the repository, so a clip is an
+  animated WebP up to 20 s and 8 MB that plays right in the article. Screenshots are WebP up to
+  1080 px.
+- The original recordings go to YouTube ([`harness/youtube.py`](harness/youtube.py)); until the
+  Google project passes an audit, videos uploaded through the API are private.
 
-## Источники
+## Sources
 
-- Lamis Mukta (Anthropic), «Learning while you Sleep: Beyond Memory to Dreaming», AI DevCon, 2026 —
-  память в файлах, версии и права, «сон» с субагентами и ревью человека.
-- Khairallah AL-Awady, «How to Build Your First Team of AI Agents Using Claude Opus 5.5», 2026 —
-  оркестратор, узкие роли, критик, полный бриф, лимиты, запрет ранних остановок.
-- Подробности и остальные источники — [руководство](docs/guide.md#0-источники).
+- Lamis Mukta (Anthropic), "Learning while you Sleep: Beyond Memory to Dreaming", AI DevCon, 2026 —
+  memory in files, versions and permissions, a "dream" with subagents and human review.
+- Khairallah AL-Awady, "How to Build Your First Team of AI Agents Using Claude Opus 5.5", 2026 —
+  orchestrator, narrow roles, critic, full brief, limits, no early stops.
+- Details and the other sources are in the [guide](docs/guide.md#0-sources).

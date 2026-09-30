@@ -1,22 +1,22 @@
-# База игр под разбор. Весь процесс работает только по этому списку.
+# The list of games to analyze. The whole process works only from this list.
 #
-# Как добавить игру: одна запись = package Android-приложения (он же bundle id).
-#   - package есть в адресе игры в Google Play: play.google.com/store/apps/details?id=com.king.candycrushsaga
+# How to add a game: one entry = the package of the Android app (also known as the bundle id).
+#   - the package is in the game's Google Play URL: play.google.com/store/apps/details?id=com.king.candycrushsaga
 #     -> id: com.king.candycrushsaga
-#   - или на машине с телефоном: python harness/sw.py games — покажет игры на телефоне, какие уже в
-#     списке, и готовые строки для вставки сюда.
-#   Игра должна стоять на телефоне: агент её не устанавливает.
+#   - or, on a machine with a phone: python harness/sw.py games — shows the games on the phone, which
+#     are already in the list, and ready-made lines to paste here.
+#   The game must be installed on the phone: the agent does not install it.
 #
-# Как изменить: на GitHub откройте этот файл → карандаш → правка → «Commit changes» → GitHub
-# предложит pull request → «Merge». Машины подтянут изменения в течение часа (sw.py sync).
+# How to change it: on GitHub open this file → pencil → edit → "Commit changes" → GitHub
+# offers a pull request → "Merge". Machines pick up the changes within an hour (sw.py sync).
 #
-#   id        package из Google Play (обязательно)
-#   title     название (для людей)
-#   priority  меньше — важнее (по умолчанию — порядок в списке)
-#   enabled   false — не разбирать
-#   focus     на что обратить внимание в первую очередь (по желанию)
+#   id        package from Google Play (required)
+#   title     title (for humans)
+#   priority  lower = more important (default: order in the list)
+#   enabled   false = do not analyze
+#   focus     what to look at first (optional)
 #
-# Что уже изучено по игре — wiki/<id>/features.md.
+# What is already known about a game: wiki/<id>/features.md.
 
 games:
   - id: com.maroieqrwlk.unpin
