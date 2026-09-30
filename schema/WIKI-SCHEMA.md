@@ -26,6 +26,7 @@ pull request. Правило из паттерна Karpathy LLM Wiki: сырые
 │   └── skills.jsonl            запуски навыков: успех или неудача
 ├── state/sessions/<device>.json  какая сессия идёт на устройстве (одна игра — одно устройство)
 ├── state/devices/<device>.json   состояние каждой игры на телефоне: fresh | progressed
+├── state/holds/<device>.json     телефон забрал владелец (sw.py stop): сессиям не выдаётся
 └── raw/<game>/<session>/       транскрипт steps.jsonl, кадры, клипы, запись экрана, session.json
 ```
 

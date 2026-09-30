@@ -6,6 +6,8 @@
 Планирование
   claim                                  занять свободные телефоны играми, у которых есть задачи
   status                                 что идёт сейчас на каждом телефоне
+  stop [-d SERIAL] [--hours N]           забрать телефон: за минуту освободить и не выдавать сессиям
+  resume [-d SERIAL]                     вернуть телефон в работу
   sync                                   подтянуть origin/main (только fast-forward)
 Сессия
   start GAME                             запуск игры и записи экрана, первый кадр, задачи сессии
@@ -251,7 +253,12 @@ def all_sessions() -> list[dict]:
 
 
 def save_session(cur: dict) -> None:
-    write_json(session_path(cur["device"]), cur)
+    p = session_path(cur["device"])
+    disk = read_json(p)
+    for k in ("stop_requested", "phone_released", "rec_stopped"):  # их пишет sw.py stop из другого процесса
+        if disk.get(k) and not cur.get(k):
+            cur[k] = disk[k]
+    write_json(p, cur)
 
 
 def stale(cur: dict) -> bool:
@@ -394,6 +401,41 @@ def game_state(dev: str, game: str, info: dict) -> str:
     return rec.get("progress", "unknown")
 
 
+# --- удержание: владелец забирает телефон ---------------------------------------------------
+# state/holds/<device>.json — телефон не выдаётся сессиям, пока удержание не снято (sw.py resume),
+# не истекло (--hours) или телефон не отключили и не подключили снова.
+
+def hold_path(dev: str) -> Path:
+    return STATE() / "holds" / f"{devkey(dev)}.json"
+
+
+def held(dev: str) -> dict | None:
+    return read_json(hold_path(dev)) or None
+
+
+def restore_dnd(dev: str, prev) -> None:
+    adb(dev, "shell", f"cmd notification set_dnd {ZEN.get(str(prev), 'off')}", timeout=15)
+
+
+def set_pending_zen(dev: str, prev) -> None:
+    """Прежний режим «Не беспокоить» запоминается до конца сессии: если телефон выдернут без
+    команды, его вернут при следующем подключении."""
+    prof = device_profile(dev)
+    if prev is None:
+        prof.pop("_zen_restore", None)
+    else:
+        prof["_zen_restore"] = prev
+    write_json(STATE() / "devices" / f"{devkey(dev)}.json", prof)
+
+
+STOP_MSG = "телефон забирают: никаких действий на телефоне, сразу заверши сессию"
+
+
+def check_stop(cur: dict) -> None:
+    if cur.get("stop_requested") or held(cur["device"]):
+        fail(STOP_MSG, 6, hint="sw.py end --status interrupted --summary ...")
+
+
 class FakeDevice:
     """Проверка без телефона (fake_devices в local.yaml): кадры по кругу из папки с картинками."""
 
@@ -431,6 +473,7 @@ def app_on_screen(cur: dict) -> str | None:
 
 
 def guard(cur: dict) -> None:
+    check_stop(cur)
     s = P()["session"]
     elapsed = (time.time() - cur["t0"]) / 60
     if elapsed > cur["budget_min"] * s["hard_limit"] or cur["step"] >= cur["max_steps"] * s["hard_limit"]:
@@ -526,6 +569,16 @@ def start_recording(cur: dict) -> None:
     popen([sys.executable, str(HERE / "sw.py"), "_rec", str(d)], creationflags=NO_WINDOW | 0x00000200,
           stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=open(d / "rec.log", "a"))
     cur["rec"] = {"kind": spec["kind"], "t0": time.time()}
+
+
+def stop_recording(cur: dict, wait_s: float = 300) -> None:
+    d = Path(cur["dir"])
+    if cur.get("rec") and not cur.get("rec_stopped"):
+        (d / "rec.stop").write_text("1")
+        deadline = time.time() + wait_s
+        while not (d / "rec.done").exists() and time.time() < deadline:
+            time.sleep(0.5)
+        cur["rec_stopped"] = True
 
 
 def cmd_rec(args) -> None:
@@ -935,6 +988,21 @@ def cmd_claim(args) -> None:
         busy_devs = {s["device"]: s for s in sessions}
         entries = games()
         devs = devices()
+        active_devs = {x["device"] for x in all_sessions()}
+        for hp in (STATE() / "holds").glob("*.json"):
+            h = read_json(hp)
+            if h.get("until") and iso_to_t(h["until"]) < now:
+                hp.unlink()  # удержание истекло
+            elif h.get("device") not in devs:
+                h["absent"] = True  # телефон отключили
+                write_json(hp, h)
+            elif h.get("absent"):
+                hp.unlink()  # отключили и подключили снова — телефон вернули
+        for dev, platform in devs.items():
+            prev = device_profile(dev).get("_zen_restore")
+            if platform == "android" and prev is not None and dev not in active_devs:
+                restore_dnd(dev, prev)  # телефон выдернули посреди сессии: вернуть прежний режим
+                set_pending_zen(dev, None)
         haves: dict[str, set[str]] = {}
         for dev, platform in devs.items():
             haves[dev] = installed(dev) if platform == "android" else {e["id"] for e in entries}
@@ -946,6 +1014,10 @@ def cmd_claim(args) -> None:
                 continue
             if dev in busy_devs:
                 res.append({"device": dev, "action": "busy", "game": busy_devs[dev]["game"]})
+                continue
+            if held(dev):
+                res.append({"device": dev, "action": "held",
+                            "reason": "владелец забрал телефон: вернуть — sw.py resume или отключить и подключить снова"})
                 continue
             if platform == "android":
                 ok, reason = phone_status(dev, {e["id"] for e in entries})
@@ -996,8 +1068,55 @@ def cmd_status(args) -> None:
                        recent=[{k: s.get(k) for k in ("step", "type", "why", "text", "title") if s.get(k) is not None}
                                for s in steps[-6:]])
         rows.append(row)
-    free = [d for d in devices() if d not in {r["device"] for r in rows}]
-    out({"machine": machine(), "sessions": rows, "free_devices": free})
+    free = [d for d in devices() if d not in {r["device"] for r in rows} and not held(d)]
+    holds = [read_json(h) for h in (STATE() / "holds").glob("*.json")]
+    out({"machine": machine(), "sessions": rows, "free_devices": free, "held": holds})
+
+
+def cmd_stop(args) -> None:
+    """Забрать телефон: вернуть «Не беспокоить», дописать запись, закрыть игру и не выдавать
+    телефон сессиям. Игрок получает отказ на следующем действии и завершает сессию; нарезка
+    клипов и загрузка на YouTube идут уже без телефона."""
+    t0 = time.time()
+    connected = devices()
+    targets = [args.device] if args.device else sorted(set(connected) | {x["device"] for x in all_sessions()})
+    res = []
+    for dev in targets:
+        hold = {"device": dev, "since": now_iso(), "note": args.note or ""}
+        if args.hours:
+            hold["until"] = now_iso(time.time() + args.hours * 3600)
+        write_json(hold_path(dev), hold)
+        row = {"device": dev}
+        cur = read_json(session_path(dev))
+        if cur.get("status") == "reserved":
+            session_path(dev).unlink(missing_ok=True)
+            row["session"] = "бронь снята"
+        elif cur.get("status") == "active":
+            cur["stop_requested"] = time.time()
+            save_session(cur)  # игрок получит отказ на следующем действии
+            if cur["platform"] == "android" and dev in connected:
+                if cur.get("zen_prev") is not None:
+                    restore_dnd(dev, cur["zen_prev"])
+                adb(dev, "shell", f"am force-stop {cur['game']}", timeout=15)
+            stop_recording(cur, wait_s=40)
+            cur["phone_released"] = True
+            save_session(cur)
+            row["session"] = f"{cur['id']} остановлена, игрок её завершит"
+        if connected.get(dev) == "android" and device_profile(dev).get("_zen_restore") is not None:
+            restore_dnd(dev, device_profile(dev)["_zen_restore"])
+        if connected.get(dev) == "android":
+            set_pending_zen(dev, None)
+        res.append(row)
+    out({"ok": True, "seconds": round(time.time() - t0, 1), "devices": res,
+         "message": "можно отключать телефон" + ("ы" if len(res) > 1 else "")})
+
+
+def cmd_resume(args) -> None:
+    targets = [hp for hp in (STATE() / "holds").glob("*.json")
+               if not args.device or read_json(hp).get("device") == args.device]
+    for hp in targets:
+        hp.unlink()
+    out({"resumed": [hp.stem for hp in targets]})
 
 
 def cmd_sync(args) -> None:
@@ -1023,6 +1142,8 @@ def cmd_start(args) -> None:
             dev = reserved[0]["device"] if reserved else (list(devs)[:1] or [None])[0]
         if not dev or dev not in devs:
             fail(f"устройство {dev} не подключено", devices=list(devs))
+        if held(dev):
+            fail(f"{dev} на удержании: владелец забрал телефон (sw.py resume, чтобы вернуть)")
         reservation = None
         for other in all_sessions():
             if other["device"] == dev:
@@ -1061,6 +1182,7 @@ def cmd_start(args) -> None:
             # «Не беспокоить: только будильники» на время сессии: уведомления мессенджеров
             # не всплывают поверх игры и не попадают в кадры
             cur["zen_prev"] = adb(dev, "shell", "settings get global zen_mode").strip()
+            set_pending_zen(dev, cur["zen_prev"])
             adb(dev, "shell", "cmd notification set_dnd alarms")
         info = package_info(dev, args.game)
         state = game_state(dev, args.game, info)
@@ -1104,6 +1226,7 @@ def cmd_device_state(args) -> None:
 
 def cmd_shot(args) -> None:
     cur = pick_session(args)
+    check_stop(cur)
     info = take_shot(cur, open_device(cur))
     log_step(cur, {"type": "shot", "shot": info["shot_n"], "app": info["app"], "hash": cur["last_hash"]})
     save_session(cur)
@@ -1112,6 +1235,7 @@ def cmd_shot(args) -> None:
 
 def cmd_wait(args) -> None:
     cur = pick_session(args)
+    check_stop(cur)
     time.sleep(min(args.seconds, 60))
     cur["last_action"] = time.time()
     info = take_shot(cur, open_device(cur))
@@ -1235,26 +1359,23 @@ def finish(cur: dict, status: str, summary: str) -> dict:
     d = Path(cur["dir"])
     if cur.get("clip_open"):
         cur["clips"].append({**cur["clip_open"], "desc": "", "t1": cur["last_action"] + 2})
-    if cur.get("rec"):
-        (d / "rec.stop").write_text("1")
-        for _ in range(600):
-            if (d / "rec.done").exists():
-                break
-            time.sleep(0.5)
-    clips = cut_clips(cur)
-    if cur["platform"] == "android":
+    stop_recording(cur)
+    info = None
+    if cur["platform"] == "android" and not cur.get("phone_released"):
         try:
             info = package_info(cur["device"], cur["game"])
             cur["version"] = info["version"] or cur.get("version")
             adb(cur["device"], "shell", f"am force-stop {cur['game']}")
             if cur.get("zen_prev") is not None:
-                adb(cur["device"], "shell", f"cmd notification set_dnd {ZEN.get(cur['zen_prev'], 'off')}")
+                restore_dnd(cur["device"], cur["zen_prev"])
+                set_pending_zen(cur["device"], None)
         except Exception as ex:
             log_step(cur, {"type": "warn", "text": f"stop: {ex}"})
     if cur["step"] and device_profile(cur["device"]).get(cur["game"], {}).get("progress", "fresh") == "fresh":
         # после сессии игра на этом телефоне уже не свежая
-        set_game_state(cur["device"], cur["game"], "progressed", f"после сессии {cur['id']}",
-                       package_info(cur["device"], cur["game"]) if cur["platform"] == "android" else None)
+        set_game_state(cur["device"], cur["game"], "progressed", f"после сессии {cur['id']}", info)
+    session_path(cur["device"]).unlink(missing_ok=True)  # телефон свободен: клипы и YouTube — уже без него
+    clips = cut_clips(cur)
     youtube = None
     if L()["youtube"]["enabled"] and (d / "original.mkv").exists():
         try:
@@ -1287,7 +1408,6 @@ def finish(cur: dict, status: str, summary: str) -> dict:
     append_jsonl(STATE() / cur["game"] / "sessions.jsonl", {k: v for k, v in meta.items() if k != "clips"}
                  | {"clips": len(clips)})
     log_step(cur, {"type": "end", "status": status, "summary": summary})
-    session_path(cur["device"]).unlink(missing_ok=True)
     return {"ended": cur["id"], "status": status, "dir": str(d), "marks": meta["marks"],
             "cases_done": meta["cases_done"], "tasks_done": meta["tasks_done"], "tasks_added": meta["tasks_added"],
             "clips": [c["file"] for c in clips], "youtube": youtube,
@@ -1689,6 +1809,10 @@ def main() -> None:
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("claim")
     sub.add_parser("status")
+    p = sub.add_parser("stop")
+    p.add_argument("--hours", type=float, help="вернуть в работу автоматически через N часов")
+    p.add_argument("--note")
+    sub.add_parser("resume")
     sub.add_parser("sync")
     p = sub.add_parser("start")
     p.add_argument("game")
@@ -1798,7 +1922,7 @@ def main() -> None:
 
     s = lambda v, k: int(round(v * k))  # noqa: E731
     handlers = {
-        "claim": cmd_claim, "status": cmd_status, "sync": cmd_sync, "start": cmd_start,
+        "claim": cmd_claim, "status": cmd_status, "stop": cmd_stop, "resume": cmd_resume, "sync": cmd_sync, "start": cmd_start,
         "device-state": cmd_device_state, "shot": cmd_shot, "wait": cmd_wait, "launch": cmd_launch,
         "note": cmd_note, "mark": cmd_mark, "clip": cmd_clip, "feature": cmd_feature, "case": cmd_case,
         "task": cmd_task, "discovery": cmd_discovery, "skill": cmd_skill, "end": cmd_end, "games": cmd_games,
