@@ -94,7 +94,7 @@ PROJECT_DEFAULTS = {
     "maintainers": [], "repo": "",
     "session": {"budget_min": {"analyze": 30, "update": 25, "survey": 15, "ftue": 30, "replay": 20, "followup": 10,
                                 "daily": 10},
-                "max_session_min": 45, "steps_per_min": 4, "hard_limit": 1.5, "stale_min": 20},
+                "max_session_min": 45, "steps_per_min": 4, "hard_limit": 1.5, "stale_min": 20, "max_in_a_row": 2},
     "research": {"version_check_hours": 6, "ftue_refresh_days": 180, "country": "us", "survey_every_sessions": 2,
                  "discovery_clean_surveys": 2},
     # study: learns new gameplay (strong); play: plays learned gameplay and checks cases (fast);
@@ -858,6 +858,7 @@ def research_path(game: str) -> Path:
 def global_research(game: str, base: Path | None = None) -> dict:
     snap = read_yaml(base or research_path(game))
     for k, v in (("game", game), ("version", None), ("play_version", None), ("play_checked", None),
+                 ("phone_version", None),
                  ("discovery", "open"), ("ftue_verified", None), ("progress", None), ("gate", None), ("synced", {}),
                  ("mechanics", []), ("features", []), ("tasks", [])):
         snap.setdefault(k, v)
@@ -987,6 +988,8 @@ def apply_op(view: dict, op: dict) -> None:
         for f in view["features"]:
             if f.get("status") == "documented":
                 f["status"] = "recheck"
+    elif kind == "phone_version":
+        view["phone_version"] = op.get("value")
     elif kind == "play_version":
         view["play_version"] = op.get("value") or view.get("play_version")
         view["play_checked"] = op.get("checked")
@@ -1084,6 +1087,17 @@ def advance_blocked(view: dict, now: float) -> dict | None:
     return g if g and view["discovery"] != "closed" and open_cases(view) == 0 else None
 
 
+def needs_update(view: dict, t: dict) -> bool:
+    """The task is for a newer version than the one on the phone: the game has to be updated first."""
+    pv = view.get("phone_version")
+    return bool(pv and t["kind"] in ("analyze", "update") and t.get("version") and vkey(pv) < vkey(t["version"]))
+
+
+def update_hint(view: dict) -> str:
+    return (f"update the game on the phone in Google Play: installed {view.get('phone_version')}, "
+            f"Google Play {view.get('version')}")
+
+
 def game_status(view: dict, now: float) -> tuple[str, str]:
     ot = open_tasks(view)
     if not view["tasks"]:
@@ -1091,10 +1105,15 @@ def game_status(view: dict, now: float) -> tuple[str, str]:
     if not ot:
         return "sleeping", "all done: sleeping until a new version"
     g, blocked = gate_active(view, now), advance_blocked(view, now)
+    upd = [t for t in ot if needs_update(view, t)]
     ready = [t for t in ot if iso_to_t(t.get("not_before")) <= now and t.get("requires", "any") != "fresh"
-             and not (blocked and t["kind"] in ("analyze", "update"))]
+             and not (blocked and t["kind"] in ("analyze", "update")) and t not in upd]
     if ready:
-        return "active", f"ready now: {len(ready)}" + (f"; advancing blocked by {g['type']} until {g['until']}" if g else "")
+        return "active", (f"ready now: {len(ready)}"
+                          + (f"; advancing blocked by {g['type']} until {g['until']}" if g else "")
+                          + (f"; {update_hint(view)}" if upd else ""))
+    if upd:
+        return "needs_human", "needs a human: " + update_hint(view)
     waits = [t["not_before"] for t in ot if iso_to_t(t.get("not_before")) > now] + ([blocked["until"]] if blocked else [])
     if waits:
         return "waiting", f"waiting until {min(waits)}" + (f" ({blocked['type']} gate)" if blocked else "")
@@ -1123,6 +1142,9 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
         view = research_view(game)
     candidates = [v for v in [view.get("play_version"), *installed_versions] if v]
     target = max(candidates, key=vkey) if candidates else None
+    phone = max(installed_versions, key=vkey) if installed_versions else None
+    if phone and phone != view.get("phone_version"):
+        write_op(game, {"op": "phone_version", "value": phone})  # older than Google Play: a human updates the game
     analyze = find_task(view, "analyze")
     if analyze is None:
         write_op(game, {"op": "task", "id": "analyze", "title": f"Analyze the game, version {target or '?'}",
@@ -1352,6 +1374,20 @@ def summary_of(view: dict) -> dict:
 
 # --- commands: planning ----------------------------------------------------------------------
 
+def device_streak(dev: str) -> tuple[str | None, int]:
+    """The game of this device's last session and how many sessions in a row it has had."""
+    rows = sorted((s for f in STATE().glob("*/sessions.jsonl") for s in read_jsonl(f) if s.get("device") == dev),
+                  key=lambda s: s["started"])
+    if not rows:
+        return None, 0
+    game, n = rows[-1]["game"], 0
+    for s in reversed(rows):
+        if s["game"] != game:
+            break
+        n += 1
+    return game, n
+
+
 def cmd_claim(args) -> None:
     res, now = [], time.time()
     with machine_lock():
@@ -1421,6 +1457,13 @@ def cmd_claim(args) -> None:
                 res.append({"device": dev, "action": "idle", "reason": "no tasks can be done on this device",
                             "games": other, "not_installed": missing})
                 continue
+            # Priority decides the order, but one game does not keep the phone forever: after max_in_a_row
+            # sessions in a row the other games with ready tasks go first (a handoff still continues at once).
+            sg, sn = device_streak(dev)
+            rotated = None
+            if sn >= P()["session"]["max_in_a_row"] and len({c[3]["id"] for c in cands}) > 1:
+                cands = [((c[0] + 10) if c[3]["id"] == sg and c[0] >= 0 else c[0], *c[1:]) for c in cands]
+                rotated = f"{sg} had {sn} sessions in a row: other games go first"
             _, _, _, e, st = min(cands, key=lambda c: c[:3])
             budget = budget_for(st["ready"])
             role, role_why = model_role(st["view"], st["ready"])
@@ -1432,6 +1475,7 @@ def cmd_claim(args) -> None:
             res.append({"device": dev, "action": "play", "game": e["id"], "title": e.get("title", e["id"]),
                         "device_state": st["state"], "installed_version": st["info"]["version"],
                         "model": model, "model_role": role, "model_why": role_why,
+                        **({"rotation": rotated} if rotated and e["id"] != sg else {}),
                         "mode": st["mode"], "mode_hint": st["mode_why"],
                         "tasks": st["ready"], "budget_min": budget,
                         "max_steps": budget * P()["session"]["steps_per_min"], "focus": e["focus"],
@@ -2400,7 +2444,8 @@ def render_game(gd: Path, title: str) -> dict:
 
     now_rows = [t for t in ot if iso_to_t(t.get("not_before")) <= now and t.get("requires", "any") != "fresh"]
     wait_rows = sorted([t for t in ot if iso_to_t(t.get("not_before")) > now], key=lambda t: t["not_before"])
-    human_rows = [t for t in ot if t.get("requires") == "fresh" and t not in wait_rows]
+    human_rows = [t for t in ot if (t.get("requires") == "fresh" or needs_update(view, t)) and t not in wait_rows]
+    provide = lambda t: update_hint(view) if needs_update(view, t) else FRESH_HINT  # noqa: E731
     done_rows = sorted([t for t in view["tasks"] if t.get("status") in ("done", "cancelled")],
                        key=lambda t: t.get("closed") or "", reverse=True)
     mode, mode_why = research_mode(view, now)
@@ -2443,7 +2488,7 @@ def render_game(gd: Path, title: str) -> dict:
     L_ += ["", "## Needs a human", "",
            "The agent cannot do these tasks until it is given a suitable phone.", ""]
     L_ += table("| Task | What to provide | Feature |",
-                [f"| {t['title']} | {FRESH_HINT} | {fname(t.get('feature'))} |" for t in human_rows])
+                [f"| {t['title']} | {provide(t)} | {fname(t.get('feature'))} |" for t in human_rows])
     L_ += ["", "## Done", ""]
     L_ += table("| Task | Closed | By | Note |",
                 [f"| {t['title']}{' (cancelled)' if t.get('status') == 'cancelled' else ''} | "
@@ -2468,7 +2513,7 @@ def render_game(gd: Path, title: str) -> dict:
                  f"{sum(c.get('done', False) for c in fc)} / {len(fc)} | {'; '.join(ft)} | {f.get('version_seen') or ''} |")
     (gd / "features.md").write_text("\n".join(F) + "\n", encoding="utf-8")
     return {"game": gd.name, "title": title, "status": status, "why": why, "now": len(now_rows),
-            "waiting": len(wait_rows), "human": [t["title"] for t in human_rows],
+            "waiting": len(wait_rows), "human": [(t["title"], provide(t)) for t in human_rows],
             "done": len([t for t in done_rows if t.get("status") == "done"]),
             "play_version": view.get("play_version"), "version": view.get("version"),
             "features": len(view["features"]), "documented": docs}
@@ -2491,7 +2536,7 @@ def cmd_render(args) -> None:
                  f"{r['play_version'] or '—'} / {r['version'] or '—'} |")
     human = [(r, h) for r in rows for h in r["human"]]
     S += ["", "## Which phone is needed", ""]
-    S += [f"- **{r['title']}** — {h}: {FRESH_HINT}" for r, h in human] or ["Nothing right now: the agent has everything it needs."]
+    S += [f"- **{r['title']}** — {h}: {how}" for r, (h, how) in human] or ["Nothing right now: the agent has everything it needs."]
     (root / "tasks.md").write_text("\n".join(S) + "\n", encoding="utf-8")
     out({"rendered": [r["game"] for r in rows], "overview": str(root / "tasks.md")})
 
