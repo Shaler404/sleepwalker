@@ -15,7 +15,7 @@ Session
   device-state fresh|progressed [--note] the game on this phone: fresh install or progressed
   shot [--hi] | wait SEC | launch         screenshot (--hi: full resolution) / wait, then screenshot / bring the game back
   tap X Y --why ... | swipe X1 Y1 X2 Y2 --why ... | key back --why ... | text "..." --why ...
-  taps "X,Y X,Y X1,Y1>X2,Y2 !X,Y" --why ...  safe moves from one screenshot in a row, a risky one (!) last
+  taps "X,Y X,Y:2 X1,Y1>X2,Y2 !X,Y" --why ...  safe moves in a row (:2 a double tap), a risky one (!) last
 Levels: think first, then play fast
   playbook                               how to play this game: rules and methods per mechanic, level times
   level start "level 12" --mechanic ID --plan "..." [--value 12] [--hi]
@@ -475,7 +475,7 @@ class FakeDevice:
     def _next(self, *a, **k) -> None:
         self.cur["fake_i"] = self.cur.get("fake_i", 0) + 1
 
-    tap = long_press = swipe = key = type_text = _next
+    tap = double_tap = long_press = swipe = key = type_text = _next
 
     def launch(self, package: str) -> None: ...
     def stop(self, package: str) -> None: ...
@@ -614,6 +614,15 @@ def action(args, name: str, fn, rec: dict, points: tuple = ()) -> None:
     out(info)
 
 
+def move_points(m: tuple) -> list[tuple[float, float]]:
+    """(x, y) a tap, (x, y, 2) a double tap, (x1, y1, x2, y2) a swipe."""
+    return [(m[0], m[1])] if len(m) in (2, 3) else [(m[0], m[1]), (m[2], m[3])]
+
+
+def points_inside(m: tuple, w: float, h: float) -> bool:
+    return all(0 <= x <= w and 0 <= y <= h for x, y in move_points(m))
+
+
 def parse_moves(spec: str) -> tuple[list[tuple[float, ...]], list[bool]]:
     """"X,Y" is a tap, "X1,Y1>X2,Y2" a swipe; moves are separated by spaces or semicolons. A leading "!"
     marks a risky move: one that cannot be undone or can cost the level, or whose result decides the next
@@ -624,13 +633,16 @@ def parse_moves(spec: str) -> tuple[list[tuple[float, ...]], list[bool]]:
             continue
         r = tok.startswith("!")
         body = tok.lstrip("!")
+        double = body.endswith(":2")
+        body = body[:-2] if double else body
+        hint = "a tap is X,Y, a double tap X,Y:2, a swipe X1,Y1>X2,Y2, a risky move starts with !"
         try:
             nums = tuple(float(v) for v in re.split(r"[,>]", body))
         except ValueError:
-            fail(f"bad move {tok!r}: a tap is X,Y, a swipe X1,Y1>X2,Y2, a risky move starts with !")
-        if len(nums) not in (2, 4) or (len(nums) == 4) != (">" in body):
-            fail(f"bad move {tok!r}: a tap is X,Y, a swipe X1,Y1>X2,Y2, a risky move starts with !")
-        moves.append(nums)
+            fail(f"bad move {tok!r}: {hint}")
+        if len(nums) not in (2, 4) or (len(nums) == 4) != (">" in body) or (double and len(nums) != 2):
+            fail(f"bad move {tok!r}: {hint}")
+        moves.append(nums + (2.0,) if double else nums)
         risky.append(r)
     if not moves:
         fail("no moves given")
@@ -648,6 +660,8 @@ def run_moves(cur: dict, dev, moves: list[tuple], k: float, gap: float) -> tuple
             return done, "owner"
         if len(m) == 2:
             dev.tap(s(m[0]), s(m[1]))
+        elif len(m) == 3:  # (x, y, 2): a double tap
+            dev.double_tap(s(m[0]), s(m[1]))
         else:
             dev.swipe(s(m[0]), s(m[1]), s(m[2]), s(m[3]))
         done += 1
@@ -668,7 +682,7 @@ def cmd_taps(args) -> None:
         fail("a risky move (!X,Y) ends a batch: play the safe moves and the risky one last, look at its result, "
              "then plan the next moves from what it changed")
     w, h = cur.get("model_size") or (10 ** 6, 10 ** 6)
-    bad = [m for m in moves if any(not 0 <= v <= (w if i % 2 == 0 else h) for i, v in enumerate(m))]
+    bad = [m for m in moves if not points_inside(m, w, h)]
     if bad:
         fail(f"coordinates outside the {w}x{h} screenshot: use pixels of the last screenshot", moves=bad[:5])
     guard(cur)
@@ -1994,8 +2008,7 @@ def run_solver(game: str, mech: str, image: Path, board: str | None, scale: floa
 
 def solver_moves(res: dict, w: int, h: int) -> list[tuple[float, ...]]:
     moves = [tuple(float(v) for v in m) for m in res.get("moves") or []]
-    if any(len(m) not in (2, 4) or any(not 0 <= v <= (w if i % 2 == 0 else h) for i, v in enumerate(m))
-           for m in moves):
+    if any(len(m) not in (2, 3, 4) or (len(m) == 3 and m[2] != 2) or not points_inside(m, w, h) for m in moves):
         fail("the solver returned moves outside the screen or of a bad shape", moves=[list(m) for m in moves[:5]])
     return moves
 
@@ -2701,9 +2714,10 @@ def main() -> None:
     p = sub.add_parser("text")
     p.add_argument("value")
     p = sub.add_parser("taps")
-    p.add_argument("moves", help='"X,Y X,Y X1,Y1>X2,Y2 !X,Y": taps and swipes in pixels of the last screenshot; '
+    p.add_argument("moves", help='"X,Y X,Y:2 X1,Y1>X2,Y2 !X,Y": taps, double taps (:2) and swipes in pixels of the last screenshot; '
                                  '! marks the risky move that ends the batch')
     p.add_argument("--gap", type=float, help="seconds between moves (default from project.yaml)")
+    sub.choices["tap"].add_argument("--double", action="store_true", help="a double tap")
     for name in ("tap", "swipe", "key", "text", "taps"):
         sp = sub.choices[name]
         sp.add_argument("--why", required=True, help="what you expect to see after the action")
@@ -2853,8 +2867,8 @@ def main() -> None:
         "wiki-clip": cmd_wiki_clip, "gc": cmd_gc, "install-agents": cmd_install_agents, "_rec": cmd_rec,
         "taps": cmd_taps, "level": cmd_level, "mechanic": cmd_mechanic, "playbook": cmd_playbook, "solve": cmd_solve,
         "ask": cmd_ask,
-        "tap": lambda a: action(a, "tap", lambda d, k: d.tap(s(a.x, k), s(a.y, k)), {"x": a.x, "y": a.y},
-                                ((a.x, a.y),)),
+        "tap": lambda a: action(a, "tap", lambda d, k: (d.double_tap if a.double else d.tap)(s(a.x, k), s(a.y, k)),
+                                {"x": a.x, "y": a.y, **({"double": True} if a.double else {})}, ((a.x, a.y),)),
         "swipe": lambda a: action(a, "swipe", lambda d, k: d.swipe(s(a.x1, k), s(a.y1, k), s(a.x2, k), s(a.y2, k)),
                                   {"from": [a.x1, a.y1], "to": [a.x2, a.y2]}, ((a.x1, a.y1), (a.x2, a.y2))),
         "key": lambda a: action(a, "key", lambda d, k: d.key(a.name), {"key": a.name}),

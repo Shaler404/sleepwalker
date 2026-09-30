@@ -323,7 +323,8 @@ consolidates it.
               "done": False}    # these moves finish the level
   ```
 
-  Moves are in pixels of the full-resolution image: `[x, y]` is a tap, `[x1, y1, x2, y2]` a swipe.
+  Moves are in pixels of the full-resolution image: `[x, y]` is a tap, `[x, y, 2]` a double tap,
+  `[x1, y1, x2, y2]` a swipe.
   A solver models the rules exactly (including how a level is lost), searches ahead instead of taking
   the first legal move, prefers moves that keep options open, and stops at the first move that depends
   on something hidden. It checks that what it read is plausible (board size, number of regions or

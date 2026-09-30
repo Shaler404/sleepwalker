@@ -13,6 +13,8 @@
 - Never put into git: `local.yaml`, `state/`, `raw/`, secrets, nicknames, email addresses, avatars,
   notifications and screenshots that are not from the game.
 - Never enter PINs, passwords or payment details. Real-money purchases are forbidden.
+- Every phone action goes through `harness/sw.py`, never `adb` directly: only `sw.py` logs the step,
+  honours the owner taking the phone and stops a batch when a payment sheet comes up.
 - A solver (`solvers/`, `state/<game>/solvers/`) only computes moves from a screenshot: no files,
   network, processes or dynamic code. `sw.py solve` and `check-zones` refuse anything else.
 - Every fact in the wiki has a source `[s:<session>#<step>]`. A case without a source does not count

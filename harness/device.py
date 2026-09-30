@@ -26,6 +26,7 @@ class Device(Protocol):
 
     def screenshot(self) -> Image.Image: ...
     def tap(self, x: int, y: int) -> None: ...
+    def double_tap(self, x: int, y: int) -> None: ...
     def long_press(self, x: int, y: int, duration_ms: int = 800) -> None: ...
     def swipe(self, x1: int, y1: int, x2: int, y2: int, duration_ms: int = 300) -> None: ...
     def type_text(self, text: str) -> None: ...
@@ -75,6 +76,11 @@ class AndroidDevice:
     # --- actions ---------------------------------------------------------
     def tap(self, x: int, y: int) -> None:
         self.adb.click(int(x), int(y))
+
+    def double_tap(self, x: int, y: int) -> None:
+        # Two separate adb calls are too far apart for a double tap; the first tap goes to the background
+        # and the second follows 80 ms later in the same shell (found by the player in Akari, 2026-10-01).
+        self.adb.shell(f"input tap {int(x)} {int(y)} & sleep 0.08; input tap {int(x)} {int(y)}")
 
     def long_press(self, x: int, y: int, duration_ms: int = 800) -> None:
         self.adb.swipe(int(x), int(y), int(x), int(y), duration_ms / 1000)
