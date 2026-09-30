@@ -1,8 +1,8 @@
-# Вики игр
+# Game wiki
 
-Строку добавляет и обновляет «сон». Какие игры в разборе — [`games.yaml`](../games.yaml).
+The "dream" adds and updates the rows. Which games are being analyzed: [`games.yaml`](../games.yaml).
 
-| Игра | Фичи описаны | Кейсы закрыты | Статус | Версия |
+| Game | Features described | Cases closed | Status | Version |
 |---|---|---|---|---|
 
-Общее для всех игр: [уроки агента](_common/agent-lessons.md).
+Common to all games: [agent lessons](_common/agent-lessons.md).

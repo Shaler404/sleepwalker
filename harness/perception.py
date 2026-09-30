@@ -1,11 +1,11 @@
-"""Восприятие: подготовка кадров для модели, сигнатуры экранов, OCR, аннотации.
+"""Perception: preparing frames for the model, screen signatures, OCR, annotations.
 
-Ключевые факты (документация Claude, раздел Vision / Coordinates):
-- изображение стоит ceil(w/28) * ceil(h/28) визуальных токенов;
-- модели Claude 4.7+ (Opus/Sonnet 5.x) не уменьшают кадры до 2576 px по длинной стороне
-  и 4784 токенов; Haiku 4.5 и старше — до 1568 px / 1568 токенов;
-- координаты модель возвращает в пикселях того изображения, которое она видит,
-  поэтому уменьшайте кадр сами и храните масштаб.
+Key facts (Claude docs, Vision / Coordinates section):
+- an image costs ceil(w/28) * ceil(h/28) visual tokens;
+- Claude 4.7+ models (Opus/Sonnet 5.x) keep frames up to 2576 px on the long edge and 4784 tokens
+  without downscaling; Haiku 4.5 and older, up to 1568 px / 1568 tokens;
+- the model returns coordinates in pixels of the image it sees,
+  so downscale the frame yourself and keep the scale.
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from typing import Iterable
 from PIL import Image, ImageDraw
 
 HIGH_RES = {"max_edge": 2576, "max_tokens": 4784}  # Opus 5.5 / Sonnet 5.5 / Opus 4.7+
-STANDARD = {"max_edge": 1568, "max_tokens": 1568}  # Haiku 4.5 и старше
+STANDARD = {"max_edge": 1568, "max_tokens": 1568}  # Haiku 4.5 and older
 
 
 def image_tokens(width: int, height: int) -> int:
@@ -23,7 +23,7 @@ def image_tokens(width: int, height: int) -> int:
 
 
 def resized_size(width: int, height: int, max_edge: int = 2576, max_tokens: int = 4784) -> tuple[int, int]:
-    """Размер, до которого API само уменьшит кадр (референс из документации)."""
+    """The size the API itself will downscale the frame to (reference code from the docs)."""
 
     def fits(w: int, h: int) -> bool:
         return (
@@ -49,12 +49,12 @@ def resized_size(width: int, height: int, max_edge: int = 2576, max_tokens: int 
 
 
 def prepare_for_model(img: Image.Image, budget_tokens: int = 1500, tier: dict = HIGH_RES) -> tuple[Image.Image, float]:
-    """Уменьшить кадр так, чтобы (а) API его не ресайзило (координаты 1:1) и
-    (б) он стоил не больше budget_tokens. Возвращает (кадр, масштаб):
-    физическая_координата = координата_модели * масштаб.
+    """Downscale the frame so that (a) the API does not resize it (coordinates 1:1) and
+    (b) it costs no more than budget_tokens. Returns (frame, scale):
+    physical_coordinate = model_coordinate * scale.
 
-    Телефон 1080x2400: без уменьшения 3354 токена; budget 1500 -> ~720x1600 (1508);
-    budget 900 -> ~540x1200 (860). Для мелкого текста используйте zoom_crop().
+    A 1080x2400 phone: 3354 tokens without downscaling; budget 1500 -> ~720x1600 (1508);
+    budget 900 -> ~540x1200 (860). For small text use zoom_crop().
     """
     w, h = resized_size(img.width, img.height, **tier)
     if image_tokens(w, h) > budget_tokens:
@@ -65,18 +65,18 @@ def prepare_for_model(img: Image.Image, budget_tokens: int = 1500, tier: dict = 
 
 
 def zoom_crop(img: Image.Image, x: int, y: int, size: int = 400) -> tuple[Image.Image, tuple[int, int]]:
-    """Вырезать квадрат вокруг точки в полном разрешении (для мелких надписей).
-    Возвращает (кроп, смещение); координата на кропе + смещение = физическая."""
+    """Cut a square around a point at full resolution (for small text).
+    Returns (crop, offset); coordinate on the crop + offset = physical coordinate."""
     left = max(0, min(img.width - size, x - size // 2))
     top = max(0, min(img.height - size, y - size // 2))
     return img.crop((left, top, left + size, top + size)), (left, top)
 
 
-# --- сигнатуры экранов ----------------------------------------------------
+# --- screen signatures ----------------------------------------------------
 
 def screen_hash(img: Image.Image) -> str:
-    """Перцептивный хэш (64 бит): одинаковый экран даёт близкие хэши даже при смене
-    таймеров и чисел. pip install imagehash"""
+    """Perceptual hash (64 bits): the same screen gives close hashes even when
+    timers and numbers change. pip install imagehash"""
     import imagehash
 
     return str(imagehash.phash(img, hash_size=8))
@@ -89,15 +89,15 @@ def hash_distance(a: str, b: str) -> int:
 
 
 def is_same_screen(a: str | None, b: str | None, threshold: int = 10) -> bool:
-    # int()/bool() важны: imagehash возвращает numpy-типы, которые json не сериализует.
+    # int()/bool() matter: imagehash returns numpy types that json cannot serialize.
     return bool(a is not None and b is not None and hash_distance(a, b) <= threshold)
 
 
 # --- OCR ------------------------------------------------------------------
 
 def ocr(img: Image.Image) -> list[dict]:
-    """Лёгкий OCR без GPU: pip install rapidocr-onnxruntime numpy.
-    Возвращает [{"text", "box": [[x,y]x4], "score"}] в физических координатах кадра."""
+    """Lightweight OCR without a GPU: pip install rapidocr-onnxruntime numpy.
+    Returns [{"text", "box": [[x,y]x4], "score"}] in physical frame coordinates."""
     import numpy as np
     from rapidocr_onnxruntime import RapidOCR
 
@@ -118,10 +118,10 @@ def _ocr_engine():
     return _ENGINE
 
 
-# --- аннотации для вики и Set-of-Mark ---------------------------------------
+# --- annotations for the wiki and Set-of-Mark -------------------------------
 
 def annotate(img: Image.Image, marks: Iterable[tuple[int, int, str]]) -> Image.Image:
-    """Нарисовать нумерованные метки: [(x, y, 'label'), ...] в физических координатах."""
+    """Draw numbered marks: [(x, y, 'label'), ...] in physical coordinates."""
     out = img.copy()
     draw = ImageDraw.Draw(out)
     r = max(12, img.width // 60)
@@ -132,7 +132,7 @@ def annotate(img: Image.Image, marks: Iterable[tuple[int, int, str]]) -> Image.I
 
 
 def save_for_wiki(img: Image.Image, path: str, long_edge: int = 1080, quality: int = 85) -> None:
-    """Кадр для вики: WebP, длинная сторона <= long_edge."""
+    """A frame for the wiki: WebP, long edge <= long_edge."""
     k = min(1.0, long_edge / max(img.size))
     if k < 1.0:
         img = img.resize((int(img.width * k), int(img.height * k)), Image.LANCZOS)

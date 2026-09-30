@@ -3,8 +3,8 @@ pyyaml
 pillow
 imagehash
 adbutils
-google-play-scraper   # версия игры в Google Play, названия в sw.py games
+google-play-scraper   # game version in Google Play, titles in sw.py games
 
-# Оригиналы на YouTube (harness/youtube.py), по желанию
+# Originals on YouTube (harness/youtube.py), optional
 google-api-python-client
 google-auth-oauthlib

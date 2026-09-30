@@ -1,11 +1,11 @@
-"""Единый интерфейс устройства и реализация для Android через ADB.
+"""A common device interface and its Android implementation over ADB.
 
-Зависимости: pip install adbutils uiautomator2 pillow
-Опционально: pip install scrcpy-client av  (быстрый видеопоток, класс ScrcpyScreen)
+Dependencies: pip install adbutils uiautomator2 pillow
+Optional: pip install scrcpy-client av  (fast video stream, the ScrcpyScreen class)
 
-Один и тот же интерфейс реализуют телефон по USB, Google Play Games Developer
-Emulator (adb connect localhost:6520) и окно Google Play Games на ПК (gpg_windows.py).
-Координаты во всех методах — физические пиксели экрана устройства.
+The same interface is implemented by a USB phone, the Google Play Games Developer
+Emulator (adb connect localhost:6520) and the Google Play Games window on a PC (gpg_windows.py).
+Coordinates in all methods are physical pixels of the device screen.
 """
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ class Device(Protocol):
 
 
 class AndroidDevice:
-    """Телефон/планшет по USB или Wi-Fi ADB, либо эмулятор с ADB."""
+    """A phone/tablet over USB or Wi-Fi ADB, or an emulator with ADB."""
 
     KEYS = {
         "back": "KEYCODE_BACK",
@@ -59,20 +59,20 @@ class AndroidDevice:
         if prepare:
             self._prepare()
 
-    # --- служебное -------------------------------------------------------
+    # --- internals -------------------------------------------------------
     def _prepare(self) -> None:
-        """Минимум для круглосуточной работы. Яркость и автоповорот не трогаем: телефон
-        может быть личным, а ориентацию игра выставляет сама."""
+        """The minimum for round-the-clock work. Brightness and auto-rotate are left alone: the phone
+        may be personal, and the game sets the orientation itself."""
         if self.adb.shell("settings get global stay_on_while_plugged_in").strip() in ("", "0", "null"):
-            self.adb.shell("settings put global stay_on_while_plugged_in 7")  # экран не гаснет на зарядке
+            self.adb.shell("settings put global stay_on_while_plugged_in 7")  # the screen stays on while charging
         self.adb.shell("input keyevent KEYCODE_WAKEUP")
 
-    # --- восприятие ------------------------------------------------------
+    # --- perception ------------------------------------------------------
     def screenshot(self) -> Image.Image:
-        # ~0.2–0.5 с через screencap; для игр с быстрой реакцией см. ScrcpyScreen.
+        # ~0.2–0.5 s via screencap; for games that need fast reactions see ScrcpyScreen.
         return self.adb.screenshot().convert("RGB")
 
-    # --- действия --------------------------------------------------------
+    # --- actions ---------------------------------------------------------
     def tap(self, x: int, y: int) -> None:
         self.adb.click(int(x), int(y))
 
@@ -86,17 +86,17 @@ class AndroidDevice:
         if text.isascii():
             self.adb.shell(f"input text {shlex.quote(text.replace(' ', '%s'))}")
             return
-        # Кириллица и прочий Unicode: нужна клавиатура ADBKeyboard (установите её APK
-        # и выберите как текущий IME), она принимает текст через broadcast.
+        # Cyrillic and other Unicode: needs the ADBKeyboard keyboard (install its APK
+        # and select it as the current IME); it accepts text via broadcast.
         payload = base64.b64encode(text.encode("utf-8")).decode()
         self.adb.shell(f"am broadcast -a ADB_INPUT_B64 --es msg {payload}")
 
     def key(self, name: str) -> None:
         self.adb.keyevent(self.KEYS.get(name, name))
 
-    # --- приложения ------------------------------------------------------
+    # --- apps ------------------------------------------------------------
     def launch(self, package: str) -> None:
-        self.adb.app_start(package)  # adbutils сам находит launcher-activity
+        self.adb.app_start(package)  # adbutils finds the launcher activity itself
 
     def stop(self, package: str) -> None:
         self.adb.app_stop(package)
@@ -113,28 +113,29 @@ class AndroidDevice:
         return m.group(1) if m else None
 
     def install_from_store(self, package: str, timeout_s: int = 900) -> None:
-        """Установить или обновить игру через Play Store.
+        """Install or update the game through the Play Store.
 
-        Play Store — обычное Android-приложение с деревом UI, поэтому кнопки можно
-        находить по тексту через uiautomator2. Игры на Unity так автоматизировать
-        нельзя (у них дерево пустое) — для них только зрение.
+        The Play Store is an ordinary Android app with a UI tree, so buttons can be
+        found by text through uiautomator2. Unity games cannot be automated this way
+        (their tree is empty): for them, vision only.
         """
         import uiautomator2 as u2
 
         ui = u2.connect(self.name)
         self.adb.shell(f"am start -a android.intent.action.VIEW -d market://details?id={package}")
-        action = ui(textMatches="(?i)^(install|update|установить|обновить)$")
+        # Button labels in English and Russian (the Russian ones are written as \u escapes)
+        action = ui(textMatches="(?i)^(install|update|\u0443\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c|\u043e\u0431\u043d\u043e\u0432\u0438\u0442\u044c)$")
         if action.wait(timeout=30):
             action.click()
         else:
-            # Кнопки нет: либо уже установлено и актуально, либо игра недоступна в регионе.
-            # --user 0: на Samsung есть второй пользователь (Secure Folder), без флага pm падает
+            # No button: either the game is already installed and up to date, or it is unavailable in the region.
+            # --user 0: Samsung has a second user (Secure Folder); without the flag pm fails
             if f"package:{package}" in self.adb.shell(f"pm list packages --user 0 {package}"):
                 return
-            raise RuntimeError(f"{package}: нет кнопки установки в Play Store")
-        done = ui(textMatches="(?i)^(open|play|открыть|играть)$")
+            raise RuntimeError(f"{package}: no install button in the Play Store")
+        done = ui(textMatches="(?i)^(open|play|\u043e\u0442\u043a\u0440\u044b\u0442\u044c|\u0438\u0433\u0440\u0430\u0442\u044c)$")
         if not done.wait(timeout=timeout_s):
-            raise TimeoutError(f"{package}: установка не завершилась за {timeout_s} с")
+            raise TimeoutError(f"{package}: installation did not finish within {timeout_s} s")
 
     def healthy(self) -> bool:
         try:
@@ -144,10 +145,10 @@ class AndroidDevice:
 
 
 class ScrcpyScreen:
-    """Быстрые кадры (до 30–60 fps) вместо screencap — для игр, где важна реакция.
+    """Fast frames (up to 30–60 fps) instead of screencap, for games where reaction time matters.
 
-    pip install scrcpy-client av. Кадр приходит уменьшенным до max_width, поэтому
-    координаты из него нужно умножать на device.width / frame.width.
+    pip install scrcpy-client av. The frame arrives downscaled to max_width, so
+    coordinates taken from it must be multiplied by device.width / frame.width.
     """
 
     def __init__(self, serial: str, max_width: int = 720, max_fps: int = 15):

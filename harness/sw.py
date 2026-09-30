@@ -1,40 +1,40 @@
-"""sw — руки и глаза агента Sleepwalker на телефонах и эмуляторах Android.
+"""sw: the hands and eyes of a Sleepwalker agent on Android phones and emulators.
 
-Команды запускаются из корня репозитория. Если идёт несколько сессий (несколько телефонов),
-сессию выбирает -d SERIAL или переменная SW_DEVICE.
+Run commands from the repository root. If several sessions are running (several phones),
+pick the session with -d SERIAL or the SW_DEVICE variable.
 
-Планирование
-  claim                                  занять свободные телефоны играми, у которых есть задачи
-  status                                 что идёт сейчас на каждом телефоне
-  stop [-d SERIAL] [--hours N]           забрать телефон: за минуту освободить и не выдавать сессиям
-  resume [-d SERIAL]                     вернуть телефон в работу
-  sync                                   подтянуть origin/main (только fast-forward)
-Сессия
-  start GAME                             запуск игры и записи экрана, первый кадр, задачи сессии
-  device-state fresh|progressed [--note] игра на этом телефоне: свежая установка или с прогрессом
-  shot | wait SEC | launch               кадр / подождать и кадр / вернуть игру на экран
+Planning
+  claim                                  assign free phones to games that have tasks
+  status                                 what is running on each phone right now
+  stop [-d SERIAL] [--hours N]           take a phone back: free it within a minute, keep it from sessions
+  resume [-d SERIAL]                     return a phone to work
+  sync                                   pull origin/main (fast-forward only)
+Session
+  start GAME                             start the game and screen recording, first screenshot, session tasks
+  device-state fresh|progressed [--note] the game on this phone: fresh install or progressed
+  shot | wait SEC | launch               screenshot / wait, then screenshot / bring the game back on screen
   tap X Y --why ... | swipe X1 Y1 X2 Y2 --why ... | key back --why ... | text "..." --why ...
-  note TYPE "факт" | mark "заголовок" "описание" | clip begin "заголовок" | clip end "описание"
-  feature ID "Название" [--status seen|in_progress|documented]
-  case FEATURE ID "что проверить" [--done]
-  task add ID "что сделать" [--kind followup|daily|replay|ftue] [--feature F] [--requires fresh]
+  note TYPE "fact" | mark "title" "description" | clip begin "title" | clip end "description"
+  feature ID "Name" [--status seen|in_progress|documented]
+  case FEATURE ID "what to check" [--done]
+  task add ID "what to do" [--kind followup|daily|replay|ftue] [--feature F] [--requires fresh]
            [--after-hours N | --at ISO] [--days N] [--note ...]
   task done ID [--note ...] | task cancel ID --reason ...
-  discovery open|closed                  все ли разделы игры найдены
+  discovery open|closed                  whether all sections of the game have been found
   skill list | skill run NAME --why ...
   end --status ok|stuck|crashed|blocked|interrupted --summary "..."
-Знания
-  games                                  игры на телефонах против games.yaml: что в списке, что добавить
-  research GAME                          задачи и карта фичей: из вики + свежие записи этой машины
-  pending                                сессии этой машины, которые ещё не прошли «сон»
-  stats [GAME]                           скорость наигрыша по сессиям
-«Сон»
-  snapshot GAME OUT --until ISO          research.yaml в вики с отметкой, до какого момента учтены журналы
-  render WIKI_DIR                        tasks.md и features.md каждой игры и сводка wiki/tasks.md
+Knowledge
+  games                                  games on the phones vs games.yaml: what is listed, what to add
+  research GAME                          tasks and feature map: from the wiki + this machine's new journal entries
+  pending                                this machine's sessions that have not been through the "dream" yet
+  stats [GAME]                           play speed per session
+"Dream"
+  snapshot GAME OUT --until ISO          research.yaml into the wiki, marked with how far the journals are included
+  render WIKI_DIR                        tasks.md and features.md of each game and the wiki/tasks.md overview
   skill new GAME NAME --session SID --steps A-B --desc "..." --out SKILLS_DIR
   wiki-img SRC GAME_DIR SLUG | wiki-clip SRC GAME_DIR SLUG
-  check-zones WORKTREE [--process]       правки только в разрешённых зонах, медиа в лимитах
-Обслуживание
+  check-zones WORKTREE [--process]       edits only in allowed zones, media within limits
+Maintenance
   gc | install-agents
 """
 from __future__ import annotations
@@ -66,15 +66,15 @@ OPEN_STATUSES = ("seen", "in_progress", "recheck")
 TASK_KINDS = ("analyze", "update", "ftue", "replay", "followup", "daily")
 TASK_RANK = {"update": 0, "analyze": 1, "ftue": 2, "replay": 3, "followup": 4, "daily": 4}
 SHOT_TOKENS = 1500
-HASH_MATCH = 12  # расстояние pHash, при котором экран считается тем же
-# Окна поверх игры, которые не значат, что агент из неё ушёл
+HASH_MATCH = 12  # pHash distance at which the screen counts as the same
+# Windows over the game that do not mean the agent has left it
 SYSTEM_OVERLAYS = ("com.google.android.permissioncontroller", "com.android.vending", "com.google.android.gms")
 ZEN = {"0": "off", "1": "priority", "2": "none", "3": "alarms"}
 DREAM_ZONES = ("wiki/", "skills/", "dreams/")
 PROCESS_ZONES = ("runbooks/", "schema/", "harness/", "docs/", ".claude/", "project.yaml", "games.yaml",
                  "CLAUDE.md", "README.md", "local.example.yaml")
-FRESH_HINT = "телефон со свежей установкой: удалите игру и поставьте заново (или сотрите её данные) и подключите телефон"
-# adb, ffmpeg и git запускаются без консольного окна: иначе каждый вызов мигает окном и крадёт фокус
+FRESH_HINT = "a phone with a fresh install: uninstall the game and install it again (or clear its data), then connect the phone"
+# adb, ffmpeg and git run without a console window: otherwise every call flashes a window and steals focus
 NO_WINDOW = 0x08000000 if os.name == "nt" else 0  # CREATE_NO_WINDOW
 
 PROJECT_DEFAULTS = {
@@ -107,7 +107,7 @@ def popen(cmd, **kw):
     return subprocess.Popen(cmd, **kw)
 
 
-# --- конфиги ---------------------------------------------------------------------
+# --- configs ---------------------------------------------------------------------
 
 def merge(base: dict, over: dict) -> dict:
     out = dict(base)
@@ -122,13 +122,13 @@ def read_yaml(p: Path) -> dict:
 
 @functools.cache
 def P() -> dict:
-    """Глобальные правила из project.yaml."""
+    """Global rules from project.yaml."""
     return merge(PROJECT_DEFAULTS, read_yaml(ROOT / "project.yaml"))
 
 
 @functools.cache
 def L() -> dict:
-    """Настройки этой машины из local.yaml (путь можно подменить переменной SW_LOCAL)."""
+    """This machine's settings from local.yaml (the SW_LOCAL variable can override the path)."""
     return merge(LOCAL_DEFAULTS, read_yaml(Path(os.environ.get("SW_LOCAL") or ROOT / "local.yaml")))
 
 
@@ -158,10 +158,10 @@ def find_game(game: str) -> dict:
     for e in games():
         if e["id"] == game:
             return e
-    fail(f"игры {game} нет в games.yaml (или она выключена, или её нет в local.yaml games)")
+    fail(f"game {game} is not in games.yaml (or it is disabled, or not in local.yaml games)")
 
 
-# --- вывод и мелочи -----------------------------------------------------------------
+# --- output and helpers -------------------------------------------------------------
 
 def out(obj) -> None:
     print(json.dumps(obj, ensure_ascii=False, indent=1))
@@ -183,7 +183,7 @@ def iso_to_t(s) -> float:
 
 
 def vkey(v) -> tuple:
-    """Версия для сравнения: '241.10.2' > '241.9.9'."""
+    """Version for comparison: '241.10.2' > '241.9.9'."""
     return tuple(int(x) for x in re.findall(r"\d+", str(v or "")))
 
 
@@ -220,7 +220,7 @@ def write_json(p: Path, d: dict) -> None:
 
 @contextlib.contextmanager
 def machine_lock(name: str = "claim", wait_s: int = 120):
-    """Замок на всю машину: захват телефонов и git не идут из двух процессов сразу."""
+    """Machine-wide lock: claiming phones and git never run from two processes at once."""
     p = STATE() / "locks" / f"{name}.lock"
     p.parent.mkdir(parents=True, exist_ok=True)
     deadline = time.time() + wait_s
@@ -231,10 +231,10 @@ def machine_lock(name: str = "claim", wait_s: int = 120):
             os.close(fd)
             break
         except FileExistsError:
-            if time.time() - p.stat().st_mtime > 600:  # замок от упавшего процесса
+            if time.time() - p.stat().st_mtime > 600:  # lock left by a crashed process
                 p.unlink(missing_ok=True)
             elif time.time() > deadline:
-                fail(f"замок {name} занят дольше {wait_s} с")
+                fail(f"lock {name} held for more than {wait_s} s")
             time.sleep(0.5)
     try:
         yield
@@ -242,7 +242,7 @@ def machine_lock(name: str = "claim", wait_s: int = 120):
         p.unlink(missing_ok=True)
 
 
-# --- сессии -----------------------------------------------------------------------
+# --- sessions ---------------------------------------------------------------------
 
 def session_path(dev: str) -> Path:
     return STATE() / "sessions" / f"{devkey(dev)}.json"
@@ -255,7 +255,7 @@ def all_sessions() -> list[dict]:
 def save_session(cur: dict) -> None:
     p = session_path(cur["device"])
     disk = read_json(p)
-    for k in ("stop_requested", "phone_released", "rec_stopped"):  # их пишет sw.py stop из другого процесса
+    for k in ("stop_requested", "phone_released", "rec_stopped"):  # written by sw.py stop from another process
         if disk.get(k) and not cur.get(k):
             cur[k] = disk[k]
     write_json(p, cur)
@@ -273,15 +273,15 @@ def pick_session(args, active: bool = True) -> dict:
     if len(sessions) == 1:
         return sessions[0]
     if not sessions:
-        fail("нет активной сессии" + (f" на {dev}" if dev else "") + ": сначала sw.py claim и sw.py start")
-    fail("идёт несколько сессий: укажи телефон через -d SERIAL", devices=[s["device"] for s in sessions])
+        fail("no active session" + (f" on {dev}" if dev else "") + ": run sw.py claim and sw.py start first")
+    fail("several sessions are running: pick the phone with -d SERIAL", devices=[s["device"] for s in sessions])
 
 
 def log_step(cur: dict, rec: dict) -> None:
     append_jsonl(Path(cur["dir"]) / "steps.jsonl", {"t": round(time.time(), 2), "step": cur["step"], **rec})
 
 
-# --- телефоны -------------------------------------------------------------------------
+# --- phones ---------------------------------------------------------------------------
 
 def in_hours(spec: str, hour: int) -> bool:
     a, b = (int(x) for x in str(spec).split("-"))
@@ -294,10 +294,10 @@ def adb(serial: str, *args: str, timeout: int = 30) -> str:
 
 
 def devices() -> dict[str, str]:
-    """Все устройства этой машины: {serial: платформа}. Эмуляторы видны в adb как обычные телефоны."""
+    """All devices of this machine: {serial: platform}. Emulators show up in adb as ordinary phones."""
     res: dict[str, str] = {}
     try:
-        run(["adb", "start-server"], capture_output=True, timeout=30)  # сервер без окна, пока его не поднял кто-то с окном
+        run(["adb", "start-server"], capture_output=True, timeout=30)  # windowless server, before something starts one with a window
         lines = run(["adb", "devices"], capture_output=True, text=True, timeout=15).stdout.splitlines()
         wanted = L()["android"]["serials"]
         for ln in lines[1:]:
@@ -313,12 +313,12 @@ def devices() -> dict[str, str]:
 
 
 def installed(serial: str) -> set[str]:
-    # --user 0: на Samsung есть второй пользователь (Secure Folder), без флага pm падает
+    # --user 0: Samsung has a second user (Secure Folder); without the flag pm fails
     return {ln.replace("package:", "").strip() for ln in adb(serial, "shell", "pm list packages --user 0").splitlines()}
 
 
 def package_info(serial: str, package: str) -> dict:
-    """Версия и время первой установки: новое время установки значит, что игру поставили заново."""
+    """Version and first install time: a new install time means the game was reinstalled."""
     txt = adb(serial, "shell", f"dumpsys package {package}")
     v = re.search(r"versionName=(\S+)", txt)
     fi = re.search(r"firstInstallTime=([\d-]+ [\d:]+)", txt)
@@ -334,13 +334,13 @@ def locked(serial: str) -> bool:
     return "isKeyguardShowing=true" in adb(serial, "shell", "dumpsys window | grep isKeyguardShowing")
 
 
-TOUCH_BLOCKED = ("касания блокирует защита Samsung от случайных касаний: закрыт датчик приближения. "
-                 "Положите телефон экраном вверх и уберите всё с его верхнего края")
+TOUCH_BLOCKED = ("touches are blocked by Samsung accidental touch protection: the proximity sensor is covered. "
+                 "Place the phone screen up and clear anything off its top edge")
 
 
 def touch_blocked(serial: str) -> bool:
-    """Samsung затемняет экран и глотает касания, когда датчик приближения закрыт:
-    видимо окно IgniteTouchProtectionPresenter."""
+    """Samsung dims the screen and swallows touches while the proximity sensor is covered:
+    the IgniteTouchProtectionPresenter window is visible."""
     cur = None
     for line in adb(serial, "shell", "dumpsys window windows").splitlines():
         if "Window #" in line:
@@ -351,29 +351,29 @@ def touch_blocked(serial: str) -> bool:
 
 
 def phone_status(serial: str, game_ids: set[str]) -> tuple[bool, str]:
-    """Телефон может быть личным: не занимать его, когда им пользуются, он заблокирован, горячий или садится."""
+    """The phone may be personal: do not take it while it is in use, locked, hot or running low on battery."""
     a = L()["android"]
     if not in_hours(a["hours"], dt.datetime.now().hour):
-        return False, f"вне часов {a['hours']}"
+        return False, f"outside hours {a['hours']}"
     if locked(serial):
-        return False, "экран заблокирован: PIN агент не вводит, разблокируйте телефон (на зарядке он не гаснет)"
+        return False, "screen locked: the agent does not enter PINs; unlock the phone (it stays on while charging)"
     if touch_blocked(serial):
         return False, TOUCH_BLOCKED
     bat = adb(serial, "shell", "dumpsys battery")
     temp = int(re.search(r"temperature: (\d+)", bat).group(1)) / 10 if "temperature:" in bat else 0
     level = int(re.search(r"level: (\d+)", bat).group(1)) if "level:" in bat else 100
     if temp > a["max_temp_c"]:
-        return False, f"телефон нагрет до {temp} °C"
+        return False, f"phone is hot: {temp} °C"
     if level < a["min_battery"] and not re.search(r"(AC|USB) powered: true", bat):
-        return False, f"заряд {level}% и нет зарядки"
+        return False, f"battery {level}% and not charging"
     awake = "mWakefulness=Awake" in adb(serial, "shell", "dumpsys power | grep mWakefulness")
     app = focus(serial) or ""
     if awake and app and "launcher" not in app and app not in game_ids and app not in SYSTEM_OVERLAYS:
-        return False, f"телефоном пользуются: на экране {app}"
+        return False, f"phone in use: {app} is on screen"
     return True, "ok"
 
 
-# --- состояние игры на телефоне -----------------------------------------------------------
+# --- game state on the phone --------------------------------------------------------------
 # state/devices/<device>.json: {game: {progress: fresh|progressed, note, at, install_time, version}}
 
 def device_profile(dev: str) -> dict:
@@ -391,8 +391,8 @@ def set_game_state(dev: str, game: str, progress: str, note: str = "", info: dic
 
 
 def game_state(dev: str, game: str, info: dict) -> str:
-    """fresh — свежая установка (или переустановка, которую заметили по времени установки);
-    progressed — с прогрессом; unknown — эту игру на этом телефоне ещё не смотрели."""
+    """fresh: fresh install (or a reinstall detected by the install time);
+    progressed: has progress; unknown: this game has not been looked at on this phone yet."""
     rec = device_profile(dev).get(game)
     if not rec:
         return "unknown"
@@ -401,9 +401,9 @@ def game_state(dev: str, game: str, info: dict) -> str:
     return rec.get("progress", "unknown")
 
 
-# --- удержание: владелец забирает телефон ---------------------------------------------------
-# state/holds/<device>.json — телефон не выдаётся сессиям, пока удержание не снято (sw.py resume),
-# не истекло (--hours) или телефон не отключили и не подключили снова.
+# --- hold: the owner takes the phone --------------------------------------------------------
+# state/holds/<device>.json: the phone is not given to sessions until the hold is lifted (sw.py resume),
+# expires (--hours) or the phone is unplugged and plugged back in.
 
 def hold_path(dev: str) -> Path:
     return STATE() / "holds" / f"{devkey(dev)}.json"
@@ -418,8 +418,8 @@ def restore_dnd(dev: str, prev) -> None:
 
 
 def set_pending_zen(dev: str, prev) -> None:
-    """Прежний режим «Не беспокоить» запоминается до конца сессии: если телефон выдернут без
-    команды, его вернут при следующем подключении."""
+    """The previous Do Not Disturb mode is kept until the session ends: if the phone is unplugged without
+    a command, the mode is restored on the next connection."""
     prof = device_profile(dev)
     if prev is None:
         prof.pop("_zen_restore", None)
@@ -428,7 +428,7 @@ def set_pending_zen(dev: str, prev) -> None:
     write_json(STATE() / "devices" / f"{devkey(dev)}.json", prof)
 
 
-STOP_MSG = "телефон забирают: никаких действий на телефоне, сразу заверши сессию"
+STOP_MSG = "the owner is taking the phone: no more phone actions, end the session now"
 
 
 def check_stop(cur: dict) -> None:
@@ -437,7 +437,7 @@ def check_stop(cur: dict) -> None:
 
 
 class FakeDevice:
-    """Проверка без телефона (fake_devices в local.yaml): кадры по кругу из папки с картинками."""
+    """Testing without a phone (fake_devices in local.yaml): screenshots cycle through a folder of images."""
 
     def __init__(self, cur: dict):
         folder = L()["fake_devices"][cur["device"]]
@@ -465,7 +465,7 @@ def open_device(cur: dict, prepare: bool = False):
     try:
         return AndroidDevice(cur["device"], prepare=prepare)
     except Exception as ex:
-        fail(f"телефон {cur['device']} недоступен: {ex}", 3, hint="sw.py end --status blocked --summary ...")
+        fail(f"phone {cur['device']} unavailable: {ex}", 3, hint="sw.py end --status blocked --summary ...")
 
 
 def app_on_screen(cur: dict) -> str | None:
@@ -477,17 +477,17 @@ def guard(cur: dict) -> None:
     s = P()["session"]
     elapsed = (time.time() - cur["t0"]) / 60
     if elapsed > cur["budget_min"] * s["hard_limit"] or cur["step"] >= cur["max_steps"] * s["hard_limit"]:
-        fail("жёсткий лимит сессии: действия больше не выполняются", 4,
-             hint="обнови state/<game>/progress.md и заверши: sw.py end --status ok --summary ...")
+        fail("hard session limit: actions are no longer executed", 4,
+             hint="update state/<game>/progress.md and finish: sw.py end --status ok --summary ...")
     if cur["platform"] == "fake":
         return
     if locked(cur["device"]):
-        fail("экран заблокирован: PIN агент не вводит", 3, hint="sw.py end --status blocked --summary ...")
+        fail("screen locked: the agent does not enter PINs", 3, hint="sw.py end --status blocked --summary ...")
     if touch_blocked(cur["device"]):
         fail(TOUCH_BLOCKED, 3, hint="sw.py end --status blocked --summary ...")
 
 
-# --- кадры ----------------------------------------------------------------------------
+# --- screenshots ----------------------------------------------------------------------
 
 def take_shot(cur: dict, dev) -> dict:
     img = dev.screenshot()
@@ -507,19 +507,19 @@ def take_shot(cur: dict, dev) -> dict:
     elapsed = (time.time() - cur["t0"]) / 60
     info = {"shot": str(small_path), "shot_n": k, "size": [small.width, small.height], "app": app,
             "same_as_prev": same, "same_streak": cur["same_streak"],
-            "time": f"{elapsed:.1f} / {cur['budget_min']} мин", "steps": f"{cur['step']} / {cur['max_steps']}"}
+            "time": f"{elapsed:.1f} / {cur['budget_min']} min", "steps": f"{cur['step']} / {cur['max_steps']}"}
     warn = []
     if app == "com.google.android.permissioncontroller":
-        warn.append("системный запрос разрешения: нажми «Don't allow» / «Не разрешать»")
+        warn.append("system permission prompt: tap \"Don't allow\" (or the same button in the phone's language)")
     elif app and app != cur["game"] and app not in SYSTEM_OVERLAYS:
-        warn.append(f"на экране не игра ({app}): back или sw.py launch. Этот кадр в вики не пойдёт")
+        warn.append(f"not the game on screen ({app}): back or sw.py launch. This screenshot will not go into the wiki")
     if cur["same_streak"] >= 3:
-        warn.append(f"экран не меняется {cur['same_streak']} шага подряд: смени стратегию (back, другая зона, свайп, подождать)")
+        warn.append(f"screen unchanged for {cur['same_streak']} steps in a row: change strategy (back, another area, swipe, wait)")
     if cur["same_streak"] >= 15:
-        warn.append("застрял: заверши сессию, end --status stuck")
+        warn.append("stuck: end the session, end --status stuck")
     if elapsed >= cur["budget_min"] or cur["step"] >= cur["max_steps"]:
-        warn.append("бюджет исчерпан: поставь задачи на то, что не успел, и заверши сессию (sw.py end). "
-                    f"После {P()['session']['hard_limit']}× бюджета действия блокируются")
+        warn.append("budget used up: add tasks for what you did not finish and end the session (sw.py end). "
+                    f"After {P()['session']['hard_limit']}× the budget, actions are blocked")
     if warn:
         info["warnings"] = warn
     return info
@@ -529,7 +529,7 @@ def action(args, name: str, fn, rec: dict, points: tuple = ()) -> None:
     cur = pick_session(args)
     w, h = cur.get("model_size") or (10 ** 6, 10 ** 6)
     if any(not (0 <= x <= w and 0 <= y <= h) for x, y in points):
-        fail(f"координаты вне кадра {w}x{h}: указывай пиксели последнего кадра")
+        fail(f"coordinates outside the {w}x{h} screenshot: use pixels of the last screenshot")
     guard(cur)
     dev = open_device(cur)
     fn(dev, cur["scale"])
@@ -544,7 +544,7 @@ def action(args, name: str, fn, rec: dict, points: tuple = ()) -> None:
     out(info)
 
 
-# --- запись экрана и клипы ----------------------------------------------------------------
+# --- screen recording and clips -----------------------------------------------------------
 
 def start_recording(cur: dict) -> None:
     Lc = L()
@@ -556,16 +556,16 @@ def start_recording(cur: dict) -> None:
                                           "testsrc=size=360x780:rate=15", "-c:v", "libx264", "-preset", "ultrafast",
                                           "-pix_fmt", "yuv420p", str(d / "original.mkv")]}
     else:
-        # На полном разрешении screenrecord многих телефонов не стартует (Encoder failed):
-        # короткая сторона 720, 1080x2340 -> 720x1560.
+        # At full resolution screenrecord fails to start on many phones (Encoder failed):
+        # short edge 720, 1080x2340 -> 720x1560.
         w, h = (int(x) for x in re.search(r"(\d+)x(\d+)", adb(cur["device"], "shell", "wm size")).groups())
         k = v["record_short_edge"] / min(w, h)
         spec = {"kind": "screenrecord", "serial": cur["device"], "sid": cur["id"],
                 "size": f"{int(w * k) // 2 * 2}x{int(h * k) // 2 * 2}", "bitrate": str(v["record_bitrate"])}
     spec["ffmpeg"] = Lc["tools"]["ffmpeg"]
     (d / "rec.cmd.json").write_text(json.dumps(spec), encoding="utf-8")
-    # Без окна и отдельной группой: переживает завершение этой команды, а его adb и ffmpeg
-    # наследуют скрытую консоль и тоже не открывают окон.
+    # No window and a separate process group: it outlives this command, and its adb and ffmpeg
+    # inherit the hidden console and open no windows either.
     popen([sys.executable, str(HERE / "sw.py"), "_rec", str(d)], creationflags=NO_WINDOW | 0x00000200,
           stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=open(d / "rec.log", "a"))
     cur["rec"] = {"kind": spec["kind"], "t0": time.time()}
@@ -582,8 +582,8 @@ def stop_recording(cur: dict, wait_s: float = 300) -> None:
 
 
 def cmd_rec(args) -> None:
-    """Фоновый процесс записи. Останавливается файлом rec.stop: screenrecord получает SIGINT
-    и дописывает сегмент, ffmpeg — 'q' в stdin."""
+    """Background recording process. Stopped by the rec.stop file: screenrecord gets SIGINT
+    and finishes the segment, ffmpeg gets 'q' on stdin."""
     d = Path(args.dir)
     spec = json.loads((d / "rec.cmd.json").read_text(encoding="utf-8"))
     stop = d / "rec.stop"
@@ -602,7 +602,7 @@ def cmd_rec(args) -> None:
         serial, i = spec["serial"], 0
         while not stop.exists():
             remote, t = f"/sdcard/sw_rec_{spec['sid']}_{i:03d}.mp4", time.time()
-            # screenrecord пишет не дольше 180 с, поэтому запись идёт сегментами
+            # screenrecord records at most 180 s, so recording goes in segments
             p = popen(["adb", "-s", serial, "shell", "screenrecord", "--size", spec["size"],
                        "--bit-rate", spec["bitrate"], "--time-limit", "180", remote])
             while p.poll() is None and not stop.exists():
@@ -635,8 +635,8 @@ def probe(path: Path, what: str) -> str:
 
 
 def timeline(cur: dict) -> list[tuple[float, float, float]]:
-    """(начало по часам, позиция в original.mkv, длительность) для каждого сегмента записи.
-    Длительность — по ffprobe, а если в файле её нет (так пишут некоторые телефоны) — по часам."""
+    """(wall-clock start, position in original.mkv, duration) for each recording segment.
+    Duration comes from ffprobe, or from the wall clock if the file has none (some phones write it so)."""
     segs = read_jsonl(Path(cur["dir"]) / "segments.jsonl")
     if not segs:
         return [(cur["rec"]["t0"], 0.0, float("inf"))]
@@ -657,8 +657,8 @@ def to_pos(tl, t: float) -> float | None:
 
 
 def encode_clip(src: Path, start: float, dur: float, dest: Path) -> None:
-    """Клип — анимированный WebP: GitHub не показывает <video> из репозитория, а WebP
-    проигрывается прямо в статье. Не влез в лимит — меньше качество, кадров и размер."""
+    """A clip is an animated WebP: GitHub does not show <video> from the repository, while WebP
+    plays right in the article. Over the limit: lower quality, frame rate and size."""
     v = L()["video"]
     w, h = (int(x) for x in probe(src, "stream=width,height").splitlines()[0].split(","))
     for quality, fps, edge in ((v["clip_quality"], v["clip_fps"], v["clip_long_edge"]),
@@ -697,10 +697,10 @@ def cut_clips(cur: dict) -> list[dict]:
     return res
 
 
-# --- разбор игры: задачи и карта фичей -------------------------------------------------------
-# Глобально: wiki/<game>/research.yaml — задачи, карта фичей, версии. Меняется только «сном».
-# Локально: state/<game>/research.jsonl — журнал изменений из сессий и планировщика.
-# Текущая картина = глобальный файл + записи журнала новее отметки synced[<машина>].
+# --- game research: tasks and feature map ----------------------------------------------------
+# Global: wiki/<game>/research.yaml: tasks, feature map, versions. Changed only by the "dream".
+# Local: state/<game>/research.jsonl: journal of changes from sessions and the planner.
+# Current view = the global file + journal entries newer than the synced[<machine>] mark.
 
 def research_path(game: str) -> Path:
     return ROOT / "wiki" / game / "research.yaml"
@@ -715,7 +715,7 @@ def global_research(game: str, base: Path | None = None) -> dict:
 
 
 def journal(game: str) -> list[dict]:
-    # features.jsonl — журнал первых сессий, до появления задач
+    # features.jsonl: journal of the first sessions, before tasks existed
     ops = read_jsonl(STATE() / game / "features.jsonl") + read_jsonl(STATE() / game / "research.jsonl")
     return sorted(ops, key=lambda o: o["t"])
 
@@ -762,8 +762,8 @@ def apply_op(view: dict, op: dict) -> None:
             c["text"] = op["text"]
         if op.get("done"):
             c.update(done=True, source=op.get("source"))
-        elif op.get("after"):  # старый формат: кейс со сроком = задача «проверить не раньше»
-            apply_op(view, {"op": "task", "id": f"{op['feature']}-{op['id']}", "title": f"Проверить: {c['text']}",
+        elif op.get("after"):  # old format: a case with a date = a "check not before" task
+            apply_op(view, {"op": "task", "id": f"{op['feature']}-{op['id']}", "title": f"Check: {c['text']}",
                             "kind": "followup", "feature": op["feature"], "not_before": op["after"],
                             "source": "game", "created": now_iso(op["t"])})
         c.pop("after", None)
@@ -830,16 +830,16 @@ def research_complete(view: dict) -> bool:
 def game_status(view: dict, now: float) -> tuple[str, str]:
     ot = open_tasks(view)
     if not view["tasks"]:
-        return "new", "новая игра: задачи появятся при первом захвате телефона"
+        return "new", "new game: tasks appear on the first phone claim"
     if not ot:
-        return "sleeping", "всё сделано: спит до новой версии"
+        return "sleeping", "all done: sleeping until a new version"
     ready = [t for t in ot if iso_to_t(t.get("not_before")) <= now and t.get("requires", "any") != "fresh"]
     if ready:
-        return "active", f"можно делать сейчас: {len(ready)}"
+        return "active", f"ready now: {len(ready)}"
     waiting = [t for t in ot if iso_to_t(t.get("not_before")) > now]
     if waiting:
-        return "waiting", f"ждёт до {min(t['not_before'] for t in waiting)}"
-    return "needs_human", "нужен человек: " + FRESH_HINT
+        return "waiting", f"waiting until {min(t['not_before'] for t in waiting)}"
+    return "needs_human", "needs a human: " + FRESH_HINT
 
 
 def play_store_version(game: str) -> str | None:
@@ -852,10 +852,10 @@ def play_store_version(game: str) -> str | None:
 
 
 def plan_game(game: str, installed_versions: list[str], now: float) -> None:
-    """Планировщик задач игры. Внешний источник задач — версия в Google Play: разбор этой версии,
-    обновление документации под новую и, если с прохождения с нуля прошло больше
-    ftue_refresh_days, проверка FTUE в новой версии (без новой версии FTUE не перепроверяется).
-    Задачи из самой игры (таймеры, ежедневные активности, пробелы в знаниях) ставит игрок."""
+    """Task planner for a game. The external task source is the Google Play version: analyze that version,
+    update the docs for a new one and, if more than ftue_refresh_days have passed since the last play
+    from scratch, check FTUE in the new version (without a new version FTUE is not rechecked).
+    Tasks from the game itself (timers, daily activities, knowledge gaps) are added by the player."""
     R = P()["research"]
     view = research_view(game)
     if now - iso_to_t(view.get("play_checked")) > R["version_check_hours"] * 3600:
@@ -866,9 +866,9 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
     target = max(candidates, key=vkey) if candidates else None
     analyze = find_task(view, "analyze")
     if analyze is None:
-        write_op(game, {"op": "task", "id": "analyze", "title": f"Разобрать игру версии {target or '?'}",
+        write_op(game, {"op": "task", "id": "analyze", "title": f"Analyze the game, version {target or '?'}",
                         "kind": "analyze", "version": target, "requires": "any", "source": "external",
-                        "note": "найти все фичи и разобрать все пользовательские кейсы"})
+                        "note": "find all features and work through all user cases"})
         if target:
             write_op(game, {"op": "version", "value": target})
     elif target and view.get("version") and vkey(target) > vkey(view["version"]):
@@ -876,51 +876,51 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
         if fv and now - iso_to_t(fv) > R["ftue_refresh_days"] * 86400 and not find_task(view, f"ftue-{target}"):
             days = int((now - iso_to_t(fv)) / 86400)
             write_op(game, {"op": "task", "id": f"ftue-{target}",
-                            "title": f"Проверить, изменился ли FTUE в версии {target}", "kind": "ftue",
+                            "title": f"Check whether FTUE changed in version {target}", "kind": "ftue",
                             "requires": "fresh", "version": target, "source": "external",
-                            "note": f"вышла новая версия, а с нуля игру проходили {days} дн. назад"})
+                            "note": f"a new version is out, and the game was last played from scratch {days} days ago"})
         if analyze.get("status") == "open":
-            # разбор ещё идёт, а вышла новая версия: разбирать сразу её
+            # analysis is still in progress and a new version is out: analyze the new one right away
             write_op(game, {"op": "new_version", "from": view["version"], "to": target})
-            write_op(game, {"op": "task", "id": "analyze", "title": f"Разобрать игру версии {target}",
+            write_op(game, {"op": "task", "id": "analyze", "title": f"Analyze the game, version {target}",
                             "version": target})
         elif not find_task(view, f"update-{target}"):
             write_op(game, {"op": "new_version", "from": view["version"], "to": target})
-            write_op(game, {"op": "task", "id": f"update-{target}", "title": f"Обновить документацию под версию {target}",
+            write_op(game, {"op": "task", "id": f"update-{target}", "title": f"Update the docs for version {target}",
                             "kind": "update", "version": target, "requires": "any", "source": "external",
-                            "note": "перепроверить все фичи на новой версии и найти новые"})
+                            "note": "recheck all features on the new version and find new ones"})
     elif target and not view.get("version"):
         write_op(game, {"op": "version", "value": target})
     view = research_view(game)
-    # разбор и обновление закрываются сами, когда карта фичей полная
+    # analyze and update tasks close themselves once the feature map is complete
     for t in open_tasks(view):
         if t["kind"] in ("analyze", "update") and research_complete(view):
             write_op(game, {"op": "task_done", "id": t["id"], "source": "planner",
-                            "note": "все разделы найдены, все фичи описаны"})
+                            "note": "all sections found, all features documented"})
     view = research_view(game)
     analyze = find_task(view, "analyze")
     if analyze and analyze.get("status") == "done" and not any(t["kind"] == "ftue" and t.get("status") == "open"
                                                                for t in view["tasks"]):
         if not view.get("ftue_verified") and not find_task(view, "ftue"):
-            write_op(game, {"op": "task", "id": "ftue", "title": "Пройти игру с нуля: FTUE и как открываются фичи",
+            write_op(game, {"op": "task", "id": "ftue", "title": "Play from scratch: FTUE and how features unlock",
                             "kind": "ftue", "requires": "fresh", "source": "external",
-                            "note": "FTUE ни разу не проходили со свежей установки"})
+                            "note": "FTUE has never been played from a fresh install"})
 
 
 def eligible(t: dict, state: str, installed_v: str | None, now: float) -> tuple[bool, str | None]:
     if t.get("status", "open") != "open":
         return False, None
     if iso_to_t(t.get("not_before")) > now:
-        return False, f"не раньше {t['not_before']}"
+        return False, f"not before {t['not_before']}"
     if t["kind"] in ("analyze", "update") and t.get("version") and installed_v and vkey(installed_v) < vkey(t["version"]):
-        return False, f"нужна версия {t['version']} на телефоне (стоит {installed_v}): обновите игру"
+        return False, f"needs version {t['version']} on the phone (installed: {installed_v}): update the game"
     if t.get("requires") == "fresh" and state not in ("fresh", "unknown"):
         return False, FRESH_HINT
     return True, None
 
 
 def session_tasks(game: str, dev: str, platform: str, now: float) -> dict:
-    """Какие задачи игры можно сделать на этом устройстве сейчас и почему остальные нельзя."""
+    """Which game tasks can be done on this device now, and why the rest cannot."""
     view = research_view(game)
     info = package_info(dev, game) if platform == "android" else {"version": None, "install_time": None}
     state = game_state(dev, game, info)
@@ -930,7 +930,7 @@ def session_tasks(game: str, dev: str, platform: str, now: float) -> dict:
         if ok:
             item = {k: t.get(k) for k in ("id", "title", "kind", "feature", "note") if t.get(k)}
             if t.get("requires") == "fresh":
-                item["only_if_fresh"] = True  # состояние игры на телефоне неизвестно: проверить в начале
+                item["only_if_fresh"] = True  # game state on the phone is unknown: check it at the start
             ready.append(item)
         elif why:
             blocked.append({"id": t["id"], "why": why})
@@ -975,14 +975,14 @@ def summary_of(view: dict) -> dict:
             "tasks_need_fresh": [t["id"] for t in ot if t.get("requires") == "fresh"]}
 
 
-# --- команды: планирование -------------------------------------------------------------------
+# --- commands: planning ----------------------------------------------------------------------
 
 def cmd_claim(args) -> None:
     res, now = [], time.time()
     with machine_lock():
         for cur in all_sessions():
             if stale(cur):
-                finish(cur, "abandoned", "сессия брошена: процесс не завершил её вовремя")
+                finish(cur, "abandoned", "session abandoned: the process did not end it in time")
         sessions = all_sessions()
         busy_games = {s["game"] for s in sessions}
         busy_devs = {s["device"]: s for s in sessions}
@@ -992,21 +992,21 @@ def cmd_claim(args) -> None:
         for hp in (STATE() / "holds").glob("*.json"):
             h = read_json(hp)
             if h.get("until") and iso_to_t(h["until"]) < now:
-                hp.unlink()  # удержание истекло
+                hp.unlink()  # hold expired
             elif h.get("device") not in devs:
-                h["absent"] = True  # телефон отключили
+                h["absent"] = True  # phone unplugged
                 write_json(hp, h)
             elif h.get("absent"):
-                hp.unlink()  # отключили и подключили снова — телефон вернули
+                hp.unlink()  # unplugged and plugged back in: the phone is back
         for dev, platform in devs.items():
             prev = device_profile(dev).get("_zen_restore")
             if platform == "android" and prev is not None and dev not in active_devs:
-                restore_dnd(dev, prev)  # телефон выдернули посреди сессии: вернуть прежний режим
+                restore_dnd(dev, prev)  # phone unplugged mid-session: restore the previous mode
                 set_pending_zen(dev, None)
         haves: dict[str, set[str]] = {}
         for dev, platform in devs.items():
             haves[dev] = installed(dev) if platform == "android" else {e["id"] for e in entries}
-        for e in entries:  # задачи из внешних источников: версия в Google Play, давность FTUE
+        for e in entries:  # tasks from external sources: Google Play version, FTUE age
             inst = [package_info(d, e["id"])["version"] for d, p in devs.items() if p == "android" and e["id"] in haves[d]]
             plan_game(e["id"], [v for v in inst if v], now)
         for dev, platform in devs.items():
@@ -1017,7 +1017,7 @@ def cmd_claim(args) -> None:
                 continue
             if held(dev):
                 res.append({"device": dev, "action": "held",
-                            "reason": "владелец забрал телефон: вернуть — sw.py resume или отключить и подключить снова"})
+                            "reason": "the owner took the phone: to return it, sw.py resume or unplug it and plug it back in"})
                 continue
             if platform == "android":
                 ok, reason = phone_status(dev, {e["id"] for e in entries})
@@ -1039,7 +1039,7 @@ def cmd_claim(args) -> None:
                     other.append({"game": e["id"], "state": st["state"], "why": game_status(st["view"], now)[1],
                                   "blocked": st["blocked"][:3]})
             if not cands:
-                res.append({"device": dev, "action": "idle", "reason": "задач, которые можно сделать на этом устройстве, нет",
+                res.append({"device": dev, "action": "idle", "reason": "no tasks can be done on this device",
                             "games": other, "not_installed": missing})
                 continue
             _, _, _, e, st = min(cands, key=lambda c: c[:3])
@@ -1074,9 +1074,9 @@ def cmd_status(args) -> None:
 
 
 def cmd_stop(args) -> None:
-    """Забрать телефон: вернуть «Не беспокоить», дописать запись, закрыть игру и не выдавать
-    телефон сессиям. Игрок получает отказ на следующем действии и завершает сессию; нарезка
-    клипов и загрузка на YouTube идут уже без телефона."""
+    """Take a phone back: restore Do Not Disturb, finish the recording, close the game and stop giving
+    the phone to sessions. The player gets a refusal on the next action and ends the session; clip
+    cutting and the YouTube upload run without the phone."""
     t0 = time.time()
     connected = devices()
     targets = [args.device] if args.device else sorted(set(connected) | {x["device"] for x in all_sessions()})
@@ -1090,10 +1090,10 @@ def cmd_stop(args) -> None:
         cur = read_json(session_path(dev))
         if cur.get("status") == "reserved":
             session_path(dev).unlink(missing_ok=True)
-            row["session"] = "бронь снята"
+            row["session"] = "reservation released"
         elif cur.get("status") == "active":
             cur["stop_requested"] = time.time()
-            save_session(cur)  # игрок получит отказ на следующем действии
+            save_session(cur)  # the player gets a refusal on the next action
             if cur["platform"] == "android" and dev in connected:
                 if cur.get("zen_prev") is not None:
                     restore_dnd(dev, cur["zen_prev"])
@@ -1101,14 +1101,14 @@ def cmd_stop(args) -> None:
             stop_recording(cur, wait_s=40)
             cur["phone_released"] = True
             save_session(cur)
-            row["session"] = f"{cur['id']} остановлена, игрок её завершит"
+            row["session"] = f"{cur['id']} stopped, the player will end it"
         if connected.get(dev) == "android" and device_profile(dev).get("_zen_restore") is not None:
             restore_dnd(dev, device_profile(dev)["_zen_restore"])
         if connected.get(dev) == "android":
             set_pending_zen(dev, None)
         res.append(row)
     out({"ok": True, "seconds": round(time.time() - t0, 1), "devices": res,
-         "message": "можно отключать телефон" + ("ы" if len(res) > 1 else "")})
+         "message": "you can unplug the phone" + ("s" if len(res) > 1 else "")})
 
 
 def cmd_resume(args) -> None:
@@ -1129,7 +1129,7 @@ def cmd_sync(args) -> None:
          **({} if ok else {"error": (f.stderr + m.stderr).strip()[-400:]})})
 
 
-# --- команды: сессия ------------------------------------------------------------------------------
+# --- commands: session ----------------------------------------------------------------------------
 
 def cmd_start(args) -> None:
     e = find_game(args.game)
@@ -1141,9 +1141,9 @@ def cmd_start(args) -> None:
             reserved = [x for x in all_sessions() if x["status"] == "reserved" and x["game"] == args.game]
             dev = reserved[0]["device"] if reserved else (list(devs)[:1] or [None])[0]
         if not dev or dev not in devs:
-            fail(f"устройство {dev} не подключено", devices=list(devs))
+            fail(f"device {dev} is not connected", devices=list(devs))
         if held(dev):
-            fail(f"{dev} на удержании: владелец забрал телефон (sw.py resume, чтобы вернуть)")
+            fail(f"{dev} is on hold: the owner took the phone (sw.py resume to return it)")
         reservation = None
         for other in all_sessions():
             if other["device"] == dev:
@@ -1151,10 +1151,10 @@ def cmd_start(args) -> None:
                     reservation = other
                     continue
                 if not stale(other):
-                    fail(f"на {dev} уже идёт {other['game']}")
-                finish(other, "abandoned", "сессия брошена")
+                    fail(f"{other['game']} is already running on {dev}")
+                finish(other, "abandoned", "session abandoned")
             elif other["game"] == args.game and not stale(other):
-                fail(f"{args.game} уже изучается на {other['device']}: одна игра — один процесс")
+                fail(f"{args.game} is already being played on {other['device']}: one game, one process")
         platform = devs[dev]
         if reservation:
             tasks, budget = reservation["tasks"], reservation["budget_min"]
@@ -1177,17 +1177,17 @@ def cmd_start(args) -> None:
         if locked(dev):
             session_path(dev).unlink(missing_ok=True)
             shutil.rmtree(d)
-            fail("экран заблокирован: PIN агент не вводит")
+            fail("screen locked: the agent does not enter PINs")
         if L()["android"]["dnd"]:
-            # «Не беспокоить: только будильники» на время сессии: уведомления мессенджеров
-            # не всплывают поверх игры и не попадают в кадры
+            # Do Not Disturb "alarms only" for the session: messenger notifications
+            # do not pop up over the game or get into screenshots
             cur["zen_prev"] = adb(dev, "shell", "settings get global zen_mode").strip()
             set_pending_zen(dev, cur["zen_prev"])
             adb(dev, "shell", "cmd notification set_dnd alarms")
         info = package_info(dev, args.game)
         state = game_state(dev, args.game, info)
         if state == "fresh" and device_profile(dev).get(args.game, {}).get("progress") != "fresh":
-            set_game_state(dev, args.game, "fresh", "игру переустановили: новое время установки", info)
+            set_game_state(dev, args.game, "fresh", "game reinstalled: new install time", info)
     devobj = open_device(cur, prepare=True)
     devobj.launch(args.game)
     time.sleep(8 if platform == "android" else 0)
@@ -1199,10 +1199,10 @@ def cmd_start(args) -> None:
     shot = take_shot(cur, devobj)
     log_step(cur, {"type": "shot", "shot": shot["shot_n"], "app": shot["app"], "hash": cur["last_hash"]})
     save_session(cur)
-    hint = {"unknown": "эту игру на этом телефоне ещё не смотрели: по первым экранам реши, свежая установка или "
-                       "с прогрессом, и запиши: sw.py device-state fresh|progressed --note \"...\"",
-            "fresh": "свежая установка: проходи FTUE с начала и записывай, как открываются фичи",
-            "progressed": "игра с прогрессом: описывай открытое; то, что видно только с нуля, ставь задачами --requires fresh"}
+    hint = {"unknown": "this game has not been looked at on this phone yet: judge from the first screens whether it is a "
+                       "fresh install or progressed, and record it: sw.py device-state fresh|progressed --note \"...\"",
+            "fresh": "fresh install: play FTUE from the start and record how features unlock",
+            "progressed": "progressed game: document what is unlocked; add tasks with --requires fresh for what only a fresh start shows"}
     out({"session": sid, "device": dev, "version": cur["version"], "device_state": state, "hint": hint[state],
          "tasks": tasks, "research": summary_of(research_view(args.game)), **shot})
 
@@ -1211,9 +1211,9 @@ def cmd_device_state(args) -> None:
     if args.game:
         dev = args.device or os.environ.get("SW_DEVICE")
         if not dev:
-            fail("укажи телефон: -d SERIAL")
+            fail("specify the phone: -d SERIAL")
         info = package_info(dev, args.game) if devices().get(dev) == "android" else {}
-        rec = set_game_state(dev, args.game, args.value, args.note or "задано вручную", info)
+        rec = set_game_state(dev, args.game, args.value, args.note or "set manually", info)
         return out({"device": dev, "game": args.game, **rec})
     cur = pick_session(args)
     info = package_info(cur["device"], cur["game"]) if cur["platform"] == "android" else {}
@@ -1268,7 +1268,7 @@ def cmd_note(args) -> None:
 def cmd_mark(args) -> None:
     cur = pick_session(args)
     if cur.get("last_app") not in (cur["game"], None):
-        fail(f"последний кадр не из игры ({cur['last_app']}): в вики он не пойдёт")
+        fail(f"the last screenshot is not from the game ({cur['last_app']}): it will not go into the wiki")
     shot = Path(cur["dir"]) / "shots" / f"{cur['last_shot']:05d}.jpg"
     log_step(cur, {"type": "mark", "title": args.title, "desc": args.desc, "shot": cur["last_shot"],
                    "file": shot.as_posix()})
@@ -1281,7 +1281,7 @@ def cmd_clip(args) -> None:
         cur["clip_open"] = {"title": args.text, "t0": time.time() - 2}
     else:
         if not cur["clip_open"]:
-            fail("клип не начат: sw.py clip begin \"заголовок\"")
+            fail("no clip started: sw.py clip begin \"title\"")
         cur["clips"].append({**cur["clip_open"], "desc": args.text, "t1": time.time() + 1})
         cur["clip_open"] = None
     log_step(cur, {"type": f"clip_{args.edge}", "text": args.text})
@@ -1325,10 +1325,10 @@ def cmd_task(args) -> None:
         elif args.after_hours is not None:
             start += args.after_hours * 3600
         ids = []
-        if args.days:  # ежедневная активность: отдельная задача на каждый день, первый — завтра или --at
+        if args.days:  # daily activity: a separate task for each day, the first one tomorrow or at --at
             first = start if (args.at or args.after_hours is not None) else time.time() + 86400
             for k in range(1, args.days + 1):
-                op = {**base, "id": f"{tid}-d{k}", "title": f"{args.title} — день {k} из {args.days}",
+                op = {**base, "id": f"{tid}-d{k}", "title": f"{args.title} — day {k} of {args.days}",
                       "kind": "daily", "source": "game", "not_before": now_iso(first + (k - 1) * 86400)}
                 log_op(cur, op)
                 ids.append(op["id"])
@@ -1372,9 +1372,9 @@ def finish(cur: dict, status: str, summary: str) -> dict:
         except Exception as ex:
             log_step(cur, {"type": "warn", "text": f"stop: {ex}"})
     if cur["step"] and device_profile(cur["device"]).get(cur["game"], {}).get("progress", "fresh") == "fresh":
-        # после сессии игра на этом телефоне уже не свежая
-        set_game_state(cur["device"], cur["game"], "progressed", f"после сессии {cur['id']}", info)
-    session_path(cur["device"]).unlink(missing_ok=True)  # телефон свободен: клипы и YouTube — уже без него
+        # after a session the game on this phone is no longer fresh
+        set_game_state(cur["device"], cur["game"], "progressed", f"after session {cur['id']}", info)
+    session_path(cur["device"]).unlink(missing_ok=True)  # the phone is free: clips and YouTube run without it
     clips = cut_clips(cur)
     youtube = None
     if L()["youtube"]["enabled"] and (d / "original.mkv").exists():
@@ -1390,7 +1390,7 @@ def finish(cur: dict, status: str, summary: str) -> dict:
             log_step(cur, {"type": "warn", "text": f"youtube: {ex}"})
     progress = STATE() / cur["game"] / "progress.md"
     if progress.exists():
-        shutil.copy2(progress, d / "progress.md")  # версия рабочей памяти на конец сессии
+        shutil.copy2(progress, d / "progress.md")  # working memory as of the end of the session
     steps = read_jsonl(d / "steps.jsonl")
     ops = [o for o in journal(cur["game"]) if o.get("session") == cur["id"]]
     meta = {"id": cur["id"], "machine": machine(), "device": cur["device"], "game": cur["game"],
@@ -1418,7 +1418,7 @@ def cmd_end(args) -> None:
     out(finish(pick_session(args, active=False), args.status, args.summary))
 
 
-# --- навыки ---------------------------------------------------------------------------------------
+# --- skills ---------------------------------------------------------------------------------------
 
 def skills_dir(game: str) -> Path:
     return ROOT / "skills" / game
@@ -1442,10 +1442,10 @@ def skill_run(args) -> None:
     cur = pick_session(args)
     p = skills_dir(cur["game"]) / f"{args.name}.yaml"
     if not p.exists():
-        fail(f"навыка {args.name} нет", hint="sw.py skill list")
+        fail(f"no skill {args.name}", hint="sw.py skill list")
     sk = read_yaml(p)
     if sk.get("status") == "broken":
-        fail(f"навык {args.name} помечен broken: сделай руками")
+        fail(f"skill {args.name} is marked broken: do it by hand")
     guard(cur)
     dev = open_device(cur)
     pre = take_shot(cur, dev)
@@ -1454,7 +1454,7 @@ def skill_run(args) -> None:
         append_jsonl(STATE() / cur["game"] / "skills.jsonl", {"t": time.time(), "session": cur["id"], "skill": args.name,
                                                                "ok": False, "reason": "pre", "version": cur.get("version")})
         save_session(cur)
-        fail("экран не тот, с которого начинается навык: сделай шаги руками", 5, shot=pre["shot"])
+        fail("not the screen the skill starts from: do the steps by hand", 5, shot=pre["shot"])
     w, h = cur["phys"]
     for st in sk["steps"]:
         if "tap" in st:
@@ -1478,20 +1478,20 @@ def skill_run(args) -> None:
 
 
 def skill_new(args) -> None:
-    """Навык из транскрипта: шаги A..B сессии становятся макросом в долях экрана, экран до
-    первого шага — предусловием, экран после последнего — постусловием."""
+    """A skill from a transcript: session steps A..B become a macro in screen fractions, the screen before
+    the first step becomes the precondition, the screen after the last one the postcondition."""
     d = next(RAW().glob(f"*/{args.session}"), None)
     if not d:
-        fail(f"сессии {args.session} нет в raw/")
+        fail(f"session {args.session} is not in raw/")
     a, b = (int(x) for x in args.steps.split("-"))
     rows = read_jsonl(d / "steps.jsonl")
     acts = [r for r in rows if r["type"] in ("tap", "swipe", "key") and a <= r["step"] <= b]
     if not acts:
-        fail("в этом диапазоне нет действий tap/swipe/key")
+        fail("no tap/swipe/key actions in this range")
     first_i = rows.index(acts[0])
     pre = next((r["hash"] for r in reversed(rows[:first_i]) if r.get("hash")), None)
     if not pre:
-        fail("не найден кадр перед первым шагом")
+        fail("no screenshot found before the first step")
     steps = []
     rel = lambda v, size: round(min(1.0, max(0.0, v / size)), 4)  # noqa: E731
     for r in acts:
@@ -1514,11 +1514,11 @@ def skill_new(args) -> None:
     out({"skill": str(path), "steps": len(steps)})
 
 
-# --- команды: знания и «сон» ----------------------------------------------------------------------
+# --- commands: knowledge and the "dream" ----------------------------------------------------------
 
 def cmd_games(args) -> None:
-    """Игры на подключённых телефонах против games.yaml: что уже в списке, что можно добавить.
-    Названия и жанры — из Google Play (pip install google-play-scraper; без него только package)."""
+    """Games on connected phones vs games.yaml: what is already listed, what can be added.
+    Titles and genres come from Google Play (pip install google-play-scraper; without it, package names only)."""
     try:
         from google_play_scraper import app as play_app
     except ImportError:
@@ -1541,23 +1541,23 @@ def cmd_games(args) -> None:
                 pass
         is_game = genre.startswith("GAME") if genre else None
         if pkg not in listed and is_game is False:
-            continue  # не игра: мессенджеры, банки, магазины
+            continue  # not a game: messengers, banks, stores
         if pkg not in listed and is_game is None:
-            unknown.append(pkg)  # нет в Google Play: системные приложения, внутренние сборки
+            unknown.append(pkg)  # not in Google Play: system apps, internal builds
             continue
         if pkg in listed:
-            state = "в списке" if listed[pkg].get("enabled", True) else "в списке, выключена"
+            state = "listed" if listed[pkg].get("enabled", True) else "listed, disabled"
         else:
-            state = "не в списке"
+            state = "not listed"
         rows.append(f"{state:<22} {pkg:<55} {title}")
         if pkg not in listed and is_game:
             add.append(f'  - id: {pkg}\n    title: "{title}"')
-    missing = [f"{'нет на телефоне':<22} {pkg:<55} {g.get('title', '')}" for pkg, g in listed.items() if pkg not in phone]
-    print("\n".join(rows + missing) or "телефонов нет или игр на них нет")
+    missing = [f"{'not on a phone':<22} {pkg:<55} {g.get('title', '')}" for pkg, g in listed.items() if pkg not in phone]
+    print("\n".join(rows + missing) or "no phones, or no games on them")
     if unknown:
-        print("\nНе нашлись в Google Play (системные или внутренние; добавить можно вручную): " + ", ".join(unknown))
+        print("\nNot found in Google Play (system or internal; can be added by hand): " + ", ".join(unknown))
     if add:
-        print("\nМожно добавить в games.yaml:\n" + "\n".join(add))
+        print("\nCan be added to games.yaml:\n" + "\n".join(add))
 
 
 def cmd_research(args) -> None:
@@ -1580,14 +1580,14 @@ def cmd_pending(args) -> None:
                 continue
             d = RAW() / s["game"] / s["id"]
             res.append({**s, "raw": str(d) if d.exists() else None})
-    # until — момент после конца последней сессии: snapshot учтёт журнал до него
+    # until: a moment after the end of the last session; snapshot includes the journal up to it
     end = max((iso_to_t(s["started"]) + s["minutes"] * 60 + 60 for s in res), default=None)
     out({"machine": machine(), "pending": res, "count": len(res), "until": now_iso(end) if end else None})
 
 
 def cmd_stats(args) -> None:
-    """Учится ли наигрыш: по сессиям — шагов на закрытый кейс, доля шагов без смены экрана,
-    навыки. Сравнение первой и второй половины сессий каждой игры."""
+    """Is play getting better: per session, steps per closed case, share of steps with no screen change,
+    skills. Compares the first and second half of each game's sessions."""
     per_game = {}
     for f in sorted(STATE().glob("*/sessions.jsonl")):
         game = f.parent.name
@@ -1623,16 +1623,16 @@ def cmd_snapshot(args) -> None:
     view = research_view(args.game, until=until, base=outp if outp.exists() else None)
     view["synced"][machine()] = now_iso(until)
     outp.parent.mkdir(parents=True, exist_ok=True)
-    outp.write_text("# Задачи и карта фичей игры. Пишет только «сон» (sw.py snapshot + правки по схеме).\n" +
+    outp.write_text("# Tasks and feature map of the game. Written only by the \"dream\" (sw.py snapshot + edits per the schema).\n" +
                     yaml.safe_dump(view, allow_unicode=True, sort_keys=False), encoding="utf-8")
     out({"written": str(outp), **summary_of(view)})
 
 
-STATUS_RU = {"new": "🆕 новая", "active": "▶️ в работе", "waiting": "⏳ ждёт времени",
-             "needs_human": "🙋 нужен человек", "sleeping": "💤 спит до новой версии"}
-KIND_RU = {"analyze": "разбор", "update": "обновление", "ftue": "с нуля", "replay": "перепрохождение",
-           "followup": "проверка", "daily": "ежедневно"}
-SOURCE_RU = {"external": "внешнее", "game": "из игры", "session": "пробел в знаниях"}
+STATUS_LABEL = {"new": "🆕 new", "active": "▶️ active", "waiting": "⏳ waiting",
+                "needs_human": "🙋 needs a human", "sleeping": "💤 sleeping until a new version"}
+KIND_LABEL = {"analyze": "analysis", "update": "update", "ftue": "from scratch", "replay": "replay",
+              "followup": "check", "daily": "daily"}
+SOURCE_LABEL = {"external": "external", "game": "from the game", "session": "knowledge gap"}
 
 
 def render_game(gd: Path, title: str) -> dict:
@@ -1651,48 +1651,48 @@ def render_game(gd: Path, title: str) -> dict:
     human_rows = [t for t in ot if t.get("requires") == "fresh" and t not in wait_rows]
     done_rows = sorted([t for t in view["tasks"] if t.get("status") in ("done", "cancelled")],
                        key=lambda t: t.get("closed") or "", reverse=True)
-    L_ = [f"# Задачи: {title}", "",
-          f"Статус: **{STATUS_RU[status]}** — {why}", "",
-          f"Версия в Google Play: **{view.get('play_version') or '—'}** "
-          f"(проверено {(view.get('play_checked') or '—').replace('T', ' ')}) · "
-          f"разбор по версии: **{view.get('version') or '—'}** · "
-          f"FTUE со свежей установки: **{view.get('ftue_verified') or 'ни разу'}**", "",
-          "Файл собирается из [`research.yaml`](research.yaml) командой `sw.py render`, руками не правится. "
-          "Карта фичей — [features.md](features.md).", ""]
+    L_ = [f"# Tasks: {title}", "",
+          f"Status: **{STATUS_LABEL[status]}** — {why}", "",
+          f"Google Play version: **{view.get('play_version') or '—'}** "
+          f"(checked {(view.get('play_checked') or '—').replace('T', ' ')}) · "
+          f"analyzed version: **{view.get('version') or '—'}** · "
+          f"FTUE from a fresh install: **{view.get('ftue_verified') or 'never'}**", "",
+          "Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit by hand. "
+          "Feature map: [features.md](features.md).", ""]
 
     def table(head, rows):
         if not rows:
-            return ["Нет."]
+            return ["None."]
         return [head, "|" + "|".join("---" for _ in range(head.count("|") - 1)) + "|", *rows]
 
-    L_ += ["## Можно делать сейчас", ""]
-    L_ += table("| Задача | Вид | Фича | Откуда | Заметка |",
-                [f"| {t['title']} | {KIND_RU.get(t['kind'], t['kind'])} | {fname(t.get('feature'))} | "
-                 f"{SOURCE_RU.get(t.get('source'), t.get('source', ''))} | {t.get('note', '')} |" for t in now_rows])
-    L_ += ["", "## Ждут времени", ""]
-    L_ += table("| Задача | Не раньше | Вид | Фича |",
-                [f"| {t['title']} | {t['not_before'].replace('T', ' ')} | {KIND_RU.get(t['kind'], t['kind'])} | "
+    L_ += ["## Ready now", ""]
+    L_ += table("| Task | Kind | Feature | Source | Note |",
+                [f"| {t['title']} | {KIND_LABEL.get(t['kind'], t['kind'])} | {fname(t.get('feature'))} | "
+                 f"{SOURCE_LABEL.get(t.get('source'), t.get('source', ''))} | {t.get('note', '')} |" for t in now_rows])
+    L_ += ["", "## Waiting", ""]
+    L_ += table("| Task | Not before | Kind | Feature |",
+                [f"| {t['title']} | {t['not_before'].replace('T', ' ')} | {KIND_LABEL.get(t['kind'], t['kind'])} | "
                  f"{fname(t.get('feature'))} |" for t in wait_rows])
-    L_ += ["", "## Нужен человек", "",
-           "Эти задачи агент сделать не может, пока ему не дадут подходящий телефон.", ""]
-    L_ += table("| Задача | Что предоставить | Фича |",
+    L_ += ["", "## Needs a human", "",
+           "The agent cannot do these tasks until it is given a suitable phone.", ""]
+    L_ += table("| Task | What to provide | Feature |",
                 [f"| {t['title']} | {FRESH_HINT} | {fname(t.get('feature'))} |" for t in human_rows])
-    L_ += ["", "## Сделано", ""]
-    L_ += table("| Задача | Закрыта | Кем | Заметка |",
-                [f"| {t['title']}{' (отменена)' if t.get('status') == 'cancelled' else ''} | "
+    L_ += ["", "## Done", ""]
+    L_ += table("| Task | Closed | By | Note |",
+                [f"| {t['title']}{' (cancelled)' if t.get('status') == 'cancelled' else ''} | "
                  f"{(t.get('closed') or '').replace('T', ' ')} | {t.get('closed_by', '')} | {t.get('note', '')} |"
                  for t in done_rows[:50]])
     (gd / "tasks.md").write_text("\n".join(L_) + "\n", encoding="utf-8")
 
     docs = sum(f.get("status") == "documented" for f in view["features"])
     cases = [c for f in view["features"] for c in f.get("cases", [])]
-    icon = {"seen": "🔎 замечена", "in_progress": "🛠 в работе", "documented": "✅ описана", "recheck": "🔁 перепроверить"}
-    F = ["# Фичи: " + title, "",
-         f"Версия: **{view.get('version') or '—'}** · фичей: **{len(view['features'])}**, описано: **{docs}** · "
-         f"кейсов закрыто: **{sum(c.get('done', False) for c in cases)} / {len(cases)}** · "
-         f"все разделы найдены: **{'да' if view['discovery'] == 'closed' else 'нет'}**", "",
-         "Файл собирается из [`research.yaml`](research.yaml) командой `sw.py render`. Задачи — [tasks.md](tasks.md).", "",
-         "| Фича | Статус | Кейсы | Открытые задачи | Версия |", "|---|---|---|---|---|"]
+    icon = {"seen": "🔎 seen", "in_progress": "🛠 in progress", "documented": "✅ documented", "recheck": "🔁 recheck"}
+    F = ["# Features: " + title, "",
+         f"Version: **{view.get('version') or '—'}** · features: **{len(view['features'])}**, documented: **{docs}** · "
+         f"cases closed: **{sum(c.get('done', False) for c in cases)} / {len(cases)}** · "
+         f"all sections found: **{'yes' if view['discovery'] == 'closed' else 'no'}**", "",
+         "Generated from [`research.yaml`](research.yaml) by `sw.py render`. Tasks: [tasks.md](tasks.md).", "",
+         "| Feature | Status | Cases | Open tasks | Version |", "|---|---|---|---|---|"]
     for f in view["features"]:
         fc = f.get("cases", [])
         ft = [t["title"] for t in ot if t.get("feature") == f["id"]]
@@ -1713,17 +1713,17 @@ def cmd_render(args) -> None:
     rows = [render_game(gd, titles.get(gd.name, gd.name)) for gd in gdirs]
     if (root / "research.yaml").exists():
         return out({"rendered": [r["game"] for r in rows]})
-    S = ["# Задачи по играм", "",
-         "Сводка собирается командой `sw.py render`. Задачи каждой игры — в её `tasks.md`.", "",
-         "| Игра | Статус | Сейчас | Ждут | Нужен человек | Сделано | Фичи описаны | Версия Play / в доках |",
+    S = ["# Tasks by game", "",
+         "This overview is generated by `sw.py render`. Each game's tasks are in its `tasks.md`.", "",
+         "| Game | Status | Now | Waiting | Needs a human | Done | Features documented | Play version / in docs |",
          "|---|---|---|---|---|---|---|---|"]
     for r in rows:
-        S.append(f"| [{r['title']}]({r['game']}/tasks.md) | {STATUS_RU[r['status']]} | {r['now']} | {r['waiting']} | "
+        S.append(f"| [{r['title']}]({r['game']}/tasks.md) | {STATUS_LABEL[r['status']]} | {r['now']} | {r['waiting']} | "
                  f"{len(r['human'])} | {r['done']} | {r['documented']} / {r['features']} | "
                  f"{r['play_version'] or '—'} / {r['version'] or '—'} |")
     human = [(r, h) for r in rows for h in r["human"]]
-    S += ["", "## Какой телефон нужен", ""]
-    S += [f"- **{r['title']}** — {h}: {FRESH_HINT}" for r, h in human] or ["Сейчас ничего: агенту хватает того, что есть."]
+    S += ["", "## Which phone is needed", ""]
+    S += [f"- **{r['title']}** — {h}: {FRESH_HINT}" for r, h in human] or ["Nothing right now: the agent has everything it needs."]
     (root / "tasks.md").write_text("\n".join(S) + "\n", encoding="utf-8")
     out({"rendered": [r["game"] for r in rows], "overview": str(root / "tasks.md")})
 
@@ -1789,8 +1789,8 @@ def cmd_gc(args) -> None:
 
 
 def cmd_install_agents(args) -> None:
-    """Роли с ограниченными инструментами (.claude/agents) в ~/.claude/agents: так их видят
-    запланированные задачи, в какой бы папке они ни запускались."""
+    """Copy the roles with restricted tools (.claude/agents) to ~/.claude/agents so that scheduled
+    tasks see them whatever folder they run in."""
     dest = Path.home() / ".claude" / "agents"
     dest.mkdir(parents=True, exist_ok=True)
     done = []
@@ -1800,28 +1800,28 @@ def cmd_install_agents(args) -> None:
     out({"installed": done, "to": str(dest)})
 
 
-# --- разбор аргументов --------------------------------------------------------------------------
+# --- argument parsing ---------------------------------------------------------------------------
 
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(prog="sw", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("-d", "--device", help="телефон (serial из adb devices); по умолчанию SW_DEVICE или единственная сессия")
+    ap.add_argument("-d", "--device", help="phone (serial from adb devices); defaults to SW_DEVICE or the only session")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("claim")
     sub.add_parser("status")
     p = sub.add_parser("stop")
-    p.add_argument("--hours", type=float, help="вернуть в работу автоматически через N часов")
+    p.add_argument("--hours", type=float, help="return the phone to work automatically after N hours")
     p.add_argument("--note")
     sub.add_parser("resume")
     sub.add_parser("sync")
     p = sub.add_parser("start")
     p.add_argument("game")
-    p.add_argument("kind", nargs="?", help="устарело: задачи сессии берутся из claim")
-    p.add_argument("--budget", type=int, help="минуты вместо расчёта по задачам")
+    p.add_argument("kind", nargs="?", help="deprecated: session tasks come from claim")
+    p.add_argument("--budget", type=int, help="minutes, instead of the estimate from the tasks")
     p = sub.add_parser("device-state")
     p.add_argument("value", choices=["fresh", "progressed"])
     p.add_argument("--note")
-    p.add_argument("--game", help="вне сессии: для какой игры задать состояние на телефоне -d")
+    p.add_argument("--game", help="outside a session: the game whose state to set on phone -d")
     sub.add_parser("shot")
     sub.add_parser("launch")
     for name, nargs in (("tap", ["x", "y"]), ("swipe", ["x1", "y1", "x2", "y2"])):
@@ -1834,7 +1834,7 @@ def main() -> None:
     p.add_argument("value")
     for name in ("tap", "swipe", "key", "text"):
         sp = sub.choices[name]
-        sp.add_argument("--why", required=True, help="что ожидаешь увидеть после действия")
+        sp.add_argument("--why", required=True, help="what you expect to see after the action")
         sp.add_argument("--settle", type=float, default=1.0)
     p = sub.add_parser("wait")
     p.add_argument("seconds", type=float)
@@ -1865,8 +1865,8 @@ def main() -> None:
     q.add_argument("--feature")
     q.add_argument("--requires", choices=["any", "fresh"], default="any")
     q.add_argument("--after-hours", type=float)
-    q.add_argument("--at", help="не раньше этого момента, например 2026-10-02T09:00")
-    q.add_argument("--days", type=int, help="ежедневная активность: задача на каждый из N следующих дней")
+    q.add_argument("--at", help="not before this moment, e.g. 2026-10-02T09:00")
+    q.add_argument("--days", type=int, help="daily activity: one task for each of the next N days")
     q.add_argument("--note")
     q = ts.add_parser("done")
     q.add_argument("id")
@@ -1887,9 +1887,9 @@ def main() -> None:
     q.add_argument("game")
     q.add_argument("name")
     q.add_argument("--session", required=True)
-    q.add_argument("--steps", required=True, help="диапазон шагов, например 12-15")
+    q.add_argument("--steps", required=True, help="step range, e.g. 12-15")
     q.add_argument("--desc", required=True)
-    q.add_argument("--out", required=True, help="папка skills/<game> в worktree «сна»")
+    q.add_argument("--out", required=True, help="the skills/<game> folder in the \"dream\" worktree")
     p = sub.add_parser("end")
     p.add_argument("--status", required=True, choices=["ok", "stuck", "interrupted", "crashed", "blocked"])
     p.add_argument("--summary", required=True)
@@ -1905,7 +1905,7 @@ def main() -> None:
     p.add_argument("out")
     p.add_argument("--until", required=True)
     p = sub.add_parser("render")
-    p.add_argument("wiki_dir", help="папка wiki (все игры и сводка) или папка одной игры")
+    p.add_argument("wiki_dir", help="the wiki folder (all games and the overview) or a single game's folder")
     for name in ("wiki-img", "wiki-clip"):
         p = sub.add_parser(name)
         p.add_argument("src")
@@ -1913,7 +1913,7 @@ def main() -> None:
         p.add_argument("slug")
     p = sub.add_parser("check-zones")
     p.add_argument("worktree")
-    p.add_argument("--process", action="store_true", help="разрешить правки процесса по замечанию мейнтейнера")
+    p.add_argument("--process", action="store_true", help="allow process edits at a maintainer's request")
     sub.add_parser("gc")
     sub.add_parser("install-agents")
     p = sub.add_parser("_rec")

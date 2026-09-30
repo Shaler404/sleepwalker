@@ -1,131 +1,132 @@
-# Схема знаний
+# Knowledge schema
 
-«Конституция» глобальной памяти. Её читают «сон», аналитики и критик, а меняют мейнтейнеры через
-pull request. Правило из паттерна Karpathy LLM Wiki: сырые данные неизменяемы, знания пишет
-модель, человек читает, спрашивает и правит правила.
+The "constitution" of the global memory. The dream, the analysts and the critic read it; maintainers
+change it through a pull request. The rule comes from Karpathy's LLM Wiki pattern: raw data is
+immutable, the model writes the knowledge, humans read, ask and edit the rules.
 
-## 1. Локальное и глобальное
+## 1. Local and global
 
 ```
-Глобально — репозиторий, общий для всех машин (меняется только через pull request)
-├── games.yaml                  база игр под разбор: процесс работает только по ней
-├── project.yaml                правила: мейнтейнеры, бюджеты по видам задач, проверка версий, когда перепроверять FTUE
-├── runbooks/ schema/ harness/  процесс: инструкции, схема, код
-├── wiki/<game>/                знания об игре (раздел 2)
-├── wiki/_common/               общее для всех игр: уроки агента, паттерны
-├── skills/<game>/*.yaml        навыки-макросы (раздел 6)
-└── dreams/<date>-<machine>.md  отчёты «снов»: что разобрано и что изменено
+Global — the repository shared by all machines (changes only through a pull request)
+├── games.yaml                  the games to analyze: the process works only from this list
+├── project.yaml                rules: maintainers, budgets per task kind, version checks, when to recheck FTUE
+├── runbooks/ schema/ harness/  the process: instructions, schema, code
+├── wiki/<game>/                knowledge about a game (section 2)
+├── wiki/_common/               shared by all games: agent lessons, patterns
+├── skills/<game>/*.yaml        skill macros (section 6)
+└── dreams/<date>-<machine>.md  dream reports: what was processed and what changed
 
-Локально — на каждой машине, не в git
-├── local.yaml                  машина: телефоны, часы работы, ключи YouTube, свои игры
+Local — on each machine, not in git
+├── local.yaml                  the machine: phones, working hours, YouTube keys, its own games
 ├── state/<game>/
-│   ├── research.jsonl          журнал задач и карты фичей из сессий и планировщика (append-only)
-│   ├── progress.md             рабочие заметки игрока: где остановился, план
-│   ├── inbox.md                кандидаты для «сна»: маршруты, тактики, уроки, навыки
-│   ├── sessions.jsonl          индекс сессий этой машины
-│   └── skills.jsonl            запуски навыков: успех или неудача
-├── state/sessions/<device>.json  какая сессия идёт на устройстве (одна игра — одно устройство)
-├── state/devices/<device>.json   состояние каждой игры на телефоне: fresh | progressed
-├── state/holds/<device>.json     телефон забрал владелец (sw.py stop): сессиям не выдаётся
-└── raw/<game>/<session>/       транскрипт steps.jsonl, кадры, клипы, запись экрана, session.json
+│   ├── research.jsonl          journal of tasks and the feature map from sessions and the planner (append-only)
+│   ├── progress.md             the player's working notes: where it stopped, the plan
+│   ├── inbox.md                candidates for the dream: routes, tactics, lessons, skills
+│   ├── sessions.jsonl          index of this machine's sessions
+│   └── skills.jsonl            skill runs: success or failure
+├── state/sessions/<device>.json  which session is running on the device (one game — one device)
+├── state/devices/<device>.json   the state of each game on the phone: fresh | progressed
+├── state/holds/<device>.json     the owner has taken the phone (sw.py stop): it is not given to sessions
+└── raw/<game>/<session>/       transcript steps.jsonl, frames, clips, screen recording, session.json
 ```
 
-Машина пишет в глобальное только одним путём: её «сон» открывает pull request, мейнтейнер его
-мержит. Поэтому много людей на своих машинах могут разбирать игры и присылать результаты и
-улучшения процесса, не мешая друг другу.
+A machine writes to the global part in only one way: its dream opens a pull request and a maintainer
+merges it. So many people can analyze games on their own machines and send results and process
+improvements without getting in each other's way.
 
-## 2. Вики одной игры
+## 2. The wiki of one game
 
 ```
 wiki/<game>/
-├── index.md             обзор: что за игра, покрытие, ссылки
-├── research.yaml        задачи, карта фичей и версии — план и прогресс разбора (раздел 4)
-├── tasks.md             задачи для людей: что делается, что ждёт, какой телефон нужен (sw.py render)
-├── features.md          таблица фичей (sw.py render)
-├── features/<id>.md     страница фичи: как работает, все кейсы (раздел 3)
-├── screens/             карта интерфейса: страница на экран, _map.md — кто куда ведёт
-├── economy.md           валюты, источники и стоки, цены, таймеры
-├── versions.md          версии и что изменилось
+├── index.md             overview: what the game is, coverage, links
+├── research.yaml        tasks, feature map and versions — the plan and progress of the analysis (section 4)
+├── tasks.md             tasks for humans: what is in progress, what is waiting, which phone is needed (sw.py render)
+├── features.md          feature table (sw.py render)
+├── features/<id>.md     feature page: how it works, all cases (section 3)
+├── screens/             UI map: one page per screen, _map.md — which screen leads where
+├── economy.md           currencies, sources and sinks, prices, timers
+├── versions.md          versions and what changed
 ├── agent/
-│   ├── routes.md        маршруты: как дойти до каждой фичи с главного экрана (+ навык)
-│   ├── tactics.md       тактики: как проходить механики игры
-│   ├── lessons.md       уроки агенту по этой игре
-│   └── metrics.md       скорость разбора по «снам»: учится ли процесс
-├── img/                 кадры: YYYYMMDD-<slug>-<hash8>.webp
-└── clips/               клипы: YYYYMMDD-<slug>.webp (анимированный WebP)
+│   ├── routes.md        routes: how to reach each feature from the main screen (+ skill)
+│   ├── tactics.md       tactics: how to beat the game's mechanics
+│   ├── lessons.md       lessons for the agent on this game
+│   └── metrics.md       analysis speed per dream: is the process learning
+├── img/                 frames: YYYYMMDD-<slug>-<hash8>.webp
+└── clips/               clips: YYYYMMDD-<slug>.webp (animated WebP)
 ```
 
-`agent/` читает игрок перед каждой сессией: так следующий раз проходит быстрее. Сводка по всем
-играм — `wiki/tasks.md`: статус каждой игры и какой телефон нужен от человека.
+The player reads `agent/` before every session, so each next session goes faster. The overview of
+all games is `wiki/tasks.md`: the status of each game and which phone a human needs to provide.
 
-## 3. Страницы
+## 3. Pages
 
-Фронтматтер каждой страницы:
+Front matter of every page:
 
 ```yaml
 ---
 game: com.example.game
-title: Ежедневная награда
+title: Daily reward
 type: feature           # overview | feature | screen | economy | versions | agent
-feature: daily-reward   # id фичи из research.yaml (для type: feature)
-version_seen: 241.3.1   # версия, на которой страница проверена последний раз
+feature: daily-reward   # feature id from research.yaml (for type: feature)
+version_seen: 241.3.1   # the version the page was last verified on
 verified_at: 2026-10-01
 sources: [20261001-091500-chrono-FYKPJ]
 ---
 ```
 
-Страница фичи: что это и где найти (со ссылкой на маршрут) → как работает → **таблица кейсов**
-(кейс, что сделали, результат, источник) → числа в таблицах с версией → медиа → `## Не проверено`.
+Feature page: what it is and where to find it (with a link to the route) → how it works → **case
+table** (case, what was done, result, source) → numbers in tables with the version → media →
+`## Not verified`.
 
-- Каждый нетривиальный факт заканчивается источником `[s:<session>#<step>]`.
-- Кадр: `![что на кадре и что важно](../img/<файл>.webp)`. Подпись — не «скриншот магазина», а
-  «магазин: 6 паков, цены 0.99–49.99 $, таймер оффера 23:59:12».
-- Клип: `![что показано](../clips/<файл>.webp)` и строка
-  `*Клип 14 с · [оригинал на YouTube с 3:05](https://youtu.be/<id>?t=185)*`, если оригинал загружен.
-- Противоречие не затирается: старое уходит в блок `> ⚠️ Ранее (v1.41, 2026-09-20): …`.
-- Ссылки между страницами относительные. Внешние — только Google Play и YouTube.
+- Every non-trivial fact ends with a source `[s:<session>#<step>]`.
+- Frame: `![what the frame shows and what matters](../img/<file>.webp)`. The caption is not "shop
+  screenshot" but "shop: 6 packs, prices 0.99–49.99 $, offer timer 23:59:12".
+- Clip: `![what it shows](../clips/<file>.webp)` and the line
+  `*Clip 14 s · [original on YouTube from 3:05](https://youtu.be/<id>?t=185)*` if the original is uploaded.
+- A contradiction is not overwritten: the old statement moves into a block `> ⚠️ Previously (v1.41, 2026-09-20): …`.
+- Links between pages are relative. External links go only to Google Play and YouTube.
 
-## 4. Задачи и карта фичей `research.yaml`
+## 4. Tasks and the feature map: `research.yaml`
 
 ```yaml
 game: com.maroieqrwlk.unpin
-play_version: 241.5.1     # версия в Google Play на последней проверке
+play_version: 241.5.1     # the Google Play version at the last check
 play_checked: '2026-10-01T10:00:00'
-version: 241.5.1          # версия, под которую идёт или закончен разбор
-discovery: closed         # open — ещё не все разделы найдены; closed — все заведены фичами
-ftue_verified: '2026-10-01'   # когда игру последний раз прошли с нуля
-synced:                   # до какого момента учтены журналы каждой машины
+version: 241.5.1          # the version the analysis is running for or was finished for
+discovery: closed         # open — not all sections found yet; closed — all are registered as features
+ftue_verified: '2026-10-01'   # when the game was last played from scratch
+synced:                   # up to which moment each machine's journals are included
   chrono: '2026-10-01T04:31:00'
 features:
 - id: daily-reward
-  name: Ежедневная награда
-  status: documented      # seen | in_progress | documented | recheck (новая версия)
+  name: Daily reward
+  status: documented      # seen | in_progress | documented | recheck (new version)
   page: features/daily-reward.md
   version_seen: 241.5.1
   cases:
   - id: claim-day-1
-    text: Забрать награду первого дня
+    text: Claim the day 1 reward
     done: true
     source: 20261001-091500-chrono-FYKPJ#14
 tasks:
 - id: analyze
-  title: Разобрать игру версии 241.5.1
+  title: Analyze the game, version 241.5.1
   kind: analyze           # analyze | update | ftue | replay | followup | daily
   version: 241.5.1
-  requires: any           # any | fresh — нужна свежая установка игры
-  source: external        # external (версия в Google Play) | game (таймеры, расписание) | session (пробел в знаниях)
+  requires: any           # any | fresh — needs a fresh install of the game
+  source: external        # external (Google Play version) | game (timers, schedule) | session (knowledge gap)
   status: done            # open | done | cancelled
   closed: '2026-10-01T12:00:00'
   closed_by: planner
 - id: daily-reward-d2
-  title: Забрать ежедневную награду — день 2 из 7
+  title: Claim the daily reward — day 2 of 7
   kind: daily
   feature: daily-reward
   not_before: '2026-10-02T09:15:00'
   source: game
   status: open
 - id: unlock-shop
-  title: Как открывается магазин
+  title: How the shop unlocks
   kind: replay
   feature: shop
   requires: fresh
@@ -133,68 +134,69 @@ tasks:
   status: open
 ```
 
-**Откуда берутся задачи.**
-- **Внешние — ставит планировщик** (`sw.py claim`):
-  - у новой игры — «Разобрать игру версии X», где X — версия в Google Play (проверка раз в
+**Where tasks come from.**
+- **External tasks — set by the planner** (`sw.py claim`):
+  - for a new game — "Analyze the game, version X", where X is the Google Play version (checked every
     `version_check_hours`);
-  - вышла новая версия, а разбор ещё идёт — он переезжает на новую версию;
-  - разбор уже закончен — «Обновить документацию под версию Y», фичи уходят в `recheck`;
-  - разбор закончен, а FTUE ни разу не проходили со свежей установки — «Пройти игру с нуля»;
-  - вышла новая версия, а с нуля игру проходили больше `ftue_refresh_days` назад — «Проверить,
-    изменился ли FTUE в версии Y». Без новой версии FTUE не перепроверяется: сам по себе он не
-    меняется.
-- **Из игры и пробелов в знаниях — ставит игрок** (`sw.py task add`):
-  - таймер — `followup` с `not_before`;
-  - ежедневная активность — `daily`, по задаче на день;
-  - то, что видно только со свежей установки (FTUE, как открывается фича, маршрут, который не
-    повторить с текущего прогресса), — `ftue` или `replay` с `requires: fresh`.
+  - a new version is out while the analysis is still running — the analysis moves to the new version;
+  - the analysis is already finished — "Update the docs for version Y", features go to `recheck`;
+  - the analysis is finished but FTUE has never been played from a fresh install — "Play from
+    scratch: FTUE and how features unlock";
+  - a new version is out and the game was last played from scratch more than `ftue_refresh_days`
+    ago — "Check whether FTUE changed in version Y". Without a new version FTUE is not rechecked: it
+    does not change on its own.
+- **From the game and from knowledge gaps — set by the player** (`sw.py task add`):
+  - a timer — `followup` with `not_before`;
+  - a daily activity — `daily`, one task per day;
+  - what can only be seen from a fresh install (FTUE, how a feature unlocks, a route that cannot be
+    repeated from the current progress) — `ftue` or `replay` with `requires: fresh`.
 
-**Когда задача делается.** Сессия получает задачи игры, которые можно сделать на этом устройстве
-сейчас:
-- срок `not_before` наступил;
-- для `requires: fresh` игра на телефоне свежая;
-- для разбора и обновления на телефоне стоит нужная версия.
+**When a task gets done.** A session gets the game's tasks that can be done on this device right
+now:
+- `not_before` has passed;
+- for `requires: fresh`, the game on the phone is fresh;
+- for analysis and update, the phone has the required version installed.
 
-Разбор и обновление закрываются сами, когда все разделы найдены и все фичи описаны. Остальные
-задачи закрывает игрок (`task done`, `task cancel`).
+Analysis and update close by themselves when all sections are found and all features are documented.
+The player closes the other tasks (`task done`, `task cancel`).
 
-**Состояние игры на телефоне** — `state/devices/<device>.json`, локально.
-- Игрок записывает его в начале сессии (`sw.py device-state fresh|progressed`), человек — командой
-  `sw.py -d <serial> device-state fresh --game <id>`.
-- Переустановку `sw.py` замечает сам по времени установки.
-- После сессии игра считается `progressed`.
+**The game's state on the phone** — `state/devices/<device>.json`, local.
+- The player records it at the start of a session (`sw.py device-state fresh|progressed`); a human
+  records it with `sw.py -d <serial> device-state fresh --game <id>`.
+- `sw.py` detects a reinstall by itself from the install time.
+- After a session the game counts as `progressed`.
 
-**Статус игры** в `tasks.md`:
-- ▶️ в работе — есть задачи, которые можно делать;
-- ⏳ ждёт времени;
-- 🙋 нужен человек — остались задачи, которым нужен телефон со свежей установкой;
-- 💤 спит до новой версии — открытых задач нет.
+**Game status** in `tasks.md`:
+- ▶️ active — there are tasks that can be done now;
+- ⏳ waiting — the tasks wait for their time;
+- 🙋 needs a human — the remaining tasks need a phone with a fresh install;
+- 💤 sleeping until a new version — no open tasks.
 
-Во время сессий файл меняет только журнал `state/<game>/research.jsonl`. В глобальный
-`research.yaml` его переносит «сон» (`sw.py snapshot`), а `tasks.md`, `features.md` и
-`wiki/tasks.md` пересобирает `sw.py render`.
+During sessions only the journal `state/<game>/research.jsonl` changes. The dream moves it into the
+global `research.yaml` (`sw.py snapshot`), and `sw.py render` rebuilds `tasks.md`, `features.md` and
+`wiki/tasks.md`.
 
-## 5. Картинки и клипы
+## 5. Images and clips
 
-- Без Git LFS и без MP4: GitHub не проигрывает `<video>` из репозитория (проверено 2026-09-30).
-  Клип — анимированный WebP до 20 с, 720 px, 12 кадров/с, до 8 МБ; длинный момент — несколько
-  клипов. Кадр — WebP до 1080 px.
-- Оригинал записи — на YouTube, в репозиторий не попадает.
-- Медиа добавляются, а не переписываются: git хранит историю. Не больше 5 новых клипов на игру за
-  «сон». GitHub советует держать репозиторий до 1 ГБ.
-- Личные данные — ники, почта, аватары, уведомления, другие приложения, окна оплаты — в вики не
-  попадают. `sw.py mark` не даёт отметить кадр не из игры.
-- `sw.py check-zones` не пропускает MP4 и файлы сверх лимитов.
+- No Git LFS and no MP4: GitHub does not play `<video>` from a repository (verified 2026-09-30).
+  A clip is an animated WebP up to 20 s, 720 px, 12 fps, up to 8 MB; a long moment becomes several
+  clips. A frame is a WebP up to 1080 px.
+- The original recording goes to YouTube and never enters the repository.
+- Media are added, not rewritten: git keeps the history. No more than 5 new clips per game per
+  dream. GitHub recommends keeping a repository under 1 GB.
+- Personal data — nicknames, email, avatars, notifications, other apps, payment windows — never goes
+  into the wiki. `sw.py mark` refuses to mark a frame that is not from the game.
+- `sw.py check-zones` rejects MP4 and files over the limits.
 
-## 6. Навыки
+## 6. Skills
 
-`skills/<game>/<name>.yaml` — макрос перехода между экранами. Создаётся из транскрипта командой
-`sw.py skill new`: шаги в долях экрана, pHash экрана до и после.
+`skills/<game>/<name>.yaml` is a macro for moving between screens. It is created from a transcript
+with `sw.py skill new`: steps in screen fractions, pHash of the screen before and after.
 
 ```yaml
 name: open-shop
-description: С карты уровней открыть магазин
-status: candidate        # candidate → verified (3 успеха подряд) → broken (2 неудачи или смена версии)
+description: Open the shop from the level map
+status: candidate        # candidate → verified (3 successes in a row) → broken (2 failures or a version change)
 version: 241.3.1
 pre_hash: b699809d63993ecc
 post_hash: 8f9df0487398269d
@@ -204,33 +206,33 @@ steps:
 source: 20261001-091500-chrono-FYKPJ#12-15
 ```
 
-`sw.py skill run` запускает навык, только если экран совпадает с `pre_hash`, и засчитывает успех,
-только если в конце экран совпал с `post_hash`. Результаты копятся в `state/<game>/skills.jsonl`,
-по ним «сон» продвигает и понижает навыки.
+`sw.py skill run` runs a skill only if the screen matches `pre_hash`, and counts a success only if
+the screen matches `post_hash` at the end. Results accumulate in `state/<game>/skills.jsonl`; the
+dream promotes and demotes skills based on them.
 
-## 7. Как знания не устаревают
+## 7. How knowledge stays current
 
-- **Версия игры.** Планировщик сверяет версию в Google Play. Новая версия ставит задачу
-  обновления и переводит фичи в `recheck`, страницы получают пометку «перепроверить на vX».
-- **FTUE.** Перепроверяется только с новой версией и только если с нуля игру проходили больше
-  `ftue_refresh_days` назад.
-- **Задачи.** Ненужные задачи «сон» закрывает как `cancelled` с причиной, а не удаляет.
-- **Время.** У страниц и фич есть `version_seen`. Урок несёт строку «подтверждено: <session>,
-  <версия>»; урок, не подтверждённый на двух версиях подряд, удаляется.
-- **Навыки** падают в `broken` после неудач и больше не запускаются.
-- **Противоречия** оформляются блоком «⚠️ Ранее», а не молчаливой заменой.
-- **Размер.** `lessons.md` — не больше 60 пунктов, дубли сливаются.
-- **Локальное.** Сырые записи чистит `sw.py gc` по срокам из `local.yaml`; журналы, уже
-  перенесённые в глобальный `research.yaml`, игнорируются по отметке `synced`.
+- **Game version.** The planner checks the Google Play version. A new version sets an update task
+  and moves features to `recheck`; pages get the mark "recheck on vX".
+- **FTUE.** It is rechecked only with a new version and only if the game was last played from
+  scratch more than `ftue_refresh_days` ago.
+- **Tasks.** The dream closes unneeded tasks as `cancelled` with a reason instead of deleting them.
+- **Time.** Pages and features have `version_seen`. A lesson carries the line "confirmed: <session>,
+  <version>"; a lesson not confirmed on two versions in a row is deleted.
+- **Skills** drop to `broken` after failures and are no longer run.
+- **Contradictions** go into a "⚠️ Previously" block, never a silent replacement.
+- **Size.** `lessons.md` has at most 60 items; duplicates are merged.
+- **Local data.** `sw.py gc` cleans raw records by the retention periods in `local.yaml`; journals
+  already moved into the global `research.yaml` are ignored thanks to the `synced` mark.
 
-## 8. Кто что пишет и читает
+## 8. Who writes and reads what
 
-| Кто | Читает | Пишет | Как обеспечено |
+| Who | Reads | Writes | How it is enforced |
 |---|---|---|---|
-| Игрок (`sleepwalker-player`) | глобальные знания, свой `state/<game>/` | `state/<game>/progress.md`, `inbox.md`; журнал задач и фичей, состояние игры на телефоне и `raw/` — через `sw.py` | одна игра — одно устройство (блокировка в `sw.py`); ничего не коммитит |
-| Оркестратор «играть» | ответы `sw.py claim` | ничего (задачи планировщика пишет `sw.py claim` в журнал) | не коммитит и не пушит |
-| Аналитик (`sleepwalker-analyst`) | `raw/` и `state/` своей машины, worktree | ничего | инструменты: Read, Grep, Glob |
-| «Сон» | всё своей машины | `wiki/`, `skills/`, `dreams/` в ветке `dream/<машина>/<дата>` | `sw.py check-zones` перед коммитом |
-| Критик (`sleepwalker-critic`) | diff и worktree | ничего | инструменты: Read, Grep, Glob |
-| Мейнтейнер | всё; что нужно от людей — `wiki/tasks.md` | мерж PR, `games.yaml`, `project.yaml`, процесс; замечания — issues `feedback` и комментарии к PR; свежий телефон — `sw.py device-state` | защита ветки `main` на GitHub: только через PR |
-| Кто угодно | публичный репозиторий | pull request, issues | учитываются только мейнтейнеры |
+| Player (`sleepwalker-player`) | global knowledge, its own `state/<game>/` | `state/<game>/progress.md`, `inbox.md`; the task and feature journal, the game's state on the phone and `raw/` — through `sw.py` | one game — one device (lock in `sw.py`); commits nothing |
+| The "play" orchestrator | `sw.py claim` responses | nothing (`sw.py claim` writes the planner's tasks to the journal) | does not commit or push |
+| Analyst (`sleepwalker-analyst`) | its machine's `raw/` and `state/`, the worktree | nothing | tools: Read, Grep, Glob |
+| The dream | everything on its machine | `wiki/`, `skills/`, `dreams/` in the branch `dream/<machine>/<date>` | `sw.py check-zones` before committing |
+| Critic (`sleepwalker-critic`) | the diff and the worktree | nothing | tools: Read, Grep, Glob |
+| Maintainer | everything; what is needed from people — `wiki/tasks.md` | merges PRs; `games.yaml`, `project.yaml`, the process; feedback — `feedback` issues and PR comments; a fresh phone — `sw.py device-state` | branch protection on `main` on GitHub: changes only through a PR |
+| Anyone | the public repository | pull requests, issues | only maintainers are taken into account |

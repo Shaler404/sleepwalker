@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-rem Забрать телефоны: за минуту освободить и не выдавать сессиям Sleepwalker.
+rem Take the phones: free them within a minute and stop giving them to Sleepwalker sessions.
 cd /d "%~dp0.."
 python harness\sw.py stop %*
 pause
