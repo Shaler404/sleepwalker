@@ -91,6 +91,20 @@ For each session from `pending`, start a `sleepwalker-analyst` subagent, no more
   - Add the tasks the player missed, from the analysts' reports, with `source: game` or `session`
     and the needed `not_before` / `requires: fresh`.
   - Move tasks that are no longer needed (feature removed, duplicate) to `cancelled` with a `note`.
+- **Discovery review** — for each game whose `discovery` is `open`. The goal is to stop advancing
+  as soon as no new features can appear, not to play every level.
+  - Take the latest survey (`survey-N` tasks, frames whose `mark` title starts with `survey:`) and
+    look at every screen: buttons, icons, badges, tabs, menu items. Compare with the feature map and
+    with the same screens in the previous survey. Every entry point that maps to no feature is a new
+    feature: add it with a task "Explore <entry point>" (`source: session`).
+  - Check the genre checklist (`schema/WIKI-SCHEMA.md`, section 9): for each typical feature the game
+    does not have yet, add a task "Look for <feature>", or write in the report why it is absent.
+  - Look at where features were found (`found_at`) against the progress reached: a long stretch of
+    progress without new features is a signal too.
+  - Close the search — set `discovery: closed` in `research.yaml` and explain it in `discovery_note`
+    and in the report — when the last `discovery_clean_surveys` surveys (see `project.yaml`) found no
+    new entry points at different progress points and the checklist has no unexplained gaps. From then
+    on the game is played in `cases` mode and no longer advanced.
 - **Feature page** `wiki/<game>/features/<id>.md` per the schema: how it works, the case table with
   results, numbers with the version, media, sources.
 - **Routes** `agent/routes.md`, **tactics** `agent/tactics.md`. For a route that has a skill, give

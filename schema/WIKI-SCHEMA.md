@@ -94,6 +94,9 @@ play_version: 241.5.1     # the Google Play version at the last check
 play_checked: '2026-10-01T10:00:00'
 version: 241.5.1          # the version the analysis is running for or was finished for
 discovery: closed         # open — not all sections found yet; closed — all are registered as features
+discovery_note: two clean surveys at level 60 and level 95, checklist covered   # set by the dream
+progress: {text: level 95, value: 95, at: '2026-10-02T11:00:00'}   # progress reached
+gate: null               # while advancing is blocked: {type: lives, until: ..., note: ...}
 ftue_verified: '2026-10-01'   # when the game was last played from scratch
 synced:                   # up to which moment each machine's journals are included
   chrono: '2026-10-01T04:31:00'
@@ -101,6 +104,7 @@ features:
 - id: daily-reward
   name: Daily reward
   status: documented      # seen | in_progress | documented | recheck (new version)
+  found_at: {text: level 5, value: 5}   # progress when the feature first showed up
   page: features/daily-reward.md
   version_seen: 241.5.1
   cases:
@@ -111,13 +115,19 @@ features:
 tasks:
 - id: analyze
   title: Analyze the game, version 241.5.1
-  kind: analyze           # analyze | update | ftue | replay | followup | daily
+  kind: analyze           # analyze | update | survey | ftue | replay | followup | daily
   version: 241.5.1
   requires: any           # any | fresh — needs a fresh install of the game
   source: external        # external (Google Play version) | game (timers, schedule) | session (knowledge gap)
   status: done            # open | done | cancelled
   closed: '2026-10-01T12:00:00'
   closed_by: planner
+- id: survey-3
+  title: Survey every screen: capture all entry points and map them to features
+  kind: survey
+  status: done
+  new_entries: 0          # entry points that did not map to known features
+  at_progress: level 95
 - id: daily-reward-d2
   title: Claim the daily reward — day 2 of 7
   kind: daily
@@ -140,6 +150,8 @@ tasks:
     `version_check_hours`);
   - a new version is out while the analysis is still running — the analysis moves to the new version;
   - the analysis is already finished — "Update the docs for version Y", features go to `recheck`;
+  - "Survey every screen…" after every `survey_every_sessions` analysis sessions, and when
+    advancing is blocked by a gate and there is nothing else to verify;
   - the analysis is finished but FTUE has never been played from a fresh install — "Play from
     scratch: FTUE and how features unlock";
   - a new version is out and the game was last played from scratch more than `ftue_refresh_days`
@@ -159,6 +171,13 @@ now:
 
 Analysis and update close by themselves when all sections are found and all features are documented.
 The player closes the other tasks (`task done`, `task cancel`).
+
+**How a game is played — advance first.** While `discovery` is open the analysis runs in the
+`advance` mode: move through the content as fast as possible, register features as they appear and
+write every branch down as a case or a task for later. When a gate blocks advancing (energy, lives,
+timer, content, paywall — `sw.py gate`), the mode becomes `cases`: verify what needs no progress; if
+nothing, the game gives the phone up until the gate opens. Surveys and the genre checklist decide when
+the search is over; after that the game is played in `cases` mode until every feature is documented.
 
 **The game's state on the phone** — `state/devices/<device>.json`, local.
 - The player records it at the start of a session (`sw.py device-state fresh|progressed`); a human
@@ -236,3 +255,26 @@ dream promotes and demotes skills based on them.
 | Critic (`sleepwalker-critic`) | the diff and the worktree | nothing | tools: Read, Grep, Glob |
 | Maintainer | everything; what is needed from people — `wiki/tasks.md` | merges PRs; `games.yaml`, `project.yaml`, the process; feedback — `feedback` issues and PR comments; a fresh phone — `sw.py device-state` | branch protection on `main` on GitHub: changes only through a PR |
 | Anyone | the public repository | pull requests, issues | only maintainers are taken into account |
+
+## 9. Genre checklist
+
+Typical features of free-to-play mobile games. The dream checks each game against this list: a
+typical feature that is not found yet becomes a task "Look for <feature>", or the report explains why
+the game does not have it.
+
+- **Onboarding:** tutorial (FTUE), consent and permission prompts, account or login, language.
+- **Core loop:** levels or stages and their types, win and lose flow, retry and continue, boosters,
+  difficulty spikes.
+- **Meta:** map or progression, chapters or worlds, stars, keys, chests, collections, customization and
+  skins, story, decor or renovation, character upgrades.
+- **Economy:** soft currency, hard currency, energy or lives, timers, sources and sinks.
+- **Monetization:** shop and IAP packs, starter pack and first offer, limited-time offers and popups,
+  no-ads purchase, subscription or VIP, battle or season pass, piggy bank, rewarded ads and their
+  placements, interstitials, banners.
+- **Retention:** daily rewards or login calendar, daily quests or missions, achievements, streaks,
+  push-notification prompts, offline or idle rewards.
+- **LiveOps:** timed events, tournaments, leagues and leaderboards, seasonal content, collection events.
+- **Social:** friends, teams or clans, gifting, chat, PvP (record it; the agent does not play against
+  people).
+- **Settings and support:** settings, sound, language, privacy and legal, help and support, restore
+  purchases, cloud save.

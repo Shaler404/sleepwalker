@@ -27,6 +27,7 @@ player subagents. The repository root is one level above this file (the owner's 
    Repository root: <path>. Do not change the working directory: every command is cd <path> && python harness/sw.py -d <device> ...
    Instructions: <path>/runbooks/session.md — read it in full and follow it.
    device: <device>  game: <game> (<title>)  game state on the phone: <device_state>  version: <installed_version>
+   Mode: <mode> — <mode_hint>
    Session tasks: <tasks — id, title, kind, feature, note, only_if_fresh>
    Budget: <budget_min> min, <max_steps> steps. Owner's focus: <focus or "none">
    Read before playing: <read_first>
