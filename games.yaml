@@ -42,22 +42,3 @@ games:
 
   - id: com.crypt.gram.puzz
     title: "Cryptogram: Word Logic Puzzles"
-
-  - id: com.SpektraGames.HighwayRacerPro.traffic.car.racing.game
-    title: Highway Racer Pro
-
-  - id: com.psv.drivex.racing.unlimited
-    title: "Drive X Unlimited: Car Racing"
-
-  - id: com.psv.racing_games.trafic.pro.racer
-    title: Traffic Pro Racer
-
-  - id: com.crime.superchero.open.world.war
-    title: Superhero Crime Open World War
-
-  - id: com.starplay.spider.fighter.openworld
-    title: "Spider Fighter 3: Action Game"
-
-  - id: com.nvsgames.snap
-    title: MARVEL SNAP
-    enabled: false         # PvP с живыми игроками: агент не играет против людей
