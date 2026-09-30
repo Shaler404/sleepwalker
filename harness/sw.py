@@ -1197,7 +1197,7 @@ def cmd_check_zones(args) -> None:
     w = Path(args.worktree)
     names = subprocess.run(["git", "-C", str(w), "diff", "--name-only", "origin/main"], capture_output=True,
                            text=True).stdout.split()
-    names += [ln[3:] for ln in subprocess.run(["git", "-C", str(w), "status", "--porcelain"], capture_output=True,
+    names += [ln[3:] for ln in subprocess.run(["git", "-C", str(w), "status", "--porcelain", "--untracked-files=all"], capture_output=True,
                                               text=True).stdout.splitlines() if ln.startswith("??")]
     allowed = DREAM_ZONES + (PROCESS_ZONES if args.process else ())
     bad = sorted({n for n in names if not n.startswith(allowed)})
