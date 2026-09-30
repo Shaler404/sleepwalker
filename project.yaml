@@ -35,3 +35,21 @@ research:
   country: us                # Google Play country for the version check
   survey_every_sessions: 2   # a screen survey after this many analysis sessions (and whenever a gate blocks advancing)
   discovery_clean_surveys: 2 # the dream closes the search after this many surveys in a row found no new entry points
+
+# Which model does what (the Agent tool's model names: opus, sonnet, haiku, fable). A machine can
+# override them in local.yaml.
+models:
+  study: opus                # learns new or broken gameplay: rules, method, solvers
+  play: sonnet               # plays mastered gameplay and verifies cases; hands new gameplay back to study
+  consult: opus              # one-shot advice: sw.py ask
+  analyst: opus              # the dream's session analysts
+  critic: opus               # the dream's critic
+
+# Levels: plan, play in batches, rethink, reflect (runbooks/session.md, section 3).
+play:
+  level_budget_min: 5        # a human solves a typical puzzle level in this time: the agent's target
+  level_rethink_min: 2       # a plan that has not worked for this long: stop and rethink
+  batch_max: 40              # moves per sw.py taps call
+  batch_gap_s: 0.35          # pause between moves in a batch
+  hi_tokens: 4784            # image tokens of a full-resolution screenshot (shot --hi): 1080x2340 fits whole
+  solver_timeout_s: 60

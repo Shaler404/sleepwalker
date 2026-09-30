@@ -43,8 +43,8 @@ Task kinds:
   - 4 (hard limit) — set tasks for the unfinished work and `end`;
   - 6 (the owner is taking the phone) — no more actions on the phone. Add tasks for the unfinished
     work (`task add` works without the phone) and immediately `end --status interrupted`.
-- You write only to `state/<game>/progress.md` and `state/<game>/inbox.md`. `sw.py` maintains
-  everything else for you.
+- You write only to `state/<game>/progress.md`, `inbox.md`, `playbook.md` and `solvers/*.py`.
+  `sw.py` maintains everything else for you.
 - **Language:** everything you write — feature and case names, task titles, notes, marks, clip
   titles, `progress.md`, `inbox.md`, the wiki, reports — is in English. The only exception is a quote
   of in-game text from a game localized only in Russian: quote it in the original and add an English
@@ -56,7 +56,9 @@ Task kinds:
    tactics, your `progress.md`.
 2. `sw.py research <game>` — tasks, the feature map, versions.
 3. `sw.py skill list <game>` — skills: ready-made navigation macros.
-4. Write the session plan at the top of `state/<game>/progress.md`: which tasks now, in what order,
+4. `sw.py playbook` — how to play this game: rules and method for each mechanic, which ones are
+   mastered, level times. Your `model_role` (in the brief) says what your job is (section 3).
+5. Write the session plan at the top of `state/<game>/progress.md`: which tasks now, in what order,
    when to stop.
 
 ## 2. The game's state on this phone
@@ -114,9 +116,58 @@ The repository's job is to collect complete information as fast as possible. The
 - `discovery closed` — only when you reached the end of the content ("coming soon", no next level).
   Otherwise the dream decides.
 
-1. Loop: frame → one action → the reply has a new frame → open it and compare with what you expected.
+### Levels: think first, then play fast
+
+A human solves a typical puzzle level in under 5 minutes (`play.level_budget_min` in `project.yaml`).
+The agent is slow when it decides move by move: a tool call per tap costs 5–6 seconds, and searching
+the board from scratch after every move costs 15–20 more. So a level is one cycle, not a string of
+taps. Games without levels: treat each goal (a stage, an order, a quest) as a level.
+
+1. **Before the level: plan.** `sw.py playbook` has the rules and the method for each mechanic (a kind
+   of level). Look at the board once (`shot --hi` when the pieces are small) and write the plan:
+   `sw.py level start "level 12" --value 12 --mechanic core-match --plan "clear the top layer first, keep the tray empty"`.
+   A mechanic you have not met yet: read the game's own rules first (tutorial, "How to play") and
+   write them into the playbook *before* the first move — goal, controls, what blocks a move, how you
+   lose — and plan from them.
+2. **Play in batches.** From one screenshot, plan every move you can already see and send them in one
+   call: `sw.py taps "120,340 410,340 88,610>88,300" --why "three free pairs"` (`X,Y` is a tap,
+   `X1,Y1>X2,Y2` a swipe). One screenshot per batch, not per tap. Look at the board again when the
+   batch is done or something unexpected happened.
+3. **Rethink, do not grind.** Every reply shows the level clock (`level`). When a plan has not worked
+   for 2 minutes the harness says so: stop trying moves, find what blocks you, fix the rules in the
+   playbook and write the new plan: `sw.py level plan "..."`. Hints and other boosters are features to
+   document once and resources to save, not your way of finding moves.
+4. **After the level: reflect.** `sw.py level end won|lost|quit --note "what worked, what to change"`,
+   then update the mechanic's section of `state/<game>/playbook.md` right away: the next level starts
+   from it. A won level records the progress by itself.
+5. **Make it fast.** Two levels in a row within the budget mark the mechanic `mastered`; two lost or
+   slow levels in a row mark it `broken`. When levels stay slow, change the method, not the effort:
+   - **solver** — logic puzzles where every piece is visible (mahjong, sudoku-like, light-up,
+     arrows). Write `state/<game>/solvers/<mechanic>.py` with
+     `solve(image, board=None, frame_scale=1.0) -> {"moves": [[x, y], [x1, y1, x2, y2], ...], "note": "..."}`
+     — moves in pixels of the full-resolution image (schema, section 10). Read the board from the image
+     with numpy/OpenCV, or write down the board you see as JSON and pass it with `--board FILE`.
+     `sw.py solve <mechanic>` draws the moves on the frame: check them, then `sw.py solve <mechanic> --run`
+     plays them. Then `sw.py mechanic <id> --method solver`. A solver only computes: code that touches
+     files, the network or processes is refused;
+   - **heuristic** — games with randomness (match-3, block puzzles): a short list of rules in the
+     playbook, e.g. "moves that make a special piece first";
+   - **manual** — physics and reaction games: what to look at and in which order.
+
+**Your model role** (`model_role` in the brief and in the `start` reply):
+- `study` — you are the strong model. Your job is to make the gameplay fast: learn every new or broken
+  mechanic as above until its levels take less than the budget, then advance.
+- `play` — you are the fast model. Play mastered mechanics by the playbook and verify cases. A new or
+  broken mechanic is not yours to learn: write what you see into the playbook, `level end quit`, and
+  `end --status handoff`. The strong model takes the game over right away.
+- Unsure what to do on a screen? `sw.py ask "question"` gets one-shot advice from a stronger model on
+  the last screenshot (15–60 s). It beats trying moves at random.
+
+1. Loop outside levels (menus, features, popups): frame → one action → the reply has a new frame →
+   open it and compare with what you expected.
    - `tap X Y --why "what I expect"`: X, Y are pixels of the frame you see.
    - `swipe X1 Y1 X2 Y2 --why …`, `key back --why …`, `text "…" --why …`, `wait SECONDS`.
+   - `taps "X,Y X,Y …" --why …` — several moves you already know, in one call.
    - `launch` — bring the game back if something else opened (an ad took you to a browser or store).
    - `skill run <name> --why …` — if a skill leads where you need. If it fails, do it by hand.
    - Follow the `warnings` field in the reply. Three steps without a screen change — change strategy.
@@ -148,16 +199,20 @@ The repository's job is to collect complete information as fast as possible. The
 
 ## 4. Finish
 
-1. `sw.py end --status ok|stuck|crashed|blocked|interrupted --summary "2–3 sentences"`.
+1. `sw.py end --status ok|stuck|crashed|blocked|interrupted|handoff --summary "2–3 sentences"`
+   (`handoff` — the play model met gameplay to learn; an open level is recorded as `quit`).
 2. Rewrite `state/<game>/progress.md` briefly:
    - which tasks were closed and which were set;
    - where you stopped;
    - where to start next.
+
+   Check that `state/<game>/playbook.md` has what this session learned about each mechanic.
 3. Append a block for the dream to the end of `state/<game>/inbox.md` (do not touch older entries):
    ```
    ## <session-id> · <status> · <fresh|progressed>
    - Route: <feature> — from the main screen: <buttons in order> (steps 12–15)
    - Tactic: <mechanic> — how to beat it (steps …)
+   - Mechanic: <id> — method, what made levels fast or slow (levels …, steps …)
    - Lesson: in situation X do Y because Z (steps …)
    - Skill: steps 12–15 — "open the shop from the level map"
    - Agent error: what went wrong (steps …)

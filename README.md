@@ -75,6 +75,20 @@ itself. Until there is such a phone, the task stays in the "Needs a human" secti
   and a covered checklist close the search, so the agent does not play 700 levels when everything
   appears by level 100.
 
+**How the agent learns to play — in the session, not overnight.** A new kind of level is learned the
+moment the agent meets it: it reads the game's rules, writes them into the game's playbook, plans the
+level before the first move, plays the moves it can see in one batch, stops to rethink when a plan
+has not worked for two minutes, and after the level writes down what worked. The target is the time a
+human needs, 5 minutes a level. When levels stay slow it changes the method: for logic puzzles it
+writes a solver (a small program that reads the board from the screenshot and returns the moves).
+Two levels in a row within the target mark the mechanic mastered.
+
+**Models by role.** A strong model (`study`) learns new gameplay; a fast one (`play`) plays what is
+learned and checks cases; when the fast one meets something new, it hands the game back to the strong
+one. `sw.py ask` gets one-shot advice from a stronger model (Claude, or GPT through the Codex CLI).
+`sw.py stats --by-model` compares models on levels and features per hour. The roles are in
+[`project.yaml`](project.yaml).
+
 When there are no open tasks, the game **sleeps until a new version**.
 
 ## How memory works
@@ -88,8 +102,9 @@ into a macro `skills/<game>/*.yaml` straight from the transcript. The player run
 command. A skill fires only if the screen matches its start screen, and counts only if it got where
 it should. After three successes it is `verified`, after failures — `broken`.
 
-**How the process gets faster.** Before a session the player reads the routes to features
-(`agent/routes.md`), mechanic tactics (`agent/tactics.md`), lessons and skills. Every day the
+**How the process gets faster.** Before a session the player reads the playbook
+(`agent/playbook.md`), routes to features (`agent/routes.md`), mechanic tactics
+(`agent/tactics.md`), lessons, skills and solvers. Every day the
 "dream" measures speed (`agent/metrics.md`: steps per closed case, share of steps without a screen
 change, skills) and fixes routes and lessons if speed is not improving.
 
@@ -104,7 +119,8 @@ change, skills) and fixes routes and lessons if speed is not improving.
 **Permissions.** The table is in [`schema/WIKI-SCHEMA.md`](schema/WIKI-SCHEMA.md), section 8.
 - The player commits nothing.
 - The analyst and the critic can only read (their tools are restricted in the role definitions).
-- The "dream" writes only `wiki/`, `skills/`, `dreams/`, and `sw.py check-zones` checks this.
+- The "dream" writes only `wiki/`, `skills/`, `solvers/`, `dreams/`, and `sw.py check-zones` checks
+  this (and refuses solvers that do more than compute).
 - Maintainers from `project.yaml` merge; issues and comments from anyone else are just data.
 
 **How stale knowledge is kept from piling up.**

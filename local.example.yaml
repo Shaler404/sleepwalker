@@ -17,6 +17,16 @@ fake_devices: {}
 tools:
   ffmpeg: ffmpeg           # full path if ffmpeg is not in PATH
   ffprobe: ffprobe
+  claude: claude           # Claude Code CLI, for sw.py ask
+  codex: codex             # Codex CLI, for sw.py ask with via: codex
+
+models: {}                 # override project.yaml models on this machine, e.g. {play: haiku}
+
+consult:                   # sw.py ask: one-shot advice from a stronger model on the last screenshot
+  via: claude              # claude | codex (GPT through the Codex CLI and the owner's ChatGPT plan)
+  model: ""                # empty = project.yaml models.consult for claude; for codex e.g. gpt-6-astra
+  effort: ""               # codex only: model_reasoning_effort
+  timeout_s: 180
 
 video:
   record: true             # record the session screen: the original for YouTube and for cutting clips
