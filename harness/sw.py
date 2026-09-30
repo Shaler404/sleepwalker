@@ -1483,7 +1483,8 @@ def cmd_claim(args) -> None:
             if sn >= P()["session"]["max_in_a_row"] and len({c[4]["id"] for c in cands}) > 1:
                 cands = [((c[0] + 10) if c[4]["id"] == sg and c[0] >= 0 else c[0], *c[1:]) for c in cands]
                 rotated = f"{sg} had {sn} sessions in a row: other games go first"
-            _, turn, _, _, e, st = min(cands, key=lambda c: c[:4])
+            # order: a handoff first, then a game whose turn it is, then task kind, priority, least recent
+            _, turn, _, _, e, st = min(cands, key=lambda c: (0 if c[0] < 0 else 1 + c[1], *c[:4]))
             budget = budget_for(st["ready"])
             role, role_why = model_role(st["view"], st["ready"])
             model = models()[role]
