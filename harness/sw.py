@@ -18,6 +18,7 @@
   skill list | skill run NAME --why ...
   end --status ok|stuck|crashed|blocked|interrupted --summary "..."
 Знания
+  games                                  игры на телефонах против games.yaml: что в списке, что добавить
   features GAME                          карта фичей: из вики + свежие записи этой машины
   pending                                сессии этой машины, которые ещё не прошли «сон»
   stats [GAME]                           скорость наигрыша по сессиям
@@ -1100,6 +1101,51 @@ def skill_new(args) -> None:
 
 # --- команды: знания и «сон» ----------------------------------------------------------------------
 
+def cmd_games(args) -> None:
+    """Игры на подключённых телефонах против games.yaml: что уже в списке, что можно добавить.
+    Названия и жанры — из Google Play (pip install google-play-scraper; без него только package)."""
+    try:
+        from google_play_scraper import app as play_app
+    except ImportError:
+        play_app = None
+    listed = {g["id"]: g for g in read_yaml(ROOT / "games.yaml").get("games") or []}
+    phone: dict[str, str] = {}
+    for dev, platform in devices().items():
+        if platform != "android":
+            continue
+        out_ = adb(dev, "shell", "pm list packages -3 --user 0")
+        for ln in out_.splitlines():
+            phone.setdefault(ln.replace("package:", "").strip(), dev)
+    rows, add, unknown = [], [], []
+    for pkg in sorted(phone):
+        title, genre = "", ""
+        if play_app:
+            try:
+                info = play_app(pkg, lang="en", country="us")
+                title, genre = info.get("title", ""), info.get("genreId", "")
+            except Exception:
+                pass
+        is_game = genre.startswith("GAME") if genre else None
+        if pkg not in listed and is_game is False:
+            continue  # не игра: мессенджеры, банки, магазины
+        if pkg not in listed and is_game is None:
+            unknown.append(pkg)  # нет в Google Play: системные приложения, внутренние сборки
+            continue
+        if pkg in listed:
+            state = "в списке" if listed[pkg].get("enabled", True) else "в списке, выключена"
+        else:
+            state = "не в списке"
+        rows.append(f"{state:<22} {pkg:<55} {title}")
+        if pkg not in listed and is_game:
+            add.append(f'  - id: {pkg}\n    title: "{title}"')
+    missing = [f"{'нет на телефоне':<22} {pkg:<55} {g.get('title', '')}" for pkg, g in listed.items() if pkg not in phone]
+    print("\n".join(rows + missing) or "телефонов нет или игр на них нет")
+    if unknown:
+        print("\nНе нашлись в Google Play (системные или внутренние; добавить можно вручную): " + ", ".join(unknown))
+    if add:
+        print("\nМожно добавить в games.yaml:\n" + "\n".join(add))
+
+
 def cmd_features(args) -> None:
     view = feature_view(args.game)
     print(yaml.safe_dump({"summary": summary_of(view), **view}, allow_unicode=True, sort_keys=False))
@@ -1334,6 +1380,7 @@ def main() -> None:
     p = sub.add_parser("end")
     p.add_argument("--status", required=True, choices=["ok", "stuck", "interrupted", "crashed", "blocked"])
     p.add_argument("--summary", required=True)
+    sub.add_parser("games")
     p = sub.add_parser("features")
     p.add_argument("game")
     sub.add_parser("pending")
@@ -1364,7 +1411,7 @@ def main() -> None:
         "claim": cmd_claim, "status": cmd_status, "sync": cmd_sync, "start": cmd_start, "shot": cmd_shot,
         "wait": cmd_wait, "launch": cmd_launch, "note": cmd_note, "mark": cmd_mark, "clip": cmd_clip,
         "feature": cmd_feature, "case": cmd_case, "discovery": cmd_discovery, "skill": cmd_skill, "end": cmd_end,
-        "features": cmd_features, "pending": cmd_pending, "stats": cmd_stats, "snapshot": cmd_snapshot,
+        "games": cmd_games, "features": cmd_features, "pending": cmd_pending, "stats": cmd_stats, "snapshot": cmd_snapshot,
         "render": cmd_render, "check-zones": cmd_check_zones, "wiki-img": cmd_wiki_img, "wiki-clip": cmd_wiki_clip,
         "gc": cmd_gc, "install-agents": cmd_install_agents, "_rec": cmd_rec,
         "tap": lambda a: action(a, "tap", lambda d, k: d.tap(s(a.x, k), s(a.y, k)), {"x": a.x, "y": a.y},
