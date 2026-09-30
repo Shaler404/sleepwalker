@@ -36,11 +36,17 @@ player subagents. The repository root is one level above this file (the owner's 
    Notes: <path>/state/<game>/progress.md and inbox.md
    ```
    If the `sleepwalker-player` type is unavailable, use a general subagent with the same brief.
-4. **Phones do not idle.** As soon as a player finishes and less than 45 minutes have passed since
-   this run started, run `python harness/sw.py claim` again and start a new player on the freed
-   device. This way sessions run back to back while games have work. The next hourly run sees the
-   devices as occupied (`busy`) and does not interfere. A session that ended with `handoff` (the
-   fast model met gameplay it should not learn) comes back first from `claim`, with the strong model.
+4. **Phones do not idle.** While less than 50 minutes have passed since this run started:
+   - as soon as one of your players finishes, run `python harness/sw.py claim` again and start a new
+     player on the freed device;
+   - if `claim` reported a device as `busy` with a session from an earlier run, wait for it instead of
+     leaving it to the next hourly run: `python harness/sw.py wait-free --max-minutes 9` returns as
+     soon as a busy device frees up (repeat it while the run is young enough), then `claim` again.
+
+   This way sessions run back to back while games have work; the next hourly run sees the devices as
+   occupied (`busy`) and does not interfere. A session that ended with `handoff` (the fast model met
+   gameplay it should not learn) comes back first from `claim`, with the strong model. When no device
+   is playing or busy, go on to the next step.
 5. If a subagent crashed without ending its session, end the session yourself:
    `python harness/sw.py -d <device> end --status crashed --summary "the subagent did not end the session"`.
 6. `python harness/sw.py gc` — clean up old records in `raw/`.

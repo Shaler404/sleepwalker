@@ -8,6 +8,7 @@ Planning
   status                                 what is running on each phone right now
   stop [-d SERIAL] [--hours N]           take a phone back: free it within a minute, keep it from sessions
   resume [-d SERIAL]                     return a phone to work
+  wait-free [--max-minutes N]            wait until a phone busy with a session frees up (the orchestrator)
   sync                                   pull origin/main (fast-forward only)
 Session
   start GAME                             start the game and screen recording, first screenshot, session tasks
@@ -1539,6 +1540,39 @@ def cmd_stop(args) -> None:
          "message": "you can unplug the phone" + ("s" if len(res) > 1 else "")})
 
 
+def device_use() -> tuple[list[str], list[dict]]:
+    """Connected devices without a session (and not held), and devices busy with a live session."""
+    live = {s["device"]: s for s in all_sessions() if not stale(s)}
+    free, busy = [], []
+    for d in devices():
+        if held(d):
+            continue
+        s = live.get(d)
+        if s:
+            busy.append({"device": d, "game": s["game"], "status": s["status"],
+                         "minutes": round((time.time() - s["t0"]) / 60, 1), "budget_min": s.get("budget_min")})
+        else:
+            free.append(d)
+    return free, busy
+
+
+def cmd_wait_free(args) -> None:
+    """For the orchestrator: a phone busy with a session from another run frees up within the hour, and
+    without waiting for it the phone would idle until the next run. Returns as soon as one of the devices
+    that are busy now is free, or after --max-minutes. Nothing busy: returns at once."""
+    free, busy = device_use()
+    waiting = {b["device"] for b in busy}
+    deadline = time.time() + args.max_minutes * 60
+    while waiting and time.time() < deadline:
+        time.sleep(15)
+        free, busy = device_use()
+        if waiting - {b["device"] for b in busy}:
+            break
+    out({"free": free, "busy": busy, "freed": sorted(waiting - {b["device"] for b in busy}),
+         "hint": ("claim again" if waiting - {b["device"] for b in busy} else
+                  "still busy: wait again while the run is young enough" if busy else "nothing to wait for")})
+
+
 def cmd_resume(args) -> None:
     targets = [hp for hp in (STATE() / "holds").glob("*.json")
                if not args.device or read_json(hp).get("device") == args.device]
@@ -2631,6 +2665,8 @@ def main() -> None:
     p.add_argument("--hours", type=float, help="return the phone to work automatically after N hours")
     p.add_argument("--note")
     sub.add_parser("resume")
+    p = sub.add_parser("wait-free")
+    p.add_argument("--max-minutes", type=float, default=9)
     sub.add_parser("sync")
     p = sub.add_parser("start")
     p.add_argument("game")
@@ -2796,7 +2832,7 @@ def main() -> None:
 
     s = lambda v, k: int(round(v * k))  # noqa: E731
     handlers = {
-        "claim": cmd_claim, "status": cmd_status, "stop": cmd_stop, "resume": cmd_resume, "sync": cmd_sync, "start": cmd_start,
+        "claim": cmd_claim, "status": cmd_status, "stop": cmd_stop, "resume": cmd_resume, "wait-free": cmd_wait_free, "sync": cmd_sync, "start": cmd_start,
         "device-state": cmd_device_state, "shot": cmd_shot, "wait": cmd_wait, "launch": cmd_launch,
         "note": cmd_note, "mark": cmd_mark, "clip": cmd_clip, "feature": cmd_feature, "case": cmd_case,
         "task": cmd_task, "progress": cmd_progress, "gate": cmd_gate, "discovery": cmd_discovery, "skill": cmd_skill, "end": cmd_end, "games": cmd_games,
