@@ -9,7 +9,8 @@ Planning
   stop [-d SERIAL] [--hours N]           take a phone back: free it within a minute, keep it from sessions
   resume [-d SERIAL]                     return a phone to work
   wait-free [--max-minutes N]            wait until a phone busy with a session frees up (the orchestrator)
-  sync                                   pull origin/main (fast-forward only)
+  sync                                   pull origin/main (fast-forward only); mirror the wiki if it changed
+  wiki-mirror [--no-push]                publish wiki/ to the repository's GitHub Wiki tab (a mirror)
   plan GAME                              run the planner for one game (an onboarding game too)
 Choosing models (local, by hand, never on a schedule: runbooks/onboard.md)
   bench new GAME --variants "opus:low,sonnet:low,haiku" [--rounds 2] [--levels 4] [--mechanic M]
@@ -1794,14 +1795,174 @@ def cmd_resume(args) -> None:
     out({"resumed": [hp.stem for hp in targets]})
 
 
+def git_head() -> str:
+    return run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+
+
 def cmd_sync(args) -> None:
     with machine_lock("git"):
+        before = git_head()
         f = run(["git", "-C", str(ROOT), "fetch", "-q", "origin"], capture_output=True, text=True)
         m = run(["git", "-C", str(ROOT), "merge", "--ff-only", "-q", "origin/main"], capture_output=True, text=True)
     ok = f.returncode == 0 and m.returncode == 0
+    mirror = None
+    if ok and git_head() != before:
+        changed = run(["git", "-C", str(ROOT), "diff", "--name-only", before, "HEAD", "--", "wiki"],
+                      capture_output=True, text=True).stdout.split()
+        if changed:  # the merged wiki goes to the GitHub Wiki tab as well
+            try:
+                mirror = wiki_mirror(push=True)
+            except Exception as ex:
+                mirror = {"error": str(ex)[:300]}
     out({"synced": ok, "head": run(["git", "-C", str(ROOT), "log", "-1", "--format=%h %s"],
                                    capture_output=True, text=True).stdout.strip(),
+         **({"wiki_mirror": mirror} if mirror else {}),
          **({} if ok else {"error": (f.stderr + m.stderr).strip()[-400:]})})
+
+
+# --- the GitHub Wiki tab: a mirror of wiki/ ----------------------------------------------------------------
+# The source of truth is wiki/ in the repository (changed only through pull requests). The GitHub Wiki is
+# a separate, flat git repository without pull requests: it gets a generated copy for reading.
+
+def wiki_titles() -> dict:
+    return {g["id"]: g.get("title", g["id"]) for g in read_yaml(ROOT / "games.yaml").get("games") or []}
+
+
+def page_title(p: Path) -> str:
+    s = p.read_text(encoding="utf-8")
+    m = re.search(r'^title:\s*"?(.+?)"?\s*$', s, re.M) if s.startswith("---") else None
+    h = re.search(r"^#\s+(.+)$", s, re.M)
+    t = (m.group(1) if m else h.group(1) if h else p.stem).strip()
+    return re.sub(r"^(Tasks|Features):\s*", "", t)
+
+
+def wiki_page_names(root: Path) -> dict:
+    """Each wiki file -> a unique page name of the flat GitHub Wiki."""
+    titles, names = wiki_titles(), {}
+    agent = {"playbook": "How to play", "lessons": "Agent lessons", "routes": "Routes", "tactics": "Tactics",
+             "metrics": "Metrics"}
+    for p in sorted(root.rglob("*.md")):
+        rel = p.relative_to(root).as_posix()
+        parts = rel.split("/")
+        if rel == "index.md":
+            n = "Home"
+        elif rel == "tasks.md":
+            n = "Tasks by game"
+        elif parts[0] == "_common":
+            n = page_title(p)
+        else:
+            g = titles.get(parts[0], parts[0])
+            if len(parts) == 2:
+                n = {"index.md": g, "tasks.md": f"{g} · Tasks", "features.md": f"{g} · Features"}.get(
+                    parts[1], f"{g} · {page_title(p)}")
+            elif parts[1] == "agent":
+                n = f"{g} · {agent.get(Path(parts[2]).stem, page_title(p))}"
+            elif parts[1] == "features" and not parts[2].endswith(".skeleton.md"):
+                n = f"{g} · {page_title(p)}"
+            else:
+                continue
+        n = re.sub(r"\s+", " ", re.sub(r"[\\/:*?\"<>|#\[\]()]", "", n)).strip()  # () break wiki links
+        base, k = n, 2
+        while n in names.values():
+            n, k = f"{base} ({k})", k + 1
+        names[rel] = n
+    return names
+
+
+def wiki_file(name: str) -> str:
+    return name.replace(" ", "-")
+
+
+def mirror_page(root: Path, rel: str, names: dict, repo: str) -> str:
+    p = root / rel
+    s = p.read_text(encoding="utf-8")
+    if s.startswith("---"):  # front matter is for the agents
+        s = s.split("---", 2)[2].lstrip("\n")
+    raw = f"https://raw.githubusercontent.com/{repo}/main/wiki/"
+    blob = f"https://github.com/{repo}/blob/main/"
+
+    def target(path: str) -> Path:
+        return (p.parent / path).resolve()
+
+    def img(m):
+        alt, path = m.group(1), m.group(2)
+        if re.match(r"^[a-z]+://", path):
+            return m.group(0)
+        t = target(path)
+        try:
+            return f"![{alt}]({raw}{t.relative_to(root.resolve()).as_posix()})"
+        except ValueError:
+            return f"![{alt}]({blob}{t.relative_to(root.resolve().parent).as_posix()}?raw=true)"
+
+    def link(m):
+        text, path = m.group(1), m.group(2)
+        if re.match(r"^([a-z]+:|#)", path):
+            return m.group(0)
+        path, _, anchor = path.partition("#")
+        t = target(path)
+        try:
+            r = t.relative_to(root.resolve()).as_posix()
+        except ValueError:
+            try:
+                return f"[{text}]({blob}{t.relative_to(root.resolve().parent).as_posix()})"
+            except ValueError:
+                return m.group(0)
+        if r in names:
+            return f"[{text}]({wiki_file(names[r])}{'#' + anchor if anchor else ''})"
+        return f"[{text}]({blob}wiki/{r})"
+
+    s = re.sub(r"!\[([^\]]*)\]\(([^)\s]+)\)", img, s)
+    s = re.sub(r"(?<!!)\[([^\]]+)\]\(([^)\s]+)\)", link, s)
+    note = (f"*A mirror of [`wiki/{rel}`]({blob}wiki/{rel}) in the repository. Edit it there through a pull "
+            "request: changes made here are overwritten.*\n\n")
+    return note + s
+
+
+def wiki_mirror(push: bool = True) -> dict:
+    repo = P()["repo"]
+    if not repo:
+        fail("project.yaml has no repo")
+    root = WIKI()
+    clone = STATE() / "wiki-mirror"
+    url = f"https://github.com/{repo}.wiki.git"
+    if not (clone / ".git").exists():
+        r = run(["git", "clone", "-q", url, str(clone)], capture_output=True, text=True)
+        if r.returncode != 0:
+            fail("cannot clone the GitHub Wiki: create its first page on GitHub once", error=r.stderr[-300:])
+    else:
+        run(["git", "-C", str(clone), "pull", "-q", "--ff-only"], capture_output=True, text=True)
+    names = wiki_page_names(root)
+    for old in clone.glob("*.md"):
+        old.unlink()
+    for rel, name in names.items():
+        (clone / f"{wiki_file(name)}.md").write_text(mirror_page(root, rel, names, repo), encoding="utf-8")
+    titles = wiki_titles()
+    side = ["**[Home](Home)** · [Tasks by game](Tasks-by-game)", ""]
+    for gid in sorted({rel.split("/")[0] for rel in names if "/" in rel and not rel.startswith("_common")}):
+        g = titles.get(gid, gid)
+        sub = [f"[{label}]({wiki_file(names[rel])})" for rel, label in
+               ((f"{gid}/features.md", "Features"), (f"{gid}/tasks.md", "Tasks"), (f"{gid}/agent/playbook.md", "How to play"))
+               if rel in names]
+        side.append(f"- **[{g}]({wiki_file(names[f'{gid}/index.md'])})**" if f"{gid}/index.md" in names else f"- **{g}**")
+        if sub:
+            side.append("  " + " · ".join(sub))
+    (clone / "_Sidebar.md").write_text("\n".join(side) + "\n", encoding="utf-8")
+    run(["git", "-C", str(clone), "add", "-A"], capture_output=True)
+    changed = run(["git", "-C", str(clone), "diff", "--cached", "--quiet"]).returncode != 0
+    res = {"pages": len(names), "changed": changed, "wiki": f"https://github.com/{repo}/wiki"}
+    if changed:
+        head = run(["git", "-C", str(ROOT), "log", "-1", "--format=%h"], capture_output=True, text=True).stdout.strip()
+        run(["git", "-C", str(clone), "commit", "-q", "-m", f"Mirror of wiki/ at {head}"], capture_output=True)
+        if push:
+            r = run(["git", "-C", str(clone), "push", "-q"], capture_output=True, text=True)
+            res["pushed"] = r.returncode == 0
+            if r.returncode != 0:
+                res["error"] = r.stderr[-300:]
+    return res
+
+
+def cmd_wiki_mirror(args) -> None:
+    out(wiki_mirror(push=not args.no_push))
 
 
 # --- commands: session ----------------------------------------------------------------------------
@@ -3301,6 +3462,8 @@ def main() -> None:
     p = sub.add_parser("wait-free")
     p.add_argument("--max-minutes", type=float, default=9)
     sub.add_parser("sync")
+    p = sub.add_parser("wiki-mirror")
+    p.add_argument("--no-push", action="store_true", help="build the mirror locally only")
     p = sub.add_parser("start")
     p.add_argument("game")
     p.add_argument("kind", nargs="?", help="deprecated: session tasks come from claim")
@@ -3529,7 +3692,7 @@ def main() -> None:
         "wiki-clip": cmd_wiki_clip, "gc": cmd_gc, "install-agents": cmd_install_agents, "_rec": cmd_rec,
         "taps": cmd_taps, "level": cmd_level, "mechanic": cmd_mechanic, "playbook": cmd_playbook, "solve": cmd_solve,
         "ask": cmd_ask, "bench": cmd_bench, "plan": cmd_plan, "page-skeleton": cmd_page_skeleton,
-        "check-pages": cmd_check_pages, "mark-tag": cmd_mark_tag,
+        "check-pages": cmd_check_pages, "mark-tag": cmd_mark_tag, "wiki-mirror": cmd_wiki_mirror,
         "tap": lambda a: action(a, "tap", lambda d, k: (d.double_tap if a.double else d.tap)(s(a.x, k), s(a.y, k)),
                                 {"x": a.x, "y": a.y, **({"double": True} if a.double else {})}, ((a.x, a.y),)),
         "swipe": lambda a: action(a, "swipe", lambda d, k: d.swipe(s(a.x1, k), s(a.y1, k), s(a.x2, k), s(a.y2, k)),
