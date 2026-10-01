@@ -30,7 +30,9 @@ Levels: think first, then play fast
   solve MECHANIC [--board FILE] [--run [--rounds N]] | solve MECHANIC --image FRAME
                                          the mechanic's solver: check its moves, play them, or test it on a frame
   ask "question"                         one-shot advice from a stronger model on the last screenshot
-  note TYPE "fact" | mark "title" "description" | clip begin "title" | clip end "description"
+  note TYPE "fact" | clip begin "title" | clip end "description"
+  mark "title" "description" [--feature F --as entry|screen|tab:NAME|popup|result|other [--at X,Y]]
+                                         a frame for the wiki; --as says where it goes on the feature's page
   feature ID "Name" [--status seen|in_progress|documented]
   case FEATURE ID "what to check" [--done]
   task add ID "what to do" [--kind followup|daily|replay|ftue] [--feature F] [--requires fresh]
@@ -52,6 +54,9 @@ Knowledge
   render WIKI_DIR                        tasks.md and features.md of each game and the wiki/tasks.md overview
   skill new GAME NAME --session SID --steps A-B --desc "..." --out SKILLS_DIR
   wiki-img SRC GAME_DIR SLUG | wiki-clip SRC GAME_DIR SLUG
+  page-skeleton GAME FEATURE --out GAME_DIR   a feature page laid out from its marked frames (the documenter)
+  check-pages DIR                        every feature page: entry point and screen frames, a frame per tab
+  mark-tag GAME SESSION SHOT --feature F --as ROLE --desc "..." [--at X,Y]   tag an old frame for a page
   check-zones WORKTREE [--process]       edits only in allowed zones, media within limits
 Maintenance
   gc | install-agents
@@ -97,8 +102,8 @@ HASH_MATCH = 12  # pHash distance at which the screen counts as the same
 SYSTEM_OVERLAYS = ("com.google.android.permissioncontroller", "com.android.vending", "com.google.android.gms")
 ZEN = {"0": "off", "1": "priority", "2": "none", "3": "alarms"}
 DREAM_ZONES = ("wiki/", "skills/", "solvers/", "dreams/")
-PROCESS_ZONES = ("runbooks/", "schema/", "harness/", "docs/", ".claude/", "project.yaml", "games.yaml",
-                 "CLAUDE.md", "README.md", "local.example.yaml")
+# the dream's process PR: rules and proposals, never code (harness changes are proposed in docs/proposals/)
+PROCESS_ZONES = ("runbooks/", "schema/", "docs/proposals/")
 FRESH_HINT = "a phone with a fresh install: uninstall the game and install it again (or clear its data), then connect the phone"
 # adb, ffmpeg and git run without a console window: otherwise every call flashes a window and steals focus
 NO_WINDOW = 0x08000000 if os.name == "nt" else 0  # CREATE_NO_WINDOW
@@ -940,7 +945,11 @@ def timeline(cur: dict) -> list[tuple[float, float, float]]:
         return [(cur["rec"]["t0"], 0.0, float("inf"))]
     pos, tl = 0.0, []
     for s in segs:
-        raw = probe(Path(cur["dir"]) / s["file"], "format=duration")
+        f = Path(cur["dir"]) / s["file"]
+        try:  # the segments are deleted after the YouTube upload: then the wall clock gives the duration
+            raw = probe(f, "format=duration") if f.exists() else ""
+        except OSError:
+            raw = ""
         dur = float(raw) if re.fullmatch(r"[\d.]+", raw or "") else s["t_end"] - s["t"]
         tl.append((s["t"], pos, dur))
         pos += dur
@@ -1969,14 +1978,33 @@ def cmd_note(args) -> None:
     out({"ok": True})
 
 
+MARK_ROLES = ("entry", "screen", "popup", "result", "other")
+
+
 def cmd_mark(args) -> None:
     cur = pick_session(args)
     if cur.get("last_app") not in (cur["game"], None):
         fail(f"the last screenshot is not from the game ({cur['last_app']}): it will not go into the wiki")
+    role = args.role
+    if role and not (role in MARK_ROLES or (role.startswith("tab:") and len(role) > 4)):
+        fail(f"--as is one of {', '.join(MARK_ROLES)} or tab:<name>")
+    if role and not args.feature:
+        fail("--as needs --feature: the page the frame goes to")
+    at = None
+    if args.at:
+        try:
+            at = [float(v) for v in args.at.split(",")]
+            assert len(at) == 2
+        except (ValueError, AssertionError):
+            fail("--at is X,Y in pixels of the last frame: the button to circle")
     shot = Path(cur["dir"]) / "shots" / f"{cur['last_shot']:05d}.jpg"
-    log_step(cur, {"type": "mark", "title": args.title, "desc": args.desc, "shot": cur["last_shot"],
-                   "file": shot.as_posix()})
-    out({"ok": True, "marked": str(shot)})
+    rec = {"type": "mark", "title": args.title, "desc": args.desc, "shot": cur["last_shot"], "file": shot.as_posix()}
+    if args.feature:
+        rec.update(feature=slug(args.feature), role=role or "other", model_size=cur.get("model_size"))
+    if at:
+        rec["at"] = at
+    log_step(cur, rec)
+    out({"ok": True, "marked": str(shot), **({"feature": rec["feature"], "as": rec["role"]} if args.feature else {})})
 
 
 def cmd_clip(args) -> None:
@@ -2878,6 +2906,180 @@ def cmd_check_zones(args) -> None:
     sys.exit(0 if ok else 1)
 
 
+def step_source(game: str, sid: str, step: int) -> str:
+    """A footnote text for a source: the session and step, and the moment in the YouTube original."""
+    d = RAW() / game / sid
+    meta, steps = read_json(d / "session.json"), read_jsonl(d / "steps.jsonl")
+    text = f"session {sid}, step {step}"
+    t = next((x["t"] for x in steps if x.get("step") == step), None)
+    if meta.get("youtube") and t and steps:
+        tl = timeline({"dir": str(d), "rec": {"t0": steps[0]["t"]}})
+        pos = to_pos(tl, t) or 0
+        text += f" — [video at {int(pos) // 60}:{int(pos) % 60:02d}](https://youtu.be/{meta['youtube']}?t={int(pos)})"
+    return text
+
+
+def feature_marks(game: str, fid: str) -> list[dict]:
+    """Frames marked for a feature: in the sessions (mark --feature) and tagged afterwards (mark-tag)."""
+    res = []
+    for d in sorted((RAW() / game).glob("*/")):
+        for x in read_jsonl(d / "steps.jsonl"):
+            if x.get("type") == "mark" and x.get("feature") == fid and Path(x.get("file", "")).exists():
+                res.append({**x, "session": d.name})
+    for x in read_jsonl(STATE() / game / "marks.jsonl"):
+        if x.get("feature") == fid and Path(x.get("file", "")).exists():
+            res.append(x)
+    return sorted(res, key=lambda x: (x["session"], x.get("step") or 0))
+
+
+def cmd_mark_tag(args) -> None:
+    """Tag a frame of a finished session for a feature's page (old sessions marked frames without --feature).
+    The session's own log is not changed: tags go to state/<game>/marks.jsonl."""
+    game = find_game(args.game)["id"]
+    d = RAW() / game / args.session
+    shot = d / "shots" / f"{int(args.shot):05d}.jpg"
+    if not shot.exists():
+        fail(f"no frame {shot}")
+    role = args.role
+    if not (role in MARK_ROLES or (role.startswith("tab:") and len(role) > 4)):
+        fail(f"--as is one of {', '.join(MARK_ROLES)} or tab:<name>")
+    small = d / "shots" / f"{int(args.shot):05d}_m.jpg"
+    size = list(Image.open(small).size) if small.exists() else None
+    step = next((x.get("step") for x in read_jsonl(d / "steps.jsonl") if x.get("shot") == int(args.shot)), None)
+    rec = {"session": args.session, "step": step, "shot": int(args.shot), "file": shot.as_posix(),
+           "feature": slug(args.feature), "role": role, "desc": args.desc, "model_size": size, "t": time.time()}
+    if args.at:
+        rec["at"] = [float(v) for v in args.at.split(",")]
+    append_jsonl(STATE() / game / "marks.jsonl", rec)
+    out({"ok": True, "tagged": rec})
+
+
+def page_image(m: dict, game_dir: Path, slug_: str) -> str:
+    """The marked frame as a wiki WebP; the entry point's button circled when the mark gave --at."""
+    from PIL import ImageDraw
+
+    img = Image.open(m["file"]).convert("RGB")
+    if m.get("at") and m.get("model_size"):
+        k = img.width / m["model_size"][0]
+        x, y, r = m["at"][0] * k, m["at"][1] * k, img.width * 0.09
+        ImageDraw.Draw(img).ellipse((x - r, y - r, x + r, y + r), outline=(235, 30, 30), width=max(6, img.width // 110))
+    name = f"{m['session'][:8]}-{slug(slug_)}-{screen_hash(img)[:8]}.webp"
+    dest = game_dir / "img" / name
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    if not dest.exists():
+        save_for_wiki(img, str(dest))
+    return f"../img/{name}"
+
+
+def cmd_page_skeleton(args) -> None:
+    """A feature page laid out from the frames marked for it (latest frame per place) and its cases, with
+    sources as footnotes. The text is left to the documenter: <!-- --> comments say what goes where."""
+    game, fid = find_game(args.game)["id"], slug(args.feature)
+    view = research_view(game)
+    f = find_feature(view, fid, create=False) or {"id": fid, "name": fid, "cases": []}
+    marks = feature_marks(game, fid)
+    latest = {}
+    for m in marks:
+        latest[m["role"]] = m  # the latest frame of each place wins
+    gdir = Path(args.out)
+    notes, sources = [], []
+
+    def src(m) -> str:
+        key = (m["session"], m["step"])
+        if key not in sources:
+            sources.append(key)
+        return f"[^s{sources.index(key) + 1}]"
+
+    def img(role: str, label: str) -> list[str]:
+        m = latest.get(role)
+        if not m:
+            notes.append(role)
+            return [f"<!-- no frame marked as {role}: mark one (sw.py mark … --feature {fid} --as {role}) -->"]
+        return [f"![{m.get('desc') or m.get('title') or label}]({page_image(m, gdir, f'{fid}-{role}')}) {src(m)}"]
+
+    tabs = [r[4:] for r in latest if r.startswith("tab:")]
+    L_ = ["---", f"game: {game}", f'title: "{f.get("name") or fid}"', "type: feature", f"feature: {fid}",
+          f"version_seen: {f.get('version_seen') or view.get('version') or ''}", f"verified_at: {dt.date.today()}",
+          f"sources: [{', '.join(sorted({m['session'] for m in marks}))}]", "---", "",
+          f"# {f.get('name') or fid}", "",
+          "<!-- One paragraph: what the feature is for the player. -->", "",
+          "## Where to find it", "", "<!-- From which screen and which button; the route. -->", "",
+          *img("entry", "entry point"), "",
+          "## What it looks like", "", "<!-- What is on the screen and what matters. -->", "",
+          *img("screen", "screen"), ""]
+    if tabs:
+        L_ += ["## What you can do", "", "| Tab or button | What it does |", "|---|---|",
+               *[f"| [{t}](#{slug(t)}) | <!-- --> |" for t in tabs], ""]
+        for t in tabs:
+            L_ += [f"### {t}", "", "<!-- What the tab shows and what can be done there. -->", "",
+                   *img(f"tab:{t}", t), ""]
+    for role in ("popup", "result"):
+        if role in latest:
+            L_ += [f"### {'Popup' if role == 'popup' else 'Result'}", "", *img(role, role), ""]
+    L_ += ["## How it works", "", "<!-- Rules, timers, prices, rewards: numbers with the version. -->", "",
+           "## Cases", "", "| Case | What was done | Result | Source |", "|---|---|---|---|"]
+    for c in f.get("cases", []):
+        s = ""
+        if c.get("source") and "#" in str(c["source"]):
+            sid, _, st = str(c["source"]).partition("#")
+            if st.isdigit() and (RAW() / game / sid).exists():
+                key = (sid, int(st))
+                if key not in sources:
+                    sources.append(key)
+                s = f"[^s{sources.index(key) + 1}]"
+        L_.append(f"| {c.get('text') or c['id']} | <!-- --> | {'✅' if c.get('done') else 'not verified'} | {s} |")
+    L_ += ["", "## Not verified", "", *[f"- {c.get('text') or c['id']}" for c in f.get("cases", []) if not c.get("done")],
+           ""]
+    L_ += [f"[^s{i + 1}]: {step_source(game, sid, st)}" for i, (sid, st) in enumerate(sources)]
+    dest = gdir / "features" / f"{fid}.md"
+    if dest.exists():
+        dest = dest.with_name(f"{fid}.skeleton.md")  # never overwrite the written page: merge by hand
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text("\n".join(L_) + "\n", encoding="utf-8")
+    out({"page": str(dest), "frames": {r: m["shot"] for r, m in latest.items()}, "tabs": tabs,
+         "missing_frames": notes, "sources": len(sources)})
+
+
+def page_problems(p: Path) -> list[str]:
+    s = p.read_text(encoding="utf-8")
+    probs = []
+
+    def section(title: str) -> str | None:
+        m = re.search(rf"^##+ {re.escape(title)}\s*$(.*?)(?=^##+ |\Z)", s, re.M | re.S)
+        return m.group(1) if m else None
+
+    for title, key in (("Where to find it", "entry"), ("What it looks like", "screen")):
+        body = section(title)
+        if body is None:
+            probs.append(f"no '## {title}' section")
+        elif "![" not in body and f"no-{key}:" not in body:
+            probs.append(f"'{title}' has no frame (or a <!-- no-{key}: reason --> note)")
+    can = section("What you can do") or ""
+    for t in re.findall(r"^\|\s*\[?([^\]|]+?)\]?(?:\(#[^)]*\))?\s*\|", can, re.M):
+        if t.strip().lower() in ("tab or button", "---", "") or set(t.strip()) <= {"-"}:
+            continue
+        body = section(t.strip())
+        if body is None:
+            probs.append(f"tab '{t.strip()}' has no '### {t.strip()}' section")
+        elif "![" not in body and "no-frame:" not in body:
+            probs.append(f"tab '{t.strip()}' has no frame")
+    for ref in re.findall(r"!\[[^\]]*\]\(([^)]+)\)", s):
+        if not ref.startswith("http") and not (p.parent / ref).exists():
+            probs.append(f"missing image {ref}")
+    if re.search(r"\[s:[^\]]+\]", s):
+        probs.append("inline [s:…] sources: use footnotes [^sN] with the video link")
+    return probs
+
+
+def cmd_check_pages(args) -> None:
+    root = Path(args.dir)
+    pages = sorted(p for p in root.glob("**/features/*.md") if not p.name.endswith(".skeleton.md"))
+    res = {str(p.relative_to(root)): page_problems(p) for p in pages}
+    bad = {k: v for k, v in res.items() if v}
+    out({"pages": len(pages), "ok": len(pages) - len(bad), "problems": bad})
+    sys.exit(1 if bad else 0)
+
+
 def cmd_wiki_img(args) -> None:
     img = Image.open(args.src).convert("RGB")
     name = f"{dt.date.today():%Y%m%d}-{slug(args.slug)}-{screen_hash(img)[:8]}.webp"
@@ -3183,6 +3385,9 @@ def main() -> None:
     p = sub.add_parser("mark")
     p.add_argument("title")
     p.add_argument("desc")
+    p.add_argument("--feature", help="the feature whose page the frame goes to")
+    p.add_argument("--as", dest="role", help="entry | screen | tab:<name> | popup | result | other")
+    p.add_argument("--at", help="X,Y of the button to circle (an entry point), in pixels of the last frame")
     p = sub.add_parser("clip")
     p.add_argument("edge", choices=["begin", "end"])
     p.add_argument("text")
@@ -3273,9 +3478,23 @@ def main() -> None:
         p.add_argument("src")
         p.add_argument("game_dir")
         p.add_argument("slug")
+    p = sub.add_parser("mark-tag")
+    p.add_argument("game")
+    p.add_argument("session")
+    p.add_argument("shot", help="the frame number (shots/NNNNN.jpg)")
+    p.add_argument("--feature", required=True)
+    p.add_argument("--as", dest="role", required=True, help="entry | screen | tab:<name> | popup | result | other")
+    p.add_argument("--desc", required=True, help="what the frame shows and what matters")
+    p.add_argument("--at", help="X,Y of the button to circle, in pixels of shots/NNNNN_m.jpg")
+    p = sub.add_parser("page-skeleton")
+    p.add_argument("game")
+    p.add_argument("feature")
+    p.add_argument("--out", required=True, help="the game's folder: features/<id>.md and img/ go there")
+    p = sub.add_parser("check-pages")
+    p.add_argument("dir", help="a wiki or a game folder")
     p = sub.add_parser("check-zones")
     p.add_argument("worktree")
-    p.add_argument("--process", action="store_true", help="allow process edits at a maintainer's request")
+    p.add_argument("--process", action="store_true", help="the dream's process PR: runbooks/, schema/, docs/proposals/")
     sub.add_parser("gc")
     sub.add_parser("install-agents")
     p = sub.add_parser("plan")
@@ -3309,7 +3528,8 @@ def main() -> None:
         "snapshot": cmd_snapshot, "render": cmd_render, "check-zones": cmd_check_zones, "wiki-img": cmd_wiki_img,
         "wiki-clip": cmd_wiki_clip, "gc": cmd_gc, "install-agents": cmd_install_agents, "_rec": cmd_rec,
         "taps": cmd_taps, "level": cmd_level, "mechanic": cmd_mechanic, "playbook": cmd_playbook, "solve": cmd_solve,
-        "ask": cmd_ask, "bench": cmd_bench, "plan": cmd_plan,
+        "ask": cmd_ask, "bench": cmd_bench, "plan": cmd_plan, "page-skeleton": cmd_page_skeleton,
+        "check-pages": cmd_check_pages, "mark-tag": cmd_mark_tag,
         "tap": lambda a: action(a, "tap", lambda d, k: (d.double_tap if a.double else d.tap)(s(a.x, k), s(a.y, k)),
                                 {"x": a.x, "y": a.y, **({"double": True} if a.double else {})}, ((a.x, a.y),)),
         "swipe": lambda a: action(a, "swipe", lambda d, k: d.swipe(s(a.x1, k), s(a.y1, k), s(a.x2, k), s(a.y2, k)),

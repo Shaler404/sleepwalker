@@ -50,6 +50,7 @@ models:
   play: sonnet               # plays mastered gameplay and verifies cases; hands new gameplay back to study
   consult: opus              # one-shot advice: sw.py ask
   reviewer: opus             # the post-session review: goals and discovery (runbooks/review.md)
+  documenter: opus           # the feature pages after each session (runbooks/document.md)
   analyst: opus              # the dream's session analysts
   critic: opus               # the dream's critic
 
