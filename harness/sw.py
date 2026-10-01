@@ -59,6 +59,7 @@ Knowledge
   skill new GAME NAME --session SID --steps A-B --desc "..." --out SKILLS_DIR
   wiki-img SRC GAME_DIR SLUG | wiki-clip SRC GAME_DIR SLUG
   page-skeleton GAME FEATURE --out GAME_DIR   a feature page laid out from its marked frames (the documenter)
+  page-footnotes FILE [--game GAME]      inline [s:SESSION#STEP] sources of a page -> footnotes with the video links
   check-pages DIR                        every feature page: entry point and screen frames, a frame per tab
   mark-tag GAME SESSION SHOT --feature F --as ROLE --desc "..." [--at X,Y]   tag an old frame for a page
   check-zones WORKTREE [--process]       edits only in allowed zones, media within limits
@@ -3273,6 +3274,41 @@ def cmd_page_skeleton(args) -> None:
          "missing_frames": notes, "sources": len(sources)})
 
 
+INLINE_SOURCE = re.compile(r"\[s:([0-9]{8}-[0-9]{6}-[^#\]\s]+)#([0-9]+)\]")
+
+
+def page_footnotes(s: str, game: str) -> tuple[str, int]:
+    """Inline [s:SESSION#STEP] sources -> footnotes [^sN] with the moment in the YouTube original. Footnotes
+    already on the page keep their numbers; the same source gets the same footnote."""
+    have = {int(n) for n in re.findall(r"^\[\^s(\d+)\]:", s, re.M)}
+    known = {}  # (session, step) -> number, from footnotes already written by this command
+    for n, sid, st in re.findall(r"^\[\^s(\d+)\]: session (\S+), step (\d+)", s, re.M):
+        known[(sid, int(st))] = int(n)
+    new: list[tuple[int, str, int]] = []
+
+    def repl(m) -> str:
+        key = (m.group(1), int(m.group(2)))
+        if key not in known:
+            known[key] = max([*have, *known.values(), 0]) + 1
+            new.append((known[key], *key))
+        return f"[^s{known[key]}]"
+
+    s = INLINE_SOURCE.sub(repl, s)
+    if new:
+        s = s.rstrip("\n") + "\n\n" + "\n".join(f"[^s{n}]: {step_source(game, sid, st)}" for n, sid, st in new) + "\n"
+    return s, len(new)
+
+
+def cmd_page_footnotes(args) -> None:
+    p = Path(args.file)
+    s = p.read_text(encoding="utf-8")
+    m = re.search(r"^game:\s*(\S+)", s, re.M)
+    game = find_game(args.game or (m.group(1) if m else ""))["id"]
+    s, n = page_footnotes(s, game)
+    p.write_text(s, encoding="utf-8")
+    out({"page": str(p), "footnotes_added": n, "left_inline": len(INLINE_SOURCE.findall(s))})
+
+
 def page_problems(p: Path) -> list[str]:
     s = p.read_text(encoding="utf-8")
     probs = []
@@ -3736,6 +3772,9 @@ def main() -> None:
     p.add_argument("game")
     p.add_argument("feature")
     p.add_argument("--out", required=True, help="the game's folder: features/<id>.md and img/ go there")
+    p = sub.add_parser("page-footnotes")
+    p.add_argument("file")
+    p.add_argument("--game", help="default: the page's front matter")
     p = sub.add_parser("check-pages")
     p.add_argument("dir", help="a wiki or a game folder")
     p = sub.add_parser("check-zones")
@@ -3777,6 +3816,7 @@ def main() -> None:
         "ask": cmd_ask, "bench": cmd_bench, "plan": cmd_plan, "page-skeleton": cmd_page_skeleton,
         "check-pages": cmd_check_pages, "mark-tag": cmd_mark_tag, "wiki-mirror": cmd_wiki_mirror,
         "lab-check": cmd_lab_check, "lab-done": cmd_lab_done, "level-frames": cmd_level_frames,
+        "page-footnotes": cmd_page_footnotes,
         "tap": lambda a: action(a, "tap", lambda d, k: (d.double_tap if a.double else d.tap)(s(a.x, k), s(a.y, k)),
                                 {"x": a.x, "y": a.y, **({"double": True} if a.double else {})}, ((a.x, a.y),)),
         "swipe": lambda a: action(a, "swipe", lambda d, k: d.swipe(s(a.x1, k), s(a.y1, k), s(a.x2, k), s(a.y2, k)),
