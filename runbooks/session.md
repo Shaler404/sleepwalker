@@ -199,7 +199,9 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
 1. Loop outside levels (menus, features, popups): frame → one action → the reply has a new frame →
    open it and compare with what you expected.
    - `tap X Y --why "what I expect"`: X, Y are pixels of the last frame you got, whatever its size
-     (a `--hi` frame is larger than a normal one). Never convert coordinates between frames.
+     (a `--hi` frame is larger than a normal one). Never convert coordinates between frames. Right
+     after the kind of frame changes (a `--hi` frame after normal ones, or back) a tap needs
+     `--frame <shot_n>` of the frame you read the coordinates from; without it the tap is refused.
    - `swipe X1 Y1 X2 Y2 --why …`, `key back --why …`, `text "…" --why …`, `wait SECONDS`.
    - `taps "X,Y X,Y …" --why …` — several moves you already know, in one call.
    - `launch` — bring the game back if something else opened (an ad took you to a browser or store).
