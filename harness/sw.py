@@ -14,6 +14,7 @@ Session
   start GAME                             start the game and screen recording, first screenshot, session tasks
   device-state fresh|progressed [--note] the game on this phone: fresh install or progressed
   shot [--hi] | wait SEC | launch         screenshot (--hi: full resolution) / wait, then screenshot / bring the game back
+  restart --why ...                      force-stop the game and start it again: the way out of an ad that will not close
   tap X Y --why ... | swipe X1 Y1 X2 Y2 --why ... | key back --why ... | text "..." --why ...
   taps "X,Y X,Y:2 X1,Y1>X2,Y2 !X,Y" --why ...  safe moves in a row (:2 a double tap), a risky one (!) last
 Levels: think first, then play fast
@@ -1746,6 +1747,25 @@ def cmd_wait(args) -> None:
     out(info)
 
 
+def cmd_restart(args) -> None:
+    """A playable ad or an overlay that cannot be closed held the first Cryptogram session for five minutes
+    (2026-10-01): force-stopping the game and starting it again is the way out. Progress inside the level
+    may be lost."""
+    cur = pick_session(args)
+    guard(cur)
+    dev = open_device(cur)
+    dev.stop(cur["game"])
+    time.sleep(1.5)
+    dev.launch(cur["game"])
+    cur["step"] += 1
+    cur["last_action"] = time.time()
+    time.sleep(8 if cur["platform"] == "android" else 0)
+    info = take_shot(cur, dev)
+    log_step(cur, {"type": "restart", "why": args.why, "shot": info["shot_n"], "app": info["app"], "hash": cur["last_hash"]})
+    save_session(cur)
+    out({"restarted": cur["game"], **info})
+
+
 def cmd_launch(args) -> None:
     cur = pick_session(args)
     guard(cur)
@@ -2711,6 +2731,8 @@ def main() -> None:
     p = sub.add_parser("shot")
     p.add_argument("--hi", action="store_true", help="full resolution: for reading a board of small pieces")
     sub.add_parser("launch")
+    p = sub.add_parser("restart")
+    p.add_argument("--why", required=True)
     for name, nargs in (("tap", ["x", "y"]), ("swipe", ["x1", "y1", "x2", "y2"])):
         p = sub.add_parser(name)
         for n in nargs:
@@ -2865,7 +2887,7 @@ def main() -> None:
     s = lambda v, k: int(round(v * k))  # noqa: E731
     handlers = {
         "claim": cmd_claim, "status": cmd_status, "stop": cmd_stop, "resume": cmd_resume, "wait-free": cmd_wait_free, "sync": cmd_sync, "start": cmd_start,
-        "device-state": cmd_device_state, "shot": cmd_shot, "wait": cmd_wait, "launch": cmd_launch,
+        "device-state": cmd_device_state, "shot": cmd_shot, "wait": cmd_wait, "launch": cmd_launch, "restart": cmd_restart,
         "note": cmd_note, "mark": cmd_mark, "clip": cmd_clip, "feature": cmd_feature, "case": cmd_case,
         "task": cmd_task, "progress": cmd_progress, "gate": cmd_gate, "discovery": cmd_discovery, "skill": cmd_skill, "end": cmd_end, "games": cmd_games,
         "research": cmd_research, "features": cmd_research, "pending": cmd_pending, "stats": cmd_stats,
