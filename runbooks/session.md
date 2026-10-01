@@ -245,8 +245,11 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
 4. **Material for the wiki** — as you go, not at the end:
    - `note <type> "fact"` — prices, currencies, timers, rewards, conditions (type: economy, mechanic,
      ui, event, bug, question);
-   - `mark "title" "what the frame shows and what matters"` — every new screen and state. Popups and
-     offers are content: `mark` first, then close;
+   - `mark "title" "what the frame shows and what matters" --feature <id> --as <place>` — every new
+     screen and state, and where the frame goes on the feature's page: `entry` (the screen with the
+     button that opens it; `--at X,Y` the button, it gets circled), `screen` (the feature itself),
+     `tab:<name>` (each tab or sub-screen), `popup`, `result`, `other`. A study goal marks at least the
+     entry, the screen and every tab. Popups and offers are content: `mark` first, then close;
    - `clip begin "title"` … `clip end "what it shows"` — key moments, up to 20 seconds.
 5. Stop when the session's tasks are done, the budget is used up (`warnings`), you are stuck or the
    game crashed. Turn everything unfinished into tasks.

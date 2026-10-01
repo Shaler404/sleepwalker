@@ -78,11 +78,23 @@ sources: [20261001-091500-chrono-FYKPJ]
 ---
 ```
 
-Feature page: what it is and where to find it (with a link to the route) → how it works → **case
-table** (case, what was done, result, source) → numbers in tables with the version → media →
-`## Not verified`.
+Feature page — written by the documenter after each session (`runbooks/document.md`), laid out by
+`sw.py page-skeleton` from the frames marked for the feature, checked by `sw.py check-pages`:
 
-- Every non-trivial fact ends with a source `[s:<session>#<step>]`.
+1. one paragraph: what the feature is for the player;
+2. `## Where to find it` — from which screen and which button, with that screen's frame and the
+   button circled (`mark --as entry --at X,Y`);
+3. `## What it looks like` — the feature's screen (`--as screen`);
+4. `## What you can do` — a table of its tabs and buttons; every row has its own `### <name>` section
+   with its frame (`--as tab:<name>`);
+5. `## How it works` — rules, timers, prices, rewards, with the version;
+6. `## Cases` — case, what was done, result, source;
+7. `## Not verified`.
+
+A page without an entry or screen frame says why in `<!-- no-entry: … -->` / `<!-- no-screen: … -->`.
+
+- Every non-trivial fact ends with a footnote `[^sN]`; the footnote names the session and step and
+  links the moment in the YouTube original (`sw.py page-skeleton` writes them). No inline `[s:…]`.
 - Frame: `![what the frame shows and what matters](../img/<file>.webp)`. The caption is not "shop
   screenshot" but "shop: 6 packs, prices 0.99–49.99 $, offer timer 23:59:12".
 - Clip: `![what it shows](../clips/<file>.webp)` and the line
@@ -284,6 +296,7 @@ dream promotes and demotes skills based on them.
 |---|---|---|---|
 | Player (`sleepwalker-player`) | global knowledge, its own `state/<game>/` | `state/<game>/progress.md`, `inbox.md`, `playbook.md`, `solvers/`; the task and feature journal, the game's state on the phone and `raw/` — through `sw.py` | one game — one device (lock in `sw.py`); commits nothing |
 | The "play" orchestrator | `sw.py claim` responses | nothing (`sw.py claim` writes the planner's tasks to the journal) | does not commit or push |
+| Documenter (`sleepwalker-documenter`) | the finished session's `raw/`, `state/<game>/` | `state/<game>/pages/`, `docs-log.md` | runs right after each session; `check-pages` |
 | Reviewer (`sleepwalker-reviewer`) | the finished session's `raw/`, `state/<game>/` | goals, discovery and case closures through `sw.py … --game`; `state/<game>/reviews.md` | runs right after each session, never touches the phone |
 | Analyst (`sleepwalker-analyst`) | its machine's `raw/` and `state/`, the worktree | nothing | tools: Read, Grep, Glob |
 | The dream | everything on its machine | `wiki/`, `skills/`, `solvers/`, `dreams/` in the branch `dream/<machine>/<date>` | `sw.py check-zones` before committing |
