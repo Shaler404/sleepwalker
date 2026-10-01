@@ -236,12 +236,24 @@ def read_jsonl(p: Path) -> list[dict]:
 
 
 def read_json(p: Path) -> dict:
-    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return {}
 
 
 def write_json(p: Path, d: dict) -> None:
+    """Atomic: another process (the orchestrator polling, the owner's stop) never reads half a file."""
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+    tmp = p.with_name(f".{p.name}.{os.getpid()}.tmp")
+    tmp.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+    for _ in range(20):
+        try:
+            os.replace(tmp, p)
+            return
+        except PermissionError:  # Windows: the target is open in another process for a moment
+            time.sleep(0.05)
+    os.replace(tmp, p)
 
 
 @contextlib.contextmanager
@@ -275,7 +287,13 @@ def session_path(dev: str) -> Path:
 
 
 def all_sessions() -> list[dict]:
-    return [json.loads(p.read_text(encoding="utf-8")) for p in (STATE() / "sessions").glob("*.json")]
+    res = []
+    for p in (STATE() / "sessions").glob("*.json"):
+        try:  # a session file can disappear between listing and reading: the session just ended
+            res.append(json.loads(p.read_text(encoding="utf-8")))
+        except (FileNotFoundError, json.JSONDecodeError):
+            continue
+    return res
 
 
 def save_session(cur: dict) -> None:
@@ -2186,6 +2204,18 @@ def cmd_ask(args) -> None:
     out({"via": via, "model": model, "seconds": secs, "answer": answer})
 
 
+def leave_clean(cur: dict) -> str | None:
+    """A page or a store the game opened (terms of service, an ad) can stay on screen after the game is
+    stopped, and the next claim takes it for the owner using the phone (2026-10-01: Chrome with the game's
+    terms kept the phone idle from 04:12). Go home if that app showed up in this session."""
+    fg = focus(cur["device"])
+    seen = {s.get("app") for s in read_jsonl(Path(cur["dir"]) / "steps.jsonl")}
+    if fg and fg != cur["game"] and "launcher" not in fg and fg in seen:
+        adb(cur["device"], "shell", "input keyevent KEYCODE_HOME")
+        return fg
+    return None
+
+
 def finish(cur: dict, status: str, summary: str) -> dict:
     if cur["status"] == "reserved":
         session_path(cur["device"]).unlink(missing_ok=True)
@@ -2207,6 +2237,7 @@ def finish(cur: dict, status: str, summary: str) -> dict:
             info = package_info(cur["device"], cur["game"])
             cur["version"] = info["version"] or cur.get("version")
             adb(cur["device"], "shell", f"am force-stop {cur['game']}")
+            leave_clean(cur)
             if cur.get("zen_prev") is not None:
                 restore_dnd(cur["device"], cur["zen_prev"])
                 set_pending_zen(cur["device"], None)
