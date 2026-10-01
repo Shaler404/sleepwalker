@@ -60,6 +60,11 @@ player subagents. The repository root is one level above this file (the owner's 
    Start a `sleepwalker-documenter` subagent for the same session at the same time (model
    `models.documenter`), with the same brief but `Instructions: <path>/runbooks/document.md`. Wait for
    the reviewers and documenters too before you finish the run.
+
+   Then `python harness/sw.py lab-check <game> --claim`: if it `claimed` mechanics, start a
+   `sleepwalker-lab` subagent in the background (model `models.lab`) with the same brief but
+   `Instructions: <path>/runbooks/lab.md` and `mechanics: <ids and why>`. It works on recorded frames,
+   so the next session can run meanwhile; wait for it before you finish the run.
 6. If a subagent crashed without ending its session, end the session yourself:
    `python harness/sw.py -d <device> end --status crashed --summary "the subagent did not end the session"`.
 7. `python harness/sw.py gc` — clean up old records in `raw/`.

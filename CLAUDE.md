@@ -7,6 +7,8 @@
     `sw.py check-zones` before committing.
   - The reviewer (after every session) sets goals and discovery through `sw.py … --game` and writes
     `state/<game>/reviews.md`; it never touches the phone.
+  - The lab (after a session whose mechanic is slow or unlearned) writes solvers and playbook methods
+    and checks them on recorded frames; it never touches the phone.
   - The documenter (after every session) writes the feature pages in `state/<game>/pages/`; the dream
     publishes them and proposes process changes in a separate `process` PR (never code).
   - The analyst and the critic only read.
