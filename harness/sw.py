@@ -669,6 +669,9 @@ def level_warnings(cur: dict, info: dict) -> list[str]:
                      "moves": cur.get("moves", 0) - lv["moves0"]}
     if el >= pl["level_budget_min"] and not lv.get("warned_budget"):
         lv["warned_budget"] = True
+        if cur.get("bench"):  # a benchmark measures the variant: no handoff, no status change
+            return [f"level over {pl['level_budget_min']} min, the time a human needs: finish it if it is nearly "
+                    "solved, otherwise level end lost and go on (a benchmark slot never hands off)"]
         return [f"level over {pl['level_budget_min']} min, the time a human needs: the method is too slow. If the level "
                 "is nearly solved, finish it; then change the method (rules and a solver in the playbook), not the "
                 "moves. As the play model: sw.py mechanic <id> --status broken, then end --status handoff"]
@@ -2089,7 +2092,8 @@ def cmd_start(args) -> None:
                          "is not yours to learn: register it and end --status handoff"}
     out({"session": sid, "device": dev, "version": cur["version"], "device_state": state, "hint": hint[state],
          "model": cur["model"], "effort": cur.get("effort"), "model_role": cur["model_role"],
-         "role_hint": role_hint[cur["model_role"]], **({"bench": cur["bench"]} if cur.get("bench") else {}),
+         "role_hint": "a benchmark slot: play the levels the brief names; no handoff, no status changes"
+         if cur.get("bench") else role_hint[cur["model_role"]], **({"bench": cur["bench"]} if cur.get("bench") else {}),
          "mode": mode, "mode_hint": mode_why, "playbook": str(ensure_playbook(args.game)),
          "tasks": tasks, "research": summary_of(view), **shot})
 
@@ -2363,7 +2367,7 @@ def cmd_level(args) -> None:
         res = {"ok": True, "level": args.name, "mechanic": mechanic_brief(m), "new_mechanic": new,
                "budget_min": P()["play"]["level_budget_min"], "hint": level_hint(m, cur["game"]),
                "playbook": str(ensure_playbook(cur["game"]))}
-        if m.get("status") != "mastered" and cur.get("model_role") == "play":
+        if m.get("status") != "mastered" and cur.get("model_role") == "play" and not cur.get("bench"):
             res["handoff"] = (f"mechanic {mid} is {m.get('status')}: the study model learns it. Note what you see in "
                               "the playbook, level end quit, then end --status handoff")
         return out(res)
@@ -2392,7 +2396,9 @@ def cmd_level(args) -> None:
     fast = len(last2) == 2 and all(r["result"] == "won" and (r["seconds"] or 1e9) <= budget for r in last2)
     slow = len(last2) == 2 and all(r["result"] == "lost" or (r["seconds"] or 0) > budget for r in last2)
     change = None
-    if m.get("status") != "mastered" and fast:
+    if cur.get("bench"):
+        pass  # a benchmark slot measures the variant; the status is for the routine's sessions to decide
+    elif m.get("status") != "mastered" and fast:
         change = {"status": "mastered", "note": f"two levels in a row within {budget // 60} min"}
     elif m.get("status") == "mastered" and slow:
         change = {"status": "broken", "note": f"two levels in a row lost or over {budget // 60} min"}
@@ -2407,6 +2413,8 @@ def cmd_level(args) -> None:
 
 def cmd_mechanic(args) -> None:
     cur = op_cur(args)
+    if cur.get("bench") and args.status:
+        fail("a benchmark slot does not change a mechanic's status: write what you saw in the level note")
     op = {"op": "mechanic", "id": slug(args.id)}
     for k in ("name", "status", "method", "note"):
         if getattr(args, k):
@@ -3488,8 +3496,10 @@ Read runbooks/session.md (the rules, section 3 and the level cycle) and state/{g
 This slot measures how fast and how well you play, nothing else. Start with:
   python harness/sw.py -d {device} start {game} --model {model}{effort_arg} --bench {bid}:{n} --budget {budget}
 Then play {levels} levels{mechanic_part} one after another with the level cycle (level start, moves in batches, level
-end), using the playbook and the mechanic's solver if it has one. Do not study features or walk menus. After
-{levels} levels, or at the budget warning, or when a gate stops you, run:
+end), using the playbook and the mechanic's solver if it has one. Do not study features or walk menus. A
+benchmark slot never hands off and never changes a mechanic's status: ignore any handoff hint. A level you
+cannot win in two tries: `level end lost`; if the game then serves the same level again, keep trying it until
+the budget (that is the comparison). After {levels} levels, or at the budget warning, or when a gate stops you, run:
   python harness/sw.py -d {device} end --status ok --summary "bench slot {n}: <levels won and lost>"
 Never pay real money and never enter a PIN. Exit code 6 means the owner is taking the phone: end --status interrupted.
 Everything you write is in English."""
