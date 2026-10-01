@@ -42,9 +42,22 @@ Sources are footnotes `[^sN]` that link the moment in the YouTube original; neve
    (`--at` — the button to circle, in pixels of the `_m.jpg` frame), then run the skeleton again. If
    the session has no such frame, write `<!-- no-entry: why -->` / `<!-- no-screen: why -->` and add the
    gap to the session's block in `state/<game>/inbox.md` so the next study goal marks it.
+   Never tag a frame that shows personal data: the account's nickname or player ID (profile cards,
+   name lists, privacy and account screens), a real player's handle or photo, an e-mail, the phone's
+   status bar or notifications, or another app (a store, a browser, a system dialog; `mark-tag` refuses
+   frames that were not the game's). Inside the game's own frames, black the spot out on the page's
+   image: `python harness/sw.py redact-image state/<game>/pages/img/<name>.webp --box X1,Y1,X2,Y2` (pixels
+   of that image, or fractions like `0,0,1,0.04` for the status bar); do the same for a banner ad in a
+   local language (it tells the phone's country) and for a copyrighted quote, lyric or film line on a
+   quote card. When the spot is the point of the frame, pick another frame of the same place, or write the
+   place's note (`<!-- no-entry: personal data -->`, `no-screen:`, or `no-frame:` under a tab) and describe
+   it in words.
 3. Write the text: from the session's `why`, notes, cases and the frames themselves. Facts only, each
-   with its footnote; what you infer is marked as such. Never write out a quote, lyric or book passage
-   from the game in full (it is blocked as reproduced text): describe it ("a quote by Lincoln, 9 words").
+   with its footnote; what you infer is marked as such. The page is for a reader, not for an agent: no
+   pixel coordinates, no instructions to agents (those go to the playbook), feature names in the table
+   and the `###` headings as the game shows them ("Sound toggles", not `toggles`). Never write out a
+   quote, lyric or book passage from the game in full (it is blocked as reproduced text): describe it
+   ("a quote by Lincoln, 9 words").
 4. `python harness/sw.py check-pages state/<game>/pages` until it reports no problems for your pages.
 5. Append to `state/<game>/docs-log.md`: the session, the pages written or updated, the gaps.
 
