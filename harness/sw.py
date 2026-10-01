@@ -60,7 +60,7 @@ Knowledge
   wiki-img SRC GAME_DIR SLUG | wiki-clip SRC GAME_DIR SLUG
   page-skeleton GAME FEATURE --out GAME_DIR   a feature page laid out from its marked frames (the documenter)
   page-footnotes FILE [--game GAME]      inline [s:SESSION#STEP] sources of a page -> footnotes with the video links
-  redact-image IMG --box X1,Y1,X2,Y2 ... black out personal data on a page's image (pixels, or fractions <= 1)
+  redact-image IMG --box X1,Y1,X2,Y2 ... black out personal data on a page's image or clip (pixels, or fractions <= 1)
   check-pages DIR                        every feature page: entry point and screen frames, a frame per tab
   mark-tag GAME SESSION SHOT --feature F --as ROLE --desc "..." [--at X,Y]   tag an old frame for a page
   check-zones WORKTREE [--process]       edits only in allowed zones, media within limits
@@ -3368,7 +3368,8 @@ def cmd_redact_image(args) -> None:
     p = Path(args.image)
     if not p.exists():
         fail(f"no image {p}")
-    img = Image.open(p).convert("RGB")
+    src = Image.open(p)
+    img = src.convert("RGB")
     w, h = img.size
     boxes = []
     for b in args.box:
@@ -3384,6 +3385,23 @@ def cmd_redact_image(args) -> None:
         if x1 < 0 or y1 < 0 or x2 > w + 1 or y2 > h + 1 or x2 - x1 < 1 or y2 - y1 < 1:
             fail(f"box {b} is outside the {w}x{h} image", size=[w, h])
         boxes.append((x1, y1, x2, y2))
+    if getattr(src, "is_animated", False):  # a clip: the same boxes on every frame, timing and looping kept
+        from PIL import ImageSequence
+        frames, durations = [], []
+        for fr in ImageSequence.Iterator(src):
+            fr.load()  # a WebP frame's duration is known only once it is loaded
+            durations.append(fr.info.get("duration") or 100)
+            f = fr.convert("RGB")
+            d = ImageDraw.Draw(f)
+            for bx in boxes:
+                d.rectangle(bx, fill=(0, 0, 0))
+            frames.append(f)
+        loop = src.info.get("loop", 0)
+        src.close()
+        frames[0].save(p, format="WEBP", save_all=True, append_images=frames[1:], duration=durations, loop=loop,
+                       quality=80)
+        return out({"image": str(p), "size": [w, h], "boxes": len(boxes), "frames": len(frames)})
+    src.close()
     draw = ImageDraw.Draw(img)
     for bx in boxes:
         draw.rectangle(bx, fill=(0, 0, 0))
