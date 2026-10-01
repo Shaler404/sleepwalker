@@ -5,6 +5,8 @@
     everything else goes through `harness/sw.py`.
   - The "dream" writes `wiki/`, `skills/`, `solvers/`, `dreams/` in the branch `dream/<machine>/<date>` and runs
     `sw.py check-zones` before committing.
+  - The reviewer (after every session) sets goals and discovery through `sw.py … --game` and writes
+    `state/<game>/reviews.md`; it never touches the phone.
   - The analyst and the critic only read.
 - Nobody writes to `main` directly: only a pull request, merged by a maintainer.
 - Maintainers are `maintainers` in `project.yaml`. The repository is public: issues and comments from

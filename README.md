@@ -63,17 +63,19 @@ whether the install is fresh:
 Only a phone with a fresh install of the game gets such tasks: `sw.py` notices a reinstall by
 itself. Until there is such a phone, the task stays in the "Needs a human" section.
 
-**How a game is played — advance first.** The goal is complete information as fast as possible:
-- while not all features are found, the agent moves through the content as fast as it can and writes
-  every branch down as a case or task for later instead of testing it on the spot;
-- when advancing is blocked (energy, lives, a timer, a paywall), it slows down on purpose and verifies
-  the cases that need no progress; if there are none, the phone goes to another game until the gate
-  opens;
-- whether new features can still appear is decided by looking, not by grinding levels: regular
-  **screen surveys** map every entry point on every screen to a feature, and the dream compares
-  surveys with each other and with a genre checklist. Two clean surveys at different progress points
-  and a covered checklist close the search, so the agent does not play 700 levels when everything
-  appears by level 100.
+**How a game is played — toward goals, never "just playing".** Every session gets one to three
+concrete goals and plays only toward them:
+- **map** (`scout`): play until the main menu and every entry point is visible; each entry point is
+  open (a study goal), locked with its unlock condition (an unlock goal) or unclear (an experiment);
+- **unlock**: reach the progress that opens a feature ("reach level 20 to unlock Leagues"), then its
+  study goal appears;
+- **study**: open the feature, walk its screens and tabs, verify its cases;
+- **experiment**: test a hypothesis that needs play ("to see the race's win flow we have to win the
+  race: play levels while it runs and watch the score") and write down the conclusion.
+
+After every session a **post-session review** (`runbooks/review.md`) reads what happened without the
+phone, closes finished goals, sets the next ones and decides whether the search for features is over:
+no level is played once the map is complete and every locked entry point has its unlock goal.
 
 **How the agent learns to play — in the session, not overnight.** A new kind of level is learned the
 moment the agent meets it: it reads the game's rules, writes them into the game's playbook, plans the
