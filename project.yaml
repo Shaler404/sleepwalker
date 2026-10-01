@@ -44,13 +44,15 @@ research:
 
 # Which model does what, with its effort when it has one ("opus:high"; haiku takes none). These are the
 # defaults: a game's own models in games.yaml (chosen by the benchmark in runbooks/onboard.md) come first,
-# and a machine can override the defaults in local.yaml.
+# and a machine can override the defaults in local.yaml. The roles' agents (reviewer, documenter, lab,
+# analyst, critic) get their model and effort in their definitions: `sw.py sync` reinstalls them when this
+# file changes (or run `sw.py install-agents`).
 models:
   study: opus                # learns new or broken gameplay: rules, method, solvers
   play: sonnet               # plays mastered gameplay and verifies cases; hands new gameplay back to study
   consult: opus              # one-shot advice: sw.py ask
   reviewer: opus             # the post-session review: goals and discovery (runbooks/review.md)
-  documenter: opus           # the feature pages after each session (runbooks/document.md)
+  documenter: opus:medium    # the feature pages after each session (runbooks/document.md); docs/bench/2026-10-01-writers.md
   lab: opus                  # makes slow or unlearned mechanics fast between sessions (runbooks/lab.md)
   analyst: opus              # the dream's session analysts
   critic: opus               # the dream's critic
