@@ -51,7 +51,9 @@ Slots are interleaved and rotated, so no variant always plays first or last. Eve
 played through `claude -p --model … --effort …` with the same brief: play N levels of the mechanic
 with the level cycle, nothing else. The report gives per variant: levels won and lost, levels won per
 hour, the median level time, the median decision time, moves per won level and the cost (from the
-CLI's result).
+CLI's result), and `model_ids`: the models the CLI really ran. `claude` on PATH resolves `opus`, `sonnet`
+and `fable` by its own version, and an old one runs older models without an error: before a benchmark,
+`claude update`, and check `model_ids` in the report.
 
 ## 5. Choose
 
