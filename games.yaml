@@ -17,6 +17,11 @@
 #             game not played for session.turn_hours (or never) gets its turn first
 #   enabled   false = do not analyze
 #   focus     what to look at first (optional)
+#   models    the models chosen when the game was onboarded (runbooks/onboard.md), per role with its
+#             effort: {study: fable:xhigh, play: sonnet:low}; without it, project.yaml models
+#
+# A new game is onboarded first (runbooks/onboard.md): it is studied and its models are chosen on this
+# machine, and only then is its line added here.
 #
 # What is already known about a game: wiki/<id>/features.md.
 

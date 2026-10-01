@@ -20,10 +20,12 @@ player subagents. The repository root is one level above this file (the owner's 
    - `held` — the owner has taken the phone (`sw.py stop`); leave it alone;
    - `idle` — the reason for idling: the phone is in use, locked, hot, no tasks. Per game — why
      (waiting for a timer, needs a fresh phone, sleeping until a new version).
-3. For each `play` assignment, start a `sleepwalker-player` subagent with the assignment's `model`
-   (the Agent tool's `model` parameter: `study` sessions get the strong model that learns new
-   gameplay, `play` sessions the fast one). Start all of them at once, in the background, and wait
-   for all of them. The brief is complete; the subagent does not see this conversation:
+3. For each `play` assignment, start the subagent the assignment names in `agent` (for example
+   `sleepwalker-player-sonnet-low`: its model and effort are set in its definition; if that type is
+   unavailable, `sleepwalker-player` with the assignment's `model` as the Agent tool's `model`). `study`
+   sessions get the game's model for learning gameplay, `play` sessions the one for playing it. Start
+   all of them at once, in the background, and wait for all of them. The brief is complete; the
+   subagent does not see this conversation:
    ```
    Repository root: <path>. Do not change the working directory: every command is cd <path> && python harness/sw.py -d <device> ...
    Instructions: <path>/runbooks/session.md — read it in full and follow it.
