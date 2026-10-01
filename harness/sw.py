@@ -3461,7 +3461,7 @@ def install_agents() -> dict:
             (dest / f"{name}.md").write_text(fm + body, encoding="utf-8")
             done.append(f"{name}.md")
     return {"installed": len(done), "to": str(dest),
-            "roles": {r: models().get(r) for r in ("reviewer", "documenter", "lab", "analyst", "critic")}}
+            "roles": {r: models().get(r) for r in ("reviewer", "documenter", "lab", "process", "analyst", "critic")}}
 
 
 # --- choosing models: a local benchmark, run by hand -------------------------------------------------

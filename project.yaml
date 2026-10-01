@@ -55,6 +55,7 @@ models:
   reviewer: opus             # the post-session review: goals and discovery (runbooks/review.md)
   documenter: opus:medium    # the feature pages after each session (runbooks/document.md); docs/bench/2026-10-01-writers.md
   lab: opus                  # makes slow or unlearned mechanics fast between sessions (runbooks/lab.md)
+  process: fable:high        # the dream's main job: what to improve in the process (runbooks/dream.md 7); docs/bench/2026-10-01-process.md
   analyst: opus              # the dream's session analysts
   critic: opus               # the dream's critic
 

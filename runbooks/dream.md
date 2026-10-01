@@ -167,7 +167,18 @@ in `project.yaml`), no more than 5 at a time
 
 ## 7. The process: what to improve
 
-This is the dream's main job. Read the post-session reviews (`state/<game>/reviews.md`: blockers,
+This is the dream's main job, done by a `sleepwalker-process` subagent (its model and effort are in its
+definition: `models.process`, chosen in `docs/bench/2026-10-01-process.md`). After the knowledge commit,
+create the process worktree (the first command below), then start the subagent with the brief:
+
+```
+Repository root: <root>. Process worktree: <absolute path of ../sleepwalker-process> (edit only there).
+Instructions: <root>/runbooks/dream.md, section 7. Write the pull request description to <absolute path of ../process-pr.md>.
+Machine: <machine>. Sessions of this dream: <the session ids from section 1>.
+```
+
+When it is done, run the commands from `check-zones` on, with its description as the body. What the
+subagent does: read the post-session reviews (`state/<game>/reviews.md`: blockers,
 wrong goals), the documenters' logs (`docs-log.md`: gaps), the inbox blocks (`Harness gap`, `Agent
 error`), the level times per mechanic and the analysts' agent errors. Find what repeats and what it
 costs (minutes, levels, lost frames), and propose a fix for each:
@@ -181,12 +192,12 @@ worktree, after the knowledge commit, on its own branch:
 
 ```
 git worktree add ../sleepwalker-process -b process/<machine>/<YYYY-MM-DD> origin/main
-… edits …
+… the sleepwalker-process subagent edits …
 python harness/sw.py check-zones ../sleepwalker-process --process
 git -C ../sleepwalker-process add -A && git -C ../sleepwalker-process commit -m "process(<machine>): <YYYY-MM-DD>" --author "Dreamer <dreamer@sleepwalker.local>"
 git -C ../sleepwalker-process push -u origin process/<machine>/<YYYY-MM-DD>
 gh label create process --repo <repo> --color 0e8a16 --force
-gh pr create --repo <repo> --base main --head process/<machine>/<YYYY-MM-DD> --label process --title "Process <machine> <YYYY-MM-DD>" --body "<what, why, sources>"
+gh pr create --repo <repo> --base main --head process/<machine>/<YYYY-MM-DD> --label process --title "Process <machine> <YYYY-MM-DD>" --body-file ../process-pr.md
 git worktree remove ../sleepwalker-process
 ```
 
