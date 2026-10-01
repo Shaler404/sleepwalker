@@ -52,7 +52,6 @@ games:
 
   - id: com.crypt.gram.puzz
     title: "Cryptogram: Word Logic Puzzles"
-    # Off: every session that reaches the level 16 board dies with "Output blocked by content filtering
-    # policy" (4 sessions, 2026-10-01): the model recognizes the encoded text while reasoning. Pass level 16
-    # by hand on the phone, then turn it back on.
-    enabled: false
+    # Four sessions died at the level 16 board with "Output blocked by content filtering policy": the model
+    # recognized the encoded text while reasoning. Since the 2026-10-01 lab a solver reads and solves the board
+    # and the player never decodes the text (playbook); two crashes in a row hold the game back 12 h.
