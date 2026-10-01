@@ -26,7 +26,10 @@ Run every command from the root: `cd <root> && python harness/sw.py …`.
   `state/<game>/solvers/<mechanic>.py` with `solve(image, board=None, frame_scale=1.0)`. It reads the
   board from the image (numpy/OpenCV), models the rules including how a level is lost, searches ahead,
   returns only moves whose outcome it knows (`rescan` before hidden outcomes), double taps as
-  `[x, y, 2]`, and refuses implausible boards (schema, section 10).
+  `[x, y, 2]`, and refuses implausible boards (schema, section 10). A board that changes a little
+  between rounds (a tile matcher): take `state=None` and keep a memory across the rounds of a level
+  (what was revealed, the last board) to recompute only the change and check the last moves; test it
+  on consecutive recorded frames with `--state FILE`.
 - **Heuristic** — randomness (refills, cascades): a short ordered list of rules in the playbook.
 - **Manual** — physics or reaction: what to look at first and in which order, in the playbook.
 
