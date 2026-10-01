@@ -50,19 +50,20 @@ player subagents. The repository root is one level above this file (the owner's 
    gameplay it should not learn) comes back first from `claim`, with the strong model. When no device
    is playing or busy, go on to the next step.
 5. **The post-session review.** As soon as a player ends its session, start a `sleepwalker-reviewer`
-   subagent for that session in the background (model `models.reviewer` in `project.yaml`). It does
+   subagent for that session in the background (its model and effort are in its definition, written from
+   `project.yaml` `models` by `sw.py install-agents`: pass no model). It does
    not need the phone, so claim the device for the next session at the same time. Brief:
    ```
    Repository root: <path>. Do not change the working directory: every command is cd <path> && python harness/sw.py ... --game <game>
    Instructions: <path>/runbooks/review.md — read it in full and follow it.
    game: <game> (<title>)  session: <session id from the player's end reply>
    ```
-   Start a `sleepwalker-documenter` subagent for the same session at the same time (model
-   `models.documenter`), with the same brief but `Instructions: <path>/runbooks/document.md`. Wait for
+   Start a `sleepwalker-documenter` subagent for the same session at the same time, with the same brief
+   but `Instructions: <path>/runbooks/document.md`. Wait for
    the reviewers and documenters too before you finish the run.
 
    Then `python harness/sw.py lab-check <game> --claim`: if it `claimed` mechanics, start a
-   `sleepwalker-lab` subagent in the background (model `models.lab`) with the same brief but
+   `sleepwalker-lab` subagent in the background with the same brief but
    `Instructions: <path>/runbooks/lab.md` and `mechanics: <ids and why>`. It works on recorded frames,
    so the next session can run meanwhile; wait for it before you finish the run.
 6. If a subagent crashed without ending its session, end the session yourself:

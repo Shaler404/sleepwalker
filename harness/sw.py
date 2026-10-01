@@ -1809,7 +1809,7 @@ def cmd_sync(args) -> None:
         f = run(["git", "-C", str(ROOT), "fetch", "-q", "origin"], capture_output=True, text=True)
         m = run(["git", "-C", str(ROOT), "merge", "--ff-only", "-q", "origin/main"], capture_output=True, text=True)
     ok = f.returncode == 0 and m.returncode == 0
-    mirror = None
+    mirror = agents = None
     if ok and git_head() != before:
         changed = run(["git", "-C", str(ROOT), "diff", "--name-only", before, "HEAD", "--", "wiki"],
                       capture_output=True, text=True).stdout.split()
@@ -1818,9 +1818,13 @@ def cmd_sync(args) -> None:
                 mirror = wiki_mirror(push=True)
             except Exception as ex:
                 mirror = {"error": str(ex)[:300]}
+        roles = run(["git", "-C", str(ROOT), "diff", "--name-only", before, "HEAD", "--", "project.yaml",
+                     ".claude/agents"], capture_output=True, text=True).stdout.split()
+        if roles:  # new models or roles: the agent definitions carry them
+            agents = install_agents()
     out({"synced": ok, "head": run(["git", "-C", str(ROOT), "log", "-1", "--format=%h %s"],
                                    capture_output=True, text=True).stdout.strip(),
-         **({"wiki_mirror": mirror} if mirror else {}),
+         **({"wiki_mirror": mirror} if mirror else {}), **({"agents": agents} if agents else {}),
          **({} if ok else {"error": (f.stderr + m.stderr).strip()[-400:]})})
 
 
@@ -3401,13 +3405,26 @@ def cmd_gc(args) -> None:
 
 
 def cmd_install_agents(args) -> None:
+    out(install_agents())
+
+
+def install_agents() -> dict:
     """Copy the roles with restricted tools (.claude/agents) to ~/.claude/agents so that scheduled
-    tasks see them whatever folder they run in."""
+    tasks see them whatever folder they run in, each with its model and effort from project.yaml models
+    (the Agent tool sets no effort: only a definition does). Run it again after models change."""
     dest = Path.home() / ".claude" / "agents"
     dest.mkdir(parents=True, exist_ok=True)
     done = []
     for p in (ROOT / ".claude" / "agents").glob("sleepwalker-*.md"):
-        shutil.copy2(p, dest / p.name)
+        text = p.read_text(encoding="utf-8")
+        role = p.stem.removeprefix("sleepwalker-")
+        spec = model_spec(models().get(role)) if role != "player" and models().get(role) else None
+        if spec and text.startswith("---"):  # the role's model and effort (project.yaml models) go into its definition
+            _, fm, body = text.split("---", 2)
+            fm = "".join(x for x in fm.splitlines(keepends=True) if not re.match(r"(model|effort):", x))
+            text = (f"---{fm}model: {spec['model']}\n" + (f"effort: {spec['effort']}\n" if spec.get("effort") else "")
+                    + f"---{body}")
+        (dest / p.name).write_text(text, encoding="utf-8")
         done.append(p.name)
     # the effort of a subagent is set only in its definition: one player definition per model and effort
     body = (ROOT / ".claude" / "agents" / "sleepwalker-player.md").read_text(encoding="utf-8").split("---", 2)[2]
@@ -3419,7 +3436,8 @@ def cmd_install_agents(args) -> None:
                   f"tools: Bash, Read, Write, Edit, Glob, Grep\nmodel: {m}\n" + (f"effort: {e}\n" if e else "") + "---")
             (dest / f"{name}.md").write_text(fm + body, encoding="utf-8")
             done.append(f"{name}.md")
-    out({"installed": len(done), "to": str(dest)})
+    return {"installed": len(done), "to": str(dest),
+            "roles": {r: models().get(r) for r in ("reviewer", "documenter", "lab", "analyst", "critic")}}
 
 
 # --- choosing models: a local benchmark, run by hand -------------------------------------------------
