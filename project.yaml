@@ -36,6 +36,7 @@ session:
   stale_min: 20              # a session idle for longer is abandoned; the phone and the game are free
   max_in_a_row: 2            # sessions of one game in a row on a phone while other games have ready tasks
   turn_hours: 2              # a game with ready tasks not played for this long (or never) goes first
+  crash_backoff_hours: 12    # a game whose last 2 sessions crashed waits this long after the last one
 
 research:
   version_check_hours: 6     # how often to check the version on Google Play

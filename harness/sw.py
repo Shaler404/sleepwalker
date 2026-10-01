@@ -119,7 +119,7 @@ PROJECT_DEFAULTS = {
                                 "experiment": 15, "ftue": 30, "replay": 20, "followup": 10, "daily": 10},
                 "max_goals": 3,
                 "max_session_min": 45, "steps_per_min": 4, "hard_limit": 1.5, "stale_min": 20, "max_in_a_row": 2,
-                "turn_hours": 2},
+                "turn_hours": 2, "crash_backoff_hours": 12},
     "research": {"version_check_hours": 6, "ftue_refresh_days": 180, "country": "us", "survey_every_sessions": 2,
                  "discovery_clean_surveys": 2},
     # study: learns new gameplay (strong); play: plays learned gameplay and checks cases (fast);
@@ -1509,10 +1509,16 @@ def ensure_playbook(game: str) -> Path:
 
 
 def solver_path(game: str, mech: str) -> Path | None:
-    for p in (STATE() / game / "solvers" / f"{mech}.py", ROOT / "solvers" / game / f"{mech}.py"):
-        if p.exists():
-            return p
-    return None
+    """The local solver, replaced by the merged one (solvers/<game>/) when that is newer, like the playbook:
+    a fix merged by the dream reaches the phone. The old local copy is kept as <mechanic>.prev.py.
+    (2026-10-01: the merged queens.py with real double taps never ran; the stale local draft did.)"""
+    local, merged = STATE() / game / "solvers" / f"{mech}.py", ROOT / "solvers" / game / f"{mech}.py"
+    if merged.exists() and (not local.exists() or merged.stat().st_mtime > local.stat().st_mtime):
+        if local.exists() and local.read_bytes() != merged.read_bytes():
+            shutil.copy2(local, local.with_name(f"{mech}.prev.py"))
+        local.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(merged, local)
+    return local if local.exists() else None
 
 
 # A solver is pure computation: a screenshot (and a board the model wrote down) in, moves out. It is run on
@@ -1594,6 +1600,20 @@ def device_streak(dev: str) -> tuple[str | None, int]:
     return game, n
 
 
+def crash_loop(game: str, now: float) -> str | None:
+    """The game's last two sessions crashed: another player now would crash the same way and burn the
+    phone's time (2026-10-01: three Cryptogram sessions in a row, 52 minutes, "output blocked by content
+    filter"). The game waits session.crash_backoff_hours after the last crash."""
+    last = read_jsonl(STATE() / game / "sessions.jsonl")[-2:]
+    if len(last) < 2 or any(s.get("status") not in ("crashed", "abandoned") for s in last):
+        return None
+    until = iso_to_t(last[-1]["started"]) + last[-1].get("minutes", 0) * 60 + P()["session"]["crash_backoff_hours"] * 3600
+    if until <= now:
+        return None
+    return (f"the last 2 sessions crashed ({(last[-1].get('summary') or '')[:120]}): it waits until "
+            f"{dt.datetime.fromtimestamp(until):%H:%M}, or fix the cause and play it by hand")
+
+
 def cmd_claim(args) -> None:
     res, now = [], time.time()
     with machine_lock():
@@ -1647,6 +1667,10 @@ def cmd_claim(args) -> None:
                     continue
                 if e["id"] not in haves[dev]:
                     missing.append(e["id"])
+                    continue
+                loop = crash_loop(e["id"], now)
+                if loop:
+                    other.append({"game": e["id"], "state": "crash loop", "why": loop, "blocked": []})
                     continue
                 st = session_tasks(e["id"], dev, platform, now)
                 if st["ready"]:

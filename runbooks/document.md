@@ -43,7 +43,8 @@ Sources are footnotes `[^sN]` that link the moment in the YouTube original; neve
    the session has no such frame, write `<!-- no-entry: why -->` / `<!-- no-screen: why -->` and add the
    gap to the session's block in `state/<game>/inbox.md` so the next study goal marks it.
 3. Write the text: from the session's `why`, notes, cases and the frames themselves. Facts only, each
-   with its footnote; what you infer is marked as such.
+   with its footnote; what you infer is marked as such. Never write out a quote, lyric or book passage
+   from the game in full (it is blocked as reproduced text): describe it ("a quote by Lincoln, 9 words").
 4. `python harness/sw.py check-pages state/<game>/pages` until it reports no problems for your pages.
 5. Append to `state/<game>/docs-log.md`: the session, the pages written or updated, the gaps.
 
