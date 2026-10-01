@@ -47,4 +47,21 @@ Sources are footnotes `[^sN]` that link the moment in the YouTube original; neve
 4. `python harness/sw.py check-pages state/<game>/pages` until it reports no problems for your pages.
 5. Append to `state/<game>/docs-log.md`: the session, the pages written or updated, the gaps.
 
+## Rebuilding a page in the old layout
+
+Pages written before the documenter existed (inline `[s:…]` sources, no "Where to find it") are rebuilt
+one feature at a time; the brief names the game and the feature instead of a session.
+
+1. Unless `state/<game>/pages/features/<id>.md` exists, copy the published page
+   `wiki/<game>/features/<id>.md` there, and the images it uses from `wiki/<game>/img/` to
+   `state/<game>/pages/img/`. Then `python harness/sw.py page-footnotes state/<game>/pages/features/<id>.md`:
+   the inline sources become footnotes with the video links.
+2. The sessions that touched the feature are the page's `sources` and footnotes. What the player did at
+   each step is in `raw/<game>/<session>/steps.jsonl` (`why`, `note`, `shot`), the frames in
+   `raw/<game>/<session>/shots/NNNNN_m.jpg`. Those sessions marked frames without `--feature`: tag the
+   entry point (with `--at` on the button), the feature's screen, every tab and popup with `mark-tag`.
+3. Follow "How" from step 1: the skeleton is merged into the page. Every true fact of the old page
+   stays, with its footnote; the old layout's sections become the new ones (a tab's text goes under its
+   `### <tab>`).
+
 The last reply is one line: the game, the pages written and updated, the gaps.
