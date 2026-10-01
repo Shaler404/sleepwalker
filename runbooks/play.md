@@ -67,7 +67,13 @@ player subagents. The repository root is one level above this file (the owner's 
    `Instructions: <path>/runbooks/lab.md` and `mechanics: <ids and why>`. It works on recorded frames,
    so the next session can run meanwhile; wait for it before you finish the run.
 6. If a subagent crashed without ending its session, end the session yourself:
-   `python harness/sw.py -d <device> end --status crashed --summary "the subagent did not end the session"`.
+   `python harness/sw.py -d <device> end --status crashed --summary "the subagent did not end the session: <the error as reported>"`,
+   and append one line to `state/<game>/inbox.md` so the dream sees it:
+   `## <session id> · crashed · <the error>; last step <n>: <its --why>` (the last step is in
+   `raw/<game>/<session>/steps.jsonl`). After two crashes in a row `claim` holds the game back for
+   `session.crash_backoff_hours`: report it under the idle reasons with the error. Three Cryptogram
+   sessions in a row crashed on the same API error at the turn cadence and cost 52 minutes of phone
+   time without a note.
 7. `python harness/sw.py gc` — clean up old records in `raw/`.
 8. Summary: one line per device — game, status, tasks closed and new; for idle devices — the
    reason.
