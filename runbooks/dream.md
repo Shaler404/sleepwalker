@@ -19,8 +19,7 @@ The repository root is one level above this file (the owner's is `E:\Sleepwalker
 - **Language:** everything you write — feature and case names, task titles, notes, marks, clip
   titles, `progress.md`, `inbox.md`, the wiki, reports — is in English. The only exception is a quote
   of in-game text from a game localized only in Russian: quote it in the original and add an English
-  translation in parentheses. Journals and notes from earlier sessions may be in Russian: translate
-  them when you move them into the wiki.
+  translation in parentheses.
 
 ## 1. Is there work
 
