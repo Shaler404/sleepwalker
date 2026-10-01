@@ -10,6 +10,10 @@ Planning
   resume [-d SERIAL]                     return a phone to work
   wait-free [--max-minutes N]            wait until a phone busy with a session frees up (the orchestrator)
   sync                                   pull origin/main (fast-forward only)
+  plan GAME                              run the planner for one game (an onboarding game too)
+Choosing models (local, by hand, never on a schedule: runbooks/onboard.md)
+  bench new GAME --variants "opus:low,sonnet:low,haiku" [--rounds 2] [--levels 4] [--mechanic M]
+  bench run ID [--max N] | bench report ID   play the slots through `claude -p`; compare the variants
 Session
   start GAME                             start the game and screen recording, first screenshot, session tasks
   device-state fresh|progressed [--note] the game on this phone: fresh install or progressed
@@ -119,6 +123,9 @@ LOCAL_DEFAULTS = {
     "games": [],
     "android": {"serials": [], "hours": "0-24", "dnd": True, "max_temp_c": 42, "min_battery": 20},
     "fake_devices": {},
+    # games being onboarded on this machine: not in games.yaml yet, never handed out by claim; the line goes
+    # to games.yaml with its chosen models once the onboarding is done (runbooks/onboard.md)
+    "onboarding": [],
     "tools": {"ffmpeg": "ffmpeg", "ffprobe": "ffprobe", "claude": "claude", "codex": "codex"},
     "models": {},  # this machine's overrides of the models in project.yaml
     # sw.py ask: claude (Claude Code CLI, the model from models.consult) or codex (Codex CLI, e.g. a GPT model)
@@ -191,6 +198,10 @@ def games() -> list[dict]:
         e = {"enabled": True, "priority": i, "focus": [], **g}
         if e["enabled"] and (not only or e["id"] in only):
             res.append(e)
+    for j, g in enumerate(L().get("onboarding") or []):
+        g = {"id": g} if isinstance(g, str) else dict(g)
+        if not any(e["id"] == g["id"] for e in res):
+            res.append({"enabled": True, "priority": 1000 + j, "focus": [], **g, "onboarding": True})
     return res
 
 
@@ -666,6 +677,30 @@ def gap_s(cur: dict) -> float | None:
 
 def models() -> dict:
     return {**P()["models"], **(L().get("models") or {})}
+
+
+EFFORTS = ("low", "medium", "high", "xhigh", "max")
+PLAYER_MODELS = ("fable", "opus", "sonnet", "haiku")  # haiku takes no effort
+
+
+def model_spec(v) -> dict:
+    """A model with its effort: "opus", "opus:high" or {model: opus, effort: high}."""
+    if isinstance(v, dict):
+        return {"model": v.get("model"), "effort": v.get("effort")}
+    m, _, e = str(v or "").partition(":")
+    return {"model": m or None, "effort": e or None}
+
+
+def role_spec(game: str, role: str) -> dict:
+    """The model and effort for a role: project.yaml, then local.yaml, then the game's own models in
+    games.yaml (chosen when the game was onboarded)."""
+    e = next((g for g in games() if g["id"] == game), {})
+    return model_spec({**models(), **(e.get("models") or {})}.get(role))
+
+
+def player_agent(spec: dict) -> str:
+    """The player role definition for a model and effort (sw.py install-agents writes them)."""
+    return "sleepwalker-player" + "".join(f"-{x}" for x in (spec.get("model"), spec.get("effort")) if x)
 
 
 def coord_frame(cur: dict, args, has_points: bool) -> tuple[float, int, int]:
@@ -1554,7 +1589,7 @@ def cmd_claim(args) -> None:
         sessions = all_sessions()
         busy_games = {s["game"] for s in sessions}
         busy_devs = {s["device"]: s for s in sessions}
-        entries = games()
+        entries = [e for e in games() if not e.get("onboarding")]  # onboarding games are played by hand
         devs = devices()
         active_devs = {x["device"] for x in all_sessions()}
         for hp in (STATE() / "holds").glob("*.json"):
@@ -1633,14 +1668,16 @@ def cmd_claim(args) -> None:
             _, turn, _, _, e, st = min(cands, key=order)
             budget = budget_for(st["ready"])
             role, role_why = model_role(st["view"], st["ready"])
-            model = models()[role]
+            spec = role_spec(e["id"], role)
+            model = spec["model"]
             save_session({"status": "reserved", "device": dev, "platform": platform, "game": e["id"],
                           "tasks": st["ready"], "budget_min": budget, "t0": now, "last_action": now,
-                          "model": model, "model_role": role})
+                          "model": model, "effort": spec["effort"], "model_role": role})
             busy_games.add(e["id"])
             res.append({"device": dev, "action": "play", "game": e["id"], "title": e.get("title", e["id"]),
                         "device_state": st["state"], "installed_version": st["info"]["version"],
-                        "model": model, "model_role": role, "model_why": role_why,
+                        "model": model, "effort": spec["effort"], "agent": player_agent(spec),
+                        "model_role": role, "model_why": role_why,
                         **({"rotation": rotated} if rotated and e["id"] != sg else {}),
                         **({"turn": f"not played for {P()['session']['turn_hours']} h or never: its turn"}
                            if turn == 0 and e["id"] != sg else {}),
@@ -1794,7 +1831,11 @@ def cmd_start(args) -> None:
             budget = budget_for(tasks) if tasks else 10
             role = model_role(st["view"], tasks)[0]
         budget = args.budget or budget
-        model = args.model or (reservation or {}).get("model") or models().get(role or "play")
+        if args.bench:
+            tasks = []  # a benchmark slot: the brief says what to play
+        spec = role_spec(args.game, role or "play")
+        model = args.model or (reservation or {}).get("model") or spec["model"]
+        effort = args.effort or (reservation or {}).get("effort") or (None if args.model else spec["effort"])
         sid = f"{dt.datetime.now():%Y%m%d-%H%M%S}-{machine()}-{devkey(dev)[-6:]}"
         d = RAW() / args.game / sid
         (d / "shots").mkdir(parents=True)
@@ -1802,7 +1843,8 @@ def cmd_start(args) -> None:
                "kind": tasks[0]["kind"] if tasks else "followup", "tasks": tasks, "platform": platform,
                "device": dev, "dir": str(d), "t0": now, "last_action": now, "step": 0, "shots": 0, "scale": 1.0,
                "same_streak": 0, "budget_min": budget, "max_steps": budget * s["steps_per_min"], "clips": [],
-               "clip_open": None, "model": model, "model_role": role or "play", "moves": 0}
+               "clip_open": None, "model": model, "effort": effort, "model_role": role or "play", "moves": 0,
+               **({"bench": args.bench} if args.bench else {})}
         save_session(cur)
     info = {"version": None, "install_time": None}
     state = game_state(dev, args.game, info)
@@ -1844,7 +1886,8 @@ def cmd_start(args) -> None:
                  "play": "you are the fast model: play mastered mechanics by the playbook; a new or broken mechanic "
                          "is not yours to learn: register it and end --status handoff"}
     out({"session": sid, "device": dev, "version": cur["version"], "device_state": state, "hint": hint[state],
-         "model": cur["model"], "model_role": cur["model_role"], "role_hint": role_hint[cur["model_role"]],
+         "model": cur["model"], "effort": cur.get("effort"), "model_role": cur["model_role"],
+         "role_hint": role_hint[cur["model_role"]], **({"bench": cur["bench"]} if cur.get("bench") else {}),
          "mode": mode, "mode_hint": mode_why, "playbook": str(ensure_playbook(args.game)),
          "tasks": tasks, "research": summary_of(view), **shot})
 
@@ -2333,7 +2376,7 @@ def cmd_ask(args) -> None:
                     timeout=cfg["timeout_s"])
             answer = outf.read_text(encoding="utf-8").strip() if outf.exists() else ""
         else:
-            cmd = [L()["tools"]["claude"], "-p", prompt, "--model", model, "--allowedTools", "Read",
+            cmd = [*tool_cmd("claude"), "-p", prompt, "--model", model, "--allowedTools", "Read",
                    "--output-format", "text"]
             r = run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=ROOT,
                     timeout=cfg["timeout_s"])
@@ -2413,7 +2456,8 @@ def finish(cur: dict, status: str, summary: str) -> dict:
     gaps = [s["gap_s"] for s in steps if s.get("gap_s") is not None]
     meta = {"id": cur["id"], "machine": machine(), "device": cur["device"], "game": cur["game"],
             "tasks": [t["id"] for t in cur.get("tasks", [])], "device_state": cur.get("device_state"),
-            "version": cur.get("version"), "model": cur.get("model"), "model_role": cur.get("model_role"),
+            "version": cur.get("version"), "model": cur.get("model"), "effort": cur.get("effort"),
+            "model_role": cur.get("model_role"), **({"bench": cur["bench"]} if cur.get("bench") else {}),
             "started": now_iso(cur["t0"]),
             "minutes": round((time.time() - cur["t0"]) / 60, 1), "steps": cur["step"], "moves": cur.get("moves"),
             "gap_s_median": median(gaps),
@@ -2628,7 +2672,8 @@ def cmd_stats(args) -> None:
             lv = [o for o in lv_ops if o.get("session") == s["id"]]
             won = [o["seconds"] for o in lv if o["result"] == "won"]
             done = s.get("cases_done", 0) + len(s.get("tasks_done", []))
-            rows.append({"session": s["id"], "game": game, "model": s.get("model") or "?",
+            rows.append({"session": s["id"], "game": game,
+                         "model": (s.get("model") or "?") + (f":{s['effort']}" if s.get("effort") else ""),
                          "role": s.get("model_role"), "status": s["status"], "minutes": s["minutes"],
                          "steps": s["steps"], "moves": s.get("moves"),
                          "cases_done": s.get("cases_done", 0), "tasks_done": len(s.get("tasks_done", [])),
@@ -2889,7 +2934,153 @@ def cmd_install_agents(args) -> None:
     for p in (ROOT / ".claude" / "agents").glob("sleepwalker-*.md"):
         shutil.copy2(p, dest / p.name)
         done.append(p.name)
-    out({"installed": done, "to": str(dest)})
+    # the effort of a subagent is set only in its definition: one player definition per model and effort
+    body = (ROOT / ".claude" / "agents" / "sleepwalker-player.md").read_text(encoding="utf-8").split("---", 2)[2]
+    for m in PLAYER_MODELS:
+        for e in ((None,) if m == "haiku" else EFFORTS):
+            name = player_agent({"model": m, "effort": e})
+            fm = (f"---\nname: {name}\ndescription: The Sleepwalker player on {m}"
+                  f"{f', effort {e}' if e else ''}. Launch it when a claim assignment names this agent.\n"
+                  f"tools: Bash, Read, Write, Edit, Glob, Grep\nmodel: {m}\n" + (f"effort: {e}\n" if e else "") + "---")
+            (dest / f"{name}.md").write_text(fm + body, encoding="utf-8")
+            done.append(f"{name}.md")
+    out({"installed": len(done), "to": str(dest)})
+
+
+# --- choosing models: a local benchmark, run by hand -------------------------------------------------
+
+def bash_path(p: Path) -> str:
+    """E:/Sleepwalker -> /e/Sleepwalker: the agents' Bash on Windows is Git Bash."""
+    s = p.as_posix()
+    return f"/{s[0].lower()}{s[2:]}" if re.match(r"^[A-Za-z]:/", s) else s
+
+
+def tool_cmd(name: str) -> list[str]:
+    """A tool from local.yaml tools: a path, or a list (a command with its first arguments)."""
+    t = L()["tools"][name]
+    return list(t) if isinstance(t, list) else [t]
+
+
+def bench_path(bid: str) -> Path:
+    return STATE() / "bench" / f"{bid}.json"
+
+
+BENCH_BRIEF = """You are a Sleepwalker player in a benchmark slot. Repository root: {root}. Do not change the working
+directory: every command is `cd {root_posix} && python harness/sw.py -d {device} ...`.
+Read runbooks/session.md (the rules, section 3 and the level cycle) and state/{game}/playbook.md first.
+This slot measures how fast and how well you play, nothing else. Start with:
+  python harness/sw.py -d {device} start {game} --model {model}{effort_arg} --bench {bid}:{n} --budget {budget}
+Then play {levels} levels{mechanic_part} one after another with the level cycle (level start, moves in batches, level
+end), using the playbook and the mechanic's solver if it has one. Do not study features or walk menus. After
+{levels} levels, or at the budget warning, or when a gate stops you, run:
+  python harness/sw.py -d {device} end --status ok --summary "bench slot {n}: <levels won and lost>"
+Never pay real money and never enter a PIN. Exit code 6 means the owner is taking the phone: end --status interrupted.
+Everything you write is in English."""
+
+
+def bench_rows(plan: dict) -> list[dict]:
+    game = plan["game"]
+    ops = journal(game)
+    rows = []
+    for s in read_jsonl(STATE() / game / "sessions.jsonl"):
+        if not str(s.get("bench", "")).startswith(plan["id"] + ":"):
+            continue
+        n = int(s["bench"].split(":")[1])
+        slot = next((x for x in plan["slots"] if x["n"] == n), {})
+        lv = [o for o in ops if o.get("session") == s["id"] and o["op"] == "level"]
+        cost = read_json(STATE() / "bench" / plan["id"] / f"slot-{n}.json")
+        rows.append({"slot": n, "variant": f"{slot.get('model')}" + (f":{slot['effort']}" if slot.get("effort") else ""),
+                     "session": s["id"], "minutes": s["minutes"], "status": s["status"],
+                     "won": [o["seconds"] for o in lv if o["result"] == "won"],
+                     "lost": sum(o["result"] == "lost" for o in lv), "moves": s.get("moves") or 0,
+                     "gap_s": s.get("gap_s_median"), "cost_usd": cost.get("total_cost_usd"),
+                     "turns": cost.get("num_turns")})
+    return rows
+
+
+def cmd_bench(args) -> None:
+    if args.bench_cmd == "new":
+        game = find_game(args.game)["id"]
+        variants = [model_spec(v.strip()) for v in args.variants.split(",") if v.strip()]
+        for v in variants:
+            if v["effort"] and v["effort"] not in EFFORTS:
+                fail(f"unknown effort {v['effort']}: one of {', '.join(EFFORTS)}")
+            if v["model"] == "haiku" and v["effort"]:
+                fail("haiku takes no effort level: write it as haiku")
+        bid = f"{dt.datetime.now():%Y%m%d-%H%M}-{slug(game.split('.')[-1])}"
+        slots = []
+        for r in range(args.rounds):  # interleaved and rotated: no variant always plays first or last
+            k = r % len(variants)
+            for v in variants[k:] + variants[:k]:
+                slots.append({"n": len(slots) + 1, **v, "status": "pending"})
+        plan = {"id": bid, "game": game, "role": args.role, "levels": args.levels, "mechanic": args.mechanic,
+                "budget_min": args.budget, "created": now_iso(), "slots": slots}
+        write_json(bench_path(bid), plan)
+        return out(plan)
+    plan = read_json(bench_path(args.id))
+    if not plan:
+        fail(f"no benchmark {args.id}", known=[p.stem for p in (STATE() / "bench").glob("*.json")])
+    if args.bench_cmd == "run":
+        devs = [d for d in devices() if not held(d)]
+        dev = args.device or (devs[0] if len(devs) == 1 else None)
+        if not dev:
+            fail("pick the phone: -d SERIAL", devices=devs)
+        ran = []
+        for slot in [s for s in plan["slots"] if s["status"] in ("pending", "failed")][:args.max or None]:
+            if held(dev) or any(x["device"] == dev for x in all_sessions() if not stale(x)):
+                return out({"stopped": "the phone is held or busy", "ran": ran})
+            brief = BENCH_BRIEF.format(root=ROOT, root_posix=bash_path(ROOT),
+                                       device=dev, game=plan["game"], model=slot["model"],
+                                       effort_arg=f" --effort {slot['effort']}" if slot.get("effort") else "",
+                                       bid=plan["id"], n=slot["n"], budget=plan["budget_min"], levels=plan["levels"],
+                                       mechanic_part=f" of the mechanic {plan['mechanic']}" if plan.get("mechanic") else "")
+            cmd = [*tool_cmd("claude"), "-p", brief, "--model", slot["model"],
+                   *(["--effort", slot["effort"]] if slot.get("effort") else []),
+                   "--permission-mode", "bypassPermissions", "--output-format", "json", "--no-session-persistence"]
+            slot.update(status="running", started=now_iso())
+            write_json(bench_path(plan["id"]), plan)
+            try:
+                r = run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=ROOT,
+                        timeout=plan["budget_min"] * 60 * 2 + 300)
+                res = json.loads(r.stdout.strip().splitlines()[-1]) if r.stdout.strip() else {}
+                slot["status"] = "done" if r.returncode == 0 and not res.get("is_error") else "failed"
+            except (subprocess.TimeoutExpired, json.JSONDecodeError, OSError) as ex:
+                res, slot["status"] = {"error": str(ex)[:300]}, "failed"
+            write_json(STATE() / "bench" / plan["id"] / f"slot-{slot['n']}.json", res)
+            slot["ended"] = now_iso()
+            write_json(bench_path(plan["id"]), plan)
+            ran.append({"slot": slot["n"], "variant": slot["model"] + (f":{slot['effort']}" if slot.get("effort") else ""),
+                        "status": slot["status"]})
+        return out({"ran": ran, "left": sum(s["status"] != "done" for s in plan["slots"])})
+    rows = bench_rows(plan)
+    by: dict[str, list] = {}
+    for r in rows:
+        by.setdefault(r["variant"], []).append(r)
+    table = []
+    for v, rs in by.items():
+        won = [x for r in rs for x in r["won"]]
+        hours = sum(r["minutes"] for r in rs) / 60 or 1
+        cost = [r["cost_usd"] for r in rs if r["cost_usd"] is not None]
+        table.append({"variant": v, "slots": len(rs), "levels_won": len(won), "levels_lost": sum(r["lost"] for r in rs),
+                      "won_per_hour": round(len(won) / hours, 1),
+                      "level_s_median": median(won), "decision_s_median": median([r["gap_s"] for r in rs]),
+                      "moves_per_won": round(sum(r["moves"] for r in rs) / len(won), 1) if won else None,
+                      "cost_usd": round(sum(cost), 2) if cost else None,
+                      "cost_per_won_usd": round(sum(cost) / len(won), 3) if cost and won else None,
+                      "not_ok": [r["slot"] for r in rs if r["status"] != "ok"]})
+    table.sort(key=lambda t: (t["levels_lost"] > 0, -(t["won_per_hour"] or 0)))
+    out({"bench": plan["id"], "game": plan["game"], "role": plan["role"],
+         "slots_done": sum(s["status"] == "done" for s in plan["slots"]), "slots": len(plan["slots"]),
+         "variants": table,
+         "how_to_choose": "the fastest variant with no lost levels, unless a cheaper one is within ~10% of it; "
+                          "then write it into games.yaml models (runbooks/onboard.md)"})
+
+
+def cmd_plan(args) -> None:
+    e = find_game(args.game)
+    inst = [package_info(d, e["id"])["version"] for d, p in devices().items() if p == "android" and e["id"] in installed(d)]
+    plan_game(e["id"], [v for v in inst if v], time.time())
+    out({"game": e["id"], "research": summary_of(research_view(e["id"]))})
 
 
 # --- argument parsing ---------------------------------------------------------------------------
@@ -2913,6 +3104,8 @@ def main() -> None:
     p.add_argument("kind", nargs="?", help="deprecated: session tasks come from claim")
     p.add_argument("--budget", type=int, help="minutes, instead of the estimate from the tasks")
     p.add_argument("--model", help="the model playing this session, if not reserved by claim")
+    p.add_argument("--effort", choices=EFFORTS, help="its effort level")
+    p.add_argument("--bench", help="a benchmark slot: ID:N (sw.py bench)")
     p = sub.add_parser("device-state")
     p.add_argument("value", choices=["fresh", "progressed"])
     p.add_argument("--note")
@@ -3085,6 +3278,23 @@ def main() -> None:
     p.add_argument("--process", action="store_true", help="allow process edits at a maintainer's request")
     sub.add_parser("gc")
     sub.add_parser("install-agents")
+    p = sub.add_parser("plan")
+    p.add_argument("game")
+    p = sub.add_parser("bench")
+    bs = p.add_subparsers(dest="bench_cmd", required=True)
+    q = bs.add_parser("new")
+    q.add_argument("game")
+    q.add_argument("--variants", required=True, help='e.g. "opus:low,sonnet:low,sonnet:medium,haiku"')
+    q.add_argument("--rounds", type=int, default=2, help="slots per variant, interleaved")
+    q.add_argument("--levels", type=int, default=4, help="levels per slot")
+    q.add_argument("--mechanic", help="the mechanic to play (a mastered one)")
+    q.add_argument("--role", default="play", choices=["play", "study"])
+    q.add_argument("--budget", type=int, default=20, help="minutes per slot")
+    q = bs.add_parser("run")
+    q.add_argument("id")
+    q.add_argument("--max", type=int, help="run at most N slots now")
+    q = bs.add_parser("report")
+    q.add_argument("id")
     p = sub.add_parser("_rec")
     p.add_argument("dir")
     args = ap.parse_args()
@@ -3099,7 +3309,7 @@ def main() -> None:
         "snapshot": cmd_snapshot, "render": cmd_render, "check-zones": cmd_check_zones, "wiki-img": cmd_wiki_img,
         "wiki-clip": cmd_wiki_clip, "gc": cmd_gc, "install-agents": cmd_install_agents, "_rec": cmd_rec,
         "taps": cmd_taps, "level": cmd_level, "mechanic": cmd_mechanic, "playbook": cmd_playbook, "solve": cmd_solve,
-        "ask": cmd_ask,
+        "ask": cmd_ask, "bench": cmd_bench, "plan": cmd_plan,
         "tap": lambda a: action(a, "tap", lambda d, k: (d.double_tap if a.double else d.tap)(s(a.x, k), s(a.y, k)),
                                 {"x": a.x, "y": a.y, **({"double": True} if a.double else {})}, ((a.x, a.y),)),
         "swipe": lambda a: action(a, "swipe", lambda d, k: d.swipe(s(a.x1, k), s(a.y1, k), s(a.x2, k), s(a.y2, k)),

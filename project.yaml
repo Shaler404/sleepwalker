@@ -42,8 +42,9 @@ research:
   ftue_refresh_days: 180     # new version + from-scratch playthrough older than this = check FTUE again
   country: us                # Google Play country for the version check
 
-# Which model does what (the Agent tool's model names: opus, sonnet, haiku, fable). A machine can
-# override them in local.yaml.
+# Which model does what, with its effort when it has one ("opus:high"; haiku takes none). These are the
+# defaults: a game's own models in games.yaml (chosen by the benchmark in runbooks/onboard.md) come first,
+# and a machine can override the defaults in local.yaml.
 models:
   study: opus                # learns new or broken gameplay: rules, method, solvers
   play: sonnet               # plays mastered gameplay and verifies cases; hands new gameplay back to study
