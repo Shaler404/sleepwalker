@@ -34,6 +34,7 @@ Levels: think first, then play fast
 The lab: making gameplay fast without the phone (runbooks/lab.md)
   lab-check GAME [--claim] | lab-done GAME --note "..."   which mechanics need work; one lab per game at a time
   level-frames GAME MECHANIC [--limit N]  frames of past levels of a mechanic (the board at the start first)
+  level-catalog GAME --out GAME_DIR       every level the game showed: its starting board as a thumbnail, result, time
   note TYPE "fact" | clip begin "title" | clip end "description"
   mark "title" "description" [--feature F --as entry|screen|tab:NAME|popup|result|other [--at X,Y]]
                                          a frame for the wiki; --as says where it goes on the feature's page
@@ -74,6 +75,7 @@ import contextlib
 import copy
 import datetime as dt
 import functools
+import io
 import json
 import os
 import re
@@ -1540,16 +1542,22 @@ def solver_problems(src: str) -> list[str]:
 
 
 SOLVER_RUNNER = r"""
-import importlib.util, json, sys
+import importlib.util, inspect, json, sys
 from PIL import Image
 path, image, board, scale = sys.argv[1], sys.argv[2], sys.argv[3], float(sys.argv[4])
+state = sys.argv[5] if len(sys.argv) > 5 else ""
 spec = importlib.util.spec_from_file_location("solver", path)
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 b = json.loads(open(board, encoding="utf-8").read()) if board else None
-res = mod.solve(Image.open(image).convert("RGB"), b, scale)
+kw = {}
+if "state" in inspect.signature(mod.solve).parameters:  # the solver keeps a memory between rounds of a level
+    kw["state"] = json.loads(open(state, encoding="utf-8").read()) if state else None
+res = mod.solve(Image.open(image).convert("RGB"), b, scale, **kw)
 print(json.dumps(res if isinstance(res, dict) else {"moves": res}))
 """
+
+SOLVER_STATE_MAX = 200_000  # bytes of JSON a solver may carry from one round to the next
 
 
 def log_op(cur: dict, op: dict) -> None:
@@ -2473,17 +2481,36 @@ def cmd_lab_done(args) -> None:
 def level_spans(game: str, mech: str | None = None) -> list[dict]:
     """Every recorded level: its session, mechanic, result and the frames taken while it was played."""
     spans = []
+    moves = ("tap", "taps", "swipe", "key", "text", "solve", "restart", "launch")
     for d in sorted((RAW() / game).glob("*/")):
-        cur = None
+        cur, last, last_n = None, None, 0
+        shot = lambda n: d / "shots" / f"{n:05d}.jpg"  # noqa: E731
         for x in read_jsonl(d / "steps.jsonl"):
+            n = int(x["shot"]) if x.get("shot") and x.get("type") != "mark" else None
+            f = shot(n) if n else None
             if x.get("type") == "level_start":
-                cur = {"session": d.name, "level": x.get("name"), "mechanic": x.get("mechanic"), "frames": []}
-            elif cur is not None and x.get("shot") and x.get("type") != "mark":
-                f = d / "shots" / f"{int(x['shot']):05d}.jpg"
-                if f.exists() and f.as_posix() not in cur["frames"]:
+                cur = {"session": d.name, "level": x.get("name"), "mechanic": x.get("mechanic"), "frames": [],
+                       "_before": (last, last_n)}
+            elif cur is not None and f is not None and f.exists():
+                if "_before" in cur:
+                    # the board as the level began: a frame taken after the start and before the first move
+                    # (a look, or the solver's own frame before its moves), else the frame seen before the start
+                    before, bn = cur.pop("_before")
+                    if x.get("type") not in moves:
+                        cur["frames"].append(f.as_posix())
+                    elif bn and n > bn + 1 and shot(bn + 1).exists():
+                        cur["frames"].append(shot(bn + 1).as_posix())
+                    elif before:
+                        cur["frames"].append(before)
+                if f.as_posix() not in cur["frames"]:
                     cur["frames"].append(f.as_posix())
+            if f is not None and f.exists():
+                last, last_n = f.as_posix(), n
             if cur is not None and x.get("type") == "research" and x.get("op") == "level":
-                cur.update(result=x.get("result"), seconds=x.get("seconds"))
+                before = cur.pop("_before", None)  # no frame at all during the level
+                if not cur["frames"] and before and before[0]:
+                    cur["frames"].append(before[0])
+                cur.update(result=x.get("result"), seconds=x.get("seconds"), value=x.get("value"), note=x.get("note"))
                 spans.append(cur)
                 cur = None
     return [s for s in spans if mech is None or s["mechanic"] == mech]
@@ -2498,6 +2525,89 @@ def cmd_level_frames(args) -> None:
                    for s in spans]})
 
 
+def cmd_level_catalog(args) -> None:
+    """Every level the game showed, for games whose design lives in the levels: the board at its start as a
+    thumbnail (ad strips cropped), the mechanic, the tries and the player's note, which tells where a new
+    element appears. Written into the game's wiki folder by the dream: levels.md and levels/<level>.webp."""
+    e = find_game(args.game)
+    game, title = e["id"], e.get("title", e["id"])
+    by: dict[str, dict] = {}
+    for s in level_spans(game):
+        if not s["frames"] or s.get("result") is None:
+            continue
+        key = (f"{int(s['value']):04d}" if isinstance(s.get("value"), (int, float))
+               else slug(s.get("level") or "level"))
+        lv = by.setdefault(key, {"key": key, "level": s.get("level"), "mechanic": s.get("mechanic"), "tries": [],
+                                 "frame": s["frames"][0], "note": None})
+        lv["tries"].append(s)
+        if s.get("result") == "won" and not any(t.get("result") == "won" for t in lv["tries"][:-1]):
+            lv.update(frame=s["frames"][0], note=s.get("note"))  # the first win shows the board that was solved
+        lv["note"] = lv["note"] or s.get("note")
+    out_dir = Path(args.out)
+    (out_dir / "levels").mkdir(parents=True, exist_ok=True)
+    rows = sorted(by.values(), key=lambda v: v["key"])
+    # the dream's corrections stay: a frame chosen by hand for a level, or none (no good frame)
+    over_p = STATE() / game / "level-catalog.json"
+    over = read_json(over_p)
+    for kv in args.set or []:
+        k, _, v = kv.partition("=")
+        over[k] = None if v in ("", "none") else v
+    if args.set:
+        write_json(over_p, over)
+    checked = 0
+    for lv in rows:
+        dest = out_dir / "levels" / f"{lv['key']}.webp"
+        if lv["key"] in over:
+            lv["frame"] = over[lv["key"]]
+            if lv["frame"] is None:
+                remove(dest)
+                continue
+        elif dest.exists() and not args.force:
+            continue
+        elif solver_path(game, lv["mechanic"] or ""):
+            # the solver tells a board from a loading screen, a popup or the last level's win screen
+            tries = next((t for t in lv["tries"] if t["frames"] and t["frames"][0] == lv["frame"]), lv["tries"][0])
+            for cand in tries["frames"][:5]:
+                checked += 1
+                try:
+                    with contextlib.redirect_stdout(io.StringIO()):  # a refused frame is not an error here
+                        r = run_solver(game, lv["mechanic"], Path(cand), None, 1.0)
+                except SystemExit:
+                    continue
+                if r.get("moves") or r.get("done"):
+                    lv["frame"] = cand
+                    break
+            else:
+                lv["unchecked"] = True
+        img = Image.open(lv["frame"]).convert("RGB")
+        w, h = img.size
+        img = img.crop((0, int(h * args.crop_top), w, int(h * (1 - args.crop_bottom))))
+        img = img.resize((args.width, int(img.height * args.width / img.width)), Image.LANCZOS)
+        img.save(dest, format="WEBP", quality=70)
+    L_ = ["---", f"game: {game}", f'title: "Levels: {title}"', "type: levels", f"verified_at: {dt.date.today()}", "---", "",
+          f"# Levels: {title}", "",
+          "Every level the agents met, as its board looked at the start (the ad strips cropped). The notes tell "
+          "where a new element or rule appears.", ""]
+    for i in range(0, len(rows), 5):  # a grid of five boards a row
+        chunk = rows[i:i + 5]
+        L_ += ["| " + " | ".join(str(lv["level"]) for lv in chunk) + " |", "|" + "---|" * len(chunk),
+               "| " + " | ".join(f"![{lv['level']}](levels/{lv['key']}.webp)" if (out_dir / "levels" / f"{lv['key']}.webp").exists()
+                          else "no frame" for lv in chunk) + " |", ""]
+    L_ += ["## Tries", "", "| Level | Mechanic | Result | Time | Note |", "|---|---|---|---|---|"]
+    for lv in rows:
+        won = [t for t in lv["tries"] if t.get("result") == "won"]
+        res = ", ".join(f"{sum(t.get('result') == r for t in lv['tries'])} {r}" for r in ("won", "lost", "quit")
+                        if any(t.get("result") == r for t in lv["tries"]))
+        secs = min((t.get("seconds") or 0) for t in won) if won else None
+        note = (lv.get("note") or "").replace("|", "/").replace("\n", " ")[:200]
+        L_.append(f"| {lv['level']} | {lv['mechanic']} | {res} | {f'{secs} s' if secs else '—'} | {note} |")
+    page = out_dir / "levels.md"
+    page.write_text("\n".join(L_) + "\n", encoding="utf-8")
+    out({"game": game, "levels": len(rows), "page": str(page), "thumbnails": str(out_dir / "levels"),
+         "frames_checked_by_solver": checked, "not_confirmed_by_solver": [lv["key"] for lv in rows if lv.get("unchecked")],
+         "hint": "open the new thumbnails; a wrong one: --set KEY=<frame path> or --set KEY=none (kept for next time)"})
+
+
 def cmd_playbook(args) -> None:
     game = args.game or pick_session(args)["game"]
     p = ensure_playbook(game)
@@ -2509,7 +2619,7 @@ def cmd_playbook(args) -> None:
                                    allow_unicode=True, sort_keys=False))
 
 
-def run_solver(game: str, mech: str, image: Path, board: str | None, scale: float) -> dict:
+def run_solver(game: str, mech: str, image: Path, board: str | None, scale: float, state=None) -> dict:
     sp = solver_path(game, mech)
     if not sp:
         fail(f"no solver for {mech}", hint=f"write state/{game}/solvers/{mech}.py with "
@@ -2522,8 +2632,12 @@ def run_solver(game: str, mech: str, image: Path, board: str | None, scale: floa
     import tempfile
 
     with tempfile.TemporaryDirectory() as tmp:
+        sfile = ""
+        if state is not None:
+            sfile = str(Path(tmp) / "state.json")
+            Path(sfile).write_text(json.dumps(state), encoding="utf-8")
         try:
-            r = run([sys.executable, "-c", SOLVER_RUNNER, str(sp), str(image), board or "", str(scale)],
+            r = run([sys.executable, "-c", SOLVER_RUNNER, str(sp), str(image), board or "", str(scale), sfile],
                     capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=tmp,
                     timeout=P()["play"]["solver_timeout_s"])
         except subprocess.TimeoutExpired:
@@ -2534,6 +2648,28 @@ def run_solver(game: str, mech: str, image: Path, board: str | None, scale: floa
         fail(f"solver {mech} failed", stderr=r.stderr[-1500:], stdout=r.stdout[-500:])
     res["solver"] = str(sp)
     return res
+
+
+def solver_state(cur: dict, mech: str):
+    """The solver's memory from the previous round of the same level and mechanic (None at a new level)."""
+    s = cur.get("solver_state") or {}
+    same = s.get("mech") == mech and s.get("level_t0") == (cur.get("level") or {}).get("t0")
+    return s.get("state") if same else None
+
+
+def keep_solver_state(cur: dict, mech: str, res: dict) -> None:
+    """What the solver wants to remember (revealed tiles, the last board, the moves to verify) goes into the
+    session and comes back in the next round of this level: it can recompute only what changed."""
+    if "state" not in res:
+        return
+    st = res.pop("state")
+    size = len(json.dumps(st))
+    if size > SOLVER_STATE_MAX:
+        cur.pop("solver_state", None)
+        res["note"] = f"{res.get('note') or ''} [memory dropped: {size} bytes, over {SOLVER_STATE_MAX}]".strip()
+        return
+    cur["solver_state"] = {"mech": mech, "level_t0": (cur.get("level") or {}).get("t0"), "state": st}
+    save_session(cur)
 
 
 def solver_moves(res: dict, w: int, h: int) -> list[tuple[float, ...]]:
@@ -2573,7 +2709,11 @@ def cmd_solve(args) -> None:
         src = Path(args.image)
         with Image.open(src) as im:
             w, h = im.size
-        res = run_solver(game, mech, src, args.board, args.scale)
+        sf = Path(args.state) if args.state else None
+        res = run_solver(game, mech, src, args.board, args.scale,
+                         state=read_json(sf) if sf and sf.exists() else ({} if sf else None))
+        if sf and "state" in res:  # chain recorded frames like rounds of a level: the next call reads it back
+            write_json(sf, res.pop("state"))
         moves = solver_moves(res, w, h)
         dest = draw_moves(src, moves, STATE() / game / "solvers" / "_check" / f"{src.stem}-{mech}.jpg")
         return out({"solver": res["solver"], "moves": len(moves), "note": res.get("note"),
@@ -2585,7 +2725,8 @@ def cmd_solve(args) -> None:
     info = take_shot(cur, dev)
     frame = lambda: Path(cur["dir"]) / "shots" / f"{cur['last_shot']:05d}.jpg"  # noqa: E731
     if not args.run:
-        res = run_solver(cur["game"], mech, frame(), args.board, cur["scale"])
+        res = run_solver(cur["game"], mech, frame(), args.board, cur["scale"], state=solver_state(cur, mech))
+        res.pop("state", None)  # a check plays nothing: the memory stays as it was
         moves = solver_moves(res, *cur["phys"])
         dest = draw_moves(frame(), moves, frame().with_name(f"{cur['last_shot']:05d}_solve.jpg"))
         log_step(cur, {"type": "solve_check", "mechanic": mech, "n": len(moves), "note": res.get("note"),
@@ -2599,7 +2740,9 @@ def cmd_solve(args) -> None:
     total, stop, notes, n, prev = 0, None, [], 0, None
     for n in range(1, max(1, args.rounds) + 1):
         before = frame()
-        res = run_solver(cur["game"], mech, before, args.board if n == 1 else None, cur["scale"])
+        res = run_solver(cur["game"], mech, before, args.board if n == 1 else None, cur["scale"],
+                         state=solver_state(cur, mech))
+        keep_solver_state(cur, mech, res)
         moves = solver_moves(res, *cur["phys"])
         notes.append(res.get("note"))
         if not moves:
@@ -3761,6 +3904,14 @@ def main() -> None:
     p = sub.add_parser("lab-done")
     p.add_argument("game")
     p.add_argument("--note", required=True, help="what was changed and how it was checked")
+    p = sub.add_parser("level-catalog")
+    p.add_argument("game")
+    p.add_argument("--out", required=True, help="the game's wiki folder: levels.md and levels/ go there")
+    p.add_argument("--width", type=int, default=300, help="thumbnail width in pixels")
+    p.add_argument("--crop-top", type=float, default=0.0, help="fraction of the frame cut at the top")
+    p.add_argument("--crop-bottom", type=float, default=0.09, help="fraction cut at the bottom (the ad banner)")
+    p.add_argument("--force", action="store_true", help="redo existing thumbnails")
+    p.add_argument("--set", action="append", help="KEY=FRAME: the frame for a level, or KEY=none: no frame (remembered)")
     p = sub.add_parser("level-frames")
     p.add_argument("game")
     p.add_argument("mechanic")
@@ -3776,6 +3927,8 @@ def main() -> None:
     p.add_argument("--image", help="check the solver on a saved frame, without the phone")
     p.add_argument("--game", help="with --image outside a session")
     p.add_argument("--scale", type=float, default=1.0, help="with --image: frame_scale passed to the solver")
+    p.add_argument("--state", help="with --image: a JSON file with the solver's memory, read and written back "
+                                   "(chain recorded frames like the rounds of a level)")
     p.add_argument("--gap", type=float)
     p.add_argument("--settle", type=float, default=1.0)
     p.add_argument("--hi", action="store_true")
@@ -3941,7 +4094,7 @@ def main() -> None:
         "ask": cmd_ask, "bench": cmd_bench, "plan": cmd_plan, "page-skeleton": cmd_page_skeleton,
         "check-pages": cmd_check_pages, "mark-tag": cmd_mark_tag, "wiki-mirror": cmd_wiki_mirror,
         "lab-check": cmd_lab_check, "lab-done": cmd_lab_done, "level-frames": cmd_level_frames,
-        "page-footnotes": cmd_page_footnotes, "redact-image": cmd_redact_image,
+        "page-footnotes": cmd_page_footnotes, "redact-image": cmd_redact_image, "level-catalog": cmd_level_catalog,
         "tap": lambda a: action(a, "tap", lambda d, k: (d.double_tap if a.double else d.tap)(s(a.x, k), s(a.y, k)),
                                 {"x": a.x, "y": a.y, **({"double": True} if a.double else {})}, ((a.x, a.y),)),
         "swipe": lambda a: action(a, "swipe", lambda d, k: d.swipe(s(a.x1, k), s(a.y1, k), s(a.x2, k), s(a.y2, k)),

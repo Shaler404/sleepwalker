@@ -360,6 +360,12 @@ consolidates it.
 
   Moves are in pixels of the full-resolution image: `[x, y]` is a tap, `[x, y, 2]` a double tap,
   `[x1, y1, x2, y2]` a swipe.
+  A solver that declares `state=None` in `solve(...)` gets a memory between the rounds of a level: what it
+  returns as `"state"` (JSON, up to 200 KB) comes back in the next round of the same level and
+  mechanic, and is `None` at a new level. It keeps what it has seen (face-down tiles turned over, the
+  last board) so it recomputes only what changed and verifies that its last moves did what it expected
+  (the right tiles gone) before the next ones. `--image FRAME --state FILE` chains recorded frames the same
+  way without the phone.
   A solver models the rules exactly (including how a level is lost), searches ahead instead of taking
   the first legal move, prefers moves that keep options open, and stops at the first move that depends
   on something hidden. It checks that what it read is plausible (board size, number of regions or
@@ -371,6 +377,9 @@ consolidates it.
   computes: it may import numpy, OpenCV, PIL and the standard library for math, but code that opens
   files, touches the network, starts processes or runs dynamic code is refused by `sw.py solve` and
   by `check-zones`, and the critic reads every solver. It runs on every machine that merges it.
+- **Level catalog** — `wiki/<game>/levels.md` and `levels/<level>.webp`: for games whose design lives in
+  the levels, the board of every level the agents met at its start, with the tries and the player's
+  note (`sw.py level-catalog`, refreshed by the dream).
 - **Models by role** (`models` in `project.yaml`, overridable in `local.yaml`): `study` learns new or
   broken mechanics (the strong model), `play` plays mastered mechanics and verifies cases (the fast
   model), `consult` answers `sw.py ask`. `claim` picks the role per session; a `play` session that

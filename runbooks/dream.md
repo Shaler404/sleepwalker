@@ -95,6 +95,10 @@ in `project.yaml`), no more than 5 at a time
 - **Goals and discovery** are set after every session by the post-session review
   (`runbooks/review.md`, notes in `state/<game>/reviews.md`); you do not reopen them. Read the review
   notes for blockers and patterns.
+- **Levels.** For a game whose design lives in its levels (puzzles, boards), refresh the catalog:
+  `python harness/sw.py level-catalog <game> --out <worktree>/wiki/<game>` (`levels.md` and `levels/`, one
+  thumbnail per level the agents met), link it from the game's `index.md`, and open the new thumbnails: an
+  ad that is not cut off by the bottom crop is blacked out with `redact-image`.
 - **Pages** are written by the documenter after each session in `state/<game>/pages/`. Publish them:
   copy `state/<game>/pages/features/*.md` (not `*.skeleton.md`) and `state/<game>/pages/img/` into
   `<worktree>/wiki/<game>/features/` and `img/`, then `python harness/sw.py check-pages <worktree>/wiki`.
