@@ -51,6 +51,7 @@ models:
   consult: opus              # one-shot advice: sw.py ask
   reviewer: opus             # the post-session review: goals and discovery (runbooks/review.md)
   documenter: opus           # the feature pages after each session (runbooks/document.md)
+  lab: opus                  # makes slow or unlearned mechanics fast between sessions (runbooks/lab.md)
   analyst: opus              # the dream's session analysts
   critic: opus               # the dream's critic
 

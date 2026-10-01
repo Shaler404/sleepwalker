@@ -31,6 +31,9 @@ Levels: think first, then play fast
   solve MECHANIC [--board FILE] [--run [--rounds N]] | solve MECHANIC --image FRAME
                                          the mechanic's solver: check its moves, play them, or test it on a frame
   ask "question"                         one-shot advice from a stronger model on the last screenshot
+The lab: making gameplay fast without the phone (runbooks/lab.md)
+  lab-check GAME [--claim] | lab-done GAME --note "..."   which mechanics need work; one lab per game at a time
+  level-frames GAME MECHANIC [--limit N]  frames of past levels of a mechanic (the board at the start first)
   note TYPE "fact" | clip begin "title" | clip end "description"
   mark "title" "description" [--feature F --as entry|screen|tab:NAME|popup|result|other [--at X,Y]]
                                          a frame for the wiki; --as says where it goes on the feature's page
@@ -2374,7 +2377,7 @@ def cmd_level(args) -> None:
 
 
 def cmd_mechanic(args) -> None:
-    cur = pick_session(args)
+    cur = op_cur(args)
     op = {"op": "mechanic", "id": slug(args.id)}
     for k in ("name", "status", "method", "note"):
         if getattr(args, k):
@@ -2386,6 +2389,75 @@ def cmd_mechanic(args) -> None:
         op["solver"] = f"solvers/{cur['game']}/{op['id']}.py"
     log_op(cur, op)
     out({"ok": True, "mechanic": mechanic_brief(find_mechanic(research_view(cur["game"]), op["id"]))})
+
+
+# --- the lab: gameplay is made fast between sessions, on recorded frames, without the phone -------------
+
+def lab_lock(game: str) -> Path:
+    return STATE() / game / "lab.lock.json"
+
+
+def lab_needed(view: dict) -> list[dict]:
+    """Mechanics the lab should work on: still being learned, broken, or mastered but over the level
+    budget in its recent levels."""
+    budget = P()["play"]["level_budget_min"] * 60
+    res = []
+    for m in view["mechanics"]:
+        won = [r["seconds"] for r in m.get("recent", []) if r.get("result") == "won" and r.get("seconds")]
+        slow = bool(won) and median(won) > budget
+        if m.get("status") in ("studying", "broken") or slow:
+            res.append({**mechanic_brief(m), "why": m.get("status") if m.get("status") != "mastered" else
+                        f"levels take {round(median(won) / 60, 1)} min, over {budget // 60}"})
+    return res
+
+
+def cmd_lab_check(args) -> None:
+    game = find_game(args.game)["id"]
+    need = lab_needed(research_view(game))
+    lock = read_json(lab_lock(game))
+    running = bool(lock) and time.time() - lock.get("t", 0) < 3 * 3600
+    res = {"game": game, "needed": need, "running": running}
+    if args.claim and need and not running:
+        write_json(lab_lock(game), {"t": time.time(), "mechanics": [m["id"] for m in need]})
+        res["claimed"] = True
+    out(res)
+
+
+def cmd_lab_done(args) -> None:
+    game = find_game(args.game)["id"]
+    remove(lab_lock(game))
+    p = STATE() / game / "lab-log.md"
+    with open(p, "a", encoding="utf-8") as f:
+        f.write(f"## {now_iso()}\n{args.note}\n\n")
+    out({"ok": True, "log": str(p)})
+
+
+def level_spans(game: str, mech: str | None = None) -> list[dict]:
+    """Every recorded level: its session, mechanic, result and the frames taken while it was played."""
+    spans = []
+    for d in sorted((RAW() / game).glob("*/")):
+        cur = None
+        for x in read_jsonl(d / "steps.jsonl"):
+            if x.get("type") == "level_start":
+                cur = {"session": d.name, "level": x.get("name"), "mechanic": x.get("mechanic"), "frames": []}
+            elif cur is not None and x.get("shot") and x.get("type") != "mark":
+                f = d / "shots" / f"{int(x['shot']):05d}.jpg"
+                if f.exists() and f.as_posix() not in cur["frames"]:
+                    cur["frames"].append(f.as_posix())
+            if cur is not None and x.get("type") == "research" and x.get("op") == "level":
+                cur.update(result=x.get("result"), seconds=x.get("seconds"))
+                spans.append(cur)
+                cur = None
+    return [s for s in spans if mech is None or s["mechanic"] == mech]
+
+
+def cmd_level_frames(args) -> None:
+    game = find_game(args.game)["id"]
+    spans = level_spans(game, slug(args.mechanic))[-args.limit:]
+    out({"game": game, "mechanic": slug(args.mechanic), "levels": len(spans),
+         "start_frames": [s["frames"][0] for s in spans if s["frames"]],
+         "spans": [{k: s.get(k) for k in ("session", "level", "result", "seconds")} | {"frames": len(s["frames"])}
+                   for s in spans]})
 
 
 def cmd_playbook(args) -> None:
@@ -3524,6 +3596,17 @@ def main() -> None:
     p.add_argument("--status", choices=MECH_STATUSES)
     p.add_argument("--method", choices=MECH_METHODS)
     p.add_argument("--note")
+    p.add_argument("--game", help="outside a session (the lab)")
+    p = sub.add_parser("lab-check")
+    p.add_argument("game")
+    p.add_argument("--claim", action="store_true", help="take the lab for this game (one at a time)")
+    p = sub.add_parser("lab-done")
+    p.add_argument("game")
+    p.add_argument("--note", required=True, help="what was changed and how it was checked")
+    p = sub.add_parser("level-frames")
+    p.add_argument("game")
+    p.add_argument("mechanic")
+    p.add_argument("--limit", type=int, default=30)
     p = sub.add_parser("playbook")
     p.add_argument("--game", help="outside a session")
     p = sub.add_parser("solve")
@@ -3693,6 +3776,7 @@ def main() -> None:
         "taps": cmd_taps, "level": cmd_level, "mechanic": cmd_mechanic, "playbook": cmd_playbook, "solve": cmd_solve,
         "ask": cmd_ask, "bench": cmd_bench, "plan": cmd_plan, "page-skeleton": cmd_page_skeleton,
         "check-pages": cmd_check_pages, "mark-tag": cmd_mark_tag, "wiki-mirror": cmd_wiki_mirror,
+        "lab-check": cmd_lab_check, "lab-done": cmd_lab_done, "level-frames": cmd_level_frames,
         "tap": lambda a: action(a, "tap", lambda d, k: (d.double_tap if a.double else d.tap)(s(a.x, k), s(a.y, k)),
                                 {"x": a.x, "y": a.y, **({"double": True} if a.double else {})}, ((a.x, a.y),)),
         "swipe": lambda a: action(a, "swipe", lambda d, k: d.swipe(s(a.x1, k), s(a.y1, k), s(a.x2, k), s(a.y2, k)),

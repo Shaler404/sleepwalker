@@ -296,6 +296,7 @@ dream promotes and demotes skills based on them.
 |---|---|---|---|
 | Player (`sleepwalker-player`) | global knowledge, its own `state/<game>/` | `state/<game>/progress.md`, `inbox.md`, `playbook.md`, `solvers/`; the task and feature journal, the game's state on the phone and `raw/` — through `sw.py` | one game — one device (lock in `sw.py`); commits nothing |
 | The "play" orchestrator | `sw.py claim` responses | nothing (`sw.py claim` writes the planner's tasks to the journal) | does not commit or push |
+| Lab (`sleepwalker-lab`) | recorded level frames, the playbook | `state/<game>/solvers/`, `playbook.md`, `lab-log.md`; the mechanic's method | after a session whose mechanic is slow or unlearned; never touches the phone |
 | Documenter (`sleepwalker-documenter`) | the finished session's `raw/`, `state/<game>/` | `state/<game>/pages/`, `docs-log.md` | runs right after each session; `check-pages` |
 | Reviewer (`sleepwalker-reviewer`) | the finished session's `raw/`, `state/<game>/` | goals, discovery and case closures through `sw.py … --game`; `state/<game>/reviews.md` | runs right after each session, never touches the phone |
 | Analyst (`sleepwalker-analyst`) | its machine's `raw/` and `state/`, the worktree | nothing | tools: Read, Grep, Glob |
