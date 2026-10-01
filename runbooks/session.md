@@ -256,5 +256,6 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    - Skill: steps 12–15 — "open the shop from the level map"
    - Agent error: what went wrong (steps …)
    ```
-   Step numbers are the `step` field in `raw/<game>/<session>/steps.jsonl`.
+   Step numbers are the `step` value of the `sw.py` replies (the same as in
+   `raw/<game>/<session>/steps.jsonl`), not `shot_n`, which numbers screenshots.
 4. The last reply is one line: game, status, how many tasks were closed and set.
