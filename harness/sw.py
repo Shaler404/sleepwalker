@@ -552,11 +552,18 @@ def take_shot(cur: dict, dev, hi: bool = False) -> dict:
     h = screen_hash(img)
     same = is_same_screen(cur.get("last_hash"), h)
     cur["same_streak"] = cur["same_streak"] + 1 if same else 0
+    frames = cur.get("frames") or {}
+    frames[str(k)] = {"size": [small.width, small.height], "scale": scale, "hi": hi}
+    cur["frames"] = dict(list(frames.items())[-30:])
+    cur["switched"] = cur.get("prev_hi") is not None and cur.get("prev_hi") != hi
+    cur["prev_shot"], cur["prev_hi"] = cur.get("last_shot"), hi
     cur.update(last_hash=h, scale=scale, last_shot=k, last_app=app, model_size=[small.width, small.height],
                phys=[img.width, img.height])
     elapsed = (time.time() - cur["t0"]) / 60
     info = {"shot": str(small_path), "shot_n": k, "size": [small.width, small.height],
-            "coords": f"tap in pixels of this {small.width}x{small.height} frame", "app": app,
+            "coords": f"tap in pixels of this {small.width}x{small.height} frame"
+                      + (" (the frame kind just changed: the next tap needs --frame N)" if cur["switched"] else ""),
+            "app": app,
             "same_as_prev": same, "same_streak": cur["same_streak"],
             "time": f"{elapsed:.1f} / {cur['budget_min']} min", "steps": f"{cur['step']} / {cur['max_steps']}"}
     warn = []
@@ -611,15 +618,37 @@ def models() -> dict:
     return {**P()["models"], **(L().get("models") or {})}
 
 
+def coord_frame(cur: dict, args, has_points: bool) -> tuple[float, int, int]:
+    """Scale and size of the frame the coordinates come from. Right after the kind of frame changed
+    (a --hi frame after normal ones, or back) the agent must say which frame it read them from: in
+    Cryptogram, 730-px coordinates applied to a 918-px --hi frame missed the keyboard and opened a
+    purchase (2026-10-01)."""
+    fr = getattr(args, "frame", None)
+    if fr is not None:
+        f = (cur.get("frames") or {}).get(str(fr))
+        if not f:
+            fail(f"frame {fr} is not among the recent frames", recent=list((cur.get("frames") or {}))[-5:])
+        return f["scale"], *f["size"]
+    if has_points and cur.get("switched"):
+        frames = cur.get("frames") or {}
+        opts = [f"--frame {n} ({frames[str(n)]['size'][0]}x{frames[str(n)]['size'][1]}"
+                f"{', --hi' if frames[str(n)].get('hi') else ''})"
+                for n in (cur.get("last_shot"), cur.get("prev_shot")) if n and str(n) in frames]
+        fail("the kind of frame just changed (normal / --hi): say which frame your coordinates come from: "
+             + " or ".join(opts))
+    w, h = cur.get("model_size") or (10 ** 6, 10 ** 6)
+    return cur["scale"], w, h
+
+
 def action(args, name: str, fn, rec: dict, points: tuple = ()) -> None:
     cur = pick_session(args)
-    w, h = cur.get("model_size") or (10 ** 6, 10 ** 6)
+    scale, w, h = coord_frame(cur, args, bool(points))
     if any(not (0 <= x <= w and 0 <= y <= h) for x, y in points):
-        fail(f"coordinates outside the {w}x{h} screenshot: use pixels of the last screenshot")
+        fail(f"coordinates outside the {w}x{h} frame: use pixels of the frame you read them from")
     guard(cur)
     gap = gap_s(cur)
     dev = open_device(cur)
-    fn(dev, cur["scale"])
+    fn(dev, scale)
     cur["step"] += 1
     cur["moves"] = cur.get("moves", 0) + 1
     cur["last_action"] = time.time()
@@ -700,14 +729,14 @@ def cmd_taps(args) -> None:
     if any(risky[:-1]):
         fail("a risky move (!X,Y) ends a batch: play the safe moves and the risky one last, look at its result, "
              "then plan the next moves from what it changed")
-    w, h = cur.get("model_size") or (10 ** 6, 10 ** 6)
+    scale, w, h = coord_frame(cur, args, True)
     bad = [m for m in moves if not points_inside(m, w, h)]
     if bad:
-        fail(f"coordinates outside the {w}x{h} screenshot: use pixels of the last screenshot", moves=bad[:5])
+        fail(f"coordinates outside the {w}x{h} frame: use pixels of the frame you read them from", moves=bad[:5])
     guard(cur)
     gap = gap_s(cur)
     dev = open_device(cur)
-    done, stopped = run_moves(cur, dev, moves, cur["scale"],
+    done, stopped = run_moves(cur, dev, moves, scale,
                               args.gap if args.gap is not None else P()["play"]["batch_gap_s"])
     cur["step"] += 1
     cur["moves"] = cur.get("moves", 0) + done
@@ -2777,6 +2806,9 @@ def main() -> None:
                                  '! marks the risky move that ends the batch')
     p.add_argument("--gap", type=float, help="seconds between moves (default from project.yaml)")
     sub.choices["tap"].add_argument("--double", action="store_true", help="a double tap")
+    for name in ("tap", "swipe", "taps"):
+        sub.choices[name].add_argument("--frame", type=int,
+                                       help="the screenshot number (shot_n) your coordinates come from")
     for name in ("tap", "swipe", "key", "text", "taps"):
         sp = sub.choices[name]
         sp.add_argument("--why", required=True, help="what you expect to see after the action")
