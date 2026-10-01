@@ -219,10 +219,16 @@ def games() -> list[dict]:
 
 
 def find_game(game: str) -> dict:
+    """A game this machine plays; failing that, any game in games.yaml, also a disabled one: the lab, the
+    review and the documenter work on recorded sessions of a game that is off (2026-10-01: the lab could not
+    record Cryptogram's new solver because the game was off). `claim` hands out only games()."""
     for e in games():
         if e["id"] == game:
             return e
-    fail(f"game {game} is not in games.yaml (or it is disabled, or not in local.yaml games)")
+    for i, g in enumerate(read_yaml(ROOT / "games.yaml").get("games") or []):
+        if g.get("id") == game:
+            return {"enabled": True, "priority": i, "focus": [], **g}
+    fail(f"game {game} is not in games.yaml")
 
 
 # --- output and helpers -------------------------------------------------------------
@@ -2013,6 +2019,8 @@ def cmd_wiki_mirror(args) -> None:
 
 def cmd_start(args) -> None:
     e = find_game(args.game)
+    if not any(g["id"] == e["id"] for g in games()):
+        fail(f"{e['id']} is off on this machine (enabled: false in games.yaml, or not in local.yaml games)")
     s, now = P()["session"], time.time()
     with machine_lock():
         devs = devices()
@@ -2706,7 +2714,7 @@ def cmd_solve(args) -> None:
     mech = slug(args.mechanic)
     if args.image:
         game = args.game or pick_session(args)["game"]
-        src = Path(args.image)
+        src = Path(args.image).resolve()  # the solver runs in a temporary folder: a relative path would not resolve
         with Image.open(src) as im:
             w, h = im.size
         sf = Path(args.state) if args.state else None
