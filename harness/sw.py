@@ -60,6 +60,7 @@ Knowledge
   wiki-img SRC GAME_DIR SLUG | wiki-clip SRC GAME_DIR SLUG
   page-skeleton GAME FEATURE --out GAME_DIR   a feature page laid out from its marked frames (the documenter)
   page-footnotes FILE [--game GAME]      inline [s:SESSION#STEP] sources of a page -> footnotes with the video links
+  redact-image IMG --box X1,Y1,X2,Y2 ... black out personal data on a page's image (pixels, or fractions <= 1)
   check-pages DIR                        every feature page: entry point and screen frames, a frame per tab
   mark-tag GAME SESSION SHOT --feature F --as ROLE --desc "..." [--at X,Y]   tag an old frame for a page
   check-zones WORKTREE [--process]       edits only in allowed zones, media within limits
@@ -3219,7 +3220,16 @@ def cmd_mark_tag(args) -> None:
         fail(f"--as is one of {', '.join(MARK_ROLES)} or tab:<name>")
     small = d / "shots" / f"{int(args.shot):05d}_m.jpg"
     size = list(Image.open(small).size) if small.exists() else None
-    step = next((x.get("step") for x in read_jsonl(d / "steps.jsonl") if x.get("shot") == int(args.shot)), None)
+    step, app, last_app = None, None, None
+    for x in read_jsonl(d / "steps.jsonl"):  # the app on screen when the frame was taken
+        last_app = x.get("app") or last_app
+        if x.get("shot") == int(args.shot):
+            step, app = x.get("step"), x.get("app") or last_app
+            break
+    if app and app != game:
+        # another app's frame shows the status bar, notifications, system dialogs or a store page
+        # (2026-10-01: a rebuilt page used the Android app chooser and Google Play with the status bar)
+        fail(f"frame {args.shot} shows {app}, not the game: it does not go into the wiki (personal data)")
     rec = {"session": args.session, "step": step, "shot": int(args.shot), "file": shot.as_posix(),
            "feature": slug(args.feature), "role": role, "desc": args.desc, "model_size": size, "t": time.time()}
     if args.at:
@@ -3347,6 +3357,38 @@ def cmd_page_footnotes(args) -> None:
     s, n = page_footnotes(s, game)
     p.write_text(s, encoding="utf-8")
     out({"page": str(p), "footnotes_added": n, "left_inline": len(INLINE_SOURCE.findall(s))})
+
+
+def cmd_redact_image(args) -> None:
+    """Black out boxes on a page's exported image: a user id, the status bar, a real player's name, a localized ad
+    that tells the phone's country, a copyrighted quote. Boxes are pixels of this image, or fractions of its size
+    when every number is <= 1. The image keeps its name: the page does not change."""
+    from PIL import ImageDraw
+
+    p = Path(args.image)
+    if not p.exists():
+        fail(f"no image {p}")
+    img = Image.open(p).convert("RGB")
+    w, h = img.size
+    boxes = []
+    for b in args.box:
+        try:
+            v = [float(x) for x in b.split(",")]
+        except ValueError:
+            v = []
+        if len(v) != 4:
+            fail(f"--box is X1,Y1,X2,Y2: {b}")
+        if all(x <= 1 for x in v):
+            v = [v[0] * w, v[1] * h, v[2] * w, v[3] * h]
+        x1, y1, x2, y2 = min(v[0], v[2]), min(v[1], v[3]), max(v[0], v[2]), max(v[1], v[3])
+        if x1 < 0 or y1 < 0 or x2 > w + 1 or y2 > h + 1 or x2 - x1 < 1 or y2 - y1 < 1:
+            fail(f"box {b} is outside the {w}x{h} image", size=[w, h])
+        boxes.append((x1, y1, x2, y2))
+    draw = ImageDraw.Draw(img)
+    for bx in boxes:
+        draw.rectangle(bx, fill=(0, 0, 0))
+    save_for_wiki(img, str(p))
+    out({"image": str(p), "size": [w, h], "boxes": len(boxes)})
 
 
 def page_problems(p: Path) -> list[str]:
@@ -3834,6 +3876,9 @@ def main() -> None:
     p.add_argument("game")
     p.add_argument("feature")
     p.add_argument("--out", required=True, help="the game's folder: features/<id>.md and img/ go there")
+    p = sub.add_parser("redact-image")
+    p.add_argument("image")
+    p.add_argument("--box", action="append", required=True, help="X1,Y1,X2,Y2 in pixels of the image, or fractions")
     p = sub.add_parser("page-footnotes")
     p.add_argument("file")
     p.add_argument("--game", help="default: the page's front matter")
@@ -3878,7 +3923,7 @@ def main() -> None:
         "ask": cmd_ask, "bench": cmd_bench, "plan": cmd_plan, "page-skeleton": cmd_page_skeleton,
         "check-pages": cmd_check_pages, "mark-tag": cmd_mark_tag, "wiki-mirror": cmd_wiki_mirror,
         "lab-check": cmd_lab_check, "lab-done": cmd_lab_done, "level-frames": cmd_level_frames,
-        "page-footnotes": cmd_page_footnotes,
+        "page-footnotes": cmd_page_footnotes, "redact-image": cmd_redact_image,
         "tap": lambda a: action(a, "tap", lambda d, k: (d.double_tap if a.double else d.tap)(s(a.x, k), s(a.y, k)),
                                 {"x": a.x, "y": a.y, **({"double": True} if a.double else {})}, ((a.x, a.y),)),
         "swipe": lambda a: action(a, "swipe", lambda d, k: d.swipe(s(a.x1, k), s(a.y1, k), s(a.x2, k), s(a.y2, k)),
