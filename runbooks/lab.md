@@ -14,7 +14,11 @@ Run every command from the root: `cd <root> && python harness/sw.py …`.
 - `python harness/sw.py playbook --game <game>` — level times per mechanic;
 - `python harness/sw.py level-frames <game> <mechanic>` — past levels with their frames; `start_frames`
   are the boards at the start of each level (look at `…_m.jpg` next to each, 730 px wide);
-- the level notes (`level end --note`) in `raw/<game>/<session>/steps.jsonl`.
+- the level notes (`level end --note`) in `raw/<game>/<session>/steps.jsonl`. A note that says the
+  board was read by hand, the moves were placed by hand or the solver returned no moves means the
+  solver is bypassed: the level is fast only because the model did the solver's work. That is lab
+  work even when the level times are within the budget (Meowdoku: four sessions of hand-placed cats
+  on a `mastered` solver mechanic; MeowTrail: a board typed by hand every level, three misreads).
 
 ## Decide the method
 
