@@ -28,6 +28,7 @@
 games:
   - id: com.maroieqrwlk.unpin
     title: Pull the Pin
+    models: {play: "opus:low"}   # docs/bench/2026-10-01-play.md: 7 won, 1 lost; sonnet lost half its levels
 
   - id: com.block.juggle
     title: Block Blast!
@@ -43,9 +44,15 @@ games:
 
   - id: com.oakever.meowdoku
     title: "Meowdoku: Brain Puzzle Games"
+    models: {play: "sonnet:low"}  # docs/bench/2026-10-01-play.md: 48.6 levels won an hour, $0.19 a level
 
   - id: com.oakever.akari
     title: MeowTrail
+    models: {play: "sonnet:low"}  # docs/bench/2026-10-01-play.md: 36.4 levels won an hour, $0.18 a level
 
   - id: com.crypt.gram.puzz
     title: "Cryptogram: Word Logic Puzzles"
+    # Off: every session that reaches the level 16 board dies with "Output blocked by content filtering
+    # policy" (4 sessions, 2026-10-01): the model recognizes the encoded text while reasoning. Pass level 16
+    # by hand on the phone, then turn it back on.
+    enabled: false
