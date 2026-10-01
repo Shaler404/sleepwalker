@@ -50,7 +50,7 @@ research:
 # file changes (or run `sw.py install-agents`).
 models:
   study: opus                # learns new or broken gameplay: rules, method, solvers
-  play: sonnet               # plays mastered gameplay and verifies cases; hands new gameplay back to study
+  play: sonnet:low           # plays mastered gameplay and verifies cases; hands new gameplay back to study (docs/bench/2026-10-01-play.md)
   consult: opus              # one-shot advice: sw.py ask
   reviewer: opus             # the post-session review: goals and discovery (runbooks/review.md)
   documenter: opus:medium    # the feature pages after each session (runbooks/document.md); docs/bench/2026-10-01-writers.md
