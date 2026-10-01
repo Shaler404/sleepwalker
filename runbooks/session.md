@@ -203,6 +203,9 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    - `swipe X1 Y1 X2 Y2 --why …`, `key back --why …`, `text "…" --why …`, `wait SECONDS`.
    - `taps "X,Y X,Y …" --why …` — several moves you already know, in one call.
    - `launch` — bring the game back if something else opened (an ad took you to a browser or store).
+   - `restart --why …` — force-stop the game and start it again. Use it when an ad (a playable ad
+     too) or an overlay has not closed within a minute of trying: back, the close cross in the
+     corners, waiting for its timer. Do not play the ad. The level in progress may be lost: note it.
    - `skill run <name> --why …` — if a skill leads where you need. If it fails, do it by hand.
    - Follow the `warnings` field in the reply. Three steps without a screen change — change strategy.
 2. **Feature map:**
