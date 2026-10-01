@@ -61,13 +61,46 @@ def channel(cfg: dict) -> dict | None:
             "url": f"https://www.youtube.com/channel/{items[0]['id']}"} if items else None
 
 
+def clean(text: str, limit: int) -> str:
+    """YouTube rejects < and > in titles and descriptions ("invalid video description"): session summaries
+    write "Out of space -> Revive"."""
+    return text.replace("->", "→").replace("<-", "←").replace("<", "‹").replace(">", "›")[:limit]
+
+
+def upload_pending(cfg: dict, max_n: int = 99) -> list[dict]:
+    """Upload the originals that did not go up at the end of their session. Stops at the daily quota."""
+    from sw import RAW
+
+    res = []
+    for meta_path in sorted(RAW().glob("*/*/session.json")):
+        if len([r for r in res if r.get("youtube")]) >= max_n:
+            break
+        meta, original = json.loads(meta_path.read_text(encoding="utf-8")), meta_path.with_name("original.mkv")
+        if meta.get("youtube") or not original.exists():
+            continue
+        try:
+            meta["youtube"] = upload(original, f"{meta['game']} · {meta['id'][:15]}",
+                                     f"sleepwalker session {meta['id']}\n{meta.get('summary', '')}", cfg)
+        except Exception as ex:
+            res.append({"session": meta["id"], "error": str(ex)[:200]})
+            if "exceeded" in str(ex) or "uploadLimitExceeded" in str(ex) or "quota" in str(ex).lower():
+                break  # the daily limit: try again on a later run
+            continue
+        meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+        original.unlink()
+        for seg in meta_path.parent.glob("seg_*.mp4"):
+            seg.unlink()
+        res.append({"session": meta["id"], "youtube": meta["youtube"]})
+    return res
+
+
 def upload(path: Path, title: str, description: str, cfg: dict) -> str:
     from googleapiclient.discovery import build
     from googleapiclient.http import MediaFileUpload
 
     yt = build("youtube", "v3", credentials=credentials(cfg))
     body = {
-        "snippet": {"title": title[:100], "description": description[:4900], "categoryId": "20"},  # 20 = Gaming
+        "snippet": {"title": clean(title, 100), "description": clean(description, 4900), "categoryId": "20"},  # Gaming
         "status": {"privacyStatus": cfg.get("privacy", "private"), "selfDeclaredMadeForKids": False},
     }
     req = yt.videos().insert(part="snippet,status", body=body,
@@ -89,16 +122,9 @@ def main() -> None:
             credentials(cfg, interactive=True)
         ch = channel(cfg)
         print(f"Videos go to the channel: {ch['title']} — {ch['url']}" if ch else "This account has no YouTube channel")
-    elif sys.argv[1:] == ["upload-pending"]:
-        for meta_path in RAW().glob("*/*/session.json"):
-            meta, original = json.loads(meta_path.read_text(encoding="utf-8")), meta_path.with_name("original.mkv")
-            if meta.get("youtube") or not original.exists():
-                continue
-            meta["youtube"] = upload(original, f"{meta['game']} · {meta['id'][:15]}",
-                                     f"sleepwalker session {meta['id']}\n{meta.get('summary', '')}", cfg)
-            meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
-            original.unlink()
-            print(meta["id"], "->", meta["youtube"])
+    elif sys.argv[1:2] == ["upload-pending"]:
+        for r in upload_pending(cfg, int(sys.argv[2]) if len(sys.argv) > 2 else 99):
+            print(r)
     else:
         print(__doc__)
 

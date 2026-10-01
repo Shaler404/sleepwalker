@@ -374,6 +374,17 @@ def focus(serial: str) -> str | None:
     return m.group(1) if m else None
 
 
+def focus_window(serial: str) -> str:
+    """package/activity of the focused window."""
+    m = re.search(r"mCurrentFocus=Window\{\S+ \S+ (\S+)\}", adb(serial, "shell", "dumpsys window | grep mCurrentFocus"))
+    return m.group(1) if m else ""
+
+
+# Google Play's purchase flow (the store's billing activities): a tap on a price or "remove ads" button in two
+# games opened it (2026-10-01). Nothing was bought, but one more tap could pay: sw.py closes it at once.
+PAYMENT_WINDOW = re.compile(r"billing|acquire|purchase|payment|\biab", re.I)
+
+
 def locked(serial: str) -> bool:
     return "isKeyguardShowing=true" in adb(serial, "shell", "dumpsys window | grep isKeyguardShowing")
 
@@ -536,6 +547,14 @@ def guard(cur: dict) -> None:
 def take_shot(cur: dict, dev, hi: bool = False) -> dict:
     img = dev.screenshot()
     app = app_on_screen(cur)
+    closed = None
+    if cur["platform"] == "android" and app == "com.android.vending":
+        win = focus_window(cur["device"])
+        if PAYMENT_WINDOW.search(win):
+            adb(cur["device"], "shell", "input keyevent KEYCODE_BACK")
+            time.sleep(1.2)
+            img, app, closed = dev.screenshot(), app_on_screen(cur), win
+            log_step(cur, {"type": "payment_sheet_closed", "window": win})
     cur["shots"] += 1
     k = cur["shots"]
     shots = Path(cur["dir"]) / "shots"
@@ -565,8 +584,13 @@ def take_shot(cur: dict, dev, hi: bool = False) -> dict:
                       + (" (the frame kind just changed: the next tap needs --frame N)" if cur["switched"] else ""),
             "app": app,
             "same_as_prev": same, "same_streak": cur["same_streak"],
-            "time": f"{elapsed:.1f} / {cur['budget_min']} min", "steps": f"{cur['step']} / {cur['max_steps']}"}
+            "time": f"{elapsed:.1f} / {cur['budget_min']} min", "step": cur["step"],
+            "steps": f"{cur['step']} / {cur['max_steps']}"}
     warn = []
+    if closed:
+        info["payment_sheet_closed"] = closed
+        warn.append("a Google Play payment sheet opened and sw.py closed it: never tap prices, remove-ads, buy or "
+                    "purchase buttons; document offers from the screen without tapping their price")
     if app == "com.google.android.permissioncontroller":
         warn.append("system permission prompt: tap \"Don't allow\" (or the same button in the phone's language)")
     elif app and app != cur["game"] and app not in SYSTEM_OVERLAYS:
@@ -2587,7 +2611,8 @@ def render_game(gd: Path, title: str) -> dict:
         f = feat.get(fid)
         return (f"[{f['name']}]({f['page']})" if f and f.get("page") else (f["name"] if f else fid)) if fid else ""
 
-    now_rows = [t for t in ot if iso_to_t(t.get("not_before")) <= now and t.get("requires", "any") != "fresh"]
+    now_rows = [t for t in ot if iso_to_t(t.get("not_before")) <= now and t.get("requires", "any") != "fresh"
+                and not needs_update(view, t)]
     wait_rows = sorted([t for t in ot if iso_to_t(t.get("not_before")) > now], key=lambda t: t["not_before"])
     human_rows = [t for t in ot if (t.get("requires") == "fresh" or needs_update(view, t)) and t not in wait_rows]
     provide = lambda t: update_hint(view) if needs_update(view, t) else FRESH_HINT  # noqa: E731
@@ -2731,6 +2756,14 @@ def cmd_wiki_clip(args) -> None:
 
 
 def cmd_gc(args) -> None:
+    uploaded = []
+    if L()["youtube"]["enabled"]:
+        try:  # originals that did not go up at the end of their session; a few per run, until the quota ends
+            import youtube as yt
+
+            uploaded = yt.upload_pending(L()["youtube"], max_n=2)
+        except Exception as ex:
+            uploaded = [{"error": str(ex)[:300]}]
     now, freed, done = time.time(), 0, dreamed_ids()
     keep = L()["raw"]
     for d in RAW().glob("*/*/"):
@@ -2748,7 +2781,7 @@ def cmd_gc(args) -> None:
             if v.exists():
                 freed += sum(f.stat().st_size for f in v.rglob("*")) if v.is_dir() else v.stat().st_size
                 shutil.rmtree(v) if v.is_dir() else v.unlink()
-    out({"freed_mb": round(freed / 1048576, 1)})
+    out({"freed_mb": round(freed / 1048576, 1), "youtube": uploaded})
 
 
 def cmd_install_agents(args) -> None:
