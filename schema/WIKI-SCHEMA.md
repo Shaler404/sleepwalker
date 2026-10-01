@@ -245,8 +245,11 @@ dream promotes and demotes skills based on them.
 
 ## 7. How knowledge stays current
 
-- **Game version.** The planner checks the Google Play version. A new version sets an update task
-  and moves features to `recheck`; pages get the mark "recheck on vX".
+- **Game version.** The analysis runs on the version installed on the phone; every feature keeps
+  `version_seen` and every verified case its `version`. A newer version on Google Play adds a task
+  "Recheck the features on version Y" that waits for the game to be updated on the phone (it shows under
+  "Needs a human"); nothing else is blocked. When the phone has the newer version, documented features
+  move to `recheck`; pages get the mark "recheck on vY".
 - **FTUE.** It is rechecked only with a new version and only if the game was last played from
   scratch more than `ftue_refresh_days` ago.
 - **Tasks.** The dream closes unneeded tasks as `cancelled` with a reason instead of deleting them.

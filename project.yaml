@@ -8,10 +8,11 @@ maintainers: [Shaler404]
 
 # The job for each game in games.yaml is to find every feature and describe how it works by working
 # through every user case. The work is split into tasks (wiki/<game>/tasks.md):
-#   - external, created by the planner: "Analyze the game, version X" (X is the version on Google Play),
-#     "Update the docs for version Y"; with a new version, "Check whether FTUE changed in version Y" if
-#     the game was last played from scratch more than ftue_refresh_days ago (without a new version FTUE
-#     is not rechecked);
+#   - external, created by the planner: "Analyze the game" (on the version installed on the phone),
+#     "Recheck the features on version Y" when a newer version appears (on Google Play it waits for the
+#     game to be updated on the phone; nothing else waits); with a new version on the phone, "Check
+#     whether FTUE changed in version Y" if the game was last played from scratch more than
+#     ftue_refresh_days ago;
 #   - from the game and from knowledge gaps, created by the player: timers, daily activities, what is
 #     only visible from a fresh install.
 # When there are no open tasks, the game sleeps until a new version.

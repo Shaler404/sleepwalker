@@ -121,6 +121,7 @@ LOCAL_DEFAULTS = {
     "raw": {"keep_originals_days": 3, "keep_shots_days": 14},
     "state_dir": "",
     "raw_dir": "",
+    "wiki_dir": "",
 }
 
 
@@ -168,6 +169,11 @@ def STATE() -> Path:
 
 def RAW() -> Path:
     return Path(L()["raw_dir"] or ROOT / "raw")
+
+
+def WIKI() -> Path:
+    """The global wiki; local.yaml wiki_dir points elsewhere (tests with their own wiki)."""
+    return Path(L().get("wiki_dir") or ROOT / "wiki")
 
 
 def games() -> list[dict]:
@@ -940,7 +946,7 @@ def cut_clips(cur: dict) -> list[dict]:
 # Current view = the global file + journal entries newer than the synced[<machine>] mark.
 
 def research_path(game: str) -> Path:
-    return ROOT / "wiki" / game / "research.yaml"
+    return WIKI() / game / "research.yaml"
 
 
 def global_research(game: str, base: Path | None = None) -> dict:
@@ -1028,7 +1034,7 @@ def apply_op(view: dict, op: dict) -> None:
             if op.get(k):
                 f[k] = op[k]
         if op.get("status") == "documented":
-            f["version_seen"] = view.get("version")
+            f["version_seen"] = op.get("game_version") or view.get("version")
     elif kind == "case":
         f = find_feature(view, op["feature"])
         c = next((c for c in f.setdefault("cases", []) if c["id"] == op["id"]), None)
@@ -1039,6 +1045,8 @@ def apply_op(view: dict, op: dict) -> None:
             c["text"] = op["text"]
         if op.get("done"):
             c.update(done=True, source=op.get("source"))
+            if op.get("game_version"):
+                c["version"] = op["game_version"]
         elif op.get("after"):  # old format: a case with a date = a "check not before" task
             apply_op(view, {"op": "task", "id": f"{op['feature']}-{op['id']}", "title": f"Check: {c['text']}",
                             "kind": "followup", "feature": op["feature"], "not_before": op["after"],
@@ -1068,8 +1076,11 @@ def apply_op(view: dict, op: dict) -> None:
         view["gate"] = None if op.get("clear") else {"type": op.get("type"), "until": op.get("until"),
                                                      "note": op.get("note"), "set": now_iso(op["t"])}
     elif kind == "version":
-        if not view.get("version"):
+        if op.get("force") or not view.get("version"):
             view["version"] = op["value"]
+            for f in view["features"]:  # rechecks for a version the phone never had are undone
+                if op.get("force") and f.get("status") == "recheck" and f.get("version_seen") == op["value"]:
+                    f["status"] = "documented"
     elif kind == "new_version":
         view["version"] = op["to"]
         view["discovery"] = "open"
@@ -1178,12 +1189,12 @@ def advance_blocked(view: dict, now: float) -> dict | None:
 def needs_update(view: dict, t: dict) -> bool:
     """The task is for a newer version than the one on the phone: the game has to be updated first."""
     pv = view.get("phone_version")
-    return bool(pv and t["kind"] in ("analyze", "update") and t.get("version") and vkey(pv) < vkey(t["version"]))
+    return bool(pv and t["kind"] == "update" and t.get("version") and vkey(pv) < vkey(t["version"]))
 
 
 def update_hint(view: dict) -> str:
-    return (f"update the game on the phone in Google Play: installed {view.get('phone_version')}, "
-            f"Google Play {view.get('version')}")
+    return (f"update the game on the phone in Google Play to recheck on the new version: installed "
+            f"{view.get('phone_version')}, Google Play {view.get('play_version')}")
 
 
 def game_status(view: dict, now: float) -> tuple[str, str]:
@@ -1218,9 +1229,9 @@ def play_store_version(game: str) -> str | None:
 
 
 def plan_game(game: str, installed_versions: list[str], now: float) -> None:
-    """Task planner for a game. The external task source is the Google Play version: analyze that version,
-    update the docs for a new one and, if more than ftue_refresh_days have passed since the last play
-    from scratch, check FTUE in the new version (without a new version FTUE is not rechecked).
+    """Task planner for a game. The analysis runs on the version installed on the phone; a newer version
+    (on the phone or on Google Play) adds a recheck task and, if more than ftue_refresh_days have passed
+    since the last play from scratch, an FTUE check in the new version.
     Tasks from the game itself (timers, daily activities, knowledge gaps) are added by the player."""
     R = P()["research"]
     view = research_view(game)
@@ -1228,42 +1239,54 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
         pv = play_store_version(game)
         write_op(game, {"op": "play_version", "value": pv, "checked": now_iso(now)})
         view = research_view(game)
-    candidates = [v for v in [view.get("play_version"), *installed_versions] if v]
-    target = max(candidates, key=vkey) if candidates else None
+    # The analysis runs on the version installed on the phone and is never blocked by a newer one: every
+    # feature and case keeps the version it was seen on. A newer version adds a recheck task; documented
+    # features move to recheck only when the phone actually has the newer version.
     phone = max(installed_versions, key=vkey) if installed_versions else None
     if phone and phone != view.get("phone_version"):
-        write_op(game, {"op": "phone_version", "value": phone})  # older than Google Play: a human updates the game
+        write_op(game, {"op": "phone_version", "value": phone})
     analyze = find_task(view, "analyze")
     if analyze is None:
-        write_op(game, {"op": "task", "id": "analyze", "title": f"Analyze the game, version {target or '?'}",
-                        "kind": "analyze", "version": target, "requires": "any", "source": "external",
-                        "note": "find all features and work through all user cases"})
-        if target:
-            write_op(game, {"op": "version", "value": target})
-    elif target and view.get("version") and vkey(target) > vkey(view["version"]):
+        write_op(game, {"op": "task", "id": "analyze", "title": "Analyze the game", "kind": "analyze",
+                        "requires": "any", "source": "external",
+                        "note": "find all features and work through all user cases on the version on the phone"})
+    elif analyze.get("version"):  # the old planner tied the analysis to the Google Play version
+        write_op(game, {"op": "task", "id": "analyze", "title": "Analyze the game", "version": ""})
+    documented_on = {f.get("version_seen") for f in view["features"]}
+    if phone and not view.get("version"):
+        write_op(game, {"op": "version", "value": phone})
+    elif phone and view.get("version") and vkey(phone) < vkey(view["version"]) and view["version"] not in documented_on:
+        # the docs version came from Google Play and nothing was documented on it: it is the phone's version
+        write_op(game, {"op": "version", "value": phone, "force": True})
+    elif phone and view.get("version") and vkey(phone) > vkey(view["version"]):
+        # the phone has a newer version: what was documented on the older one is rechecked
         fv = view.get("ftue_verified")
-        if fv and now - iso_to_t(fv) > R["ftue_refresh_days"] * 86400 and not find_task(view, f"ftue-{target}"):
+        if fv and now - iso_to_t(fv) > R["ftue_refresh_days"] * 86400 and not find_task(view, f"ftue-{phone}"):
             days = int((now - iso_to_t(fv)) / 86400)
-            write_op(game, {"op": "task", "id": f"ftue-{target}",
-                            "title": f"Check whether FTUE changed in version {target}", "kind": "ftue",
-                            "requires": "fresh", "version": target, "source": "external",
+            write_op(game, {"op": "task", "id": f"ftue-{phone}",
+                            "title": f"Check whether FTUE changed in version {phone}", "kind": "ftue",
+                            "requires": "fresh", "version": phone, "source": "external",
                             "note": f"a new version is out, and the game was last played from scratch {days} days ago"})
-        if analyze.get("status") == "open":
-            # analysis is still in progress and a new version is out: analyze the new one right away
-            write_op(game, {"op": "new_version", "from": view["version"], "to": target})
-            write_op(game, {"op": "task", "id": "analyze", "title": f"Analyze the game, version {target}",
-                            "version": target})
-        elif not find_task(view, f"update-{target}"):
-            write_op(game, {"op": "new_version", "from": view["version"], "to": target})
-            write_op(game, {"op": "task", "id": f"update-{target}", "title": f"Update the docs for version {target}",
-                            "kind": "update", "version": target, "requires": "any", "source": "external",
-                            "note": "recheck all features on the new version and find new ones"})
-    elif target and not view.get("version"):
-        write_op(game, {"op": "version", "value": target})
+        write_op(game, {"op": "new_version", "from": view["version"], "to": phone})
+        if analyze and analyze.get("status") != "open" and not find_task(view, f"update-{phone}"):
+            write_op(game, {"op": "task", "id": f"update-{phone}", "title": f"Recheck the features on version {phone}",
+                            "kind": "update", "version": phone, "requires": "any", "source": "external",
+                            "note": "recheck the features documented on older versions and look for new ones"})
+    view = research_view(game)
+    known = max([v for v in (view.get("version"), phone) if v], key=vkey, default=None)
+    pv = view.get("play_version")
+    if pv and known and vkey(pv) > vkey(known) and not find_task(view, f"update-{pv}"):
+        # a newer version on Google Play: the recheck waits for the game to be updated on the phone
+        write_op(game, {"op": "task", "id": f"update-{pv}", "title": f"Recheck the features on version {pv}",
+                        "kind": "update", "version": pv, "requires": "any", "source": "external",
+                        "note": "a newer version is on Google Play: update the game on the phone, then recheck "
+                                "the documented features and look for new ones"})
     view = research_view(game)
     # analyze and update tasks close themselves once the feature map is complete
     for t in open_tasks(view):
-        if t["kind"] in ("analyze", "update") and research_complete(view):
+        # a recheck for a newer version than the docs describe stays open: the map is complete for the old one
+        ahead = t["kind"] == "update" and t.get("version") and vkey(t["version"]) > vkey(view.get("version"))
+        if t["kind"] in ("analyze", "update") and research_complete(view) and not ahead:
             write_op(game, {"op": "task_done", "id": t["id"], "source": "planner",
                             "note": "all sections found, all features documented"})
     view = research_view(game)
@@ -1307,8 +1330,8 @@ def eligible(t: dict, state: str, installed_v: str | None, now: float) -> tuple[
         return False, None
     if iso_to_t(t.get("not_before")) > now:
         return False, f"not before {t['not_before']}"
-    if t["kind"] in ("analyze", "update") and t.get("version") and installed_v and vkey(installed_v) < vkey(t["version"]):
-        return False, f"needs version {t['version']} on the phone (installed: {installed_v}): update the game"
+    if t["kind"] == "update" and t.get("version") and installed_v and vkey(installed_v) < vkey(t["version"]):
+        return False, f"recheck on version {t['version']}: update the game on the phone (installed: {installed_v})"
     if t.get("requires") == "fresh" and state not in ("fresh", "unknown"):
         return False, FRESH_HINT
     return True, None
@@ -1352,8 +1375,8 @@ def last_session_t(game: str) -> float:
 
 
 def read_first(game: str) -> list[str]:
-    files = [ROOT / "wiki" / "_common" / "agent-lessons.md"] + \
-            [ROOT / "wiki" / game / "agent" / n for n in ("lessons.md", "routes.md", "tactics.md")] + \
+    files = [WIKI() / "_common" / "agent-lessons.md"] + \
+            [WIKI() / game / "agent" / n for n in ("lessons.md", "routes.md", "tactics.md")] + \
             [ensure_playbook(game), STATE() / game / "progress.md"]
     return [str(f) for f in files if f.exists()]
 
@@ -1384,7 +1407,7 @@ merges it into `wiki/{game}/agent/playbook.md`. Level times: `sw.py playbook`.
 
 
 def playbook_paths(game: str) -> tuple[Path, Path]:
-    return STATE() / game / "playbook.md", ROOT / "wiki" / game / "agent" / "playbook.md"
+    return STATE() / game / "playbook.md", WIKI() / game / "agent" / "playbook.md"
 
 
 def ensure_playbook(game: str) -> Path:
@@ -1439,6 +1462,8 @@ print(json.dumps(res if isinstance(res, dict) else {"moves": res}))
 
 
 def log_op(cur: dict, op: dict) -> None:
+    if cur.get("version"):
+        op = {**op, "game_version": cur["version"]}  # what the player saw is true for the installed version
     write_op(cur["game"], op, session=cur["id"], step=cur["step"])
     log_step(cur, {"type": "research", **op})
 
