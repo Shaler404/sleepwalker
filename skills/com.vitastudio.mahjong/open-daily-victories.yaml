@@ -1,0 +1,16 @@
+name: open-daily-victories
+game: com.vitastudio.mahjong
+description: 'Main screen: open the Daily Victories calendar with the leaf pill and
+  go back'
+status: candidate
+version: 3.39.1
+pre_hash: d0fa1d866085e3d7
+post_hash: d0fc1d876885a3d5
+steps:
+- tap:
+  - 0.3644
+  - 0.0821
+  wait: 1.5
+- key: back
+  wait: 1.5
+source: 20261001-010125-chrono-2FYKPJ#1-2

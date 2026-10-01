@@ -1,0 +1,24 @@
+# Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
+game: com.king.candycrushsaga
+version: 1.337.0.2
+play_version: 1.337.0.2
+play_checked: '2026-10-01T02:46:28'
+phone_version: 1.335.1.2
+discovery: open
+ftue_verified: null
+progress: null
+gate: null
+synced:
+  chrono: '2026-10-01T04:13:01'
+mechanics: []
+features: []
+tasks:
+- id: analyze
+  title: Analyze the game, version 1.337.0.2
+  kind: analyze
+  requires: any
+  status: open
+  created: '2026-09-30T20:39:37'
+  version: 1.337.0.2
+  source: external
+  note: find all features and work through all user cases
