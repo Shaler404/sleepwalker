@@ -78,8 +78,15 @@ from perception import hash_distance, is_same_screen, prepare_for_model, save_fo
 
 ROOT = HERE.parent
 OPEN_STATUSES = ("seen", "in_progress", "recheck")
-TASK_KINDS = ("analyze", "update", "survey", "ftue", "replay", "followup", "daily")
-TASK_RANK = {"update": 0, "survey": 1, "analyze": 2, "ftue": 3, "replay": 4, "followup": 5, "daily": 5}
+TASK_KINDS = ("analyze", "update", "scout", "study", "unlock", "experiment", "survey", "ftue", "replay",
+              "followup", "daily")
+# Goals: a session plays toward concrete goals, never "the game" in general. "analyze" is the container of a
+# game's analysis and is never handed to a session itself.
+GOAL_KINDS = ("scout", "survey", "study", "unlock", "experiment")
+# The order of goals in a session (and, between games, which game has the most urgent work): time-bound
+# checks, rechecks, fresh-install work, mapping, studying what is open, hypotheses, and advancing last.
+TASK_RANK = {"followup": 0, "daily": 0, "update": 1, "ftue": 2, "replay": 2, "scout": 3, "survey": 3, "study": 4,
+             "experiment": 5, "unlock": 6, "analyze": 9}
 SHOT_TOKENS = 1500
 HASH_MATCH = 12  # pHash distance at which the screen counts as the same
 # Windows over the game that do not mean the agent has left it
@@ -94,8 +101,9 @@ NO_WINDOW = 0x08000000 if os.name == "nt" else 0  # CREATE_NO_WINDOW
 
 PROJECT_DEFAULTS = {
     "maintainers": [], "repo": "",
-    "session": {"budget_min": {"analyze": 30, "update": 25, "survey": 15, "ftue": 30, "replay": 20, "followup": 10,
-                                "daily": 10},
+    "session": {"budget_min": {"analyze": 30, "update": 25, "scout": 15, "survey": 15, "study": 10, "unlock": 20,
+                                "experiment": 15, "ftue": 30, "replay": 20, "followup": 10, "daily": 10},
+                "max_goals": 3,
                 "max_session_min": 45, "steps_per_min": 4, "hard_limit": 1.5, "stale_min": 20, "max_in_a_row": 2,
                 "turn_hours": 2},
     "research": {"version_check_hours": 6, "ftue_refresh_days": 180, "country": "us", "survey_every_sessions": 2,
@@ -246,6 +254,18 @@ def read_json(p: Path) -> dict:
         return json.loads(p.read_text(encoding="utf-8"))
     except FileNotFoundError:
         return {}
+
+
+def remove(p: Path) -> None:
+    """Delete a state file another process may be reading this very moment (the orchestrator polls the
+    sessions): Windows refuses to delete an open file, so try again for a second."""
+    for _ in range(40):
+        try:
+            p.unlink(missing_ok=True)
+            return
+        except PermissionError:
+            time.sleep(0.05)
+    p.unlink(missing_ok=True)
 
 
 def write_json(p: Path, d: dict) -> None:
@@ -1020,7 +1040,8 @@ def mechanic_brief(m: dict) -> dict:
             "best_min": round(m["best_s"] / 60, 1) if m.get("best_s") else None}
 
 
-TASK_FIELDS = ("title", "kind", "version", "requires", "feature", "not_before", "source", "note")
+TASK_FIELDS = ("title", "kind", "version", "requires", "feature", "not_before", "source", "note", "target_text",
+               "target_value", "plan")
 
 
 def apply_op(view: dict, op: dict) -> None:
@@ -1069,6 +1090,8 @@ def apply_op(view: dict, op: dict) -> None:
             m["best_s"] = op["seconds"]
     elif kind == "discovery":
         view["discovery"] = op["value"]
+        if op.get("note"):
+            view["discovery_note"] = op["note"]
     elif kind == "progress":
         view["progress"] = {"text": op.get("text"), "value": op.get("value"), "at": now_iso(op["t"]),
                             "session": op.get("session")}
@@ -1117,6 +1140,8 @@ def apply_op(view: dict, op: dict) -> None:
         if op.get("new_entries") is not None:
             t["new_entries"] = op["new_entries"]
             t["at_progress"] = (view.get("progress") or {}).get("text")
+        if op.get("result"):
+            t["result"] = op["result"]
         if kind == "task_done" and t.get("kind") == "ftue":
             view["ftue_verified"] = now_iso(op["t"])[:10]
 
@@ -1136,7 +1161,8 @@ def open_tasks(view: dict) -> list[dict]:
 
 def research_complete(view: dict) -> bool:
     return bool(view["features"]) and view["discovery"] == "closed" and \
-        not any(f.get("status") in OPEN_STATUSES for f in view["features"])
+        not any(f.get("status") in OPEN_STATUSES for f in view["features"]) and \
+        not any(t["kind"] in GOAL_KINDS for t in open_tasks(view))
 
 
 def gate_active(view: dict, now: float) -> dict | None:
@@ -1155,35 +1181,29 @@ def open_cases(view: dict) -> int:
 
 
 def research_mode(view: dict, now: float) -> tuple[str, str]:
-    """advance — rush through the content while features are still being found; cases — verify
-    cases slowly: all features are found, or advancing is blocked by a gate for now."""
+    """goals — work through the session goals; cases — no progress is needed or possible: all features are
+    found, or a gate (lives, energy, a timer) blocks progress for now."""
     g = gate_active(view, now)
-    if view["discovery"] == "closed":
-        return "cases", "all features are found: verify the open cases one by one"
     if g:
-        return "cases", (f"advancing is blocked ({g['type']}) until {g['until']}: meanwhile verify open cases "
-                         "that need no progress; if there are none, end the session")
-    return "advance", ("move through the content as fast as possible; register every new feature and write down "
-                       "every branch as a case or task for later, do not test them now")
+        return "cases", (f"progress is blocked ({g['type']}) until {g['until']}: do the goals that need no progress "
+                         "(study, scout, experiments without levels); unlock goals wait")
+    if view["discovery"] == "closed":
+        return "cases", "all features are found: study goals and checks only; do not advance"
+    return "goals", ("work through the session goals in order; play levels only as far as an unlock or experiment "
+                     "goal needs; register anything new you notice as a feature or a goal, do not pursue it now")
 
 
 def model_role(view: dict, ready: list[dict]) -> tuple[str, str]:
     """Which model plays: study (strong) while the game has gameplay to learn, play (fast) once every
     known mechanic is mastered and for checks and surveys."""
-    if not {t["kind"] for t in ready} & {"analyze", "update"}:
-        return "play", "checks and surveys: no gameplay to learn in this session"
+    if not {t["kind"] for t in ready} & {"analyze", "update", "scout", "unlock", "experiment"}:
+        return "play", "checks and studies: no gameplay to learn in this session"
     todo = [m for m in view["mechanics"] if m.get("status") in ("studying", "broken")]
     if todo:
         return "study", "gameplay to learn: " + ", ".join(f"{m['id']} ({m['status']})" for m in todo)
     if not view["mechanics"]:
         return "study", "no mechanic learned yet: learn the core gameplay first"
     return "play", "every known mechanic is mastered"
-
-
-def advance_blocked(view: dict, now: float) -> dict | None:
-    """The gate blocks the analysis task entirely when there is also nothing to verify meanwhile."""
-    g = gate_active(view, now)
-    return g if g and view["discovery"] != "closed" and open_cases(view) == 0 else None
 
 
 def needs_update(view: dict, t: dict) -> bool:
@@ -1203,10 +1223,11 @@ def game_status(view: dict, now: float) -> tuple[str, str]:
         return "new", "new game: tasks appear on the first phone claim"
     if not ot:
         return "sleeping", "all done: sleeping until a new version"
-    g, blocked = gate_active(view, now), advance_blocked(view, now)
+    g = gate_active(view, now)
+    blocked = g if g and not [t for t in ot if t["kind"] in GOAL_KINDS and t["kind"] != "unlock"] else None
     upd = [t for t in ot if needs_update(view, t)]
     ready = [t for t in ot if iso_to_t(t.get("not_before")) <= now and t.get("requires", "any") != "fresh"
-             and not (blocked and t["kind"] in ("analyze", "update")) and t not in upd]
+             and t["kind"] != "analyze" and not (g and t["kind"] == "unlock") and t not in upd]
     if ready:
         return "active", (f"ready now: {len(ready)}"
                           + (f"; advancing blocked by {g['type']} until {g['until']}" if g else "")
@@ -1290,7 +1311,7 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
             write_op(game, {"op": "task_done", "id": t["id"], "source": "planner",
                             "note": "all sections found, all features documented"})
     view = research_view(game)
-    plan_survey(game, view, now)
+    plan_goals(game, view, now)
     view = research_view(game)
     analyze = find_task(view, "analyze")
     if analyze and analyze.get("status") == "done" and not any(t["kind"] == "ftue" and t.get("status") == "open"
@@ -1301,28 +1322,32 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
                             "note": "FTUE has never been played from a fresh install"})
 
 
-def plan_survey(game: str, view: dict, now: float) -> None:
-    """Whether new features still appear is decided by looking, not by grinding levels: a survey walks
-    every screen reachable without advancing and maps each entry point to a feature. It is set after
-    every survey_every_sessions analysis sessions, and when advancing is blocked and there is nothing
-    else to verify (the waiting time is used for looking)."""
-    if view["discovery"] == "closed" or not any(t["kind"] in ("analyze", "update") for t in open_tasks(view)):
+SCOUT_TITLE = ("Map the game: play until the main menu and every entry point is visible; list each entry point as "
+               "open (a study goal), locked with its unlock condition (an unlock goal) or unclear (an experiment)")
+
+
+def plan_goals(game: str, view: dict, now: float) -> None:
+    """Sessions play toward concrete goals. The planner adds the ones that follow from the map itself:
+    a scout for a game that has none, a study goal for every open feature without one, and a new scout
+    when the analysis is open but no goal is left. Unlock goals and hypotheses come from the player and the
+    post-session review, which also closes the search for features (discovery)."""
+    if not any(t["kind"] in ("analyze", "update") for t in open_tasks(view)):
         return
-    surveys = [t for t in view["tasks"] if t["kind"] == "survey"]
-    if any(t.get("status", "open") == "open" for t in surveys):
-        return
-    last = max((iso_to_t(t.get("closed")) for t in surveys), default=0.0)
-    since = [x for x in read_jsonl(STATE() / game / "sessions.jsonl")
-             if iso_to_t(x["started"]) > last and {"analyze", "update"} & set(x.get("tasks") or [])
-             and x.get("steps")]
-    blocked = advance_blocked(view, now)
-    every = P()["research"]["survey_every_sessions"]
-    if len(since) >= every or (blocked and iso_to_t(blocked.get("set")) > last):
-        n = len(surveys) + 1
-        write_op(game, {"op": "task", "id": f"survey-{n}", "kind": "survey", "requires": "any", "source": "external",
-                        "title": "Survey every screen: capture all entry points and map them to features",
-                        "note": ("advancing is blocked: use the wait to look around" if blocked and len(since) < every
-                                 else f"{len(since)} analysis sessions since the last survey")})
+    goals = [t for t in view["tasks"] if t["kind"] in GOAL_KINDS]
+    if view["discovery"] != "closed" and not any(t["kind"] in ("scout", "survey") for t in goals):
+        write_op(game, {"op": "task", "id": "scout-1", "kind": "scout", "title": SCOUT_TITLE, "requires": "any",
+                        "source": "external", "note": "the first map of the game"})
+    studied = {t.get("feature") for t in goals if t["kind"] == "study"}
+    for f in view["features"]:
+        if f.get("status") in OPEN_STATUSES and f["id"] not in studied and not find_task(view, f"study-{f['id']}"):
+            write_op(game, {"op": "task", "id": f"study-{f['id']}", "kind": "study", "feature": f["id"],
+                            "title": f"Study {f.get('name') or f['id']}: open it, walk its screens and tabs, verify "
+                                     "its cases", "requires": "any", "source": "external"})
+    view = research_view(game)
+    if view["discovery"] != "closed" and not [t for t in open_tasks(view) if t["kind"] in GOAL_KINDS]:
+        n = len([t for t in view["tasks"] if t["kind"] in ("scout", "survey")]) + 1
+        write_op(game, {"op": "task", "id": f"scout-{n}", "kind": "scout", "title": SCOUT_TITLE, "requires": "any",
+                        "source": "external", "note": "no goal left while the search for features is open"})
 
 
 def eligible(t: dict, state: str, installed_v: str | None, now: float) -> tuple[bool, str | None]:
@@ -1343,24 +1368,31 @@ def session_tasks(game: str, dev: str, platform: str, now: float) -> dict:
     info = package_info(dev, game) if platform == "android" else {"version": None, "install_time": None}
     state = game_state(dev, game, info)
     ready, blocked = [], []
-    gated = advance_blocked(view, now)
+    gate = gate_active(view, now)
     mode, mode_why = research_mode(view, now)
+    progress = (view.get("progress") or {}).get("value") or 0
     for t in open_tasks(view):
+        if t["kind"] == "analyze":
+            continue  # the container of the analysis: sessions get its goals
         ok, why = eligible(t, state, info["version"], now)
-        if ok and gated and t["kind"] in ("analyze", "update"):
-            ok, why = False, f"advancing is blocked by {gated['type']} until {gated['until']} and there are no cases to verify"
+        if ok and gate and t["kind"] == "unlock":
+            ok, why = False, f"progress is blocked by {gate['type']} until {gate['until']}"
         if ok:
-            item = {k: t.get(k) for k in ("id", "title", "kind", "feature", "note") if t.get(k)}
-            if t["kind"] in ("analyze", "update"):
-                item["mode"] = mode
+            item = {k: t.get(k) for k in ("id", "title", "kind", "feature", "note", "target_text", "target_value",
+                                          "plan") if t.get(k) not in (None, "")}
+            if t["kind"] == "unlock" and t.get("target_value") and progress >= float(t["target_value"]):
+                item["hint"] = "the target is reached: check whether the feature has opened"
             if t.get("requires") == "fresh":
                 item["only_if_fresh"] = True  # game state on the phone is unknown: check it at the start
             ready.append(item)
         elif why:
             blocked.append({"id": t["id"], "why": why})
-    ready.sort(key=lambda t: (TASK_RANK.get(t["kind"], 9), t["id"]))
-    return {"ready": ready, "blocked": blocked, "state": state, "info": info, "view": view, "mode": mode,
-            "mode_why": mode_why}
+    # nearest unlock first among unlock goals
+    ready.sort(key=lambda t: (TASK_RANK.get(t["kind"], 9),
+                              float(t.get("target_value") or 0) - progress if t["kind"] == "unlock" else 0, t["id"]))
+    cap = P()["session"]["max_goals"]
+    return {"ready": ready[:cap], "more": len(ready) - min(len(ready), cap), "blocked": blocked, "state": state,
+            "info": info, "view": view, "mode": mode, "mode_why": mode_why}
 
 
 def budget_for(tasks: list[dict]) -> int:
@@ -1465,7 +1497,19 @@ def log_op(cur: dict, op: dict) -> None:
     if cur.get("version"):
         op = {**op, "game_version": cur["version"]}  # what the player saw is true for the installed version
     write_op(cur["game"], op, session=cur["id"], step=cur["step"])
-    log_step(cur, {"type": "research", **op})
+    if cur.get("dir"):
+        log_step(cur, {"type": "research", **op})
+
+
+def op_cur(args) -> dict:
+    """The session an op belongs to; with --game, the post-session review working without the phone."""
+    if getattr(args, "game", None):
+        return {"game": find_game(args.game)["id"], "id": f"review-{dt.date.today():%Y%m%d}", "step": None}
+    return pick_session(args)
+
+
+def op_source(cur: dict, args) -> str:
+    return getattr(args, "source", None) or f"{cur['id']}#{cur['step']}"
 
 
 def summary_of(view: dict) -> dict:
@@ -1516,12 +1560,12 @@ def cmd_claim(args) -> None:
         for hp in (STATE() / "holds").glob("*.json"):
             h = read_json(hp)
             if h.get("until") and iso_to_t(h["until"]) < now:
-                hp.unlink()  # hold expired
+                remove(hp)  # hold expired
             elif h.get("device") not in devs:
                 h["absent"] = True  # phone unplugged
                 write_json(hp, h)
             elif h.get("absent"):
-                hp.unlink()  # unplugged and plugged back in: the phone is back
+                remove(hp)  # unplugged and plugged back in: the phone is back
         for dev, platform in devs.items():
             prev = device_profile(dev).get("_zen_restore")
             if platform == "android" and prev is not None and dev not in active_devs:
@@ -1601,7 +1645,7 @@ def cmd_claim(args) -> None:
                         **({"turn": f"not played for {P()['session']['turn_hours']} h or never: its turn"}
                            if turn == 0 and e["id"] != sg else {}),
                         "mode": st["mode"], "mode_hint": st["mode_why"],
-                        "tasks": st["ready"], "budget_min": budget,
+                        "tasks": st["ready"], "more_goals": st["more"], "budget_min": budget,
                         "max_steps": budget * P()["session"]["steps_per_min"], "focus": e["focus"],
                         "read_first": read_first(e["id"])})
     out({"machine": machine(), "assignments": res})
@@ -1641,7 +1685,7 @@ def cmd_stop(args) -> None:
         row = {"device": dev}
         cur = read_json(session_path(dev))
         if cur.get("status") == "reserved":
-            session_path(dev).unlink(missing_ok=True)
+            remove(session_path(dev))
             row["session"] = "reservation released"
         elif cur.get("status") == "active":
             cur["stop_requested"] = time.time()
@@ -1700,7 +1744,7 @@ def cmd_resume(args) -> None:
     targets = [hp for hp in (STATE() / "holds").glob("*.json")
                if not args.device or read_json(hp).get("device") == args.device]
     for hp in targets:
-        hp.unlink()
+        remove(hp)
     out({"resumed": [hp.stem for hp in targets]})
 
 
@@ -1764,7 +1808,7 @@ def cmd_start(args) -> None:
     state = game_state(dev, args.game, info)
     if platform == "android":
         if locked(dev):
-            session_path(dev).unlink(missing_ok=True)
+            remove(session_path(dev))
             shutil.rmtree(d)
             fail("screen locked: the agent does not enter PINs")
         if L()["android"]["dnd"]:
@@ -1907,7 +1951,7 @@ def cmd_clip(args) -> None:
 
 
 def cmd_feature(args) -> None:
-    cur = pick_session(args)
+    cur = op_cur(args)
     op = {"op": "feature", "id": slug(args.id), "name": args.name}
     if args.status:
         op["status"] = args.status
@@ -1916,26 +1960,35 @@ def cmd_feature(args) -> None:
 
 
 def cmd_case(args) -> None:
-    cur = pick_session(args)
+    cur = op_cur(args)
     op = {"op": "case", "feature": slug(args.feature), "id": slug(args.id)}
     if args.text:
         op["text"] = args.text
     if args.done:
-        op.update(done=True, source=f"{cur['id']}#{cur['step']}")
+        op.update(done=True, source=op_source(cur, args))
     log_op(cur, op)
     out({"ok": True, "feature": find_feature(research_view(cur["game"]), slug(args.feature), create=False)})
 
 
 def cmd_task(args) -> None:
-    cur = pick_session(args)
+    cur = op_cur(args)
     tid = slug(args.id)
     if args.task_cmd == "add":
+        if args.kind in ("study", "unlock") and not args.feature:
+            fail(f"a {args.kind} goal names its feature: --feature ID")
+        if args.kind == "unlock" and not (args.target or args.target_value is not None):
+            fail('an unlock goal names its target: --target "level 20" --target-value 20')
+        if args.kind == "experiment" and not args.plan:
+            fail('an experiment states how it is tested: --plan "what to do, what result confirms it"')
         base = {"op": "task", "title": args.title, "kind": args.kind, "requires": args.requires,
                 "source": "game" if args.kind in ("followup", "daily") else "session", "reopen": True}
         if args.feature:
             base["feature"] = slug(args.feature)
         if args.note:
             base["note"] = args.note
+        for k, v in (("target_text", args.target), ("target_value", args.target_value), ("plan", args.plan)):
+            if v is not None:
+                base[k] = v
         start = time.time()
         if args.at:
             start = dt.datetime.fromisoformat(args.at).timestamp()
@@ -1956,15 +2009,28 @@ def cmd_task(args) -> None:
             log_op(cur, op)
             ids.append(tid)
         return out({"ok": True, "tasks": [find_task(research_view(cur["game"]), i) for i in ids]})
+    created = None
     if args.task_cmd == "done":
         t = find_task(research_view(cur["game"]), tid)
-        if t and t.get("kind") == "survey" and args.new_entries is None:
-            fail("a survey is closed with --new-entries N: how many entry points did not map to known features")
-        log_op(cur, {"op": "task_done", "id": tid, "source": f"{cur['id']}#{cur['step']}", "note": args.note,
-                     **({"new_entries": args.new_entries} if args.new_entries is not None else {})})
+        if t and t.get("kind") in ("survey", "scout") and args.new_entries is None:
+            fail("a scout is closed with --new-entries N: how many entry points did not map to known features")
+        if t and t.get("kind") == "experiment" and not args.result:
+            fail("an experiment is closed with --result confirmed|refuted|inconclusive and --note with the evidence")
+        log_op(cur, {"op": "task_done", "id": tid, "source": op_source(cur, args), "note": args.note,
+                     **({"new_entries": args.new_entries} if args.new_entries is not None else {}),
+                     **({"result": args.result} if args.result else {})})
+        view = research_view(cur["game"])
+        if t and t.get("kind") == "unlock" and t.get("feature") and not any(
+                x["kind"] == "study" and x.get("feature") == t["feature"] for x in view["tasks"]):
+            # the feature is open now: studying it is the next goal
+            f = find_feature(view, t["feature"], create=False) or {"name": t["feature"]}
+            created = f"study-{t['feature']}"
+            log_op(cur, {"op": "task", "id": created, "kind": "study", "feature": t["feature"], "requires": "any",
+                         "source": "session", "title": f"Study {f.get('name') or t['feature']}: open it, walk its "
+                                                       "screens and tabs, verify its cases"})
     else:
-        log_op(cur, {"op": "task_cancel", "id": tid, "source": f"{cur['id']}#{cur['step']}", "note": args.reason})
-    out({"ok": True, "task": find_task(research_view(cur["game"]), tid)})
+        log_op(cur, {"op": "task_cancel", "id": tid, "source": op_source(cur, args), "note": args.reason})
+    out({"ok": True, "task": find_task(research_view(cur["game"]), tid), **({"created": created} if created else {})})
 
 
 def cmd_progress(args) -> None:
@@ -1992,8 +2058,8 @@ def cmd_gate(args) -> None:
 
 
 def cmd_discovery(args) -> None:
-    cur = pick_session(args)
-    log_op(cur, {"op": "discovery", "value": args.value})
+    cur = op_cur(args)
+    log_op(cur, {"op": "discovery", "value": args.value, **({"note": args.why} if args.why else {})})
     out({"ok": True, "research": summary_of(research_view(cur["game"]))})
 
 
@@ -2296,7 +2362,7 @@ def leave_clean(cur: dict) -> str | None:
 
 def finish(cur: dict, status: str, summary: str) -> dict:
     if cur["status"] == "reserved":
-        session_path(cur["device"]).unlink(missing_ok=True)
+        remove(session_path(cur["device"]))
         return {"released": cur["device"], "game": cur["game"]}
     d = Path(cur["dir"])
     if cur.get("clip_open"):
@@ -2324,7 +2390,7 @@ def finish(cur: dict, status: str, summary: str) -> dict:
     if cur["step"] and device_profile(cur["device"]).get(cur["game"], {}).get("progress", "fresh") == "fresh":
         # after a session the game on this phone is no longer fresh
         set_game_state(cur["device"], cur["game"], "progressed", f"after session {cur['id']}", info)
-    session_path(cur["device"]).unlink(missing_ok=True)  # the phone is free: clips and YouTube run without it
+    remove(session_path(cur["device"]))  # the phone is free: clips and YouTube run without it
     clips = cut_clips(cur)
     youtube = None
     if L()["youtube"]["enabled"] and (d / "original.mkv").exists():
@@ -2620,7 +2686,8 @@ def cmd_snapshot(args) -> None:
 
 STATUS_LABEL = {"new": "🆕 new", "active": "▶️ active", "waiting": "⏳ waiting",
                 "needs_human": "🙋 needs a human", "sleeping": "💤 sleeping until a new version"}
-KIND_LABEL = {"analyze": "analysis", "update": "update", "survey": "survey", "ftue": "from scratch", "replay": "replay",
+KIND_LABEL = {"analyze": "analysis", "update": "recheck", "scout": "map", "survey": "map", "study": "study",
+              "unlock": "unlock", "experiment": "experiment", "ftue": "from scratch", "replay": "replay",
               "followup": "check", "daily": "daily"}
 SOURCE_LABEL = {"external": "external", "game": "from the game", "session": "knowledge gap"}
 
@@ -2637,7 +2704,7 @@ def render_game(gd: Path, title: str) -> dict:
         return (f"[{f['name']}]({f['page']})" if f and f.get("page") else (f["name"] if f else fid)) if fid else ""
 
     now_rows = [t for t in ot if iso_to_t(t.get("not_before")) <= now and t.get("requires", "any") != "fresh"
-                and not needs_update(view, t)]
+                and not needs_update(view, t) and t["kind"] != "analyze"]  # the container is not work for a session
     wait_rows = sorted([t for t in ot if iso_to_t(t.get("not_before")) > now], key=lambda t: t["not_before"])
     human_rows = [t for t in ot if (t.get("requires") == "fresh" or needs_update(view, t)) and t not in wait_rows]
     provide = lambda t: update_hint(view) if needs_update(view, t) else FRESH_HINT  # noqa: E731
@@ -2652,9 +2719,13 @@ def render_game(gd: Path, title: str) -> dict:
                                               + (f" ({g['note']})" if g.get("note") else "") if g else ""), "",
           f"Progress reached: **{(view.get('progress') or {}).get('text') or '—'}** · "
           f"last new feature found at: **{found[-1] if found else '—'}**", "",
-          "Screen surveys: " + (", ".join(f"{t.get('at_progress') or '?'} — {t['new_entries']} new"
-                                          for t in view["tasks"] if t["kind"] == "survey" and "new_entries" in t)
-                                or "none yet"), "",
+          "Goals: " + (", ".join(f"{KIND_LABEL[k]} {n}" for k, n in
+                                 ((k, sum(1 for t in ot if t["kind"] == k)) for k in GOAL_KINDS) if n) or "none open")
+          + " · maps: " + (", ".join(f"{t.get('at_progress') or '?'} — {t['new_entries']} new"
+                                     for t in view["tasks"] if t["kind"] in ("survey", "scout") and "new_entries" in t)
+                           or "none yet")
+          + (f" · search for features closed: {view.get('discovery_note')}" if view["discovery"] == "closed"
+             and view.get("discovery_note") else ""), "",
           f"Gameplay (target: a level within {P()['play']['level_budget_min']} min; how to play: "
           "[agent/playbook.md](agent/playbook.md)): "
           + ("; ".join(f"**{b['name']}** — {b['status']}, {b['method']}, levels won {b['levels'].get('won', 0)}"
@@ -2926,17 +2997,24 @@ def main() -> None:
     p.add_argument("id")
     p.add_argument("name")
     p.add_argument("--status", choices=["seen", "in_progress", "documented"])
+    p.add_argument("--game", help="outside a session (the post-session review)")
     p = sub.add_parser("case")
     p.add_argument("feature")
     p.add_argument("id")
     p.add_argument("text", nargs="?")
     p.add_argument("--done", action="store_true")
+    p.add_argument("--game", help="outside a session (the post-session review)")
+    p.add_argument("--source", help="session#step that shows it, when recorded outside the session")
     p = sub.add_parser("task")
     ts = p.add_subparsers(dest="task_cmd", required=True)
     q = ts.add_parser("add")
     q.add_argument("id")
     q.add_argument("title")
-    q.add_argument("--kind", choices=["followup", "daily", "replay", "ftue"], default="followup")
+    q.add_argument("--kind", choices=["study", "unlock", "experiment", "scout", "followup", "daily", "replay", "ftue"],
+                   default="followup")
+    q.add_argument("--target", help='unlock: the progress that opens the feature, e.g. "level 20"')
+    q.add_argument("--target-value", type=float, help="unlock: the same as a number")
+    q.add_argument("--plan", help="experiment: what to do and which result confirms the hypothesis")
     q.add_argument("--feature")
     q.add_argument("--requires", choices=["any", "fresh"], default="any")
     q.add_argument("--after-hours", type=float)
@@ -2944,12 +3022,16 @@ def main() -> None:
     q.add_argument("--days", type=int, help="daily activity: one task for each of the next N days")
     q.add_argument("--note")
     q = ts.add_parser("done")
-    q.add_argument("--new-entries", type=int, help="surveys: entry points that did not map to known features")
+    q.add_argument("--new-entries", type=int, help="scouts: entry points that did not map to known features")
+    q.add_argument("--result", choices=["confirmed", "refuted", "inconclusive"], help="experiments")
     q.add_argument("id")
     q.add_argument("--note")
     q = ts.add_parser("cancel")
     q.add_argument("id")
     q.add_argument("--reason", required=True)
+    for q in (ts.choices["add"], ts.choices["done"], ts.choices["cancel"]):
+        q.add_argument("--game", help="outside a session (the post-session review)")
+        q.add_argument("--source", help="session#step that shows it, when recorded outside the session")
     p = sub.add_parser("progress")
     p.add_argument("text", help='where you are, e.g. "level 12" or "chapter 3, area 2"')
     p.add_argument("--value", type=float, help="the same as a number, if the game has one (level number)")
@@ -2960,6 +3042,8 @@ def main() -> None:
     p.add_argument("--note")
     p = sub.add_parser("discovery")
     p.add_argument("value", choices=["open", "closed"])
+    p.add_argument("--why", help="what shows that no feature is left to find")
+    p.add_argument("--game", help="outside a session (the post-session review)")
     p = sub.add_parser("skill")
     ss = p.add_subparsers(dest="skill_cmd", required=True)
     q = ss.add_parser("list")

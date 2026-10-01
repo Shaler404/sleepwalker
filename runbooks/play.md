@@ -47,10 +47,19 @@ player subagents. The repository root is one level above this file (the owner's 
    occupied (`busy`) and does not interfere. A session that ended with `handoff` (the fast model met
    gameplay it should not learn) comes back first from `claim`, with the strong model. When no device
    is playing or busy, go on to the next step.
-5. If a subagent crashed without ending its session, end the session yourself:
+5. **The post-session review.** As soon as a player ends its session, start a `sleepwalker-reviewer`
+   subagent for that session in the background (model `models.reviewer` in `project.yaml`). It does
+   not need the phone, so claim the device for the next session at the same time. Brief:
+   ```
+   Repository root: <path>. Do not change the working directory: every command is cd <path> && python harness/sw.py ... --game <game>
+   Instructions: <path>/runbooks/review.md — read it in full and follow it.
+   game: <game> (<title>)  session: <session id from the player's end reply>
+   ```
+   Wait for the reviewers too before you finish the run.
+6. If a subagent crashed without ending its session, end the session yourself:
    `python harness/sw.py -d <device> end --status crashed --summary "the subagent did not end the session"`.
-6. `python harness/sw.py gc` — clean up old records in `raw/`.
-7. Summary: one line per device — game, status, tasks closed and new; for idle devices — the
+7. `python harness/sw.py gc` — clean up old records in `raw/`.
+8. Summary: one line per device — game, status, tasks closed and new; for idle devices — the
    reason.
 
 Rules: you do not commit or push anything. Only the dream changes the global repository, through a

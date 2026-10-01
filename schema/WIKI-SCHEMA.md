@@ -98,7 +98,7 @@ play_version: 241.5.1     # the Google Play version at the last check
 play_checked: '2026-10-01T10:00:00'
 version: 241.5.1          # the version the analysis is running for or was finished for
 discovery: closed         # open — not all sections found yet; closed — all are registered as features
-discovery_note: two clean surveys at level 60 and level 95, checklist covered   # set by the dream
+discovery_note: map at level 40 complete, every locked entry point has an unlock goal, checklist covered   # set by the post-session review
 progress: {text: level 95, value: 95, at: '2026-10-02T11:00:00'}   # progress reached
 gate: null               # while advancing is blocked: {type: lives, until: ..., note: ...}
 ftue_verified: '2026-10-01'   # when the game was last played from scratch
@@ -128,20 +128,34 @@ features:
     source: 20261001-091500-chrono-FYKPJ#14
 tasks:
 - id: analyze
-  title: Analyze the game, version 241.5.1
-  kind: analyze           # analyze | update | survey | ftue | replay | followup | daily
-  version: 241.5.1
+  title: Analyze the game
+  kind: analyze           # analyze (the container) | scout | study | unlock | experiment | update | ftue | replay | followup | daily
   requires: any           # any | fresh — needs a fresh install of the game
   source: external        # external (Google Play version) | game (timers, schedule) | session (knowledge gap)
   status: done            # open | done | cancelled
   closed: '2026-10-01T12:00:00'
   closed_by: planner
-- id: survey-3
-  title: Survey every screen: capture all entry points and map them to features
-  kind: survey
+- id: scout-2
+  title: "Map the game: ..."
+  kind: scout
   status: done
   new_entries: 0          # entry points that did not map to known features
-  at_progress: level 95
+  at_progress: level 40
+- id: unlock-leagues
+  title: Reach level 20 to unlock Leagues
+  kind: unlock
+  feature: leagues
+  target_text: level 20
+  target_value: 20
+  status: open
+- id: race-win-flow
+  title: Winning the race needs about 10 level wins
+  kind: experiment
+  feature: race
+  plan: play levels while the race runs; the race score after each win; confirmed if a win flow shows by 10 wins
+  status: done
+  result: confirmed       # confirmed | refuted | inconclusive
+  note: the race was won at 9 wins; win flow — podium, chest, league points [s:...]
 - id: daily-reward-d2
   title: Claim the daily reward — day 2 of 7
   kind: daily
@@ -160,38 +174,41 @@ tasks:
 
 **Where tasks come from.**
 - **External tasks — set by the planner** (`sw.py claim`):
-  - for a new game — "Analyze the game, version X", where X is the Google Play version (checked every
-    `version_check_hours`);
-  - a new version is out while the analysis is still running — the analysis moves to the new version;
-  - the analysis is already finished — "Update the docs for version Y", features go to `recheck`;
-  - "Survey every screen…" after every `survey_every_sessions` analysis sessions, and when
-    advancing is blocked by a gate and there is nothing else to verify;
+  - for a new game — "Analyze the game" (the container; sessions never get it, they get its goals)
+    and the first map ("scout");
+  - a study goal for every open feature that has none; a new map when the analysis is open and no
+    goal is left;
+  - a newer version — "Recheck the features on version Y" (see section 7);
   - the analysis is finished but FTUE has never been played from a fresh install — "Play from
     scratch: FTUE and how features unlock";
   - a new version is out and the game was last played from scratch more than `ftue_refresh_days`
     ago — "Check whether FTUE changed in version Y". Without a new version FTUE is not rechecked: it
     does not change on its own.
+- **Goals from the session — set by the player and the post-session review** (`sw.py task add`,
+  `--game` outside a session): unlock goals with their target, study goals, experiments with their
+  plan, a new map for a new area.
 - **From the game and from knowledge gaps — set by the player** (`sw.py task add`):
   - a timer — `followup` with `not_before`;
   - a daily activity — `daily`, one task per day;
   - what can only be seen from a fresh install (FTUE, how a feature unlocks, a route that cannot be
     repeated from the current progress) — `ftue` or `replay` with `requires: fresh`.
 
-**When a task gets done.** A session gets the game's tasks that can be done on this device right
-now:
+**When a task gets done.** A session gets up to `session.max_goals` of the game's goals and tasks
+that can be done on this device right now, in order: time-bound checks, rechecks, fresh-install work,
+maps, studies, experiments, and unlock goals (nearest target first):
 - `not_before` has passed;
 - for `requires: fresh`, the game on the phone is fresh;
-- for analysis and update, the phone has the required version installed.
+- for a recheck, the phone has the newer version installed;
+- unlock goals wait while a gate (energy, lives, a timer — `sw.py gate`) blocks progress.
 
-Analysis and update close by themselves when all sections are found and all features are documented.
-The player closes the other tasks (`task done`, `task cancel`).
+The analysis closes by itself when no goal is left, the search for features is closed and every
+feature is documented. The player and the post-session review close the goals (`task done`, an
+experiment with `--result`); a done unlock goal creates the feature's study goal.
 
-**How a game is played — advance first.** While `discovery` is open the analysis runs in the
-`advance` mode: move through the content as fast as possible, register features as they appear and
-write every branch down as a case or a task for later. When a gate blocks advancing (energy, lives,
-timer, content, paywall — `sw.py gate`), the mode becomes `cases`: verify what needs no progress; if
-nothing, the game gives the phone up until the gate opens. Surveys and the genre checklist decide when
-the search is over; after that the game is played in `cases` mode until every feature is documented.
+**How a game is played — toward goals.** No level is played without a goal: levels are played only
+for an unlock goal or an experiment. The post-session review (`runbooks/review.md`) closes the search
+for features (`discovery`) as soon as the map is complete, every entry point maps to a feature, every
+locked entry point has an unlock goal and the genre checklist has no unexplained gap.
 
 **The game's state on the phone** — `state/devices/<device>.json`, local.
 - The player records it at the start of a session (`sw.py device-state fresh|progressed`); a human
@@ -267,6 +284,7 @@ dream promotes and demotes skills based on them.
 |---|---|---|---|
 | Player (`sleepwalker-player`) | global knowledge, its own `state/<game>/` | `state/<game>/progress.md`, `inbox.md`, `playbook.md`, `solvers/`; the task and feature journal, the game's state on the phone and `raw/` — through `sw.py` | one game — one device (lock in `sw.py`); commits nothing |
 | The "play" orchestrator | `sw.py claim` responses | nothing (`sw.py claim` writes the planner's tasks to the journal) | does not commit or push |
+| Reviewer (`sleepwalker-reviewer`) | the finished session's `raw/`, `state/<game>/` | goals, discovery and case closures through `sw.py … --game`; `state/<game>/reviews.md` | runs right after each session, never touches the phone |
 | Analyst (`sleepwalker-analyst`) | its machine's `raw/` and `state/`, the worktree | nothing | tools: Read, Grep, Glob |
 | The dream | everything on its machine | `wiki/`, `skills/`, `solvers/`, `dreams/` in the branch `dream/<machine>/<date>` | `sw.py check-zones` before committing |
 | Critic (`sleepwalker-critic`) | the diff and the worktree | nothing | tools: Read, Grep, Glob |

@@ -7,14 +7,19 @@ budget are in the brief. Run every command from the repository root with `-d <de
 ## Goal
 
 The goal for a game is to find **all features** and document how they work by going through **all
-user cases**. Work is organized as **tasks**: the game's list is `sw.py research <game>`, the view
-for humans is `wiki/<game>/tasks.md`. A session gets the tasks that can be done on this device right
-now. Whatever you did not finish or cannot do now, turn into a task for later sessions.
+user cases**. Work is organized as **goals**: the game's list is `sw.py research <game>`, the view
+for humans is `wiki/<game>/tasks.md`. A session gets one to three goals that can be done on this
+device right now, and plays only toward them: there is no point in playing the game without a goal.
+Whatever you did not finish or cannot do now, turn into a goal or a task for later sessions.
 
-Task kinds:
-- `analyze` — analyze the game, version X;
-- `update` — update the docs for a new version;
-- `survey` — walk every screen and map each entry point to a feature (section 3);
+Goal and task kinds:
+- `scout` — map the game: every entry point is open (→ a study goal), locked with its unlock
+  condition (→ an unlock goal) or unclear (→ an experiment);
+- `study` — study one open feature: its screens, tabs and cases;
+- `unlock` — reach the progress that opens a feature ("reach level 20 to unlock Leagues");
+- `experiment` — test a hypothesis that needs play ("winning the race needs about 10 level wins:
+  play levels while the race runs and watch the race score"), then write down the conclusion;
+- `update` — recheck the features on a newer version;
 - `ftue` — play the game from scratch;
 - `replay` — replay a stretch of the game from a fresh install;
 - `followup` — check no earlier than a given time;
@@ -88,37 +93,42 @@ Task kinds:
    A human sees these tasks in `tasks.md` under "Needs a human", and a session on a phone with a
    fresh install does them.
 
-## 3. Play: advance first
+## 3. Play: goals
 
-The repository's job is to collect complete information as fast as possible. The session's `mode`
-(in the answers of `claim` and `start`) says how to play:
+The session's goals are in the brief and in the `start` reply (`tasks`), in order. Play only toward
+them: no level is played just to play. Each goal says when it is done:
 
-- **`advance`** — not all features are found yet. Move through the content as fast as you can:
-  levels, the main loop, new sections. Register every new feature the moment you see it (`feature`,
-  `mark`) and write down every branch you notice as a case (`case` without `--done`) or a task, but
-  do not test them now — unless it costs one or two actions on your way. After each milestone record
-  where you are: `sw.py progress "level 12" --value 12` (new features remember where they were
-  found). Use every free way to go faster: skips such as "Jump to level", free boosters, rewarded ads
-  that give energy or lives. Currency earned in the game may be spent to keep going; real money never.
-- **Advancing is blocked** (out of energy or lives, content behind a timer, a paywall). First try the
-  free ways to continue (a rewarded ad for a refill, a free daily refill, gifts). If there are none,
-  record the gate: `sw.py gate lives --after-minutes 30 --note "0/5 lives, +1 every 30 min"` (types:
-  energy, lives, timer, content, paywall, other; or `--at <ISO>`). The mode becomes `cases`: slow down
-  on purpose and verify open cases that need no progress (menus, shop, collections, settings, event
-  rules). If there is nothing to verify, end the session: the phone goes to another game, and this
-  game comes back when the gate opens. `sw.py gate clear` if it opened earlier.
-- **`cases`** — all features are found (or a gate is on). Go through the open cases of each feature
-  one by one: do it, observe, `case … --done`, numbers into `note`. A feature is `documented` when
-  its cases are done.
-- **Survey task** (`survey-N`) — do it first. Do not advance: walk every screen reachable from where
-  you are — the main screen, the map, every button, icon, badge, tab and popup — `mark` each screen
-  with a title starting with `survey:` and map every entry point to a known feature (`sw.py research
-  <game>`). An entry point that maps to nothing is a new feature: `feature <id> "Name"` right away.
-  Close it with `task done survey-N --new-entries <how many new> --note "<screens walked, what is new>"`.
-  The dream compares the survey frames with the feature map and earlier surveys and decides when the
-  search for features is over — so nobody has to grind 700 levels when everything appears by level 100.
-- `discovery closed` — only when you reached the end of the content ("coming soon", no next level).
-  Otherwise the dream decides.
+- **`scout`** — map the game. Walk every screen you can reach: the main screen, the map, every
+  button, icon, badge, tab and popup; `mark` each screen. For every entry point decide:
+  - open → `feature <id> "Name"` and a study goal (`task add study-<id> … --kind study --feature <id>`);
+  - locked → what opens it (a level, a star count, a chapter; read the lock, the tooltip, the
+    tutorial) → an unlock goal with that target; if the condition is not shown, an experiment
+    ("Leagues open after the first event?") or an unlock goal with your best estimate in `--note`;
+  - unclear (a badge, a timer, an icon without a label) → an experiment.
+
+  Close it with `task done scout-N --new-entries <entry points that were new> --note "what you mapped"`.
+- **`unlock`** — play levels toward the target (the level cycle below), nothing else. When the target
+  is reached, check that the feature opened, `mark` its entry point and `task done`: its study goal
+  appears by itself. If the feature opened earlier or later than the target, say so in `--note`.
+- **`study`** — open the feature and go through it: every screen and tab (`mark` each), every user
+  case (`case … --done`, numbers into `note`). New hypotheses that need play become experiments ("to
+  see the win flow of the race we have to win one"). The goal is done when its cases are done; the
+  feature becomes `documented`.
+- **`experiment`** — state what result confirms the hypothesis before you start (the `plan`), then
+  play toward it and watch the evidence. Close it with `--result confirmed|refuted|inconclusive` and
+  the conclusion in `--note`. A conclusion often opens the next question: a new experiment.
+- **Progress is blocked** (out of energy or lives, a timer, a paywall). Try the free ways first (a
+  rewarded ad for a refill, a free daily refill, gifts). If there are none, record the gate:
+  `sw.py gate lives --after-minutes 30 --note "0/5 lives, +1 every 30 min"` (types: energy, lives,
+  timer, content, paywall, other; or `--at <ISO>`). Unlock goals wait; do the goals that need no
+  progress, or end the session. `sw.py gate clear` if it opened earlier.
+- **Anything you notice outside your goals** — register it (`feature`, `case`, `task add`) and move
+  on. The post-session review turns it into goals.
+- After each milestone record where you are: `sw.py progress "level 12" --value 12` (new features
+  remember where they were found; unlock goals compare it with their target).
+- Whether features are still left to find is decided by the post-session review after each session
+  (`runbooks/review.md`), not by you; `discovery closed` only when you reached the end of the content
+  ("coming soon", no next level).
 
 ### Levels: think first, then play fast
 
@@ -217,16 +227,21 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    - `case <feature> <id> "what to check"` — a user case: every player action and every branch
      (success, failure, not enough resources, repeat, cancel, first time, again);
      `--done` — verified at this step;
-3. **Tasks for later:**
+3. **Goals and tasks for later:**
+   - a locked entry point: `task add unlock-leagues "Reach level 20 to unlock Leagues" --kind unlock --feature leagues --target "level 20" --target-value 20`;
+   - an open feature you are not studying now: `task add study-shop "Study the shop" --kind study --feature shop`;
+   - a hypothesis: `task add race-win "Winning the race needs about 10 level wins" --kind experiment --feature race --plan "play levels while the race runs, note the race score after each win"`;
    - timer: `task add <id> "Open the chest after the timer" --after-hours 8 --feature chest`;
      exact moment — `--at 2026-10-02T09:00`;
    - daily activity: `task add <id> "Claim the day's reward" --kind daily --days 7 --feature daily-reward`
      — one task per day;
    - needs a fresh install: `--requires fresh` (section 2).
 
-   Task done — `task done <id> --note "what I saw"`. No longer relevant (feature removed, duplicate) —
-   `task cancel <id> --reason "…"`. Version analysis and update close by themselves when all
-   sections are found and all features are documented.
+   Task done — `task done <id> --note "what I saw"`; an experiment — `task done <id> --result
+   confirmed|refuted|inconclusive --note "the evidence and the conclusion"`; an unlock goal — when the
+   feature opened (its study goal is created by itself). No longer relevant (feature removed, duplicate)
+   — `task cancel <id> --reason "…"`. The analysis closes by itself when no goal is left, the search
+   for features is closed and every feature is documented.
 4. **Material for the wiki** — as you go, not at the end:
    - `note <type> "fact"` — prices, currencies, timers, rewards, conditions (type: economy, mechanic,
      ui, event, bug, question);
