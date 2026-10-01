@@ -1,0 +1,557 @@
+# Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
+game: com.oakever.akari
+version: 1.0.2
+play_version: 1.0.2
+play_checked: '2026-10-01T02:46:28'
+phone_version: 1.0.2
+discovery: open
+ftue_verified: '2026-10-01'
+progress:
+  text: level 55
+  value: 55.0
+  at: '2026-10-01T04:11:37'
+  session: 20261001-035425-chrono-2FYKPJ
+gate: null
+synced:
+  chrono: '2026-10-01T04:13:01'
+mechanics:
+- id: akari
+  name: Cat placement (Light Up rules)
+  status: mastered
+  method: solver
+  levels:
+    won: 56
+    lost: 0
+    quit: 0
+  recent:
+  - level: level 46
+    result: won
+    seconds: 19
+    model: sonnet
+  - level: level 47
+    result: won
+    seconds: 22
+    model: sonnet
+  - level: level 48
+    result: won
+    seconds: 17
+    model: sonnet
+  - level: level 49
+    result: won
+    seconds: 271
+    model: sonnet
+  - level: level 50
+    result: won
+    seconds: 29
+    model: sonnet
+  - level: level 51
+    result: won
+    seconds: 149
+    model: sonnet
+  - level: level 52
+    result: won
+    seconds: 22
+    model: sonnet
+  - level: level 53
+    result: won
+    seconds: 27
+    model: sonnet
+  - level: level 54
+    result: won
+    seconds: 22
+    model: sonnet
+  - level: level 55
+    result: won
+    seconds: 32
+    model: sonnet
+  note: 'state/com.oakever.akari/solvers/akari.py: backtracking Light Up solver on a hand-read board'
+  best_s: 15
+  solver: solvers/com.oakever.akari/akari.py
+features:
+- id: consent
+  name: Terms and privacy consent
+  status: documented
+  cases:
+  - id: accept
+    text: Accept on first launch leads into the game
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#2
+  - id: links
+    text: Terms of Service and Privacy Policy links open the documents
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#17
+  - id: done-accept
+    text: 'After Accept: Oakever splash and a loading screen with a tip; the Android notification permission
+      prompt (system, not the game) comes next'
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#2
+  page: features/consent.md
+  version_seen: 1.0.2
+- id: tutorial
+  name: Tutorial (FTUE)
+  status: documented
+  cases:
+  - id: rules
+    text: 'Two-page rules tutorial: double tap, row/column occupation, numbered walls; ends with ''You''ve
+      mastered the game rules'''
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#5
+  - id: ftue
+    text: 'FTUE order: consent -> Oakever splash -> loading tip -> notification prompt -> 2-page rules
+      tutorial -> level 1; tips: X marks at level 6, boxes at level 11, Hard label at 10, rate-us after
+      9, first interstitial 15->16, banner from 16'
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#37
+  version_seen: 1.0.2
+  page: features/tutorial.md
+- id: levels
+  name: Level progression
+  status: in_progress
+  cases:
+  - id: back
+    text: Back arrow from a level leads to Home; Home shows 'Level N' to resume
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#16
+  - id: win-screen
+    text: 'Win screen: praise word (Brilliant/Perfect/Incredible/...), cats-in-box animation, ''Level
+      N+1'' button; no reward or currency through level 55'
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#37
+  - id: content-end
+    text: Where content ends (beyond level 55)
+    done: false
+  - id: irregular-board
+    text: 'Boards are not always square grids: level 36 was diamond-shaped (cells outside the shape missing)'
+    done: true
+    source: 20261001-024647-chrono-2FYKPJ#66
+  found_at:
+    text: tutorial 2
+    value: 0.0
+  page: features/levels.md
+  version_seen: 1.0.2
+- id: hearts
+  name: Hearts (mistakes per level)
+  status: in_progress
+  cases:
+  - id: wrong
+    text: 'Wrong placement is rejected immediately: no cat, -1 heart, red X on the cell (game checks each
+      cat against its solution)'
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#29
+  - id: zero
+    text: What happens at 0 hearts
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#26
+  - id: fail-screen
+    text: 'Fail screen: Almost!, Revive (ad) + Restart'
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#23
+  - id: revive
+    text: Revive (rewarded ad) restores 1 heart, board state kept; ad skip via Next then lands on Play
+      Store
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#26
+  - id: one-chance
+    text: After the 2nd wrong cat a bubble says "Meow! Only one chance left!"
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#21
+  - id: fail-restart
+    text: 'Restart on the "Almost!" popup: is there an ad, are hearts reset'
+    done: false
+  found_at:
+    text: tutorial 2
+    value: 0.0
+  page: features/hearts.md
+  version_seen: 1.0.2
+- id: booster-cat
+  name: Cat booster
+  status: documented
+  cases:
+  - id: use
+    text: Cat booster places one correct cat instantly (no explanation, no confirm); count 5 -> 4
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#28
+  - id: empty
+    text: 'Cat booster at 0: the badge shows AD; a rewarded video (about 20 s) gives +1'
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#30
+  found_at:
+    text: tutorial 2
+    value: 0.0
+  page: features/booster-cat.md
+  version_seen: 1.0.2
+- id: booster-hint
+  name: Hint booster (bulb)
+  status: in_progress
+  cases:
+  - id: use
+    text: Hint shows the next logical deduction with an explanation text and highlighted cells; Apply
+      places them; count 5 -> 4
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#26
+  - id: empty
+    text: Hint at 0
+    done: false
+  found_at:
+    text: tutorial 2
+    value: 0.0
+  page: features/booster-hint.md
+  version_seen: 1.0.2
+- id: settings
+  name: Settings
+  status: documented
+  cases:
+  - id: open
+    text: 'Settings from Home: sound, vibration, Help Center, Privacy Policy, Terms of Service, version
+      1.0.2 build 190, user ID'
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#17
+  - id: sound
+    text: Sound toggle off/on
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#17
+  - id: vibration
+    text: Vibration toggle off/on
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#17
+  - id: help
+    text: Help Center opens an in-app Helpshift view (MeowTrail Support)
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#5
+  - id: in-level
+    text: 'In-level settings add a Restart button: an interstitial, then a clean board with 3 hearts;
+      the same spot as Help Center in the Home popup'
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#43
+  found_at:
+    text: tutorial 2
+    value: 0.0
+  page: features/settings.md
+  version_seen: 1.0.2
+- id: x-mark
+  name: X marks (single tap)
+  status: in_progress
+  cases:
+  - id: unlock
+    text: 'Tip introduced at level 6: single tap marks X'
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#12
+  - id: toggle
+    text: 'Tap an X again: removes it? double tap on an X places a cat?'
+    done: false
+  found_at:
+    text: level 5
+    value: 5.0
+- id: home
+  name: Home screen
+  status: seen
+  cases: []
+  found_at:
+    text: level 7
+    value: 7.0
+- id: logo-letters
+  name: TRAIL letter tiles on the home logo
+  status: documented
+  cases:
+  - id: progress
+    text: TRAIL letters are only the logo intro animation on Home, not a progress meta (full TRAIL shown
+      a second later)
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#17
+  found_at:
+    text: level 7
+    value: 7.0
+  version_seen: 1.0.2
+- id: cat-variants
+  name: Cat characters (per level set)
+  status: in_progress
+  cases:
+  - id: which
+    text: 'Cat colour changes between levels: purple 1-7, blue-white 8, yellow-white 9, navy 11, pink
+      12, light blue 13, navy 16, purple 30, dark blue 36, yellow 49, pink 52: is it tied to level sets?'
+    done: false
+  found_at:
+    text: level 7
+    value: 7.0
+- id: rate-us
+  name: Rate us prompt
+  status: in_progress
+  cases:
+  - id: appear
+    text: Appears after winning level 9
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#20
+  - id: close
+    text: 'Closed with X after level 9: it did not come back through level 55'
+    done: true
+    source: 20261001-024647-chrono-2FYKPJ#109
+  - id: stars
+    text: 'Low vs high star rating: feedback form vs Play Store review'
+    done: false
+  found_at:
+    text: level 9
+    value: 9.0
+  page: features/rate-us.md
+  version_seen: 1.0.2
+- id: hard-levels
+  name: Hard levels
+  status: documented
+  cases:
+  - id: label
+    text: Level 10 is labelled 'Hard' on the Next button
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#21
+  - id: diff
+    text: 'Level 10 Hard: same rules and 3 hearts, 8x8 grid, ''Hard'' label under the title; no extra
+      reward seen'
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#22
+  - id: hard-every-10
+    text: 'Hard levels every 10th level: 10, 20, 30, 40, 50 (red tag; 10x10 boards from level 20)'
+    done: true
+    source: 20261001-024647-chrono-2FYKPJ#80
+  found_at:
+    text: level 9
+    value: 9.0
+  page: features/hard-levels.md
+  version_seen: 1.0.2
+- id: ads-interstitial
+  name: Interstitial ads
+  status: in_progress
+  cases:
+  - id: first
+    text: First interstitial appears when going from level 15 to 16
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#32
+  - id: frequency
+    text: 'The real interstitial rule: log ad yes/no for every level start, Restart and Revive'
+    done: false
+  - id: no-ads
+    text: No remove-ads purchase, shop or currency on Home, Settings, win and fail screens through level
+      55
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#61
+  - id: store
+    text: The ad end opens the Play Store page of the advertised game (every time in levels 20-48)
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#32
+  - id: ad-even-levels
+    text: 'Levels 16-48: an interstitial after tapping the button of every even level; Restart and Revive
+      shift the phase and levels 52-54 broke the pattern (rule unknown)'
+    done: true
+    source: 20261001-024647-chrono-2FYKPJ#109
+  - id: ad-after-win-vs-start
+    text: Does the ad ever appear after a win (before the Level N button)? Seen only after tapping the
+      Level button
+    done: false
+  - id: ad-skip
+    text: 'Skip path: Next button, then X corner opens store'
+    done: true
+    source: 20261001-024647-chrono-2FYKPJ#109
+  - id: restart-ad
+    text: Restart triggers interstitial; ad phase counter shifts
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#61
+  found_at:
+    text: level 15
+    value: 15.0
+  page: features/ads-interstitial.md
+  version_seen: 1.0.2
+- id: ads-banner
+  name: Banner ads
+  status: in_progress
+  cases:
+  - id: first
+    text: Bottom banner ad appears in levels from level 16 (after the first interstitial)
+    done: true
+    source: 20261001-003641-chrono-2FYKPJ#34
+  found_at:
+    text: level 15
+    value: 15.0
+- id: rewarded-ads
+  name: Rewarded ads (revive, booster refill)
+  status: in_progress
+  cases:
+  - id: hint-refill
+    text: Hint booster at 0 shows AD badge and refills +1 (verified only for cat booster)
+    done: false
+  - id: revive-1heart
+    text: Revive gives 1 heart not 3 (seen once)
+    done: true
+    source: 20261001-035425-chrono-2FYKPJ#61
+  - id: hint-use
+    text: Use hint booster until 0, then tap AD badge
+    done: false
+  found_at:
+    text: level 49
+    value: 49.0
+- id: help-center
+  name: Help Center (Helpshift)
+  status: in_progress
+  cases:
+  - id: articles
+    text: 'Articles read: revive after fail, more hints. Not read: Gameplay, Settings, Notifications,
+      Ad Issues (remove-ads?), Chat with us'
+    done: false
+  found_at:
+    text: level 48
+    value: 48.0
+  version_seen: 1.0.2
+  page: features/help-center.md
+- id: notifications
+  name: Push notifications
+  status: seen
+  cases:
+  - id: prompt
+    text: The Android notification prompt comes on the first launch and again after a relaunch
+    done: true
+    source: 20261001-024647-chrono-2FYKPJ#1
+  - id: what
+    text: Which notifications the game sends when allowed (Help Center has a Notifications category)
+    done: false
+  found_at:
+    text: tutorial 2
+    value: 0.0
+tasks:
+- id: analyze
+  title: Analyze the game, version 1.0.2
+  kind: analyze
+  requires: any
+  status: open
+  created: '2026-09-30T20:39:39'
+  version: 1.0.2
+  source: external
+  note: find all features and work through all user cases
+- id: ads-frequency
+  title: Measure interstitial frequency (every 2 levels? time-based?) and whether rate-us returns
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T00:57:20'
+  feature: ads-interstitial
+  source: game
+  note: Interstitial (skippable video, Next button top-left ~5s, often followed by a second long end-card/playable
+    ad that needs the top-right corner X which opens the Play Store, then sw.py launch) shown when starting
+    EVERY EVEN level (16,18,20..48 seen in two sessions); none before odd levels. Not time-based. Rate-us
+    did not return in levels 19-48.
+  closed: '2026-10-01T03:16:20'
+  closed_by: 20261001-024647-chrono-2FYKPJ#109
+- id: hearts-zero
+  title: 'Lose all 3 hearts on an easy level once: document fail/revive screen'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T03:16:21'
+  feature: hearts
+  source: game
+  closed: '2026-10-01T03:59:56'
+  closed_by: 20261001-035425-chrono-2FYKPJ#26
+  note: Fail screen Almost! with Revive(ad)/Restart; revive gives 1 heart and keeps board
+- id: settings-help
+  title: Open Help Center, toggle sound/vibration, Restart button in settings, Privacy/ToS links
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T03:16:21'
+  feature: settings
+  source: game
+  closed: '2026-10-01T04:05:57'
+  closed_by: 20261001-035425-chrono-2FYKPJ#43
+  note: Sound/vibration toggles, Help Center (Helpshift in-app), Privacy/ToS (Chrome), Restart (interstitial
+    then fresh board with 3 hearts) all verified
+- id: ads-remove-offer
+  title: Look for remove-ads offer / shop / any currency beyond level 48
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T03:16:21'
+  feature: ads-banner
+  source: game
+  closed: '2026-10-01T04:11:39'
+  closed_by: 20261001-035425-chrono-2FYKPJ#61
+  note: 'No shop, currency or remove-ads purchase on Home, Settings, win, fail screens through level 55.
+    Help Center Ad Issues articles not read: followup ads-help-articles'
+- id: unlock-rewarded
+  title: Check if a rewarded ad exists to refill boosters (cat/hint at 4 each, never refilled)
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T03:16:21'
+  feature: booster-cat
+  source: game
+  closed: '2026-10-01T04:01:17'
+  closed_by: 20261001-035425-chrono-2FYKPJ#30
+  note: Rewarded ad refills booster by +1 when count is 0 (AD badge). Revive also rewarded ad.
+- id: survey-1
+  title: 'Survey every screen: capture all entry points and map them to features'
+  kind: survey
+  requires: any
+  status: done
+  created: '2026-10-01T03:17:00'
+  source: external
+  note: 'Walked Home, Settings (home and in-level), Help Center (Helpshift, categories), Privacy/ToS (Chrome),
+    level screen, fail screen Almost (Revive/Restart), win screen, booster AD badge, rewarded ad, interstitial.
+    New: revive, rewarded-ads, help-center'
+  closed: '2026-10-01T04:11:40'
+  closed_by: 20261001-035425-chrono-2FYKPJ#61
+  new_entries: 3
+  at_progress: level 55
+- id: ads-help-articles
+  title: Read Ad Issues and Settings articles in Help Center for remove-ads / hidden features; try Chat
+    with us
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T04:11:39'
+  feature: help-center
+  source: game
+- id: ads-frequency-log
+  title: Log every level start, Restart and Revive with ad yes/no to find the interstitial rule
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T05:00:00'
+  source: session
+  feature: ads-interstitial
+  note: levels 52-54 had no ad on three starts in a row; "every 2nd start" is not the rule
+- id: hearts-fail-restart
+  title: Lose 3 hearts on an easy level and tap Restart on the Almost! popup
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T05:00:00'
+  source: session
+  feature: hearts
+- id: hint-refill
+  title: Use the hint booster down to 0 and refill it with the AD badge
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T05:00:00'
+  source: session
+  feature: booster-hint
+- id: rate-us-stars
+  title: 'Fresh install: at level 9 pick 1-3 stars and 4-5 stars on rate-us (do not submit a review)'
+  kind: followup
+  requires: fresh
+  status: open
+  created: '2026-10-01T05:00:00'
+  source: session
+  feature: rate-us
+- id: x-mark-toggle
+  title: 'Single tap an empty cell, tap the X again, then double tap an X: what happens'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T05:00:00'
+  source: session
+  feature: x-mark
+- id: daily-return
+  title: 'Next day: open the game and look for daily rewards, offers or a changed Home'
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-01T05:00:00'
+  source: game
+  feature: home
+  not_before: '2026-10-02T04:00:00'
