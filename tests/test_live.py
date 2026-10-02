@@ -15,7 +15,7 @@ shutil.rmtree(T, ignore_errors=True)
 G = "com.maroieqrwlk.unpin"
 w = T / "wiki"
 (w / G).mkdir(parents=True)
-shutil.copy(ROOT / "wiki" / G / "research.yaml", w / G / "research.yaml")
+(w / G / "research.yaml").write_text(f"game: {G}\nfeatures: []\ntasks: []\nmechanics: []\n", encoding="utf-8")
 (w / G / "index.md").write_text("# Pull the Pin\n", encoding="utf-8")
 (w / G / "tasks.md").write_text("# Tasks: Pull the Pin\n\nas of the last dream\n", encoding="utf-8")
 (w / G / "features.md").write_text("# Features: Pull the Pin\n", encoding="utf-8")
