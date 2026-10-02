@@ -1,0 +1,14 @@
+name: close-booster-unlocked
+game: com.king.candycrushsaga
+description: 'Booster Unlocked popup at a level start: Sweet! closes it and shows
+  the board'
+status: candidate
+version: 1.335.1.2
+pre_hash: c4da2b392f2684db
+post_hash: f8fb8a85807f2874
+steps:
+- tap:
+  - 0.5
+  - 0.7044
+  wait: 1.5
+source: 20261001-232021-chrono-2FYKPJ#53-53

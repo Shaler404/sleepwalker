@@ -1,0 +1,18 @@
+name: free-hint-video
+game: com.vitastudio.mahjong
+description: 'In a level with Hint stock 0: tap Hint, then Watch on the Free Hint
+  popup; the rewarded video gives 2 hints (an ad may need sw.py launch to come back)'
+status: candidate
+version: 3.39.1
+pre_hash: 85ef13bc7c90328d
+post_hash: 85ef13bc3c98328d
+steps:
+- tap:
+  - 0.5
+  - 0.9286
+  wait: 1.5
+- tap:
+  - 0.5
+  - 0.6033
+  wait: 1.5
+source: 20261001-110957-chrono-2FYKPJ#57-58

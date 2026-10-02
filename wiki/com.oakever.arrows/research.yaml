@@ -1,24 +1,486 @@
 # Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
 game: com.oakever.arrows
-version: 1.32.0
+version: 1.31.0
 play_version: 1.32.0
-play_checked: '2026-10-01T02:46:28'
+play_checked: '2026-10-01T20:09:25'
 phone_version: 1.31.0
 discovery: open
-ftue_verified: null
-progress: null
+ftue_verified: '2026-10-01'
+progress:
+  text: level 4
+  value: 4.0
+  at: '2026-10-01T20:45:23'
+  session: 20261001-204000-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-01T04:13:01'
-mechanics: []
-features: []
+  chrono: '2026-10-01T23:46:03'
+mechanics:
+- id: arrows-escape
+  name: arrows-escape
+  status: mastered
+  method: manual
+  levels:
+    won: 3
+    lost: 0
+    quit: 0
+  recent:
+  - level: level 1
+    result: won
+    seconds: 24
+    model: opus
+  - level: level 2
+    result: won
+    seconds: 24
+    model: opus
+  - level: level 3
+    result: won
+    seconds: 44
+    model: opus
+  best_s: 24
+  note: two levels in a row within 5 min, but only on tutorial-sized 5x5 boards (levels 1-3);
+    re-judge the method on larger boards [s:20261001-204000-chrono-2FYKPJ#8]
+features:
+- id: consent
+  name: Consent screen (ToS / Privacy)
+  status: in_progress
+  cases:
+  - id: accept-flow
+    text: Accept on "Welcome to Amaze GO!" leads to a splash quote, then the Android notification
+      prompt over tutorial level 1
+    done: true
+    source: 20261001-204000-chrono-2FYKPJ#2
+    version: 1.31.0
+  page: features/consent.md
+  version_seen: 1.31.0
+  found_at:
+    text: fresh install
+    value: 0.0
+- id: level-result
+  name: Level result screen
+  status: in_progress
+  cases:
+  - id: flawless
+    text: 0 mistakes gives 3 stars and "Flawless!"; rows Difficulty, Time, Score, Today's Levels;
+      accuracy, mistakes, hints counters
+    done: true
+    source: 20261001-204000-chrono-2FYKPJ#4
+    version: 1.31.0
+  - id: next-level-delay
+    text: Next Level appears a moment after the win screen (a tap at once does nothing); Next
+      Level opens the next level
+    done: true
+    source: 20261001-204000-chrono-2FYKPJ#6
+    version: 1.31.0
+  page: features/level-result.md
+  version_seen: 1.31.0
+  found_at:
+    text: level 1
+    value: 1.0
+- id: level-hud
+  name: Level screen HUD (lives, theme, settings)
+  status: in_progress
+  cases:
+  - id: back-to-menu
+    text: Back arrow top left in a level opens the main menu
+    done: true
+    source: 20261001-204000-chrono-2FYKPJ#10
+    version: 1.31.0
+  found_at:
+    text: level 2
+    value: 2.0
+  page: features/level-hud.md
+  version_seen: 1.31.0
+- id: main-menu
+  name: Main menu
+  status: in_progress
+  cases:
+  - id: play
+    text: Play / Level N on the main menu opens the current level
+    done: true
+    source: 20261001-204000-chrono-2FYKPJ#16
+    version: 1.31.0
+  found_at:
+    text: level 2
+    value: 2.0
+  page: features/main-menu.md
+  version_seen: 1.31.0
+- id: leagues
+  name: Leagues (Bronze League)
+  status: in_progress
+  cases: []
+  found_at:
+    text: level 2
+    value: 2.0
+  page: features/leagues.md
+  version_seen: 1.31.0
+- id: daily-challenge
+  name: Daily Challenge
+  status: in_progress
+  cases: []
+  found_at:
+    text: level 2
+    value: 2.0
+  page: features/daily-challenge.md
+  version_seen: 1.31.0
+- id: event
+  name: Event (Countryside Caper)
+  status: in_progress
+  cases:
+  - id: lock-tooltip
+    text: Tapping the locked Event card shows "Unlock Countryside Caper at Level 16"
+    done: true
+    source: 20261001-204000-chrono-2FYKPJ#13
+    version: 1.31.0
+  found_at:
+    text: level 3
+    value: 3.0
+  page: features/event.md
+  version_seen: 1.31.0
+- id: settings
+  name: Settings
+  status: in_progress
+  cases:
+  - id: open-close
+    text: Gear on the main menu opens Settings; Android back returns to the main menu
+    done: true
+    source: 20261001-204000-chrono-2FYKPJ#15
+    version: 1.31.0
+  found_at:
+    text: level 3
+    value: 3.0
+  page: features/settings.md
+  version_seen: 1.31.0
+- id: save-progress
+  name: Save Your Progress (cloud save)
+  status: in_progress
+  cases: []
+  found_at:
+    text: level 3
+    value: 3.0
+  page: features/save-progress.md
+  version_seen: 1.31.0
+- id: rate-feedback
+  name: Rate Us / Feedback
+  status: in_progress
+  cases: []
+  found_at:
+    text: level 3
+    value: 3.0
+  page: features/rate-feedback.md
+  version_seen: 1.31.0
+- id: themes
+  name: Color themes (Eye Comfort / Dark Mode)
+  status: in_progress
+  cases:
+  - id: picker
+    text: 'Palette icon in a level opens the picker: default, Eye Comfort (mint), Dark Mode
+      (dark blue); tapping the palette again closes it, a board tap does not'
+    done: true
+    source: 20261001-204000-chrono-2FYKPJ#19
+    version: 1.31.0
+  found_at:
+    text: level 3
+    value: 3.0
+  page: features/themes.md
+  version_seen: 1.31.0
+- id: lives
+  name: Lives (blue drops) and mistakes
+  status: in_progress
+  cases: []
+  found_at:
+    text: level 3
+    value: 3.0
+  page: features/lives.md
+  version_seen: 1.31.0
+- id: hints
+  name: Hints (lightbulb)
+  status: in_progress
+  cases: []
+  found_at:
+    text: level 3
+    value: 3.0
+  page: features/hints.md
+  version_seen: 1.31.0
 tasks:
 - id: analyze
-  title: Analyze the game, version 1.32.0
+  title: Analyze the game
   kind: analyze
   requires: any
   status: open
   created: '2026-09-30T20:39:38'
-  version: 1.32.0
+  version: ''
   source: external
   note: find all features and work through all user cases
+- id: update-1.32.0
+  title: Recheck the features on version 1.32.0
+  kind: update
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:29'
+  version: 1.32.0
+  source: external
+  note: 'a newer version is on Google Play: update the game on the phone, then recheck the documented
+    features and look for new ones'
+- id: scout-1
+  title: 'Map the game: play until the main menu and every entry point is visible; list each
+    entry point as open (a study goal), locked with its unlock condition (an unlock goal) or
+    unclear (an experiment)'
+  kind: scout
+  requires: any
+  status: done
+  created: '2026-10-01T20:09:29'
+  source: external
+  note: 'Main menu (via back arrow in a level): settings gear + carousel of 3 cards: Bronze
+    League (Unlock Lv.11), Daily Challenge Oct 1 (Unlock Lv.20), Event Countryside Caper (Unlock
+    Lv.16, tooltip confirms) + Play Level N. Settings: Sound/Vibration/Music/Guideline toggles,
+    Save Your Progress, Rate Us, Feedback, Privacy, ToS. Level HUD: back, palette (themes: default,
+    Eye Comfort, Dark Mode), gear, 3 drops. Result screen: stars, difficulty, time, score, Today''s
+    Levels, accuracy, mistakes, hints. Unclear: drops penalty, hint button (not shown by level
+    3).'
+  closed: '2026-10-01T20:45:28'
+  closed_by: 20261001-204000-chrono-2FYKPJ#22
+  new_entries: 12
+  at_progress: level 4
+- id: study-main-menu
+  title: 'Study the main menu: Play button, card carousel, lock tooltips'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:11'
+  feature: main-menu
+  source: session
+- id: study-settings
+  title: 'Study Settings: sound/vibration/music toggles, Guideline toggle, Privacy/ToS rows'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:11'
+  feature: settings
+  source: session
+- id: study-themes
+  title: 'Study color themes: Eye Comfort and Dark Mode on the board'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:11'
+  feature: themes
+  source: session
+- id: study-level-result
+  title: 'Study the level result screen: stars vs mistakes, score, time arrow, Today''s Levels'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:12'
+  feature: level-result
+  source: session
+- id: study-save-progress
+  title: Study the Save Your Progress screen (look only, never sign in)
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:12'
+  feature: save-progress
+  source: session
+- id: study-rate-feedback
+  title: Study Rate Us and Feedback (look only, back out of store/email)
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:12'
+  feature: rate-feedback
+  source: session
+- id: unlock-leagues
+  title: Reach level 11 to unlock Bronze League
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:12'
+  feature: leagues
+  source: session
+  target_text: level 11
+  target_value: 11.0
+- id: unlock-event
+  title: Reach level 16 to unlock the Countryside Caper event
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:13'
+  feature: event
+  source: session
+  target_text: level 16
+  target_value: 16.0
+- id: unlock-daily-challenge
+  title: Reach level 20 to unlock Daily Challenge
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:13'
+  feature: daily-challenge
+  source: session
+  target_text: level 20
+  target_value: 20.0
+- id: lives-mistake
+  title: Tapping a blocked arrow costs one blue drop; losing all 3 fails the level
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:13'
+  feature: lives
+  source: session
+  plan: on a level, tap one arrow whose path is blocked and watch the drops and the result screen's
+    mistakes counter; then see what happens at 0 drops (fail screen, retry, ad refill)
+- id: hints-unlock
+  title: A hint button appears on later levels (result screen counts hints used)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:13'
+  feature: hints
+  source: session
+  plan: while playing levels for the unlock goals, watch the level HUD for a hint/lightbulb
+    button and note the level it appears and its cost
+- id: ftue-check
+  title: 'Record the FTUE: consent, notification prompt, tutorial level 1 ''Tap an arrow'''
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-01T20:45:13'
+  feature: consent
+  source: session
+  closed: '2026-10-01T20:45:22'
+  closed_by: 20261001-204000-chrono-2FYKPJ#22
+  note: 'Fresh install played this session: Welcome/consent (Accept) -> splash quote -> Android
+    notification prompt (Don''t allow) -> tutorial level 1 ''Tap an arrow'' with a hand on the
+    down arrow, no HUD -> Flawless result -> level 2 shows full HUD (back, Level N, palette,
+    gear, 3 drops). Main menu is reached only via the back arrow in a level (game opens straight
+    into levels).'
+- id: study-level-hud
+  title: 'Study the level HUD: back arrow, in-level settings gear, drops, guideline toggle effect
+    on the board'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:45:23'
+  feature: level-hud
+  source: session
+- id: study-leagues
+  title: 'Study Leagues (Bronze League): open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:46:36'
+  feature: leagues
+  source: external
+- id: study-daily-challenge
+  title: 'Study Daily Challenge: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:46:36'
+  feature: daily-challenge
+  source: external
+- id: study-event
+  title: 'Study Event (Countryside Caper): open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:46:36'
+  feature: event
+  source: external
+- id: study-lives
+  title: 'Study Lives (blue drops) and mistakes: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:46:36'
+  feature: lives
+  source: external
+- id: study-hints
+  title: 'Study Hints (lightbulb): open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:46:36'
+  feature: hints
+  source: external
+- id: look-ads
+  title: 'Look for ads: record any interstitial after a level, a rewarded-ad offer (extra drops,
+    hint) and a banner, with the level where each first appears'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T20:47:01'
+  feature: level-result
+  source: session
+  plan: while playing levels 4-11, note every full-screen ad between levels, any 'watch ad'
+    button (refill drops on fail, free hint) and a banner on the board; confirmed when the first
+    ad of each type is marked with its level, or none appear by level 11
+- id: look-shop-noads
+  title: Look for a shop, IAP packs or a Remove Ads purchase and where they are reached (none
+    seen on the main menu or settings by level 4)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T20:47:01'
+  feature: main-menu
+  source: session
+  plan: check the main menu, settings, the fail screen and hint purchase flows on levels 4-20
+    for a shop, price tags or a no-ads offer; confirmed when an entry is marked, or absent through
+    level 20 with the reason recorded
+- id: look-retention
+  title: Look for daily rewards, streaks or a login calendar (a typical retention feature not
+    seen yet)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T20:47:01'
+  feature: main-menu
+  source: session
+  plan: on the next session start on a new day, watch for a daily reward popup or streak counter
+    on launch and on the main menu; confirmed when it is marked, or absent after a day-2 launch
+- id: day2-launch-checks
+  title: 'Day-2 launch: notification prompt again?, Daily Challenge card date, Today''s Levels
+    reset'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T00:00:00'
+  feature: level-result
+  source: game
+  not_before: '2026-10-02T00:00:00'
+  note: 'On the first launch of a new day: does the Android notification prompt come back [s:20261001-204000-chrono-2FYKPJ#2];
+    does the locked Daily Challenge card change from ''Oct 1'' [s:20261001-204000-chrono-2FYKPJ#10];
+    does Today''s Levels on the next result restart at 1 [s:20261001-204000-chrono-2FYKPJ#4]'
+- id: difficulty-levels
+  title: Find the first level whose Difficulty is not Normal
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-02T00:00:00'
+  feature: level-result
+  source: session
+  plan: while playing toward the unlock goals, read the Difficulty row on every result screen
+    and the level HUD; confirmed when the first non-Normal level is marked, or none by level
+    20 [s:20261001-204000-chrono-2FYKPJ#4]
+- id: time-arrow
+  title: What the green up arrow next to Time on the result screen means
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-02T00:00:00'
+  feature: level-result
+  source: session
+  plan: level 2 showed a green up arrow at 00:12 after 00:11 on level 1, level 3 none at 00:25
+    [s:20261001-204000-chrono-2FYKPJ#8] [s:20261001-204000-chrono-2FYKPJ#22]; compare the arrow
+    with the time and score of the previous levels over 5+ results
+- id: splash-quote
+  title: Is the splash quote shown on every launch or only after a fresh install
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-02T00:00:00'
+  feature: consent
+  source: session
+  plan: at the next session start, take a frame right after launch; mark the splash quote if
+    it shows (it was seen only once, untagged, after Accept [s:20261001-204000-chrono-2FYKPJ#1])

@@ -1,0 +1,13 @@
+name: story-path-to-next-board
+game: com.king.candycrushsaga
+description: 'FTUE story path screen after a win: Play to load the next level board'
+status: candidate
+version: 1.335.1.2
+pre_hash: c46a6bb13ad4ee06
+post_hash: baff808282f62a7c
+steps:
+- tap:
+  - 0.5
+  - 0.8958
+  wait: 3.0
+source: 20261001-232021-chrono-2FYKPJ#43-43

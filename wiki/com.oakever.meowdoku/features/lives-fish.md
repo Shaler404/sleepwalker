@@ -4,8 +4,8 @@ title: "Fish (3 mistake lives per level)"
 type: feature
 feature: lives-fish
 version_seen: 1.18.0
-verified_at: 2026-10-01
-sources: [20260930-233055-chrono-2FYKPJ, 20261001-013526-chrono-2FYKPJ, 20261001-022624-chrono-2FYKPJ, 20261001-082114-chrono-2FYKPJ]
+verified_at: 2026-10-02
+sources: [20260930-233055-chrono-2FYKPJ, 20261001-013526-chrono-2FYKPJ, 20261001-022624-chrono-2FYKPJ, 20261001-082114-chrono-2FYKPJ, 20261001-115413-chrono-2FYKPJ]
 ---
 
 # Fish (3 mistake lives per level)
@@ -36,6 +36,7 @@ after two wrong cats: one gold fish, two pale, an orange X on each wrong cell [^
 | [Wrong cat](#wrong-cat) | Placing a cat on a wrong cell costs one fish |
 | [Out of Fishes](#out-of-fishes) | The popup at zero fish: Get 3 Fishes (AD) or Restart |
 | [Get 3 Fishes](#get-3-fishes) | Watch a rewarded ad and continue the same board with 3 fish |
+| [Restart on Out of Fishes](#restart-on-out-of-fishes) | Start the level again on a new board, free |
 
 ### Wrong cat
 
@@ -61,12 +62,23 @@ again and the board is kept: the placed cat, the orange X marks and the score 57
 
 ![After the Get 3 Fishes rewarded ad: 3 fish again, board, cat and score 576 kept](../img/20261001-lives-fish-tab-get-3-fishes-afb1c835.webp) [^s5]
 
+### Restart on Out of Fishes
+
+**Restart** (365,1398) on the popup keeps the level number but deals a **new board**: on Hard level 90
+the 9×9 board came back with different colour regions, 3 fish, the Hard tag and the boosters as they
+were (4/4/1). No ad played and nothing was charged; the new board was then won with no mistakes
+[^s11] [^s12] [^s13].
+
+![Hard level 90 after Restart on Out of Fishes: a new 9x9 board with other regions, Score 0, 3 fish, boosters 4/4/1 (the banner ad at the bottom is blacked out)](../img/20261002-lives-fish-restart-new-board-baefc03f.webp) [^s12]
+
 ## How it works
 
 Version 1.18.0.
 
 - 3 fish per level; one wrong cat = −1 fish; 0 fish = "Out of Fishes" [^s3] [^s4].
 - Get 3 Fishes refills all 3 fish for a rewarded ad and keeps the board and score [^s5].
+- Restart on the Out of Fishes popup is free and gives a new board for the same level
+  [^s12].
 - Restart from the in-level settings resets the board, fish back to 3, score 0; boosters spent are
   not refunded [^s8].
 - Lost fish do not change the level score: 1 mistake on a 9×9 board and 2 mistakes on a 10×10 board
@@ -84,11 +96,10 @@ Version 1.18.0.
 | Zero fish | Three wrong cats in one row (level 38) | "Out of Fishes": Remaining 9, Get 3 Fishes (AD), Restart | [^s4] |
 | Refill | Get 3 Fishes | A ~30 s rewarded playable; after relaunching the game: 3 fish, the board and score kept | [^s5] |
 | Restart from settings | Settings → Restart in a level | Board reset, 3 fish, score 0, boosters not refunded | [^s8] |
-| Restart on Out of Fishes | — | not verified | |
+| Restart on Out of Fishes | Three wrong cats on Hard level 90, then Restart | Same level, a new board, 3 fish, no ad or cost; won with 0 mistakes | ✅ [^s12] [^s13] |
 
 ## Not verified
 
-- Restart on the Out of Fishes popup: whether it shows an ad and what it resets.
 - Whether the fish count carries over between levels (each level seen started with 3).
 
 [^s1]: session 20261001-022624-chrono-2FYKPJ, step 37
@@ -101,3 +112,7 @@ Version 1.18.0.
 [^s8]: session 20261001-013526-chrono-2FYKPJ, step 85 — [video at 17:28](https://youtu.be/T86pLfervRE?t=1048)
 [^s9]: session 20261001-082114-chrono-2FYKPJ, step 53
 [^s10]: session 20261001-082114-chrono-2FYKPJ, step 34
+
+[^s11]: session 20261001-115413-chrono-2FYKPJ, step 42 — [video at 15:00](https://youtu.be/ATvMZzri7O8?t=900)
+[^s12]: session 20261001-115413-chrono-2FYKPJ, step 43 — [video at 15:13](https://youtu.be/ATvMZzri7O8?t=913)
+[^s13]: session 20261001-115413-chrono-2FYKPJ, step 44 — [video at 15:54](https://youtu.be/ATvMZzri7O8?t=954)

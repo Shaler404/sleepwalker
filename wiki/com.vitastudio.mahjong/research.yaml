@@ -2,77 +2,83 @@
 game: com.vitastudio.mahjong
 version: 3.39.1
 play_version: 3.39.1
-play_checked: '2026-10-01T02:46:28'
+play_checked: '2026-10-01T20:09:25'
 phone_version: 3.39.1
 discovery: open
 ftue_verified: '2026-10-01'
 progress:
-  text: level 14
-  value: 14.0
-  at: '2026-10-01T03:52:34'
-  session: 20261001-031723-chrono-2FYKPJ
+  text: level 18 won, at Level 19
+  value: 18.0
+  at: '2026-10-01T21:17:10'
+  session: 20261001-205148-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-01T04:13:01'
+  chrono: '2026-10-01T23:46:03'
 mechanics:
 - id: core-match
   name: core-match
   status: broken
-  method: manual
+  method: solver
   levels:
-    won: 11
+    won: 16
     lost: 0
-    quit: 2
+    quit: 7
   recent:
-  - level: level 6
+  - level: level 14
     result: won
-    seconds: 345
+    seconds: 749
     model: opus
-  - level: level 7
-    result: won
-    seconds: 468
-    model: opus
-  - level: level 8
-    result: won
-    seconds: 1055
-    model: opus
-  - level: level 9
+  - level: level 15
     result: quit
-    seconds: 479
+    seconds: 909
     model: opus
-  - level: level 9
+  - level: level 15
     result: won
-    seconds: 576
+    seconds: 568
     model: opus
-  - level: level 10
+  - level: level 16
     result: won
-    seconds: 545
+    seconds: 843
     model: opus
-  - level: level 11
-    result: won
-    seconds: 827
-    model: opus
-  - level: level 12
+  - level: level 17
     result: quit
-    seconds: 1687
+    seconds: 267
     model: opus
-  - level: level 12
+  - level: level 17
     result: won
-    seconds: 841
+    seconds: 861
     model: opus
-  - level: level 13
+  - level: level 18
+    result: quit
+    seconds: 829
+    model: opus
+  - level: level 18
+    result: quit
+    seconds: 146
+    model: sonnet
+  - level: level 18
     result: won
-    seconds: 1086
+    seconds: 1406
     model: opus
+  - level: level 19
+    result: quit
+    seconds: 75
+    model: sonnet
   best_s: 345
+  solver: solvers/com.vitastudio.mahjong/core-match.py
+  note: 'Over budget: typical 14 min per level (L14 12.4, L15 9.2 resumed, L16 13.7,
+    L17 14.4, L18 23.4 from ~45%), budget 5. The local screenshot solver stalled on
+    L18 and L19 (no certain pair; misses blank cards and read a tray tile as "?"),
+    so it is not published; play by hand with the playbook method (certain pair as
+    one call, flip free greens for information). Never hand-tap tiles to probe.'
 features:
 - id: age-gate
   name: Welcome age selection
   status: documented
   cases:
   - id: select-age
-    text: 'First launch: choose age bracket (0-35/35-55/55+); chose 35-55, popup closed straight to main
-      screen, no further questions'
+    text: 'First launch: choose age bracket (0-35/35-55/55+); chose 35-55, popup closed
+      straight to main screen, no further questions'
     done: true
     source: 20260930-203959-chrono-2FYKPJ#2
   version_seen: 3.39.1
@@ -86,8 +92,8 @@ features:
     done: true
     source: 20260930-203959-chrono-2FYKPJ#87
   - id: after-lv1
-    text: After winning level 1 the main screen only changes the button to 'Level 2'; no new sections
-      (shop, leagues, events) appear
+    text: After winning level 1 the main screen only changes the button to 'Level
+      2'; no new sections (shop, leagues, events) appear
     done: true
     source: 20260930-211039-chrono-2FYKPJ#119
 - id: profile
@@ -95,13 +101,13 @@ features:
   status: in_progress
   cases:
   - id: change-avatar-frame
-    text: Pick an illustrated avatar and a colored frame, Save -> 'Saved!' toast, home avatar updated,
-      red dot cleared
+    text: Pick an illustrated avatar and a colored frame, Save -> 'Saved!' toast,
+      home avatar updated, red dot cleared
     done: true
     source: 20260930-203959-chrono-2FYKPJ#17
   - id: frame-list
-    text: 'Frame tab: ''Default'' group of 6 colored frames (brown, green, red, blue, yellow, purple),
-      all free'
+    text: 'Frame tab: ''Default'' group of 6 colored frames (brown, green, red, blue,
+      yellow, purple), all free'
     done: true
     source: 20260930-203959-chrono-2FYKPJ#17
   - id: rename
@@ -114,8 +120,8 @@ features:
     text: Change country from dropdown
     done: false
   - id: level-frame
-    text: 'Frame tab gets a ''Level'' group after level 10: winged blue ''10'' frame; select + Save applies
-      it to the home avatar (red dots cleared)'
+    text: 'Frame tab gets a ''Level'' group after level 10: winged blue ''10'' frame;
+      select + Save applies it to the home avatar (red dots cleared)'
     done: true
     source: 20261001-010125-chrono-2FYKPJ#13
   - id: level-frame-20
@@ -130,8 +136,9 @@ features:
     done: true
     source: 20260930-203959-chrono-2FYKPJ#19
   - id: tiles
-    text: 'Switch tile set Simple -> Classic + Confirm: applied immediately on the level board (blue sides,
-      traditional 萬 characters). Sets: Simple, Classic, Vintage - all free'
+    text: 'Switch tile set Simple -> Classic + Confirm: applied immediately on the
+      level board (blue sides, traditional 萬 characters). Sets: Simple, Classic, Vintage
+      - all free'
     done: true
     source: 20260930-211039-chrono-2FYKPJ#132
   page: features/themes.md
@@ -141,28 +148,29 @@ features:
   status: documented
   cases:
   - id: open
-    text: 'Open settings from gear: 4 toggles + links; closing a sub-popup returns to main screen, not
-      settings'
+    text: 'Open settings from gear: 4 toggles + links; closing a sub-popup returns
+      to main screen, not settings'
     done: true
     source: 20260930-203959-chrono-2FYKPJ#5
   - id: toggles
-    text: 'Music toggle flips ON(green)/OFF(brown) with a crossed-note icon instantly; toggled back ON.
-      Four toggles: music, sound, voice, vibration (audio effect not observable in screenshots)'
+    text: 'Music toggle flips ON(green)/OFF(brown) with a crossed-note icon instantly;
+      toggled back ON. Four toggles: music, sound, voice, vibration (audio effect
+      not observable in screenshots)'
     done: true
     source: 20260930-211039-chrono-2FYKPJ#122
   - id: links
-    text: Feedback / Facebook group / social icons open external apps - not opened (no switching apps);
-      About and Share checked
+    text: Feedback / Facebook group / social icons open external apps - not opened
+      (no switching apps); About and Share checked
     done: true
     source: 20260930-211039-chrono-2FYKPJ#127
   - id: about
-    text: About shows version 3.39.1 with Terms of Service and Privacy Policy links (external web pages,
-      not opened)
+    text: About shows version 3.39.1 with Terms of Service and Privacy Policy links
+      (external web pages, not opened)
     done: true
     source: 20260930-211039-chrono-2FYKPJ#123
   - id: share
-    text: Share with Friends opens the Android share sheet with text '"Match Mahjong tiles, unwind with
-      ease!"...'; closed with Back, nothing sent
+    text: Share with Friends opens the Android share sheet with text '"Match Mahjong
+      tiles, unwind with ease!"...'; closed with Back, nothing sent
     done: true
     source: 20260930-211039-chrono-2FYKPJ#127
   page: features/settings.md
@@ -172,18 +180,21 @@ features:
   status: in_progress
   cases:
   - id: view
-    text: 'Open Save Progress from settings: FB/Google sign-in and Delete Account options'
+    text: 'Open Save Progress from settings: FB/Google sign-in and Delete Account
+      options'
     done: true
     source: 20260930-203959-chrono-2FYKPJ#4
   - id: sign-in
-    text: Sign in with Facebook/Google and restore progress (needs human, account change)
+    text: Sign in with Facebook/Google and restore progress (needs human, account
+      change)
     done: false
 - id: core-match
   name: 'Core loop: tile matching'
   status: in_progress
   cases:
   - id: locked-tap
-    text: 'Tap a blocked tile: tile greys, tooltip ''Locked by left and right'', nothing selected'
+    text: 'Tap a blocked tile: tile greys, tooltip ''Locked by left and right'', nothing
+      selected'
     done: true
     source: 20260930-203959-chrono-2FYKPJ#22
   - id: pair-match
@@ -191,17 +202,19 @@ features:
     done: true
     source: 20260930-211039-chrono-2FYKPJ#80
   - id: picture-tiles
-    text: Picture tiles (painted scenes, e.g. flower basket) match as an ordinary pair, no visible extra
-      reward
+    text: Picture tiles (painted scenes, e.g. flower basket) match as an ordinary
+      pair, no visible extra reward
     done: true
     source: 20260930-203959-chrono-2FYKPJ#82
   - id: resume
-    text: 'Leave level mid-game and re-enter: board state, score and combo tier are preserved'
+    text: 'Leave level mid-game and re-enter: board state, score and combo tier are
+      preserved'
     done: true
     source: 20260930-203959-chrono-2FYKPJ#94
   - id: win
-    text: 'Clear the whole board: ''Intelligent!'' screen with Time / IQ / Combo stats, a ''holders''
-      efficiency line, chest progress ''Reach Level 10'' and a Level N+1 button; no coins'
+    text: 'Clear the whole board: ''Intelligent!'' screen with Time / IQ / Combo stats,
+      a ''holders'' efficiency line, chest progress ''Reach Level 10'' and a Level
+      N+1 button; no coins'
     done: true
     source: 20260930-211039-chrono-2FYKPJ#117
   - id: iq-bonus-tile
@@ -209,26 +222,28 @@ features:
     done: true
     source: 20260930-225122-chrono-2FYKPJ#9
   - id: percentile
-    text: 'Win screen shows ''Beat N% of players!'' line (level 3: 84.31%, ''Extraordinary strategy!'')'
+    text: 'Win screen shows ''Beat N% of players!'' line (level 3: 84.31%, ''Extraordinary
+      strategy!'')'
     done: true
     source: 20260930-221457-chrono-2FYKPJ#39
   - id: win-titles
-    text: 'Win title depends on performance: ''Intelligent!'' (L3, IQ 122, 84%) vs ''Brilliant!'' (L4,
-      IQ 153.6, combo 33, 99.99%)'
+    text: 'Win title depends on performance: ''Intelligent!'' (L3, IQ 122, 84%) vs
+      ''Brilliant!'' (L4, IQ 153.6, combo 33, 99.99%)'
     done: true
     source: 20260930-221457-chrono-2FYKPJ#60
   - id: win-feedback-line
-    text: 'Win screen middle line varies: percentile (''Beat 84.31% of players!'') or accuracy (''You
-      click 0 locked tiles, right matches in every move!'')'
+    text: 'Win screen middle line varies: percentile (''Beat 84.31% of players!'')
+      or accuracy (''You click 0 locked tiles, right matches in every move!'')'
     done: true
     source: 20260930-221457-chrono-2FYKPJ#90
   - id: tile-kinds
-    text: 'Special-looking tiles are ordinary pairs: carved golden tiles, ''official'' face tiles, picture
-      cards (identical picture), IQ+N badge tiles'
+    text: 'Special-looking tiles are ordinary pairs: carved golden tiles, ''official''
+      face tiles, picture cards (identical picture), IQ+N badge tiles'
     done: true
     source: 20260930-225122-chrono-2FYKPJ#76
   - id: resume-mid-level
-    text: Leaving a level mid-way (app killed) and relaunching resumes it with board and tray intact
+    text: Leaving a level mid-way (app killed) and relaunching resumes it with board
+      and tray intact
     done: true
     source: 20261001-031723-chrono-2FYKPJ#4
   - id: relaunch-level-1
@@ -236,9 +251,34 @@ features:
     done: true
     source: 20260930-211039-chrono-2FYKPJ#2
   - id: game-timer
-    text: 'The win-screen time is game time, not wall time (L12 30:29 against 42 min): does it pause during
-      ads?'
+    text: 'The win-screen time is game time, not wall time (L12 30:29 against 42 min):
+      does it pause during ads?'
     done: false
+  - id: greyed-twin
+    text: A board tile whose twin is in the tray was drawn grey while it was locked
+      (monkey, L15) - is grey a 'locked' cue for tray twins?
+    done: false
+  - id: resume-after-back
+    text: Leaving a level with the back arrow keeps the board on re-entry; an app
+      relaunch restarts the level
+    done: true
+    source: 20261001-110957-chrono-2FYKPJ#70
+  - id: resume-after-out-of-space
+    text: 'Quit a level from Out of space, reopen it: the last saved board and tray
+      come back; the moves of the lost attempt are discarded (L18: 204654 opened and
+      lost the ~45% board, 205148 reopened the same board with tray blender + 4-circle)'
+    done: true
+    source: 20261001-205148-chrono-2FYKPJ#1
+  - id: blank-cards
+    text: Blank cards (white face, green frame, red inner border) are ordinary matchable
+      tiles, not face-down greens; the Hint paired two of them on L19
+    done: true
+    source: 20261001-211823-chrono-2FYKPJ#6
+  - id: win-replay
+    text: A cleared board replays as a teal-tinted copy of the start layout before
+      the win screen
+    done: true
+    source: 20261001-063226-chrono-2FYKPJ#30
   page: features/core-match.md
   version_seen: 3.39.1
 - id: ftue
@@ -246,16 +286,18 @@ features:
   status: documented
   cases:
   - id: steps
-    text: 'Level 1 tutorial: 3 steps (match pair; locked tile hint; edge tiles) then full board'
+    text: 'Level 1 tutorial: 3 steps (match pair; locked tile hint; edge tiles) then
+      full board'
     done: true
     source: 20260930-203959-chrono-2FYKPJ#107
   - id: lv2-win
-    text: 'Level 2 cleared: win screen with Time/IQ/Combo, holders line, chest bar 2/10; no new unlock
-      popup after level 2'
+    text: 'Level 2 cleared: win screen with Time/IQ/Combo, holders line, chest bar
+      2/10; no new unlock popup after level 2'
     done: true
     source: 20260930-214524-chrono-2FYKPJ#96
   - id: lv6-shuffle
-    text: 'Level 6: Shuffle unlocked (stock 3), no other new UI on main screen through level 5'
+    text: 'Level 6: Shuffle unlocked (stock 3), no other new UI on main screen through
+      level 5'
     done: true
     source: 20260930-221457-chrono-2FYKPJ#78
   page: features/ftue.md
@@ -269,17 +311,19 @@ features:
     done: true
     source: 20260930-203959-chrono-2FYKPJ#26
   - id: hint
-    text: Hint (Free) highlights a matching free pair in cyan; Free badge stays after use
+    text: Hint (Free) highlights a matching free pair in cyan; Free badge stays after
+      use
     done: true
     source: 20260930-203959-chrono-2FYKPJ#29
   - id: undo
-    text: Undo (Free) returns the last tile placed in the tray to its board spot; after a completed pair
-      (tray empty) it does nothing - matches are not undoable. Free badge stays
+    text: Undo (Free) returns the last tile placed in the tray to its board spot;
+      after a completed pair (tray empty) it does nothing - matches are not undoable.
+      Free badge stays
     done: true
     source: 20260930-211039-chrono-2FYKPJ#80
   - id: shuffle-use
-    text: Shuffle keeps tile positions and reshuffles the faces of all board tiles; the tray is unchanged;
-      stock 2 -> 1
+    text: Shuffle keeps tile positions and reshuffles the faces of all board tiles;
+      the tray is unchanged; stock 2 -> 1
     done: true
     source: 20260930-235817-chrono-2FYKPJ#41
   - id: counts
@@ -287,37 +331,51 @@ features:
     done: true
     source: 20260930-211039-chrono-2FYKPJ#118
   - id: hint-lv2
-    text: 'Hint on level 2: highlights a pair in cyan and a hand points at the tile blocking one of them;
-      counter 5 -> 4'
+    text: 'Hint on level 2: highlights a pair in cyan and a hand points at the tile
+      blocking one of them; counter 5 -> 4'
     done: true
     source: 20260930-214524-chrono-2FYKPJ#96
   - id: undo-count
-    text: Each Undo spends 1 from the counter (10 -> 8 after two undos on level 4); undo keeps the combo
-      going
+    text: Each Undo spends 1 from the counter (10 -> 8 after two undos on level 4);
+      undo keeps the combo going
     done: true
     source: 20260930-221457-chrono-2FYKPJ#44
   - id: shuffle-unlock
-    text: 'Shuffle unlocks at level 6 with no popup: lock icon replaced by stock badge 3'
+    text: 'Shuffle unlocks at level 6 with no popup: lock icon replaced by stock badge
+      3'
     done: true
     source: 20260930-221457-chrono-2FYKPJ#78
   - id: hint-refill
-    text: 'Hint at 0 shows ''+'': ''Free Hint — watch a video to get 2 Hints'' (Get Two)'
+    text: 'Hint at 0 shows ''+'': ''Free Hint — watch a video to get 2 Hints'' (Get
+      Two)'
     done: true
     source: 20261001-010125-chrono-2FYKPJ#47
   - id: revive-stock
-    text: Revive stock went 3->2->1->0 (L8-L9); each Revive or '-4 undo' revive puts all 4 tray tiles
-      back on the board; '-4 to revive' is hidden when Undo < 4
+    text: Revive stock went 3->2->1->0 (L8-L9); each Revive or '-4 undo' revive puts
+      all 4 tray tiles back on the board; '-4 to revive' is hidden when Undo < 4
     done: true
     source: 20260930-225122-chrono-2FYKPJ#76
   - id: revive-zero
-    text: 'Out of space with Revive 0: ''Revive'' with a video icon (rewarded) and Restart'
+    text: 'Out of space with Revive 0: ''Revive'' with a video icon (rewarded) and
+      Restart'
     done: true
     source: 20261001-010125-chrono-2FYKPJ#35
   - id: hint-use
-    text: 'Hint highlights a matching set in cyan: the tray tile and its free twin on the board (here
-      a bird half-hidden under a green tile); stock 1 -> 0 (''+'')'
+    text: 'Hint highlights a matching set in cyan: the tray tile and its free twin
+      on the board (here a bird half-hidden under a green tile); stock 1 -> 0 (''+'')'
     done: true
     source: 20260930-235817-chrono-2FYKPJ#48
+  - id: shuffle-moves-tiles
+    text: 'Shuffle keeps the slots of the layout but moves the tiles between them,
+      face-down greens included (L15: greens in other slots after the shuffle); the
+      tray is kept'
+    done: true
+    source: 20261001-063226-chrono-2FYKPJ#59
+  - id: hint-dead-end
+    text: 'Hint with no free pair on the board: it only makes the Shuffle button glow
+      and is still spent (2 -> 1)'
+    done: true
+    source: 20261001-205148-chrono-2FYKPJ#24
   page: features/boosters.md
   version_seen: 3.39.1
 - id: score-bar
@@ -325,18 +383,18 @@ features:
   status: documented
   cases:
   - id: milestones
-    text: Level 1 final IQ 111.3 with bar past 90 but below 180; IQ is shown on the win screen as the
-      level score
+    text: Level 1 final IQ 111.3 with bar past 90 but below 180; IQ is shown on the
+      win screen as the level score
     done: true
     source: 20260930-211039-chrono-2FYKPJ#117
   - id: iq-record
-    text: 'Mid-level overlay ''IQ: New Record! 111.7'' with a crown when IQ passes the best; win screen
-      marks IQ with a crown'
+    text: 'Mid-level overlay ''IQ: New Record! 111.7'' with a crown when IQ passes
+      the best; win screen marks IQ with a crown'
     done: true
     source: 20260930-214524-chrono-2FYKPJ#96
   - id: iq-bonus
-    text: An IQ+N pair adds about N IQ (IQ+5 ≈ +5, IQ+10 ≈ +10.5, measured on the bar); a normal pair
-      about 1
+    text: An IQ+N pair adds about N IQ (IQ+5 ≈ +5, IQ+10 ≈ +10.5, measured on the
+      bar); a normal pair about 1
     done: true
     source: 20260930-225122-chrono-2FYKPJ#24
   page: features/score-bar.md
@@ -346,36 +404,43 @@ features:
   status: in_progress
   cases:
   - id: build
-    text: 'Consecutive quick matches: tray fills, mascot shows ''Good'' + ''Combo xN'''
+    text: 'Consecutive quick matches: tray fills, mascot shows ''Good'' + ''Combo
+      xN'''
     done: true
     source: 20260930-203959-chrono-2FYKPJ#39
   - id: reset
     text: What breaks the combo; what the max tier gives
     done: false
   - id: tray-color
-    text: 'Combo tier is shown by the tray border color: brown (none) -> green -> blue -> purple; level
-      1 max Combo 19 shown on win screen'
+    text: 'Combo tier is shown by the tray border color: brown (none) -> green ->
+      blue -> purple; level 1 max Combo 19 shown on win screen'
     done: true
     source: 20260930-211039-chrono-2FYKPJ#148
   - id: tiers
-    text: 'Combo tiers seen on level 2: x10 ''Great'' (blue tray with ice cubes), x15 ''Excellent'' (purple
-      tray, mascot with rose); ''Perfect'' text on a match; combo counter resets when the chain breaks'
+    text: 'Combo tiers seen on level 2: x10 ''Great'' (blue tray with ice cubes),
+      x15 ''Excellent'' (purple tray, mascot with rose); ''Perfect'' text on a match;
+      combo counter resets when the chain breaks'
     done: true
     source: 20260930-214524-chrono-2FYKPJ#96
   - id: amazing-record
-    text: 'Combo x20 = ''Amazing'' tier (gold/orange tray); passing the best combo shows ''Combo: New
-      Record! N'' with a crown'
+    text: 'Combo x20 = ''Amazing'' tier (gold/orange tray); passing the best combo
+      shows ''Combo: New Record! N'' with a crown'
     done: true
     source: 20260930-221457-chrono-2FYKPJ#44
   - id: win-titles
-    text: 'Win titles seen: Intelligent!, Brilliant!, Perceptive! (slow L8, ''Not an easy challenge, but
-      you showed true skill!'')'
+    text: 'Win titles seen: Intelligent!, Brilliant!, Perceptive! (slow L8, ''Not
+      an easy challenge, but you showed true skill!'')'
     done: true
     source: 20260930-225122-chrono-2FYKPJ#76
   - id: x40
     text: 'Combo x40: "Unbelievable x2", rainbow tray'
     done: true
     source: 20260930-221457-chrono-2FYKPJ#88
+  - id: carry-over
+    text: 'Combo counter: L14 showed Combo x15 after the first 6 matches and x30 later,
+      win screen Combo 32 - does combo count across matches without a break rule?
+      what breaks it?'
+    done: false
   page: features/combo.md
   version_seen: 3.39.1
 - id: level-options
@@ -383,11 +448,13 @@ features:
   status: documented
   cases:
   - id: open
-    text: Hamburger in level opens Options with toggles, Theme, How to Play, No Ads, Restart
+    text: Hamburger in level opens Options with toggles, Theme, How to Play, No Ads,
+      Restart
     done: true
     source: 20260930-203959-chrono-2FYKPJ#83
   - id: close-sub
-    text: Closing a sub-popup (No Ads) closes the whole Options menu and returns to the board
+    text: Closing a sub-popup (No Ads) closes the whole Options menu and returns to
+      the board
     done: true
     source: 20260930-203959-chrono-2FYKPJ#86
   page: features/level-options.md
@@ -410,8 +477,9 @@ features:
   status: documented
   cases:
   - id: open
-    text: 'Options > How to Play: 2 pages (match same tiles via tray; non-adjacent tiles can be matched;
-      top tiles unlock lower; edge tiles unlock inner); Next / back / ''Get it'''
+    text: 'Options > How to Play: 2 pages (match same tiles via tray; non-adjacent
+      tiles can be matched; top tiles unlock lower; edge tiles unlock inner); Next
+      / back / ''Get it'''
     done: true
     source: 20260930-211039-chrono-2FYKPJ#135
   version_seen: 3.39.1
@@ -421,8 +489,8 @@ features:
   status: in_progress
   cases:
   - id: on-no-trigger
-    text: 'Auto Complete ON: with an empty tray and 4 free tiles left (level 2) the game did not auto-finish
-      in 8 s; the last pairs were matched by hand'
+    text: 'Auto Complete ON: with an empty tray and 4 free tiles left (level 2) the
+      game did not auto-finish in 8 s; the last pairs were matched by hand'
     done: true
     source: 20260930-214524-chrono-2FYKPJ#96
   - id: one-tile
@@ -430,8 +498,8 @@ features:
     done: true
     source: 20260930-225122-chrono-2FYKPJ#76
   - id: fired-l11
-    text: Auto Complete probably finished L11 with about 12 tiles left and an empty tray (the finish happened
-      behind popups)
+    text: Auto Complete probably finished L11 with about 12 tiles left and an empty
+      tray (the finish happened behind popups)
     done: false
   page: features/auto-complete.md
   version_seen: 3.39.1
@@ -440,26 +508,29 @@ features:
   status: documented
   cases:
   - id: open
-    text: Thumbs-up button on main (appears after first level visit) opens Achievements screen
+    text: Thumbs-up button on main (appears after first level visit) opens Achievements
+      screen
     done: true
     source: 20260930-203959-chrono-2FYKPJ#88
   - id: categories
-    text: 'Categories: 1st-Place Finishes, League Reached, Levels Cleared, Active Days, First-Try Wins
-      (+ maybe more below); Active Days counts from day 1'
+    text: 'Categories: 1st-Place Finishes, League Reached, Levels Cleared, Active
+      Days, First-Try Wins (+ maybe more below); Active Days counts from day 1'
     done: true
     source: 20260930-203959-chrono-2FYKPJ#89
   - id: name-colors
-    text: 'Info button opens Name Colors: 5 nickname colors unlocked by achievement points, next at 8'
+    text: 'Info button opens Name Colors: 5 nickname colors unlocked by achievement
+      points, next at 8'
     done: true
     source: 20260930-203959-chrono-2FYKPJ#91
   - id: levels-cleared
-    text: After winning level 1, Levels Cleared shows 1/50, 1/200, 1/500 (tiers continue to 1000, 2000,
-      5000); 1st-place tiers 1/5/15/30/60/100; League Reached has 6 league mascots, all 0/1
+    text: After winning level 1, Levels Cleared shows 1/50, 1/200, 1/500 (tiers continue
+      to 1000, 2000, 5000); 1st-place tiers 1/5/15/30/60/100; League Reached has 6
+      league mascots, all 0/1
     done: true
     source: 20260930-211039-chrono-2FYKPJ#146
   - id: first-try
-    text: First-Try Wins counts level 1 as 1/30 even though Revive was used once; Active Days 1/7..1/365;
-      Levels Cleared tiers up to 5000
+    text: First-Try Wins counts level 1 as 1/30 even though Revive was used once;
+      Active Days 1/7..1/365; Levels Cleared tiers up to 5000
     done: true
     source: 20260930-211039-chrono-2FYKPJ#147
   version_seen: 3.39.1
@@ -469,57 +540,73 @@ features:
   status: in_progress
   cases:
   - id: tiers
-    text: 'League names disagree: the Bronze League intro showed five statues (bronze, gold, jade, amethyst,
-      crowned king); the ladder arrows show Bronze, Silver, Gold, then a locked 4th league; Glory is above'
+    text: 'League names disagree: the Bronze League intro showed five statues (bronze,
+      gold, jade, amethyst, crowned king); the ladder arrows show Bronze, Silver,
+      Gold, then a locked 4th league; Glory is above'
     done: true
     source: 20260930-235817-chrono-2FYKPJ#43
   - id: unlock
-    text: 'Leagues unlock after winning level 10: Bronze League intro popup on the next Level tap'
+    text: 'Leagues unlock after winning level 10: Bronze League intro popup on the
+      next Level tap'
     done: true
     source: 20260930-235817-chrono-2FYKPJ#43
   - id: not-by-l7
-    text: No league / competition entry on main screen through level 6 (checked after levels 3 and 6)
+    text: No league / competition entry on main screen through level 6 (checked after
+      levels 3 and 6)
     done: true
     source: 20260930-221457-chrono-2FYKPJ#93
   - id: score
-    text: League points come from Elite 福 pairs; x2 levels double them (4 points after L11, +4 on L12,
-      +8 on L13)
+    text: League points come from Elite 福 pairs; x2 levels double them (4 points after
+      L11, +4 on L12, +8 on L13)
     done: true
     source: 20261001-031723-chrono-2FYKPJ#95
   - id: end-of-event
     text: 'End of a league event: promotion / demotion and rewards'
     done: false
   - id: tutorial
-    text: League tutorial appears mid-level after the first Elite Tile pair; then the leaderboard with
-      the new rank
+    text: League tutorial appears mid-level after the first Elite Tile pair; then
+      the leaderboard with the new rank
     done: true
     source: 20260930-235817-chrono-2FYKPJ#65
-  - id: heart
-    text: 'Heart counter next to each player on the leaderboard: what it is (likes?)'
-    done: false
   - id: glory-rules
-    text: 'League info (i) 2 pages: Elite Tiles, Top 10 promoted, rewards at timer end; Glory star tiers
-      and star gains/losses'
+    text: 'League info (i) 2 pages: Elite Tiles, Top 10 promoted, rewards at timer
+      end; Glory star tiers and star gains/losses'
     done: true
     source: 20261001-010125-chrono-2FYKPJ#5
   - id: league-ladder
-    text: 'Ladder arrows: Bronze, Silver, Gold, then a 4th league (locked, name not shown)'
+    text: 'Ladder arrows: Bronze, Silver, Gold, then a 4th league (locked, name not
+      shown)'
     done: true
     source: 20261001-010125-chrono-2FYKPJ#9
   - id: reward-preview
-    text: 'Tapping a leaderboard reward gift: does it show contents? (rank-1 gift: nothing happened)'
+    text: 'Tapping a leaderboard reward gift: does it show contents? (rank-1 gift:
+      nothing happened)'
     done: true
     source: 20261001-010125-chrono-2FYKPJ#9
   - id: elite-x2-duration
-    text: Find what grants the x2 Elite tag on the level button (seen L11-L13, gone on L14) and how long
-      it lasts
+    text: Find what grants the x2 Elite tag on the level button (seen L11-L13, gone
+      on L14) and how long it lasts
     done: false
   - id: names-above-gold
     text: Names of the leagues between Gold and Glory
     done: false
   - id: own-row
-    text: 'The chevron on the own leaderboard row and a tap on another player: what opens'
+    text: 'A tap on another player''s league row: what opens (the own-row chevron
+      is case own-row-play)'
     done: false
+  - id: elite-counter
+    text: In a level, a matched 福 pair flies to a counter at the right edge of the
+      tray ('1'); league points +4 per pair without x2, +8 with x2
+    done: true
+    source: 20261001-063226-chrono-2FYKPJ#64
+  - id: heart-likes
+    text: 'Heart counter on each league row (own heart red with a count, others grey):
+      what it is and what tapping a heart does (merged with the duplicate case heart)'
+    done: false
+  - id: own-row-play
+    text: 'League board: the own-row chevron starts the current level'
+    done: true
+    source: 20261001-110957-chrono-2FYKPJ#70
   page: features/leagues.md
   version_seen: 3.39.1
 - id: tray
@@ -527,17 +614,18 @@ features:
   status: documented
   cases:
   - id: fill
-    text: Tiles whose pair cannot be completed go into the 4-slot tray; full tray -> 'Out of space' popup
-      with Revive (Free) / Restart
+    text: Tiles whose pair cannot be completed go into the 4-slot tray; full tray
+      -> 'Out of space' popup with Revive (Free) / Restart
     done: true
     source: 20260930-211039-chrono-2FYKPJ#77
   - id: revive
-    text: 'Revive (Free) on Out of space: all tray tiles return to their board spots, tray emptied'
+    text: 'Revive (Free) on Out of space: all tray tiles return to their board spots,
+      tray emptied'
     done: true
     source: 20260930-211039-chrono-2FYKPJ#78
   - id: revive-stock
-    text: From level 2+ Out of space offers Revive with a stock badge (5), an alternative '-4 undo to
-      revive', and Restart; Revive returns all tray tiles to the board
+    text: From level 2+ Out of space offers Revive with a stock badge (5), an alternative
+      '-4 undo to revive', and Restart; Revive returns all tray tiles to the board
     done: true
     source: 20260930-221457-chrono-2FYKPJ#60
   - id: revive-stock-after
@@ -551,17 +639,24 @@ features:
   status: in_progress
   cases:
   - id: progress
-    text: Win screen shows a 10-segment bar to a red chest; 1 segment filled after level 1
+    text: Win screen shows a 10-segment bar to a red chest; 1 segment filled after
+      level 1
     done: true
     source: 20260930-211039-chrono-2FYKPJ#117
   - id: open-lv10
-    text: 'Level-10 chest opens after winning L10: +1 Hint, +1 Undo (by stock change); next goal ''Reach
-      Level 20'''
+    text: 'Level-10 chest opens after winning L10: +1 Hint, +1 Undo (by stock change);
+      next goal ''Reach Level 20'''
     done: true
     source: 20260930-235817-chrono-2FYKPJ#42
   - id: watch-animation
-    text: Watch the chest-opening animation at level 20 without tapping to read the exact reward list
+    text: Watch the chest-opening animation at level 20 without tapping to read the
+      exact reward list
     done: false
+  - id: counts-since-l10
+    text: 'After the L10 chest the bar counts levels won since L10: 4/10 after L14,
+      7/10 after L17, 8/10 after L18 (goal Reach Level 20)'
+    done: true
+    source: 20261001-205148-chrono-2FYKPJ#72
   page: features/level-chest.md
   version_seen: 3.39.1
 - id: colorful-effects
@@ -569,9 +664,9 @@ features:
   status: documented
   cases:
   - id: toggle
-    text: 'Colorful Effects OFF (level 2) vs ON (level 3): match shards are plain white in both, combo
-      tray still turns blue/purple in both; no difference visible in screenshots (effect may be subtle
-      or sound/particle-only)'
+    text: 'Colorful Effects OFF (level 2) vs ON (level 3): match shards are plain
+      white in both, combo tray still turns blue/purple in both; no difference visible
+      in screenshots (effect may be subtle or sound/particle-only)'
     done: true
     source: 20260930-214524-chrono-2FYKPJ#108
   version_seen: 3.39.1
@@ -580,8 +675,8 @@ features:
   status: in_progress
   cases:
   - id: meaning
-    text: The panda+padlock badge is the locked league Elite Tile; after the L10 win it becomes a golden
-      福 tile
+    text: The panda+padlock badge is the locked league Elite Tile; after the L10 win
+      it becomes a golden 福 tile
     done: true
     source: 20260930-235817-chrono-2FYKPJ#65
   found_at:
@@ -592,18 +687,24 @@ features:
   status: in_progress
   cases:
   - id: banner
-    text: Read the full mid-level banner '...ak in Hard levels!' and find when Hard levels appear and
-      what the streak gives
+    text: Read the full mid-level banner '...ak in Hard levels!' and find when Hard
+      levels appear and what the streak gives
     done: false
   - id: first-hard-level
-    text: 'Level 10 is the first Hard level: red ''Level 10 / Hard'' button on the L9 win screen'
+    text: 'Level 10 is the first Hard level: red ''Level 10 / Hard'' button on the
+      L9 win screen'
     done: true
     source: 20260930-235817-chrono-2FYKPJ#21
   - id: win-hard
-    text: 'Win a Hard level: title Genius!, text ''This HARD level was no match for your skills.''; the
-      next button gets an x2 tag'
+    text: 'Win a Hard level: title Genius!, text ''This HARD level was no match for
+      your skills.''; the next button gets an x2 tag'
     done: true
     source: 20260930-235817-chrono-2FYKPJ#41
+  - id: not-hard-11-19
+    text: Levels 11-19 are not Hard (no Hard banner or red button); the only Hard
+      level so far is L10, so the interval is at least 10
+    done: true
+    source: 20261001-205148-chrono-2FYKPJ#73
   found_at:
     text: level 7
     value: 7.0
@@ -614,13 +715,19 @@ features:
   status: in_progress
   cases:
   - id: seen
-    text: 'A banner slides across the top mid-level and on the win screen: ''X is now the highest level
-      player today!'', ''...: DeadlyFerret with 191 iq!'', ''897654 player...'''
+    text: 'A banner slides across the top mid-level and on the win screen: ''X is
+      now the highest level player today!'', ''...: DeadlyFerret with 191 iq!'', ''897654
+      player...'''
     done: true
     source: 20260930-225122-chrono-2FYKPJ#76
   - id: tap
     text: 'Tap the ticker: does it open a leaderboard or leagues?'
     done: false
+  - id: milestones
+    text: 'During a normal level the ticker also announces other players'' milestones:
+      ''...streak in Hard levels!'', ''...just broke into the Top 55 levels!'''
+    done: true
+    source: 20261001-063226-chrono-2FYKPJ#9
   found_at:
     text: level 8
     value: 8.0
@@ -629,8 +736,8 @@ features:
   status: in_progress
   cases:
   - id: first-win-of-day
-    text: First level won on a new calendar day shows the Daily Victories popup and adds a leaf (count
-      2 on day 2)
+    text: First level won on a new calendar day shows the Daily Victories popup and
+      adds a leaf (count 2 on day 2)
     done: true
     source: 20260930-235817-chrono-2FYKPJ#20
   - id: gift-day4
@@ -647,8 +754,8 @@ features:
     done: true
     source: 20260930-235817-chrono-2FYKPJ#67
   - id: calendar-screen
-    text: 'Main leaf pill (streak count) opens a monthly Daily Victories calendar: day streak, won days
-      gold, chests at 10/20/30 won days'
+    text: 'Main leaf pill (streak count) opens a monthly Daily Victories calendar:
+      day streak, won days gold, chests at 10/20/30 won days'
     done: true
     source: 20261001-010125-chrono-2FYKPJ#1
   - id: month-chests
@@ -667,20 +774,44 @@ features:
   status: in_progress
   cases:
   - id: flip
-    text: 'A free face-down green on tap: seen both flipping face up in place (L11, L12 resume) and going
-      straight into the tray (L12); the rule is unsettled'
-    done: false
+    text: A tap on a free face-down green flips it face up in place (no tray slot);
+      settled on L17 (earlier the rule looked unsettled)
+    done: true
+    source: 20261001-110957-chrono-2FYKPJ#32
   - id: first-seen
     text: 'First level with face-down tiles: level 11 (first after leagues unlock)'
     done: true
     source: 20260930-235817-chrono-2FYKPJ#51
   - id: locked-tap
-    text: 'Tap a locked face-down tile: message or nothing?'
-    done: false
-  - id: locked-peek
-    text: A locked green shows its face on tap (peek) and stays
+    text: 'Tap a covered (locked) face-down green: nothing happens, it stays face
+      down and nothing enters the tray'
     done: true
-    source: 20261001-010125-chrono-2FYKPJ#64
+    source: 20261001-205148-chrono-2FYKPJ#18
+  - id: locked-peek
+    text: 'Reopened: a locked green was noted to show its face on tap (L12, 20261001-010125#64),
+      but on L18 two covered greens ignored taps (case locked-tap); was the L12 green
+      actually free?'
+    done: false
+  - id: first-tap
+    text: 'First tap on a face-down green: a hinted/free green went straight into
+      the tray; others showed their face in place and a 2nd tap took them; the shown
+      face flips back when another green is tapped'
+    done: true
+    source: 20261001-063226-chrono-2FYKPJ#64
+  - id: one-reveal-at-a-time
+    text: 'Only one revealed face-down tile stays face-up: revealing another flips
+      the previous back'
+    done: true
+    source: 20261001-083725-chrono-2FYKPJ#43
+  - id: straight-to-tray
+    text: 'Why does a free green sometimes go straight into the tray on the 1st tap
+      (L16: 3 of 9) instead of flipping? Compare layer/position'
+    done: false
+  - id: flip-rule
+    text: A tap on a free green flips it in place (no tray slot); one face-up green
+      at a time; a seen green goes straight to the tray
+    done: true
+    source: 20261001-110957-chrono-2FYKPJ#71
   found_at:
     text: level 11
     value: 11.0
@@ -695,7 +826,8 @@ features:
     done: true
     source: 20260930-235817-chrono-2FYKPJ#67
   - id: after-league-standings
-    text: Notification prompt reappears after the post-level league standings (L12); X closes it
+    text: Notification prompt reappears after the post-level league standings (L12);
+      X closes it
     done: true
     source: 20261001-031723-chrono-2FYKPJ#53
   - id: relaunch
@@ -710,23 +842,37 @@ features:
   status: in_progress
   cases:
   - id: revive-ad
-    text: 'Out of space with Revive stock 0: ''Revive'' with a video icon plays a rewarded ad; after it
-      the tray tiles go back to the board'
+    text: 'Out of space with Revive stock 0: ''Revive'' with a video icon plays a
+      rewarded ad; after it the tray tiles go back to the board'
     done: true
     source: 20261001-010125-chrono-2FYKPJ#43
   - id: free-hint
-    text: 'Hint with stock 0: ''Free Hint'' popup - watch a video (Google end card ''Reward granted'',
-      X top-left) -> Hint stock 2'
+    text: 'Hint with stock 0: ''Free Hint'' popup - watch a video (Google end card
+      ''Reward granted'', X top-left) -> Hint stock 2'
     done: true
     source: 20261001-010125-chrono-2FYKPJ#47
   - id: free-undo-shuffle
     text: 'Undo / Shuffle ''+'' with stock 0: same video offer? amounts'
-    done: false
+    done: true
+    source: 20261001-063226-chrono-2FYKPJ#63
   - id: lost-reward-recovery
-    text: A rewarded ad interrupted (app relaunched) delivers the reward on next launch via 'Ad Reward
-      Delivered' popup
+    text: A rewarded ad interrupted (app relaunched) delivers the reward on next launch
+      via 'Ad Reward Delivered' popup
     done: true
     source: 20261001-031723-chrono-2FYKPJ#0
+  - id: undo-plus-stock0
+    text: 'Undo ''+'' at stock 0 opens Free Undo: one video = 2 Undos'
+    done: true
+    source: 20261001-063226-chrono-2FYKPJ#2
+  - id: shuffle-plus-stock0
+    text: 'Shuffle ''+'' at stock 0 opens Free Shuffle: one video = 1 Shuffle'
+    done: true
+    source: 20261001-063226-chrono-2FYKPJ#63
+  - id: missed-reward-redelivery
+    text: A rewarded ad whose reward was not granted (ad closed via relaunch) is re-delivered
+      on the next launch via 'Ad Reward Delivered' popup
+    done: true
+    source: 20261001-083725-chrono-2FYKPJ#0
   found_at:
     text: level 12
     value: 12.0
@@ -734,17 +880,18 @@ features:
   version_seen: 3.39.1
 tasks:
 - id: analyze
-  title: Analyze the game, version 3.39.1
+  title: Analyze the game
   kind: analyze
   requires: any
   status: open
   created: '2026-09-30T20:39:37'
-  version: 3.39.1
+  version: ''
   source: external
   note: find all features and work through all user cases
 - id: continue-ftue
-  title: 'Continue FTUE from level 1 (board half cleared): finish level 1, record win screen and what
-    unlocks up to level 10 (shuffle at Lv 6, leagues, events, shop)'
+  title: 'Continue FTUE from level 1 (board half cleared): finish level 1, record
+    win screen and what unlocks up to level 10 (shuffle at Lv 6, leagues, events,
+    shop)'
   kind: ftue
   requires: any
   status: cancelled
@@ -753,8 +900,8 @@ tasks:
   source: session
   closed: '2026-09-30T21:43:48'
   closed_by: 20260930-211039-chrono-2FYKPJ#148
-  note: Level 1 part done (win screen recorded); superseded by continue-ftue-lv2 which starts from level
-    2
+  note: Level 1 part done (win screen recorded); superseded by continue-ftue-lv2 which
+    starts from level 2
 - id: leagues-unlock
   title: Find when leagues / 1st-place competition unlock and document them
   kind: followup
@@ -765,9 +912,10 @@ tasks:
   source: game
   closed: '2026-10-01T00:35:35'
   closed_by: 20260930-235817-chrono-2FYKPJ#67
-  note: 'Leagues unlock after winning L10 (the first Hard level): Bronze League intro popup on the Level
-    11 tap, matchmaking into a group of 50, mid-level tutorial after the first Elite Tile pair, leaderboard
-    with a ~24 h timer, Top 10 promoted. 5 tiers shown (bronze, gold, jade, amethyst, crowned king)'
+  note: 'Leagues unlock after winning L10 (the first Hard level): Bronze League intro
+    popup on the Level 11 tap, matchmaking into a group of 50, mid-level tutorial
+    after the first Elite Tile pair, leaderboard with a ~24 h timer, Top 10 promoted.
+    5 tiers shown (bronze, gold, jade, amethyst, crowned king)'
 - id: undo-recheck
   title: Recheck Undo booster behaviour after a match
   kind: followup
@@ -778,10 +926,11 @@ tasks:
   source: game
   closed: '2026-09-30T21:25:44'
   closed_by: 20260930-211039-chrono-2FYKPJ#80
-  note: Undo returns the last tray tile to the board; with an empty tray (right after a completed pair)
-    it is a no-op, which explains the earlier 'no effect' observations
+  note: Undo returns the last tray tile to the board; with an empty tray (right after
+    a completed pair) it is a no-op, which explains the earlier 'no effect' observations
 - id: settings-cases
-  title: 'Settings: toggles, Feedback, About, Share, How to Play, Auto Complete, tile set switch'
+  title: 'Settings: toggles, Feedback, About, Share, How to Play, Auto Complete, tile
+    set switch'
   kind: followup
   requires: any
   status: done
@@ -790,12 +939,13 @@ tasks:
   source: game
   closed: '2026-09-30T21:43:47'
   closed_by: 20260930-211039-chrono-2FYKPJ#148
-  note: Music toggle ON/OFF verified; About (v3.39.1, ToS, Privacy); Share opens Android share sheet;
-    How to Play 2 pages; tile set Simple->Classic applied in level. Feedback/Facebook/social icons open
-    external apps - not opened. Auto Complete left for a level end (new task)
+  note: Music toggle ON/OFF verified; About (v3.39.1, ToS, Privacy); Share opens Android
+    share sheet; How to Play 2 pages; tile set Simple->Classic applied in level. Feedback/Facebook/social
+    icons open external apps - not opened. Auto Complete left for a level end (new
+    task)
 - id: auto-complete-end
-  title: 'Auto Complete: finish a level with Auto Complete ON and observe the auto finish; compare with
-    OFF'
+  title: 'Auto Complete: finish a level with Auto Complete ON and observe the auto
+    finish; compare with OFF'
   kind: followup
   requires: any
   status: done
@@ -804,8 +954,9 @@ tasks:
   source: game
   closed: '2026-09-30T22:13:35'
   closed_by: 20260930-214524-chrono-2FYKPJ#144
-  note: 'Level 2 with Auto Complete ON: no auto finish with 4 free tiles and an empty tray (waited 8 s);
-    finished by hand. Trigger condition unknown - follow-up task auto-complete-trigger'
+  note: 'Level 2 with Auto Complete ON: no auto finish with 4 free tiles and an empty
+    tray (waited 8 s); finished by hand. Trigger condition unknown - follow-up task
+    auto-complete-trigger'
 - id: colorful-effects
   title: 'Colorful Effects OFF vs ON: compare combo tray colors and match effects'
   kind: followup
@@ -816,11 +967,11 @@ tasks:
   source: game
   closed: '2026-09-30T22:13:34'
   closed_by: 20260930-214524-chrono-2FYKPJ#144
-  note: 'OFF on level 2, ON on level 3: shards white in both, combo tray blue/purple/gold in both; no
-    visible difference in screenshots'
+  note: 'OFF on level 2, ON on level 3: shards white in both, combo tray blue/purple/gold
+    in both; no visible difference in screenshots'
 - id: continue-ftue-lv2
-  title: 'Continue FTUE from level 2 (Classic tile set active): play to level 10, record shuffle unlock
-    at Lv 6, level-10 chest reward, leagues/shop/events unlocks'
+  title: 'Continue FTUE from level 2 (Classic tile set active): play to level 10,
+    record shuffle unlock at Lv 6, level-10 chest reward, leagues/shop/events unlocks'
   kind: ftue
   requires: any
   status: done
@@ -829,9 +980,9 @@ tasks:
   source: session
   closed: '2026-09-30T22:49:56'
   closed_by: 20260930-221457-chrono-2FYKPJ#93
-  note: Levels 3-6 won this session. Shuffle unlocks silently at level 6 (stock 3). No shop/leagues/events
-    on main through level 6. After level 6 the Level 7 button shows a panda-tile + padlock badge. Chest
-    6/10; level-10 chest continues in continue-ftue-lv7.
+  note: Levels 3-6 won this session. Shuffle unlocks silently at level 6 (stock 3).
+    No shop/leagues/events on main through level 6. After level 6 the Level 7 button
+    shows a panda-tile + padlock badge. Chest 6/10; level-10 chest continues in continue-ftue-lv7.
 - id: survey-1
   title: 'Survey every screen: capture all entry points and map them to features'
   kind: survey
@@ -839,16 +990,17 @@ tasks:
   status: done
   created: '2026-09-30T22:10:18'
   source: external
-  note: Walked main (avatar/profile incl. FB Connect tile, achievements full list, themes, settings, decorative
-    medallion), level board HUD. Main screen at level 3 has only 4 icons + Level button; no shop, leagues,
-    events, daily, currency. No new entry points.
+  note: Walked main (avatar/profile incl. FB Connect tile, achievements full list,
+    themes, settings, decorative medallion), level board HUD. Main screen at level
+    3 has only 4 icons + Level button; no shop, leagues, events, daily, currency.
+    No new entry points.
   closed: '2026-09-30T22:18:04'
   closed_by: 20260930-221457-chrono-2FYKPJ#11
   new_entries: 0
   at_progress: level 3
 - id: auto-complete-trigger
-  title: 'Auto Complete: find the trigger condition (tile count / all tiles uncovered) on a later level;
-    compare a level end with Auto Complete OFF'
+  title: 'Auto Complete: find the trigger condition (tile count / all tiles uncovered)
+    on a later level; compare a level end with Auto Complete OFF'
   kind: followup
   requires: any
   status: open
@@ -865,12 +1017,13 @@ tasks:
   source: game
   closed: '2026-09-30T23:28:08'
   closed_by: 20260930-225122-chrono-2FYKPJ#76
-  note: 'IQ+N is a blue badge on both tiles of one pair (IQ+5 on L7, IQ+10 on L8). Matching it moved the
-    IQ bar by ~N IQ (IQ+5: ~12 px, IQ+10: ~27 px on the 918-px frame between the 40 and 90 marks, 2.56
-    px/IQ); normal pairs move it ~1 px. Final IQ L7 119.3, L8 101.7'
+  note: 'IQ+N is a blue badge on both tiles of one pair (IQ+5 on L7, IQ+10 on L8).
+    Matching it moved the IQ bar by ~N IQ (IQ+5: ~12 px, IQ+10: ~27 px on the 918-px
+    frame between the 40 and 90 marks, 2.56 px/IQ); normal pairs move it ~1 px. Final
+    IQ L7 119.3, L8 101.7'
 - id: continue-ftue-lv7
-  title: 'Continue FTUE from level 7: find what the panda-padlock badge on Level 7 means, open the level-10
-    chest, watch for leagues/shop/events/Hard levels'
+  title: 'Continue FTUE from level 7: find what the panda-padlock badge on Level 7
+    means, open the level-10 chest, watch for leagues/shop/events/Hard levels'
   kind: ftue
   requires: any
   status: done
@@ -879,12 +1032,14 @@ tasks:
   source: session
   closed: '2026-09-30T23:28:08'
   closed_by: 20260930-225122-chrono-2FYKPJ#76
-  note: 'Levels 7 and 8 won, 9 quit mid-level. The panda+padlock badge stays on the Level 8 and Level
-    9 buttons and its meaning is still unknown: no tile, popup or unlock was tied to it on L7-L8. L7 brought
-    golden carved tiles, ''official'' face tiles and IQ+5 tiles; L8 had IQ+10; new win title ''Perceptive!''
-    for a slow level. Chest bar is 8/10. No leagues, shop, events or Hard levels seen through L9'
+  note: 'Levels 7 and 8 won, 9 quit mid-level. The panda+padlock badge stays on the
+    Level 8 and Level 9 buttons and its meaning is still unknown: no tile, popup or
+    unlock was tied to it on L7-L8. L7 brought golden carved tiles, ''official'' face
+    tiles and IQ+5 tiles; L8 had IQ+10; new win title ''Perceptive!'' for a slow level.
+    Chest bar is 8/10. No leagues, shop, events or Hard levels seen through L9'
 - id: hard-levels-banner
-  title: Read the full 'Hard levels' streak banner and document Hard levels / win streak
+  title: Read the full 'Hard levels' streak banner and document Hard levels / win
+    streak
   kind: followup
   requires: any
   status: done
@@ -893,13 +1048,14 @@ tasks:
   source: game
   closed: '2026-10-01T00:35:35'
   closed_by: 20260930-235817-chrono-2FYKPJ#67
-  note: 'Hard levels: L10 is the first Hard level. The previous win screen shows a red ''Level 10 / Hard''
-    button; the level opens with a red flame ''Hard'' banner; win text ''This HARD level was no match
-    for your skills.'' and the next Level button gets an x2 Elite Tile tag. No separate win-streak banner
-    appeared this session (L9-L11)'
+  note: 'Hard levels: L10 is the first Hard level. The previous win screen shows a
+    red ''Level 10 / Hard'' button; the level opens with a red flame ''Hard'' banner;
+    win text ''This HARD level was no match for your skills.'' and the next Level
+    button gets an x2 Elite Tile tag. No separate win-streak banner appeared this
+    session (L9-L11)'
 - id: continue-ftue-lv9
-  title: 'Continue FTUE from level 9: win L9-L10, open the level-10 chest, find what the panda+padlock
-    badge unlocks, watch for leagues/shop/events/Hard levels'
+  title: 'Continue FTUE from level 9: win L9-L10, open the level-10 chest, find what
+    the panda+padlock badge unlocks, watch for leagues/shop/events/Hard levels'
   kind: ftue
   requires: any
   status: done
@@ -908,14 +1064,17 @@ tasks:
   source: session
   closed: '2026-10-01T00:35:34'
   closed_by: 20260930-235817-chrono-2FYKPJ#67
-  note: 'L9 won (10.4 min), L10 (first Hard level: red ''Level 10 / Hard'' button, flame ''Hard'' intro
-    banner) won 9.6 min, L11 won 12.3 min. Level-10 chest opened: +1 Hint, +1 Undo; next chest at L20.
-    The panda+padlock badge was the locked league Elite Tile: after L10 the badge became a golden tile,
-    Bronze League joined (group of 50, ~24 h event, top 10 promoted), Elite Tiles are golden tiles on
-    the board; Hard win gives an x2 tag. New at L9: Daily Victories popup (first win of a calendar day).
-    New at L11: face-down green tiles, notification prompt. No shop or events seen through L11'
+  note: 'L9 won (10.4 min), L10 (first Hard level: red ''Level 10 / Hard'' button,
+    flame ''Hard'' intro banner) won 9.6 min, L11 won 12.3 min. Level-10 chest opened:
+    +1 Hint, +1 Undo; next chest at L20. The panda+padlock badge was the locked league
+    Elite Tile: after L10 the badge became a golden tile, Bronze League joined (group
+    of 50, ~24 h event, top 10 promoted), Elite Tiles are golden tiles on the board;
+    Hard win gives an x2 tag. New at L9: Daily Victories popup (first win of a calendar
+    day). New at L11: face-down green tiles, notification prompt. No shop or events
+    seen through L11'
 - id: daily-victories-day4
-  title: Win a level on the 4th day of the Daily Victories week (Saturday) and record the gift
+  title: Win a level on the 4th day of the Daily Victories week (Saturday) and record
+    the gift
   kind: followup
   requires: any
   status: open
@@ -924,7 +1083,8 @@ tasks:
   not_before: '2026-10-03T10:00:00'
   source: game
 - id: daily-victories-day7
-  title: Win a level on the 7th day of the Daily Victories week (Tuesday) and record the gift
+  title: Win a level on the 7th day of the Daily Victories week (Tuesday) and record
+    the gift
   kind: followup
   requires: any
   status: open
@@ -933,8 +1093,8 @@ tasks:
   not_before: '2026-10-06T10:00:00'
   source: game
 - id: league-end
-  title: 'League event end: open the game after the Bronze League timer ends and record the rank, promotion
-    and rewards'
+  title: 'League event end: open the game after the Bronze League timer ends and record
+    the rank, promotion and rewards'
   kind: followup
   requires: any
   status: open
@@ -943,8 +1103,8 @@ tasks:
   not_before: '2026-10-02T00:34:13'
   source: game
 - id: hard-levels-streak
-  title: Find the next Hard level (after L11) and check whether a win-streak banner or reward appears;
-    record the Hard level interval
+  title: Find the next Hard level (after L11) and check whether a win-streak banner
+    or reward appears; record the Hard level interval
   kind: followup
   requires: any
   status: open
@@ -952,8 +1112,8 @@ tasks:
   feature: hard-levels
   source: game
 - id: continue-ftue-lv12
-  title: 'Continue from level 12: play L12+ with the x2 Elite tag, watch for shop/events/new tile types,
-    record league rank changes'
+  title: 'Continue from level 12: play L12+ with the x2 Elite tag, watch for shop/events/new
+    tile types, record league rank changes'
   kind: ftue
   requires: any
   status: done
@@ -962,10 +1122,10 @@ tasks:
   source: session
   closed: '2026-10-01T01:34:21'
   closed_by: 20261001-010125-chrono-2FYKPJ#72
-  note: 'L12 played but not won (quit at 27.7 min, ~60% cleared). Seen: many face-down green tiles (free
-    = straight into tray, locked = peek face), IQ+5 strawberry, golden Elite tile, Revive via video, Free
-    Hint videos (2 hints each). League rank 46/50 with 4 points before L12. No shop/events on main at
-    L12. Continue in continue-ftue-lv12b'
+  note: 'L12 played but not won (quit at 27.7 min, ~60% cleared). Seen: many face-down
+    green tiles (free = straight into tray, locked = peek face), IQ+5 strawberry,
+    golden Elite tile, Revive via video, Free Hint videos (2 hints each). League rank
+    46/50 with 4 points before L12. No shop/events on main at L12. Continue in continue-ftue-lv12b'
 - id: unlock-daily-victories
   title: 'How Daily Victories starts: is it shown from day 1 on a fresh install?'
   kind: replay
@@ -981,35 +1141,45 @@ tasks:
   status: done
   created: '2026-10-01T00:59:52'
   source: external
-  note: Walked main at L12 (leaf x2 pill = Daily Victories monthly calendar with 10/20/30-day chests;
-    league badge -> Bronze board rank 46, info 2 pages incl. Glory star tiers, ladder Bronze/Silver/Gold/...;
-    profile Frame tab has a new Level-10 frame). No new features, all entries map to daily-victories,
-    leagues, profile, rate-us, themes, settings
+  note: Walked main at L12 (leaf x2 pill = Daily Victories monthly calendar with 10/20/30-day
+    chests; league badge -> Bronze board rank 46, info 2 pages incl. Glory star tiers,
+    ladder Bronze/Silver/Gold/...; profile Frame tab has a new Level-10 frame). No
+    new features, all entries map to daily-victories, leagues, profile, rate-us, themes,
+    settings
   closed: '2026-10-01T01:05:02'
   closed_by: 20261001-010125-chrono-2FYKPJ#14
   new_entries: 0
   at_progress: level 12
 - id: rewarded-ads-placements
-  title: 'Rewarded ads: check Undo and Shuffle ''+'' with stock 0 (video offer? how many), and whether
-    Free Hint videos have a daily cap'
+  title: 'Rewarded ads: check Undo and Shuffle ''+'' with stock 0 (video offer? how
+    many), and whether Free Hint videos have a daily cap'
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T01:34:21'
   feature: rewarded-ads
   source: game
+  closed: '2026-10-01T07:03:53'
+  closed_by: 20261001-063226-chrono-2FYKPJ#64
+  note: 'Undo ''+'' at stock 0: Free Undo, 1 video = 2 Undos. Shuffle ''+'' at stock
+    0: Free Shuffle, 1 video = 1 Shuffle. Hint: 9th Free Hint video on 2026-10-01
+    still gave 2 Hints - no daily cap up to 9/day.'
 - id: solver-core-match
-  title: 'Make core-match fast: test the board-JSON solver (the local draft) on a simple board or add
-    image tile detection; L12 took 28 min by eye'
+  title: 'Make core-match fast: test the board-JSON solver (the local draft) on a
+    simple board or add image tile detection; L12 took 28 min by eye'
   kind: followup
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-01T01:34:21'
   feature: core-match
   source: game
+  closed: '2026-10-02T00:00:00'
+  note: 'Obsolete: the board-JSON draft was replaced by a screenshot solver (lab 2026-10-01)
+    that still stalled on L18 and L19 [s:20261001-204654-chrono-2FYKPJ#10] [s:20261001-211823-chrono-2FYKPJ#6];
+    superseded by core-match-fast.'
 - id: continue-ftue-lv12b
-  title: 'Finish level 12 (resume or restart) and continue L13+: Elite x2 tag, Hard level interval, league
-    rank, Auto Complete trigger'
+  title: 'Finish level 12 (resume or restart) and continue L13+: Elite x2 tag, Hard
+    level interval, league rank, Auto Complete trigger'
   kind: ftue
   requires: any
   status: done
@@ -1018,29 +1188,42 @@ tasks:
   source: session
   closed: '2026-10-01T03:52:34'
   closed_by: 20261001-031723-chrono-2FYKPJ#96
-  note: 'L12 resumed after restart and won (30:29 total), L13 won (15:04). Elite x2 tag on L12-L13, gone
-    on L14. No Hard levels at L12-13. League: 16 points, rank 48 -> 42, ''You''re 38 away from ranking
-    up''. Auto Complete did not fire on either level.'
+  note: 'L12 resumed after restart and won (30:29 total), L13 won (15:04). Elite x2
+    tag on L12-L13, gone on L14. No Hard levels at L12-13. League: 16 points, rank
+    48 -> 42, ''You''re 38 away from ranking up''. Auto Complete did not fire on either
+    level.'
 - id: continue-ftue-lv14
-  title: 'Continue L14+: Hard level interval, what grants Elite x2, Auto Complete trigger, level chest
-    at L20'
+  title: 'Continue L14+: Hard level interval, what grants Elite x2, Auto Complete
+    trigger, level chest at L20'
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T03:52:35'
   feature: ftue
   source: session
+  closed: '2026-10-01T07:03:53'
+  closed_by: 20261001-063226-chrono-2FYKPJ#64
+  note: L14 won (12:26, IQ 156.6, combo 32, no Hard, no Elite x2, +4 league for one
+    福 pair, chest 4/10). L15 not Hard either, left open at ~60% (resumes). Auto Complete
+    did not fire on L14.
 - id: green-rule-test
-  title: 'Settle the face-down green rule: with an empty tray tap one clearly free green once and take
-    a frame'
+  title: 'Settle the face-down green rule: with an empty tray tap one clearly free
+    green once and take a frame'
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T05:00:00'
   source: session
   feature: hidden-tiles
+  closed: '2026-10-01T11:42:28'
+  closed_by: 20261001-110957-chrono-2FYKPJ#71
+  note: 'Settled on L17 with an empty tray: a tap on a free green flips it face-up
+    in place, no tray slot. Only one green is face-up at a time (flipping another
+    turns the previous one back). A tap on a green whose face was already seen sends
+    it straight into the tray (and matches if its twin is there).'
 - id: league-board
-  title: 'League board: the own-row chevron, a tap on another player, the league names above Gold'
+  title: 'League board: the own-row chevron, a tap on another player, the league names
+    above Gold'
   kind: followup
   requires: any
   status: open
@@ -1065,7 +1248,8 @@ tasks:
   source: session
   feature: rewarded-ads
 - id: win-title-rule
-  title: 'Find what decides the win title (Intelligent, Brilliant, Perceptive, Genius): IQ, combo or time'
+  title: 'Find what decides the win title (Intelligent, Brilliant, Perceptive, Genius):
+    IQ, combo or time'
   kind: followup
   requires: any
   status: open
@@ -1073,10 +1257,291 @@ tasks:
   source: session
   feature: core-match
 - id: look-shop-offers
-  title: Look for a shop, starter or limited offers and a language setting (genre checklist)
+  title: Look for a shop, starter or limited offers and a language setting (genre
+    checklist)
   kind: followup
   requires: any
   status: open
   created: '2026-10-01T05:00:00'
   source: session
   feature: settings
+- id: continue-ftue-lv15
+  title: 'Resume L15 (open at ~60%, tray chips + 2-bamboo) and continue to L20: level
+    chest at L20, Hard interval, Elite x2 source'
+  kind: ftue
+  requires: any
+  status: done
+  created: '2026-10-01T07:03:53'
+  feature: ftue
+  source: session
+  closed: '2026-10-01T09:13:06'
+  closed_by: 20261001-083725-chrono-2FYKPJ#83
+  note: 'L15 won on resume (9.2 min), L16 won (13.7 min, 2nd place in Bronze League,
+    26 pts), L17 left open at ~45%. L15-L17 are not Hard (last Hard: L10). No Elite
+    x2 tag. Level chest 7/10 toward L20. Auto Complete did not fire on L15/L16.'
+- id: survey-3
+  title: 'Survey every screen: capture all entry points and map them to features'
+  kind: survey
+  requires: any
+  status: done
+  created: '2026-10-01T07:09:19'
+  source: external
+  note: 'Walked: launch reward popup, main, Daily Victories (leaf x2 banner), Profile
+    (Avatar/Frame), Achievements (thumbs-up; 5 sections), Theme (Tiles/Background),
+    Settings, Bronze League. All entries map to known features; nothing new. Theme
+    shows face-down green tiles are the Simple theme tile back.'
+  closed: '2026-10-01T08:41:40'
+  closed_by: 20261001-083725-chrono-2FYKPJ#17
+  new_entries: 0
+  at_progress: level 15 (open)
+- id: continue-ftue-lv17
+  title: 'Resume L17 (open ~45%, tray ring-bamboo, all boosters 0) and continue to
+    L20: level chest at L20, Hard interval, Elite x2 source'
+  kind: ftue
+  requires: any
+  status: done
+  created: '2026-10-01T09:13:06'
+  feature: ftue
+  source: session
+  closed: '2026-10-01T11:42:28'
+  closed_by: 20261001-110957-chrono-2FYKPJ#71
+  note: L17 restarted from scratch on launch (half-played board not kept after relaunch);
+    won in 13.9 min (Brilliant, IQ 137.2, combo 27). L18 is not Hard; played to ~45%
+    and left open (board kept on back-arrow exit). Level chest 7/10 toward L20.
+- id: continue-ftue-lv18
+  title: 'Resume L18 (open ~45%, tray blender + 4-circle, all boosters 0; the 4-circle
+    twin sits between two face-down greens) and continue to L20: level chest at L20,
+    Hard interval, Elite x2 source'
+  kind: ftue
+  requires: any
+  status: cancelled
+  created: '2026-10-01T11:42:28'
+  feature: ftue
+  source: session
+  closed: '2026-10-01T20:51:35'
+  closed_by: 20261001-204654-chrono-2FYKPJ#10
+  note: 'Superseded: the app relaunch restarted L18 from scratch, so the described
+    ~45% board no longer exists; the replay ended at Out of space (tray blender, 4-circle,
+    mixer, cat). Replaced by continue-ftue-lv18b. Correction (dream 2026-10-02): the
+    ~45% board was not gone; 204654 opened on it [s:20261001-204654-chrono-2FYKPJ#2]
+    and lost it to Out of space, and the quit restored it for 205148 [s:20261001-205148-chrono-2FYKPJ#1];
+    the goal was carried out by continue-ftue-lv18b.'
+- id: study-main-screen
+  title: 'Study Main screen: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: main-screen
+  source: external
+- id: study-profile
+  title: 'Study Profile / avatar: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: profile
+  source: external
+- id: study-cloud-save
+  title: 'Study Save progress / account sign-in: open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: cloud-save
+  source: external
+- id: study-core-match
+  title: 'Study Core loop: tile matching: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: core-match
+  source: external
+- id: study-combo
+  title: 'Study Combo tiers (shown by the tray border): open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: combo
+  source: external
+- id: study-no-ads
+  title: 'Study No Ads purchase: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: no-ads
+  source: external
+- id: study-auto-complete
+  title: 'Study Auto Complete option: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: auto-complete
+  source: external
+- id: study-leagues
+  title: 'Study Leagues: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: leagues
+  source: external
+- id: study-level-chest
+  title: 'Study Level milestone chest (Reach Level 10): open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: level-chest
+  source: external
+- id: study-level-badge
+  title: 'Study Level button badge (panda tile + padlock): open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: level-badge
+  source: external
+- id: study-hard-levels
+  title: 'Study Hard levels: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: hard-levels
+  source: external
+- id: study-live-ticker
+  title: 'Study Live player ticker banner: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: live-ticker
+  source: external
+- id: study-daily-victories
+  title: 'Study Daily Victories (daily win streak calendar): open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: daily-victories
+  source: external
+- id: study-hidden-tiles
+  title: 'Study Face-down green tiles (flip on tap): open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: hidden-tiles
+  source: external
+- id: study-push-prompt
+  title: 'Study Notification opt-in prompt: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: push-prompt
+  source: external
+- id: study-rewarded-ads
+  title: 'Study Rewarded ads (video Revive and other placements): open it, walk its
+    screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:28'
+  feature: rewarded-ads
+  source: external
+- id: continue-ftue-lv18b
+  title: 'Win L18 (now on Out of space with a full tray: take Restart, or Revive by
+    video) and continue to L20: level chest at L20, next Hard level, Elite x2 source,
+    Auto Complete trigger'
+  kind: ftue
+  requires: any
+  status: done
+  created: '2026-10-01T20:51:36'
+  feature: ftue
+  source: session
+  note: L18 won (resumed at ~45%, about 22 min incl. 2 video ads; title Intelligent!,
+    IQ 134.1, combo 31). Now at Level 19.
+  closed: '2026-10-01T21:17:18'
+  closed_by: 20261001-205148-chrono-2FYKPJ#74
+- id: look-events-social
+  title: Look for timed events, daily quests and social features (friends, teams,
+    gifting) on the main screen at L18-L25; done when each is seen or recorded as
+    absent at L25
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T20:51:36'
+  feature: main-screen
+  source: session
+  plan: On each return to main from L18 to L25 take a frame and compare with the L12/L15
+    surveys; a new icon or popup confirms a new feature (reopen the map), no change
+    through L25 confirms the game has none at this stage.
+- id: continue-ftue-lv19
+  title: 'Win L19 and L20 (L19 is a dense board, not Hard): open the level chest at
+    L20 and record its reward, check the Profile Frame tab for a level-20 frame, and
+    note whether L20 is Hard and whether an interstitial shows between levels'
+  kind: ftue
+  requires: any
+  status: open
+  created: '2026-10-01T21:20:48'
+  feature: level-chest
+  source: session
+  note: 'Progress: L18 won, at Level 19; chest 8/10 toward L20 [#72]. Session 20261001-211823
+    already handed off on L19 after 6 solver taps.'
+- id: core-match-fast
+  title: 'Make core-match fast: the solver reads blank cards, golden/framed faces
+    and every tray tile, flips one free green per round with a rescan, and sends each
+    certain pair as one call (target under 5 min a level)'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T00:00:00'
+  feature: core-match
+  source: session
+  note: 'Typical level 14 min (L14-L18), budget 5. L18 at one tap per call: ~10.5
+    s per tap+wait, about 2x slower per tile than batches [s:20261001-205148-chrono-2FYKPJ#29].
+    The solver misses blank cards [s:20261001-211823-chrono-2FYKPJ#3] and read the
+    tray blender as "?" [s:20261001-205148-chrono-2FYKPJ#1].'
+- id: out-of-space-quit-resume
+  title: Check whether quitting a level from Out of space always restores the last
+    saved board, and when the save is written
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T00:00:00'
+  feature: core-match
+  source: session
+- id: siamese-bottom-edge
+  title: 'Re-test a tile whose bottom edge is cut by a higher neighbour in the next
+    row: does a tap take it into the tray or show Locked? Record the frame'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T00:00:00'
+  feature: core-match
+  source: session
+- id: league-heart
+  title: 'League board: tap a heart on another player''s row and on the own row; record
+    what the count means'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T00:00:00'
+  feature: leagues
+  source: session

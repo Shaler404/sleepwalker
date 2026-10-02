@@ -5,7 +5,7 @@ type: feature
 feature: hearts
 version_seen: 1.0.2
 verified_at: 2026-10-01
-sources: [20261001-003641-chrono-2FYKPJ, 20261001-035425-chrono-2FYKPJ]
+sources: [20261001-003641-chrono-2FYKPJ, 20261001-035425-chrono-2FYKPJ, 20261001-221517-chrono-2FYKPJ]
 ---
 
 # Hearts (mistakes per level)
@@ -67,7 +67,8 @@ The green Restart button under Revive (circled). It was never tapped: whether it
 
 Revive plays a full-screen rewarded video ad for another game, with no way to skip at the start [^s5]. After
 about 5 s a **Next** button appears top left (circled); after it an end card opened the Play Store, and the
-player reopened the game [^s5] [^s6].
+player reopened the game [^s5] [^s6]. The Revive video on level 115 showed no early skip; it also
+ended on the Play Store [^s9] [^s10].
 
 ![Revive plays a rewarded video ad (here a puzzle-game ad); a Next button top left appears after about 5 s](../img/20261001-hearts-tab-revive-bf46116e.webp) [^s5]
 
@@ -86,7 +87,8 @@ Version 1.0.2.
 - A cat in a wrong cell: no cat, −1 heart, a red X on the cell; each cat is checked against the level's
   solution at once [^s2].
 - At 1 heart: the "Only one chance left!" warning [^s3]. At 0: the "Almost!" popup [^s4].
-- Revive: one rewarded video = 1 heart, board and marks kept [^s6].
+- Revive: one rewarded video = 1 heart, board and marks kept [^s6] [^s10]. The level can then still be
+  won (level 115) [^s11].
 
 ## Cases
 
@@ -95,6 +97,7 @@ Version 1.0.2.
 | Wrong cat | Double tap next to a 0 wall (level 13) | No cat, −1 heart, red X on the cell | [^s2] |
 | One chance | Second wrong cat (level 49) | Bubble "Meow! Only one chance left!" | [^s3] |
 | Zero hearts | Third wrong cat (level 49) | "Almost!" popup: Revive (AD), Restart | [^s4] |
+| Revive again | Three wrong cats next to a 0 wall on level 115, then Revive | "Almost!" popup; after the video the same board with 1 of 3 hearts and the X marks kept; the level was then won | [^s8] [^s10] [^s11] |
 | Revive | Revive (rewarded video, Next after about 5 s, the end card opens the Play Store, then reopening the game) | Same board, 1 of 3 hearts, X marks kept | [^s5] [^s6] |
 
 ## Not verified
@@ -110,3 +113,7 @@ Version 1.0.2.
 [^s5]: session 20261001-035425-chrono-2FYKPJ, step 24
 [^s6]: session 20261001-035425-chrono-2FYKPJ, step 26
 [^s7]: session 20261001-003641-chrono-2FYKPJ, step 30 — [video at 13:25](https://youtu.be/mebcb05OPmo?t=805)
+[^s8]: session 20261001-221517-chrono-2FYKPJ, step 26 — [video at 7:29](https://youtu.be/LMacAS64JRE?t=449)
+[^s9]: session 20261001-221517-chrono-2FYKPJ, step 27 — [video at 7:43](https://youtu.be/LMacAS64JRE?t=463)
+[^s10]: session 20261001-221517-chrono-2FYKPJ, step 28 — [video at 9:14](https://youtu.be/LMacAS64JRE?t=554)
+[^s11]: session 20261001-221517-chrono-2FYKPJ, step 29 — [video at 9:37](https://youtu.be/LMacAS64JRE?t=577)

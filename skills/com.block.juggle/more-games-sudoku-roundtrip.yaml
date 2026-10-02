@@ -1,0 +1,32 @@
+name: more-games-sudoku-roundtrip
+game: com.block.juggle
+description: 'From the Settings popup: open More Games, scroll, open Sudoku, back,
+  close More Games; ends on the classic board'
+status: candidate
+version: 10.6.5
+pre_hash: c1b83ec74e33e134
+post_hash: 8d8dd0f23b322787
+steps:
+- tap:
+  - 0.5
+  - 0.4441
+  wait: 1.5
+- swipe:
+  - 0.5
+  - 0.6949
+  - 0.5
+  - 0.3474
+  wait: 1.5
+- tap:
+  - 0.5
+  - 0.6633
+  wait: 1.5
+- tap:
+  - 0.0685
+  - 0.1244
+  wait: 1.5
+- tap:
+  - 0.8603
+  - 0.2192
+  wait: 1.5
+source: 20261001-200952-chrono-2FYKPJ#33-37

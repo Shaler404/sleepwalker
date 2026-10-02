@@ -2,52 +2,144 @@
 game: com.maroieqrwlk.unpin
 version: 241.5.1
 play_version: 241.5.1
-play_checked: '2026-10-01T02:46:28'
-phone_version: 241.3.1
+play_checked: '2026-10-01T20:09:25'
+phone_version: 241.5.1
 discovery: open
 ftue_verified: null
 progress:
-  text: level 8
-  value: 8
-  at: '2026-09-30T20:37:00'
-  session: 20260930-201034-chrono-2FYKPJ
+  text: level 28
+  value: 28.0
+  at: '2026-10-01T22:13:56'
+  session: 20261001-220948-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-01T04:13:01'
-mechanics: []
+  chrono: '2026-10-01T23:46:03'
+mechanics:
+- id: pin-pull
+  name: pin-pull
+  status: mastered
+  method: solver
+  levels:
+    won: 32
+    lost: 15
+    quit: 7
+  recent:
+  - level: level 23
+    result: quit
+    seconds: 203
+    model: sonnet
+  - level: level 23
+    result: won
+    seconds: 299
+    model: sonnet
+  - level: level 23
+    result: won
+    seconds: 220
+    model: opus
+  - level: level 24
+    result: won
+    seconds: 64
+    model: opus
+  - level: level 25
+    result: won
+    seconds: 27
+    model: opus
+  - level: level 26
+    result: won
+    seconds: 21
+    model: opus
+  - level: level 26
+    result: won
+    seconds: 22
+    model: sonnet
+  - level: level 27 boss
+    result: lost
+    seconds: 112
+    model: sonnet
+  - level: level 27 boss retry
+    result: lost
+    seconds: 526
+    model: sonnet
+  - level: level 27
+    result: won
+    seconds: 190
+    model: opus
+  best_s: 21
+  note: 'zone model solver: write the level once as a board (places, ordered exits,
+    pins), solve pin-pull --board ABS_PATH gives the full order and the taps string;
+    one taps call --gap 5 (7 when the note says), check the final frame; multi-stage:
+    one board per stage; tall challenge/boss levels: scrolling, one pin per call'
+  solver: solvers/com.maroieqrwlk.unpin/pin-pull.py
 features:
 - id: core-level
   name: 'Core level: pulling pins'
   status: in_progress
   cases:
   - id: fail-bomb
-    text: 'Defeat: grey balls reach the cup — "So Close! Level failed!" with a tip, a cross-promo card,
-      Skip (video) and Retry'
+    text: 'Defeat: grey balls reach the cup — "So Close! Level failed!" with a tip,
+      a cross-promo card, Skip (video) and Retry'
     done: true
     source: 20260930-201034-chrono-2FYKPJ#50
   - id: restart-button
-    text: 'Restart button in a level: confirmation dialog, then an interstitial and a fresh board'
+    text: Restart button during a level
     done: true
-    source: 20260930-201034-chrono-2FYKPJ#40
+    source: 20261001-054205-chrono-2FYKPJ#1
   - id: retry
-    text: 'Retry on the defeat screen: an interstitial, then the level restarts from 0%'
+    text: 'Retry on the defeat screen: an interstitial, then the level restarts from
+      0%'
     done: true
     source: 20260930-201034-chrono-2FYKPJ#54
   - id: skip-video
-    text: 'Skip for a video on the defeat screen: does the level count, is the reward paid'
-    done: false
+    text: 'Skip for a video on the defeat screen: does the level count, is the reward
+      paid'
+    done: true
+    source: 20261001-220948-chrono-2FYKPJ#8
+    version: 241.5.1
+    note: 'Skip for a video counts as a full win: +18 coins, +1 league pin, gift %,
+      next level opens; merged the duplicate case defeat-skip'
   - id: fail-bomb-cup
     text: Defeat by a bomb reaching the cup
-    done: false
-  - id: pin-ring
-    text: A pin comes out only on a tap on its ring; a swipe or a tap on the rod does nothing
     done: true
-    source: 20260930-192115-chrono-2FYKPJ#4
+    source: 20261001-160324-chrono-2FYKPJ#6
+    version: 241.5.1
+    note: defeat screen 'Pretty Close! Level failed!' with the tip 'You lost the bucket!
+      Get rid of bombs before they destroy it' (shot 16); in bench slot 145738 a bomb
+      in the cup restarted the level without a defeat screen [s:20261001-145738-chrono-2FYKPJ#17]
+  - id: pin-ring
+    text: A pin comes out only on a tap on its ring; a swipe or a tap on the rod does
+      nothing
+    done: false
+    note: 'reopened 2026-10-02: wrong for slider pins. A pin with a dotted track is
+      a slider: a swipe along the dots moves it [s:20261001-153137-chrono-2FYKPJ#10]
+      [s:20261001-153137-chrono-2FYKPJ#18]; the ring tap stays true for ordinary pins
+      [s:20260930-192115-chrono-2FYKPJ#4]. Recheck the wording on the page'
+  - id: ad-loss
+    text: 'Post-win interstitial without close: restart loses the level completion
+      (coins/keys kept) — re-check on another device/network'
+    done: true
+    source: 20261001-153137-chrono-2FYKPJ#15
+    version: 241.5.1
+    note: 'reproduced 3 times on 241.5.1: restart during a post-win ad reverted the
+      level, coins and keys kept [s:20261001-054205-chrono-2FYKPJ#12] [s:20261001-102608-chrono-2FYKPJ#29]
+      [s:20261001-160324-chrono-2FYKPJ#16]'
+  - id: slider-pin
+    text: 'A pin with a dotted track is a slider: swipe it along the dots'
+    done: true
+    source: 20261001-153137-chrono-2FYKPJ#10
+    version: 241.5.1
+  - id: bomb-on-bomb
+    text: 'A bomb that falls onto another bomb: both vanish, nearby bombs may go too'
+    done: true
+    source: 20261001-102608-chrono-2FYKPJ#2
+    version: 241.5.1
+    note: also level 13 (four bombs at once) [s:20261001-102608-chrono-2FYKPJ#20]
+      and level 27 [s:20261001-165538-chrono-2FYKPJ#18]
   page: features/core-level.md
-  version_seen: 241.3.1
+  version_seen: 241.5.1
+  note: merged bomb-hazard (bombs are a level element; cases fail-bomb-cup, bomb-on-bomb)
 - id: settings
   name: Settings (gear)
-  status: recheck
+  status: documented
   cases:
   - id: sound-toggle
     text: Toggle Sound off and on
@@ -58,25 +150,27 @@ features:
     done: true
     source: 20260930-192115-chrono-2FYKPJ#19
   - id: rate-us
-    text: 'Rate us: opens the system "Open with" chooser (Galaxy Store / Google Play), no in-game popup'
+    text: 'Rate us: opens the system "Open with" chooser (Galaxy Store / Google Play),
+      no in-game popup'
     done: true
     source: 20260930-192115-chrono-2FYKPJ#16
   - id: privacy
-    text: 'Privacy: Legal Terms popup (Privacy Policy, ToS, Account Deletion, Personalized Ads, Player
-      ID)'
+    text: 'Privacy: Legal Terms popup (Privacy Policy, ToS, Account Deletion, Personalized
+      Ads, Player ID)'
     done: true
     source: 20260930-192115-chrono-2FYKPJ#15
   - id: persist
     text: Sound/Vibration state survives a game restart
     done: false
-  version_seen: 241.3.1
+  version_seen: 241.5.1
   page: features/settings.md
 - id: no-ads
   name: Remove ads (No ADS)
   status: recheck
   cases:
   - id: open-offer
-    text: 'Tap No ADS: goes straight to the Google Play payment sheet "Remove Ads", RSD 999'
+    text: 'Tap No ADS: goes straight to the Google Play payment sheet "Remove Ads",
+      RSD 999'
     done: true
     source: 20260930-192115-chrono-2FYKPJ#22
   - id: cancel-purchase
@@ -90,19 +184,25 @@ features:
   status: in_progress
   cases:
   - id: gift-100
-    text: 'Gift at 100%: what it gives'
-    done: false
+    text: 'Gift at 100%: what is given'
+    done: true
+    source: 20261001-054205-chrono-2FYKPJ#18
   - id: per-level
-    text: The gift bar grows about 8-12% per won level, also for a level passed by Jump to Level
+    text: The gift bar grows about 8-12% per won level, also for a level passed by
+      Jump to Level
     done: true
     source: 20260930-192115-chrono-2FYKPJ#96
+  - id: another-one
+    text: 'Get Another One for a video after the 100% gift: what the second reward
+      is'
+    done: false
 - id: level-map
   name: Level map
   status: seen
   cases: []
 - id: timed-chest
   name: Timed prize chest
-  status: recheck
+  status: documented
   cases:
   - id: open-after-timer
     text: 'Open the chest after its timer: the first chest gave the Candy theme'
@@ -121,24 +221,60 @@ features:
     done: true
     source: 20260930-201034-chrono-2FYKPJ#73
   page: features/timed-chest.md
-  version_seen: 241.3.1
+  version_seen: 241.5.1
 - id: keys
   name: Keys and the 3-key chest
   status: in_progress
   cases:
   - id: collect-key
-    text: Collect keys on the map; what the 3-key chest gives
+    text: Key for level 9, chest for 3 keys
+    done: true
+    source: 20261001-054205-chrono-2FYKPJ#11
+  - id: three-keys
+    text: 'Collect 3 keys: which mode unlocks'
     done: false
+    note: 'reopened 2026-10-02: the 3rd key (level 9 replays) opened the key chest
+      room ''Pick your prize!'' (feature key-chests), not a mode [s:20261001-054205-chrono-2FYKPJ#32]
+      [s:20261001-054205-chrono-2FYKPJ#35]; after it the map key bar shows 1/3 again.
+      What the ''Unlock New Mode'' key node on the map gives is still open [s:20261001-075644-chrono-2FYKPJ#13]
+      (task keys-third-unlock)'
+  version_seen: 241.5.1
 - id: multi-stage
   name: Multi Stage levels (puzzle icon)
-  status: recheck
+  status: documented
   cases:
   - id: play
     text: 'Play a multi-stage level (level 5: 4 stages, Stage panel)'
     done: true
     source: 20260930-192115-chrono-2FYKPJ#72
+  - id: mid-ad
+    text: 'Interstitial between stages of a Multi Stage level: does the stage progress
+      survive a restart'
+    done: true
+    source: 20261001-162240-chrono-2FYKPJ#31
+    version: 241.5.1
+    note: 'after a restart mid-level, Play resumed level 23 at stage 3 with stages
+      1-2 checked (shot 62); the stage cleared just before the stuck ad was not kept.
+      Reconciled with 075644: there stage 1 had just been cleared when the ad hit,
+      and the level came back at stage 1 (re-entered via Jump to Level) [s:20261001-075644-chrono-2FYKPJ#15]
+      — the same rule, not a contradiction'
+  - id: tap-to-restart
+    text: 'Stage failed screen: Tap to restart goes back to stage 1'
+    done: true
+    source: 20261001-075644-chrono-2FYKPJ#4
+    version: 241.5.1
+    note: the screen also offers Retry Stage and Skip level, both for a video [s:20261001-075644-chrono-2FYKPJ#3]
+  - id: retry-stage
+    text: Retry Stage (video) replays only the failed stage
+    done: true
+    source: 20261001-164104-chrono-2FYKPJ#6
+    version: 241.5.1
+    note: the video is a 35-50 s ad closed at (680,70) [s:20261001-164104-chrono-2FYKPJ#4]
   page: features/multi-stage.md
-  version_seen: 241.3.1
+  version_seen: 241.5.1
+  note: merged level-badge (the '!' on map nodes marks Multi Stage levels, labelled
+    'Multi Stage Level' on the map [s:20261001-075644-chrono-2FYKPJ#13]) and stage-progress
+    (the Stage panel)
 - id: hard-level
   name: Hard levels (skull)
   status: in_progress
@@ -153,18 +289,18 @@ features:
     source: 20260930-201034-chrono-2FYKPJ#50
 - id: jump-to-level
   name: Jump to Level for a video
-  status: recheck
+  status: documented
   cases:
   - id: skip-level
     text: 'Jump to Level for a video: the level counts as passed with the full reward'
     done: true
     source: 20260930-192115-chrono-2FYKPJ#57
+  - id: full-reward
+    text: Jump to Level pays the full win reward (coins, gift %, league)
+    done: true
+    source: 20261001-054205-chrono-2FYKPJ#55
   page: features/jump-to-level.md
-  version_seen: 241.3.1
-- id: level-badge
-  name: Levels marked "!"
-  status: seen
-  cases: []
+  version_seen: 241.5.1
 - id: banner-ads
   name: Banner and interstitial ads
   status: in_progress
@@ -174,15 +310,23 @@ features:
     done: true
     source: 20260930-192115-chrono-2FYKPJ#4
   - id: interstitial-start
-    text: Interstitials start after the level 6 win; then after wins, Restart, Retry and the chest puzzle;
-      often no close button
+    text: Interstitials start after the level 6 win; then after wins, Restart, Retry
+      and the chest puzzle; often no close button
     done: true
     source: 20260930-201034-chrono-2FYKPJ#59
   - id: frequency
     text: Interstitial frequency and the minimum gap between them
     done: false
+  - id: no-close-playable
+    text: 'Post-win playable ads with no close: Back and Next do nothing, they push
+      to the Play Store'
+    done: true
+    source: 20261001-102608-chrono-2FYKPJ#28
+    version: 241.5.1
+    note: also after Retry [s:20261001-102608-chrono-2FYKPJ#44] and 4 of 4 post-win
+      ads in 054205 [s:20261001-054205-chrono-2FYKPJ#51]
   page: features/banner-ads.md
-  version_seen: 241.3.1
+  version_seen: 241.5.1
 - id: bonus-level
   name: Bonus levels (character on the map)
   status: in_progress
@@ -210,7 +354,7 @@ features:
     text: When the free Spin! is available again
     done: false
   page: features/gacha.md
-  version_seen: 241.3.1
+  version_seen: 241.5.1
 - id: puzzle-collection
   name: 'Collections: puzzles tab'
   status: in_progress
@@ -227,26 +371,30 @@ features:
     done: true
     source: 20260930-192115-chrono-2FYKPJ#84
   page: features/puzzle-collection.md
-  version_seen: 241.3.1
+  version_seen: 241.5.1
 - id: skins
   name: 'Collections: skins tab (brush)'
-  status: recheck
+  status: in_progress
   cases:
   - id: buy-no-coins
     text: 'Buy the 1000-coin ball with too few coins: nothing happens'
     done: true
     source: 20260930-192115-chrono-2FYKPJ#50
   - id: walls-pins
-    text: 'Walls and Pins: unlock sources (Daily Tasks, Gift Boxes, events, Diamond League), not sold
-      for coins'
+    text: 'Walls and Pins: unlock sources (Daily Tasks, Gift Boxes, events, Diamond
+      League), not sold for coins'
     done: true
     source: 20260930-201034-chrono-2FYKPJ#14
   - id: equip
-    text: 'Equip an unlocked item (tap) and see it in a level: Candy theme and Popcorn balls'
+    text: 'Equip an unlocked item (tap) and see it in a level: Candy theme and Popcorn
+      balls'
     done: true
     source: 20260930-201034-chrono-2FYKPJ#24
+  - id: themes-badge
+    text: 'Themes ! badge: open and equip the new theme (Space?)'
+    done: false
   page: features/skins.md
-  version_seen: 241.3.1
+  version_seen: 241.5.1
 - id: special-events
   name: Special events (theme rewards)
   status: in_progress
@@ -265,16 +413,22 @@ features:
     text: How rank grows and the Bronze -> Silver promotion with its gift
     done: false
   - id: view-ladder
-    text: 'Open the leagues screen from the map: Bronze, Silver, Gold, Emerald, Ruby, Diamond, each with
-      a gift'
+    text: 'Open the leagues screen from the map: Bronze, Silver, Gold, Emerald, Ruby,
+      Diamond, each with a gift'
     done: true
     source: 20260930-192115-chrono-2FYKPJ#76
   - id: points
     text: League points = pins pulled, also in lost attempts
     done: true
     source: 20260930-201034-chrono-2FYKPJ#57
+  - id: replay-farm
+    text: Replaying a level reverted by an ad restart scores its pins again
+    done: true
+    source: 20261001-102608-chrono-2FYKPJ#33
+    version: 241.5.1
+    note: 57 -> 61 points
   page: features/leagues.md
-  version_seen: 241.3.1
+  version_seen: 241.5.1
 - id: win-streak
   name: Win streak (consecutive wins) rewards
   status: in_progress
@@ -282,6 +436,16 @@ features:
   - id: rewards
     text: Rewards for consecutive wins
     done: false
+  - id: streak-save
+    text: 'Loss with a streak: ''Watch your streak!'' Keep it! for a video (2h 38m
+      timer), No, thanks loses it'
+    done: true
+    source: 20261001-220948-chrono-2FYKPJ#2
+    version: 241.5.1
+    note: No, thanks led to the defeat screen and the streak was lost [s:20261001-220948-chrono-2FYKPJ#3];
+      Keep it! untested (task win-streak-keep)
+  page: features/win-streak.md
+  version_seen: 241.5.1
 - id: daily-rewards
   name: Daily rewards (7 days)
   status: in_progress
@@ -291,8 +455,9 @@ features:
     done: true
     source: 20260930-192115-chrono-2FYKPJ#57
   - id: claim-day2
-    text: Claim day 2 on the next day
-    done: false
+    text: Claim day 2 the next day
+    done: true
+    source: 20261001-054205-chrono-2FYKPJ#1
   - id: miss-day
     text: 'Miss a day: does the streak reset'
     done: false
@@ -300,15 +465,7 @@ features:
     text: 'Day 7: what the gift set contains'
     done: false
   page: features/daily-rewards.md
-  version_seen: 241.3.1
-- id: bomb-hazard
-  name: 'Hazard: bomb'
-  status: seen
-  cases: []
-- id: stage-progress
-  name: Stage panel in a level
-  status: seen
-  cases: []
+  version_seen: 241.5.1
 - id: cross-promo
   name: Popcore cross-promo widget in a level
   status: seen
@@ -324,6 +481,11 @@ features:
   - id: video-x
     text: 'Get xN for a video: does it depend on the arrow position'
     done: false
+  - id: xn-bar-on-win
+    text: win screen shows moving x2-x5 bar; Get xN with video
+    done: true
+    source: 20261001-075644-chrono-2FYKPJ#17
+  version_seen: 241.5.1
 - id: pull-fest
   name: Pull Fest Ranking (ranking event)
   status: in_progress
@@ -356,11 +518,29 @@ features:
   status: in_progress
   cases:
   - id: find
-    text: Where Daily Tasks are (mentioned in Walls)
+    text: 'Daily Tasks: map icon left side under the jar; 5 tasks with star rewards,
+      chests at 15/30/50 stars'
+    done: true
+    source: 20261001-102608-chrono-2FYKPJ#57
+  - id: unlock-level
+    text: Daily tasks icon appears on the map after winning level 14 (tutorial highlight
+      at level 15)
+    done: true
+    source: 20261001-102608-chrono-2FYKPJ#55
+  - id: progress
+    text: 'Progress counts only from unlock: play levels and check counters (levels,
+      pins, balls)'
     done: false
+  - id: skip-video
+    text: 'Skip a task for a video: does it complete the task and give its stars'
+    done: false
+  - id: star-chests
+    text: 'Open the 15/30/50 star chests: rewards'
+    done: false
+  version_seen: 241.5.1
 - id: game-modes
   name: All You Can Play! modes menu
-  status: recheck
+  status: documented
   cases:
   - id: open
     text: 'Open the modes menu: 5 upcoming modes with unlock levels 16-50'
@@ -371,7 +551,7 @@ features:
     done: true
     source: 20260930-201034-chrono-2FYKPJ#69
   page: features/game-modes.md
-  version_seen: 241.3.1
+  version_seen: 241.5.1
 - id: mode-iq-test
   name: 'Mode: Sketchman IQ Test (level 16)'
   status: in_progress
@@ -386,6 +566,22 @@ features:
   - id: play
     text: 'Open the mode after it unlocks: rules and rewards'
     done: false
+    note: the challenge was lost 4 times in 692 s [s:20261001-154701-chrono-2FYKPJ#37];
+      whether the modes menu entry is the same challenge is not checked
+  - id: popup
+    text: Play on level 21 after the level 20 win offers 'Challenge 1' (10 moves,
+      +300 coins) or No, thanks
+    done: true
+    source: 20261001-154701-chrono-2FYKPJ#11
+    version: 241.5.1
+  - id: fail
+    text: '''Challenge failed!'': Retry costs a video, Tap to continue goes back;
+      Play then opens the normal level 21'
+    done: true
+    source: 20261001-154701-chrono-2FYKPJ#37
+    version: 241.5.1
+    note: the next Play opened the normal level 21 [s:20261001-160324-chrono-2FYKPJ#1]
+  version_seen: 241.5.1
 - id: mode-merge-balls
   name: 'Mode: Merge Balls (level 22)'
   status: in_progress
@@ -393,6 +589,12 @@ features:
   - id: play
     text: 'Open the mode after it unlocks: rules and rewards'
     done: false
+  - id: unlock-popup
+    text: 'Before level 22: ''You unlocked a new Game Mode!'' with Show Me! (declined)'
+    done: true
+    source: 20261001-160324-chrono-2FYKPJ#27
+    version: 241.5.1
+    note: probably Merge Balls; open it with task modes-open-28
 - id: mode-protect-balloon
   name: 'Mode: Protect The Balloon (level 30)'
   status: in_progress
@@ -409,24 +611,126 @@ features:
     done: false
 - id: collections
   name: Collections menu (gacha, trophies, puzzles, skins)
-  status: recheck
+  status: documented
   cases:
   - id: open
     text: 'Open Collections from the map: tabs gacha, trophies, puzzles, skins (brush)'
     done: true
     source: 20260930-201034-chrono-2FYKPJ#5
   page: features/collections.md
-  version_seen: 241.3.1
+  version_seen: 241.5.1
+- id: key-chests
+  name: 'Key chest room: pick 3 of 9 chests'
+  status: in_progress
+  cases:
+  - id: pick-three
+    text: Spend 3 keys on 3 of 9 chests
+    done: true
+    source: 20261001-054205-chrono-2FYKPJ#35
+  - id: video-x3
+    text: 'Get X3 keys for a video: 3 more picks, chance of best prize'
+    done: false
+  found_at:
+    text: level 9 (2nd replay)
+    value: 9.0
+  version_seen: 241.5.1
+- id: level-race
+  name: Level Race (timed race event)
+  status: in_progress
+  cases:
+  - id: race-rewards
+    text: What happens when the 6 h race timer ends (results screen, reward paid)
+    done: false
+    note: ranks 2-3 are covered by rank-rewards [s:20261001-081207-chrono-2FYKPJ#4]
+  - id: rank-rewards
+    text: 'Race reward per rank: 1st +250, 2nd +150, 3rd +75, 4-5 none'
+    done: true
+    source: 20261001-081207-chrono-2FYKPJ#4
+  - id: in-level-bar
+    text: During a level a bar at the bottom shows the racers' positions
+    done: true
+    source: 20261001-102608-chrono-2FYKPJ#71
+    version: 241.5.1
+  found_at:
+    text: level 11
+    value: 11.0
+  version_seen: 241.5.1
+- id: golden-pin
+  name: Golden Pin (collectible in levels, speeds up leaderboard rank)
+  status: in_progress
+  cases:
+  - id: collect
+    text: 'Collect golden pins: after a win, the league screen offers ''+5 golden
+      pins'' for a rewarded video'
+    done: true
+    source: 20261001-102608-chrono-2FYKPJ#7
+  - id: use
+    text: Golden pins count automatically into the league Total Score at 5 points
+      each (51 pins + 5 golden = 76), rank 502 -> 484
+    done: true
+    source: 20261001-102608-chrono-2FYKPJ#7
+  - id: in-level
+    text: Is there a golden pin inside levels too (pulling it gives golden pins)?
+    done: false
+    note: 'evidence both ways: on level 11 in 075644 a star-headed golden pin stood
+      on the right wall with the popup ''Golden Pin found'' and a golden counter 0
+      (shot 54) [s:20261001-075644-chrono-2FYKPJ#32]; in 102608 the same pin was ordinary
+      grey (shot 4) [s:20261001-102608-chrono-2FYKPJ#1]. So golden pins appear inside
+      levels on some tries only; whether pulling one adds to the counter is not verified
+      (the 075644 try that pulled it was lost)'
+  found_at:
+    text: level 11
+    value: 11.0
+  version_seen: 241.5.1
+- id: color-bucket-level
+  name: Color Bucket Level (two colours, two cups)
+  status: in_progress
+  cases:
+  - id: rules
+    text: 'Play the Color Bucket level: goal and rules'
+    done: true
+    source: 20261001-153137-chrono-2FYKPJ#27
+    version: 241.5.1
+    note: 'a colour landing in the other colour''s cup loses at once [s:20261001-153137-chrono-2FYKPJ#24];
+      a steering pin sets which cup a colour runs to: release that colour first, pull
+      the steering pin after it stopped [s:20261001-153137-chrono-2FYKPJ#42]'
+  found_at:
+    text: level 20
+    value: 20.0
+    note: 'corrected from level 11: the first two-cup board was level 20 [s:20261001-153137-chrono-2FYKPJ#23]'
+  version_seen: 241.5.1
+- id: boss-level
+  name: Boss levels (tall, move limit)
+  status: in_progress
+  cases:
+  - id: find
+    text: 'Level 27 is ''Boss Level 1'': a tall scrolling level with 25 moves'
+    done: true
+    source: 20261001-165538-chrono-2FYKPJ#6
+    version: 241.5.1
+  - id: win
+    text: Win a boss level and record its reward
+    done: false
+    note: level 27 lost twice [s:20261001-165538-chrono-2FYKPJ#11] [s:20261001-165538-chrono-2FYKPJ#46],
+      then passed by Skip for a video [s:20261001-220948-chrono-2FYKPJ#8]
+  found_at:
+    text: level 27
+    value: 27.0
+  version_seen: 241.5.1
 tasks:
 - id: daily-rewards-claim-day2
   title: Claim daily reward day 2 on the next day
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-09-30T19:34:20'
   feature: daily-rewards
   not_before: '2026-10-01T19:34:20'
   source: game
+  closed: '2026-10-01T05:42:47'
+  closed_by: 20261001-054205-chrono-2FYKPJ#1
+  note: 'Day 2 claimable on next calendar day at 05:42 (day 1 at ~19:34 previous day):
+    +50 coins'
 - id: pull-fest-end-of-event
   title: 'Pull Fest end: results and rewards'
   kind: followup
@@ -455,12 +759,12 @@ tasks:
   not_before: '2026-10-03T03:13:08'
   source: game
 - id: analyze
-  title: Analyze the game, version 241.5.1
+  title: Analyze the game
   kind: analyze
   requires: any
   status: open
   created: '2026-09-30T20:39:36'
-  version: 241.5.1
+  version: ''
   source: external
   note: find all features and work through all user cases
 - id: leagues-week-end
@@ -485,18 +789,26 @@ tasks:
   title: Win level 9 (gift bar at 90%) and record what the 100% gift box gives
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T05:00:00'
   source: session
   feature: reward-unlock
+  closed: '2026-10-01T22:15:50'
+  closed_by: 20261001-054205-chrono-2FYKPJ#18
+  note: 'Already done: gift at 100% gave the ''Space'' skin (case reward-unlock/gift-100);
+    Get Another One stays an open case'
 - id: find-daily-tasks
   title: Find Daily Tasks (named as the source of Walls)
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T05:00:00'
   source: session
   feature: daily-tasks
+  closed: '2026-10-01T22:10:12'
+  closed_by: 20261001-220948-chrono-2FYKPJ#0
+  note: 'Daily Tasks unlock after the level 14 win: 5 tasks, star chests 15/30/50
+    (session 20261001-102608; cases daily-tasks/find and unlock-level done).'
 - id: settings-persist
   title: Restart the game and check that Sound/Vibration keep their state
   kind: followup
@@ -509,10 +821,19 @@ tasks:
   title: 'Defeat screen: Skip for a video — does the level count'
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T05:00:00'
   source: session
   feature: core-level
+  closed: '2026-10-01T22:13:55'
+  closed_by: 20261001-220948-chrono-2FYKPJ#8
+  note: 'Level 27 lost on purpose -> streak-save popup (Keep it! video / No, thanks)
+    -> defeat screen ''Level failed!'' with Skip (video) and Retry. Skip: rewarded
+    video (~25 s, close after ''Reward granted'') -> league screen (pins +1, rank
+    723->717) -> ''Level completed!'' +18 coins, gift 42% -> map with 28 current.
+    Skip counts as a full win (reward, pin, progress), but the win streak was lost
+    first.'
+  result: confirmed
 - id: ftue
   title: 'Play from scratch: FTUE and how the map, leagues, gacha and modes unlock'
   kind: ftue
@@ -520,5 +841,631 @@ tasks:
   status: open
   created: '2026-10-01T05:00:00'
   source: session
-  note: session 1 began on a fresh install but in the old log format; check map after L3, leagues after
-    L5, interstitials after L6, modes after L8
+  note: session 1 began on a fresh install but in the old log format; check map after
+    L3, leagues after L5, interstitials after L6, modes after L8
+- id: daily-rewards-day3
+  title: Claim Daily Rewards day 3 (+100)
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-01T05:42:47'
+  feature: daily-rewards
+  not_before: '2026-10-02T06:00:00'
+  source: game
+- id: continue-level10
+  title: Continue from level 10 stage 3 (or level 10 start) and advance to level 16-17
+    (IQ Test, Unlock New Mode key at 17)
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T06:08:02'
+  feature: core-level
+  source: game
+  closed: '2026-10-01T08:11:27'
+  closed_by: 20261001-075644-chrono-2FYKPJ#36
+  note: Level 10 won (Jump to Level reset it to stage 1, 2 pulls won); level 11 lost
+    3x, mechanic broken, handed off
+- id: level-race-end
+  title: Check race result and reward after the timer
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T08:04:13'
+  feature: level-race
+  not_before: '2026-10-01T14:04:13'
+  source: game
+- id: level11-solve
+  title: Solve level 11 (wall gap pin, golden pin) then continue to level 17
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T08:11:18'
+  feature: core-level
+  source: game
+  closed: '2026-10-01T10:32:34'
+  closed_by: 20261001-102608-chrono-2FYKPJ#5
+  note: 'Level 11 won: E, W, F, B. Bombs collide and vanish. Continuing to 17 in this
+    session.'
+- id: golden-pin-collect
+  title: Collect and use a golden pin
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T08:11:18'
+  feature: golden-pin
+  source: game
+  closed: '2026-10-01T10:34:18'
+  closed_by: 20261001-102608-chrono-2FYKPJ#7
+  note: '+5 golden pins for a video after the level 11 win; score 51 -> 76, rank 502
+    -> 484. ⚠️ Previously: ''the golden pin on level 11 was an ordinary grey pin''
+    — true for that try only; in 075644 the same pin had a golden star head [s:20261001-075644-chrono-2FYKPJ#32]'
+- id: level-race-mechanics
+  title: Open the flag/Daily race screen from the map, check progress and rewards
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T08:11:18'
+  feature: level-race
+  source: game
+  closed: '2026-10-01T08:13:09'
+  closed_by: 20261001-081207-chrono-2FYKPJ#3
+  note: 'Flag on the map -> Level race screen: 15 levels in 6h, 5 racers, rewards
+    250/150/75; progress 0 levels at start of session'
+- id: survey-1
+  title: 'Survey every screen: capture all entry points and map them to features'
+  kind: survey
+  requires: any
+  status: done
+  created: '2026-10-01T08:11:43'
+  source: external
+  note: 'Walked map (level 11): league banner (not tappable), podium 47 -> Leagues
+    ladder, flag -> Level race, jar -> All You Can Play modes list (16/21/22/30/50),
+    timed chest (no action while timer), shop -> Collections 4 tabs (gacha 375, weekly
+    trophies 1d18h, puzzles 4 albums, skins 5 categories), settings, No ADS, Jump
+    to Level, map nodes (puzzle at 14, key at 17, multi stage 15-16). No new entries.
+    Not visible on the map this time: daily rewards, pull-fest, daily-tasks icons.'
+  closed: '2026-10-01T08:15:09'
+  closed_by: 20261001-081207-chrono-2FYKPJ#17
+  new_entries: 0
+  at_progress: level 11
+- id: timed-chest-next
+  title: Open the timed chest again when its timer ends; record the timer length and
+    reward
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T10:35:49'
+  feature: timed-chest
+  not_before: '2026-10-01T13:35:49'
+  source: game
+  note: 'the timer was 14m34s at [s:20261001-102608-chrono-2FYKPJ#12] but 2m42s about
+    21 min later [s:20261001-102608-chrono-2FYKPJ#55]: check whether it pauses or
+    resets across app restarts'
+- id: daily-tasks-reset
+  title: 'Daily tasks: check the reset (new tasks) and the star chest rewards'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T10:58:06'
+  feature: daily-tasks
+  not_before: '2026-10-02T00:58:06'
+  source: game
+- id: level15-stage4
+  title: Finish level 15 stage 4 (bomb on the floor pin above the arch), then levels
+    16-17 (key 'Unlock New Mode' at 17)
+  kind: followup
+  requires: any
+  status: cancelled
+  created: '2026-10-01T11:04:13'
+  feature: core-level
+  source: game
+  closed: '2026-10-01T22:16:00'
+  closed_by: 20261001-220948-chrono-2FYKPJ#8
+  note: 'Stale: level 15 and 16-17 are long passed, progress is level 28'
+- id: color-bucket-play
+  title: Play the first Color Bucket level (19-20) and write its rules
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T11:04:14'
+  feature: color-bucket-level
+  source: game
+  closed: '2026-10-01T22:10:12'
+  closed_by: 20261001-220948-chrono-2FYKPJ#0
+  note: 'Already played in sessions 20261001-153137 and 20261001-154701 (levels 19-20);
+    rules in playbook: coloured balls must reach the cup of their own colour, wrong
+    colour in a cup loses at once; steering pins switch channels, pull only after
+    the colour stops running. Progress now level 26.'
+- id: golden-pin-in-level
+  title: Check whether golden pins also appear inside levels (not only the +5 video)
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T11:04:14'
+  feature: golden-pin
+  source: game
+- id: study-core-level
+  title: 'Study Core level: pulling pins: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: core-level
+  source: external
+- id: study-settings
+  title: 'Study Settings (gear): open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: settings
+  source: external
+- id: study-no-ads
+  title: 'Study Remove ads (No ADS): open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: no-ads
+  source: external
+- id: study-reward-unlock
+  title: 'Study Gift box progress after each level: open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: reward-unlock
+  source: external
+- id: study-level-map
+  title: 'Study Level map: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: level-map
+  source: external
+- id: study-timed-chest
+  title: 'Study Timed prize chest: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: timed-chest
+  source: external
+- id: study-keys
+  title: 'Study Keys and the 3-key chest: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: keys
+  source: external
+- id: study-multi-stage
+  title: 'Study Multi Stage levels (puzzle icon): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: multi-stage
+  source: external
+- id: study-hard-level
+  title: 'Study Hard levels (skull): open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: hard-level
+  source: external
+- id: study-jump-to-level
+  title: 'Study Jump to Level for a video: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: jump-to-level
+  source: external
+- id: study-level-badge
+  title: 'Study Levels marked "!": open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-01T20:09:26'
+  feature: level-badge
+  source: external
+  closed: '2026-10-02T06:00:00'
+  closed_by: dream
+  note: 'duplicate: the ''!'' marks Multi Stage levels, merged into multi-stage'
+- id: study-banner-ads
+  title: 'Study Banner and interstitial ads: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: banner-ads
+  source: external
+- id: study-bonus-level
+  title: 'Study Bonus levels (character on the map): open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: bonus-level
+  source: external
+- id: study-gacha
+  title: 'Study Collections: Spin machine (gacha): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: gacha
+  source: external
+- id: study-puzzle-collection
+  title: 'Study Collections: puzzles tab: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: puzzle-collection
+  source: external
+- id: study-skins
+  title: 'Study Collections: skins tab (brush): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: skins
+  source: external
+- id: study-special-events
+  title: 'Study Special events (theme rewards): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: special-events
+  source: external
+- id: study-leagues
+  title: 'Study Leagues (Bronze to Diamond ladder): open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: leagues
+  source: external
+- id: study-win-streak
+  title: 'Study Win streak (consecutive wins) rewards: open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: win-streak
+  source: external
+- id: study-daily-rewards
+  title: 'Study Daily rewards (7 days): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: daily-rewards
+  source: external
+- id: study-bomb-hazard
+  title: 'Study Hazard: bomb: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-01T20:09:26'
+  feature: bomb-hazard
+  source: external
+  closed: '2026-10-02T06:00:00'
+  closed_by: dream
+  note: 'duplicate: bombs are a level element, merged into core-level'
+- id: study-stage-progress
+  title: 'Study Stage panel in a level: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-01T20:09:26'
+  feature: stage-progress
+  source: external
+  closed: '2026-10-02T06:00:00'
+  closed_by: dream
+  note: 'duplicate: the Stage panel is part of multi-stage, merged'
+- id: study-cross-promo
+  title: 'Study Popcore cross-promo widget in a level: open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: cross-promo
+  source: external
+- id: study-reward-multiplier
+  title: 'Study Reward multiplier for a video after a level: open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: reward-multiplier
+  source: external
+- id: study-pull-fest
+  title: 'Study Pull Fest Ranking (ranking event): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: pull-fest
+  source: external
+- id: study-weekly-trophies
+  title: 'Study Collections: weekly trophies and chest: open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: weekly-trophies
+  source: external
+- id: study-daily-tasks
+  title: 'Study Daily Tasks (unlock Walls): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: daily-tasks
+  source: external
+- id: study-game-modes
+  title: 'Study All You Can Play! modes menu: open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: game-modes
+  source: external
+- id: study-mode-iq-test
+  title: 'Study Mode: Sketchman IQ Test (level 16): open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: mode-iq-test
+  source: external
+- id: study-mode-challenge
+  title: 'Study Mode: Challenge (level 21): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: mode-challenge
+  source: external
+- id: study-mode-merge-balls
+  title: 'Study Mode: Merge Balls (level 22): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: mode-merge-balls
+  source: external
+- id: study-mode-protect-balloon
+  title: 'Study Mode: Protect The Balloon (level 30): open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: mode-protect-balloon
+  source: external
+- id: study-mode-dark-levels
+  title: 'Study Mode: Dark Levels (level 50): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: mode-dark-levels
+  source: external
+- id: study-collections
+  title: 'Study Collections menu (gacha, trophies, puzzles, skins): open it, walk
+    its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: collections
+  source: external
+- id: study-key-chests
+  title: 'Study Key chest room: pick 3 of 9 chests: open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: key-chests
+  source: external
+- id: study-level-race
+  title: 'Study Level Race (timed race event): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: level-race
+  source: external
+- id: study-golden-pin
+  title: 'Study Golden Pin (collectible in levels, speeds up leaderboard rank): open
+    it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:26'
+  feature: golden-pin
+  source: external
+- id: study-color-bucket-level
+  title: 'Study Color Bucket Level (special level type, map node 19): open it, walk
+    its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-01T20:09:26'
+  feature: color-bucket-level
+  source: external
+  closed: '2026-10-02T06:00:00'
+  closed_by: 20261001-153137-chrono-2FYKPJ#42
+  note: rules verified on level 20 (case color-bucket-level/rules); no page yet
+- id: win-streak-keep
+  title: 'Loss with a streak: does Keep it! (video) keep the streak'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T22:14:01'
+  feature: win-streak
+  source: session
+  plan: after 2+ wins lose on purpose, take Keep it!, check the streak gauge
+- id: modes-open-28
+  title: Open All You Can Play! at level 28 and play one round each of Sketchman IQ
+    Test, Challenge and Merge Balls (unlocked at 16/21/22, never opened); record rules
+    and rewards
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T22:16:01'
+  feature: game-modes
+  source: game
+  note: map shows a ! on the modes jar (shot 16)
+- id: unlock-protect-balloon
+  title: 'Reach level 30 and open Protect The Balloon mode: rules and rewards'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-01T22:16:01'
+  feature: mode-protect-balloon
+  source: session
+  target_text: level 30
+  target_value: 30.0
+- id: unlock-dark-levels
+  title: 'Reach level 50 and open Dark Levels mode: rules and rewards'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-01T22:16:02'
+  feature: mode-dark-levels
+  source: session
+  target_text: level 50
+  target_value: 50.0
+- id: keys-third-unlock
+  title: Collect the 3rd key (keys 2/3, 'Unlock New Mode' node at 30) and record what
+    it unlocks
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-01T22:16:03'
+  feature: keys
+  source: session
+  target_text: level 30
+  target_value: 30.0
+- id: bonus-level-play
+  title: Play the bonus level (character on the map between 33 and 34) and record
+    its rules and reward
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-01T22:16:03'
+  feature: bonus-level
+  source: session
+  target_text: level 33
+  target_value: 33.0
+- id: win-streak-rewards
+  title: 'Win streak rewards: win 5+ in a row and record each gauge reward (+150,
+    +300, puzzle, +500, pin skin)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T22:16:03'
+  feature: win-streak
+  source: session
+  plan: after a loss, win levels in a row (solver), check the streak gauge after each
+    win; confirmed when a reward is granted at a gauge mark and its size is recorded
+- id: look-for-iap-offers
+  title: Look for IAP packs, starter or limited offers beyond No ADS (shop box, popups
+    after wins)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T22:16:03'
+  feature: no-ads
+  source: session
+  plan: open the shop box and every popup over 3 sessions; confirmed if any paid pack/offer
+    screen appears, refuted if only No ADS exists
+- id: boss-level-solve
+  title: 'Make pin-pull fast on boss levels: win the next boss with a scrolling board
+    ("scrolling": true, max_moves) and one pin per call, re-reading rings after each
+    camera move'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-02T06:00:00'
+  feature: boss-level
+  source: session
+  note: level 27 took 112 s + 526 s and two losses, the agent re-guessed coordinates
+    after the camera scrolled [s:20261001-165538-chrono-2FYKPJ#46]; then skipped for
+    a video [s:20261001-220948-chrono-2FYKPJ#8]
+- id: key-chests-x3
+  title: 'Key chest room: take Get X3 keys for a video and record the 3 extra picks'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T06:00:00'
+  feature: key-chests
+  source: session
+- id: multi-stage-restart-button
+  title: 'Multi Stage: tap the restart arrow at stage 2+ and record whether it restarts
+    the stage or the whole level'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T06:00:00'
+  feature: multi-stage
+  source: session
+- id: golden-pin-pull
+  title: When a level shows a star-headed golden pin, pull it in a winning order and
+    record whether the golden counter grows
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-02T06:00:00'
+  feature: golden-pin
+  source: session
+  plan: watch for the 'Golden Pin found' popup at level start; confirmed if the golden
+    counter under the podium rises after the win, refuted if it stays
+- id: skins-themes-badge
+  title: 'Skins: open the Themes tab with the ''!'' badge and equip the new theme'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T06:00:00'
+  feature: skins
+  source: session
+  note: badge seen [s:20261001-081207-chrono-2FYKPJ#13]

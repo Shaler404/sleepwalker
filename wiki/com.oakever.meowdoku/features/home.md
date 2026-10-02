@@ -4,8 +4,8 @@ title: "Home screen"
 type: feature
 feature: home
 version_seen: 1.18.0
-verified_at: 2026-10-01
-sources: [20260930-233055-chrono-2FYKPJ, 20261001-013526-chrono-2FYKPJ, 20261001-022624-chrono-2FYKPJ, 20261001-093348-chrono-2FYKPJ]
+verified_at: 2026-10-02
+sources: [20260930-233055-chrono-2FYKPJ, 20261001-013526-chrono-2FYKPJ, 20261001-022624-chrono-2FYKPJ, 20261001-093348-chrono-2FYKPJ, 20261001-183504-chrono-2FYKPJ, 20261001-185238-chrono-2FYKPJ, 20261001-223249-chrono-2FYKPJ]
 ---
 
 # Home screen
@@ -53,12 +53,17 @@ event starts after level 10 [^s10].
 | [Leaderboard](#leaderboard) | The podium icon opens the fish leaderboard event |
 | [Settings](#settings) | The gear opens Settings: sound, save progress, language, feedback, legal links |
 | [Golden Fish](#golden-fish) | When a golden board is pending, the orange button reads "Golden Fish" and opens it |
+| [Quit dialog](#quit-dialog) | The Android back key on Home asks whether to quit the game |
 
 ### Level N
 
 The orange button always names the next main level (Level 8, Level 36…). A tap starts that level
 directly: the board with Level/Score, the 3 fish (lives), the three rule cards and the boosters
 [^s3]. See [Core puzzle](core-puzzle.md).
+
+On Home the button sits at about (365,1185) in the 730x1583 frame. A tap at (365,1245), where the
+next-level button sits on the win screen, does nothing on Home [^s21]
+[^s22].
 
 ![Level N button starts the next main level: Level 8 board, Score 0, 3 fish, rules, boosters](../img/20260930-home-tab-level-fb818473.webp) [^s3]
 
@@ -117,6 +122,15 @@ explainer. After that board was won, Home showed "Level N" again [^s9] [^s19] [^
 
 ![Home with a pending golden board: the orange button reads Golden Fish instead of Level N](../img/20261001-home-tab-golden-fish-af85708f.webp) [^s9]
 
+### Quit dialog
+
+The Android back key on Home does not leave silently: it opens a **Quit** popup, "Are you sure you
+want to quit?", with a red **Quit** button and an X in the top-right corner (621,535). The X closes it
+and Home is back [^s23] [^s24]. Quit itself
+was not tapped.
+
+![Android back on Home: Quit popup "Are you sure you want to quit?" with a red Quit button and an X at the top right](../img/20261002-home-quit-dialog-81953f2d.webp) [^s23]
+
 ## How it works
 
 Version 1.18.0.
@@ -139,10 +153,15 @@ Version 1.18.0.
 | Podium | Tapped the podium icon | Leaderboard of the fish event | ✅ [^s7] |
 | Gear | Tapped the gear on Home | Settings without Pattern Mode or Restart | ✅ [^s8] |
 | Golden Fish button | Tapped Golden Fish on Home | A 9x9 golden board started directly | ✅ [^s19] |
+| Back on Home | Pressed the Android back key on Home, then the X | Quit popup "Are you sure you want to quit?"; X closed it | ✅ [^s23] [^s24] |
+| Level button position | Tapped (365,1245) and then (365,1185) on Home | 1245 changed nothing; 1185 started the level | ✅ [^s21] [^s25] |
 
 ## Not verified
 
-- When exactly the Golden Fish button appears (seen once, after level 66).
+- Whether the Golden Fish button on Home expires after a day (still there after about 12 minutes
+  [^s26]). It appears when the golden board offered on the win screen of
+  every 4th level is skipped (see [Golden Fish level](golden-fish-level.md)).
+- What Quit in the Quit popup does (expected: closes the app).
 - What the red dot on the gear means (seen at level 8).
 - Whether the avatar chosen in Profile also changes in the event leaderboard.
 
@@ -167,3 +186,10 @@ Version 1.18.0.
 [^s18]: session 20261001-022624-chrono-2FYKPJ, step 20
 [^s19]: session 20261001-093348-chrono-2FYKPJ, step 1
 [^s20]: session 20261001-093348-chrono-2FYKPJ, step 16
+
+[^s21]: session 20261001-183504-chrono-2FYKPJ, step 1 — [video at 0:15](https://youtu.be/Ja2zbpj9-mo?t=15)
+[^s22]: session 20261001-185238-chrono-2FYKPJ, step 10 — [video at 3:55](https://youtu.be/4EUOBVqgKMw?t=235)
+[^s23]: session 20261001-185238-chrono-2FYKPJ, step 7 — [video at 2:24](https://youtu.be/4EUOBVqgKMw?t=144)
+[^s24]: session 20261001-185238-chrono-2FYKPJ, step 9 — [video at 3:49](https://youtu.be/4EUOBVqgKMw?t=229)
+[^s25]: session 20261001-183504-chrono-2FYKPJ, step 2 — [video at 0:21](https://youtu.be/Ja2zbpj9-mo?t=21)
+[^s26]: session 20261001-223249-chrono-2FYKPJ, step 8 — [video at 2:47](https://youtu.be/9EZzZahUrbk?t=167)

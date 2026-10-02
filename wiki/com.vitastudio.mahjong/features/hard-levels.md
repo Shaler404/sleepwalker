@@ -5,7 +5,7 @@ type: feature
 feature: hard-levels
 version_seen: 3.39.1
 verified_at: 2026-10-01
-sources: [20260930-221457-chrono-2FYKPJ, 20260930-235817-chrono-2FYKPJ]
+sources: [20260930-221457-chrono-2FYKPJ, 20260930-235817-chrono-2FYKPJ, 20261001-063226-chrono-2FYKPJ, 20261001-083725-chrono-2FYKPJ, 20261001-205148-chrono-2FYKPJ]
 ---
 
 # Hard levels
@@ -72,7 +72,8 @@ other-player ticker that slides in on win screens.
 
 Version 3.39.1.
 
-- Level 10 is the first Hard level; levels 9 and 11 were normal [^s1] [^s7].
+- Level 10 is the first Hard level; levels 9 and 11 were normal [^s1] [^s7]. Levels 12 to 19 were not
+  Hard either (no red button, no Hard banner), so the next Hard level is at least L20 [^s9] [^s8].
 - Signs of a Hard level: red "Level N / Hard" button on the previous win screen (normal levels: orange),
   red flame "Hard" banner at the start [^s1] [^s2].
 - Reward for a Hard win: the next level gets an "x2" tag. In the league, Elite Tiles (golden tiles on the
@@ -86,11 +87,14 @@ Version 3.39.1.
 |---|---|---|---|
 | First Hard level | Won level 9 and read the next button | Level 10 is the first Hard level: red "Level 10 / Hard" button, flame "Hard" banner at the start | ✅ [^s1] [^s2] |
 | Win a Hard level | Won level 10 (9.6 min, 1 Undo, 1 Shuffle) | "Genius!", "This HARD level was no match for your skills.", x2 tag on the Level 11 button | ✅ [^s5] |
+| Levels 11–19 | Won levels 11–18 and opened L19 | None was Hard | ✅ [^s9] [^s8] |
 | The "…ak in Hard levels!" banner | Seen cut off on level 6; not seen again on levels 9–11 | full text and what the streak gives unknown | not verified [^s4] [^s7] |
 
 ## Not verified
 
-- The interval between Hard levels (not 11–14).
+- The interval between Hard levels (not L11–L19).
+- During L14 the live ticker showed "…streak in Hard levels!" as another player's milestone [^s10], so the
+  cut-off banner on level 6 was probably the same ticker (inferred).
 - The full text of the banner "…ak in Hard levels!" seen on level 6, and whether a Hard-level win streak
   gives anything [^s4].
 - Whether losing a Hard level differs from losing a normal one.
@@ -102,3 +106,6 @@ Version 3.39.1.
 [^s5]: session 20260930-235817-chrono-2FYKPJ, step 41 — [video at 20:47](https://youtu.be/6yY68DCT4w0?t=1247)
 [^s6]: session 20260930-235817-chrono-2FYKPJ, step 65 — [video at 34:45](https://youtu.be/6yY68DCT4w0?t=2085)
 [^s7]: session 20260930-235817-chrono-2FYKPJ, step 67 — [video at 35:54](https://youtu.be/6yY68DCT4w0?t=2154)
+[^s8]: session 20261001-205148-chrono-2FYKPJ, step 73
+[^s9]: session 20261001-083725-chrono-2FYKPJ, step 83
+[^s10]: session 20261001-063226-chrono-2FYKPJ, step 9

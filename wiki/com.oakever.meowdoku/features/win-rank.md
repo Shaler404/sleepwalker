@@ -4,7 +4,7 @@ title: "Win screen titles"
 type: feature
 feature: win-rank
 version_seen: 1.18.0
-verified_at: 2026-10-01
+verified_at: 2026-10-02
 sources: [20260930-233055-chrono-2FYKPJ, 20261001-013526-chrono-2FYKPJ, 20261001-022624-chrono-2FYKPJ, 20261001-060942-chrono-2FYKPJ, 20261001-082114-chrono-2FYKPJ, 20261001-093348-chrono-2FYKPJ, 20261001-115413-chrono-2FYKPJ]
 ---
 
@@ -69,7 +69,7 @@ leads on [^s12].
 ### Golden Fish button
 
 On some wins the main button is "Golden Fish" with a fish icon instead of "Level N". It was seen on
-levels 54, 58, 62, 70, 74, 78, 82, 86, 90 and 94 (every fourth level from 54), after flawless wins
+levels 54, 58, 62, 66, 70, 74, 78, 82, 86, 90 and 94 (every fourth level from 54; 66 [^s1]), after flawless wins
 and after a win with 2 mistakes alike [^s13]
 [^s3] [^s14]
 [^s15]. The challenge is a separate small board; winning it gave the
@@ -127,7 +127,13 @@ Version 1.18.0.
 - **The score follows the board, not mistakes or the title:** on the levels seen, 9×9 boards scored
   8640 and 10×10 boards 10080; L57 with 1 mistake still scored 8640 and L58 with 2 mistakes 10080
   [^s23] [^s1]. Other scores seen: 6048 on the 8×8 level 8 and 7296 on Hard level 40 [^s34] [^s12].
-  Whether every board of one size scores the same was not checked.
+  Boards of one size do not always score the same: the 8×8 level 61 (one cat already placed) scored
+  6048 like the 7×7 level 62, while a golden 8×8 board with no cat placed scored 7296
+  [^s25] [^s35] [^s36].
+  The scores seen fit the number of cats the player places (7 → 6048, 8 → 7296, 9 → 8640, 10 → 10080);
+  see [Golden Fish](golden-fish-level.md#how-it-works).
+
+  > ⚠️ Previously (v1.18.0, 2026-10-01): "Whether every board of one size scores the same was not checked."
 - **Fish earned on the win** (for the [leaderboard event](fish-event.md)): +3 with no mistakes, +2
   with one, +1 with two [^s18] [^s11].
 - Boosters do not change the title: L92 with 4 booster cats and no mistakes was "Perfect"
@@ -142,7 +148,7 @@ Version 1.18.0.
 | What decides the title | Flawless, 1-mistake and 2-mistake wins compared | Mistakes pick the tier (flawless pool vs Brilliant/Awesome), Hard levels have their own titles; within a tier the title rotates | ✅ [^s1] [^s2] |
 | Wins with 1 and 2 mistakes | L57 and L88 won with 1 deliberate mistake, L58 and L89 with 2 | 1 → Brilliant; 2 → Awesome (L58) or Brilliant (L89); score unchanged | ✅ [^s9] [^s17] [^s18] [^s11] |
 | Back from the win screen | Top-left arrow, then Android back on L40's win screen | Nothing happens; only "Level N" proceeds | ✅ [^s12] |
-| Golden Fish button frequency | Watched the win screens of L45–94 | L54, 58, 62, 70, 74, 78, 82, 86, 90, 94: every 4th level, regardless of mistakes | ✅ [^s3] [^s15] |
+| Golden Fish button frequency | Watched the win screens of L45–94 | L54, 58, 62, 66, 70, 74, 78, 82, 86, 90, 94: every 4th level, regardless of mistakes | ✅ [^s3] [^s15] |
 | Red "Hard" tag on the Level N button | Watched the next-level buttons | The tag sat above Level 30 and Level 90; which levels get it and whether they reward more was not checked | [^s10] [^s11] |
 
 ## Not verified
@@ -186,3 +192,6 @@ Version 1.18.0.
 [^s32]: session 20261001-115413-chrono-2FYKPJ, step 59
 [^s33]: session 20261001-060942-chrono-2FYKPJ, step 19
 [^s34]: session 20260930-233055-chrono-2FYKPJ, step 38 — [video at 10:07](https://youtu.be/kfHedtB_k4Q?t=607)
+
+[^s35]: session 20261001-082114-chrono-2FYKPJ, step 30 — [video at 8:12](https://youtu.be/9H-DeREITjo?t=492)
+[^s36]: session 20261001-082114-chrono-2FYKPJ, step 36 — [video at 10:04](https://youtu.be/9H-DeREITjo?t=604)

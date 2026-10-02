@@ -1,0 +1,14 @@
+name: open-daily-challenge
+game: com.crypt.gram.puzz
+description: Open the Daily Challenge calendar from the main-screen card PLAY (no
+  interstitial seen on this entry)
+status: candidate
+version: 3.6.1
+pre_hash: bc639481cb9e6a3c
+post_hash: a50d33939b64dc72
+steps:
+- tap:
+  - 0.2603
+  - 0.295
+  wait: 1.5
+source: 20261001-224924-chrono-2FYKPJ#14-14

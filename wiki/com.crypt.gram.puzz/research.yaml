@@ -2,32 +2,89 @@
 game: com.crypt.gram.puzz
 version: 3.6.1
 play_version: 3.6.1
-play_checked: '2026-10-01T02:46:28'
+play_checked: '2026-10-01T22:48:59'
 phone_version: 3.6.1
 discovery: open
 ftue_verified: null
 progress:
-  text: level 9
-  value: 9
-  at: '2026-10-01T02:25:00'
-  session: 20261001-020937-chrono-2FYKPJ
+  text: secret level 1
+  value: null
+  at: '2026-10-01T07:45:39'
+  session: 20261001-071926-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-01T04:13:01'
+  chrono: '2026-10-01T23:46:03'
 mechanics:
 - id: cryptogram
   name: Number-coded quote
+  status: mastered
+  method: solver
+  levels:
+    won: 9
+    lost: 1
+    quit: 1
+  recent:
+  - level: level 9
+    result: won
+    seconds: 57
+    model: opus
+  - level: level 10
+    result: won
+    seconds: 136
+    model: opus
+  - level: level 11
+    result: won
+    seconds: 58
+    model: opus
+  - level: level 12
+    result: won
+    seconds: 85
+    model: opus
+  - level: level 13
+    result: lost
+    seconds: 73
+    model: opus
+  - level: level 13 retry
+    result: won
+    seconds: 138
+    model: opus
+  - level: level 14
+    result: won
+    seconds: 30
+    model: opus
+  - level: level 15
+    result: won
+    seconds: 58
+    model: opus
+  - level: daily challenge Oct 1
+    result: won
+    seconds: 177
+    model: opus
+  - level: secret level 1
+    result: won
+    seconds: 100
+    model: opus
+  best_s: 30
+  note: 'lab 2026-10-01: solver checked on 25 recorded frames of levels 9-14 (about
+    340 cells, 0 wrong); it has not won a level on the phone yet, so it stays local
+    (state/com.crypt.gram.puzz/solvers/cryptogram.py) and is not published; all 9
+    wins were manual (opus), 30-177 s'
+- id: card-cryptogram
+  name: card-cryptogram
   status: studying
   method: manual
   levels:
     won: 0
-    lost: 0
-    quit: 1
+    lost: 1
+    quit: 0
   recent:
-  - level: level 9
-    result: quit
-    seconds: 581
+  - level: event level 1
+    result: lost
+    seconds: 551
     model: opus
+  note: 'event level 1 lost in 551 s: the board auto-scrolls after a low placement
+    and later taps of the batch hit wrong cells; a lab draft of a solver crashed mid-edit
+    2026-10-01 and is unverified'
 features:
 - id: quote-race
   name: Quote Race event
@@ -42,21 +99,34 @@ features:
     done: false
   - id: info
     text: Open the (i) rules screen
-    done: false
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#17
   - id: chest
     text: Tap the chest to preview the 1st place reward
-    done: false
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#17
   - id: progress
     text: After a won level the race counter goes to 1
-    done: false
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#52
   - id: popup
-    text: 'Event popup on launch: Quote Race, solve 10 levels faster than 4 opponents, 11h 59m timer,
-      GO'
+    text: 'Event popup on launch: Quote Race, solve 10 levels faster than 4 opponents,
+      11h 59m timer, GO'
     done: true
     source: 20261001-020937-chrono-2FYKPJ#0
   - id: entry
-    text: Main-screen widget on the right (laurel badge with the rank and a timer) opens the race screen
+    text: Main-screen widget on the right (laurel badge with the rank and a timer)
+      opens the race screen
+    done: true
+    source: 20261001-114433-chrono-2FYKPJ#1
+  - id: share
+    text: Share arrow on the win screen quote card
     done: false
+  - id: expired
+    text: 'The race ended before 10 levels (9/10, 1st at 4h41m left): on the next
+      launch a QUOTE RACE popup "Finished / Good luck next time" with OK, no reward'
+    done: true
+    source: 20261001-190315-chrono-2FYKPJ#0
   page: features/quote-race.md
   version_seen: 3.6.1
 - id: lives
@@ -65,36 +135,93 @@ features:
   cases:
   - id: lose
     text: 'Make 3 mistakes: does it end the level and cost a life'
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#44
+  - id: revive
+    text: 'REVIVE via rewarded ad after 3 mistakes: what it restores'
     done: false
+    note: 'Reopened by the dream 2026-10-02: the earlier source 20261001-050941-chrono-2FYKPJ#73
+      only shows that REVIVE started no ad (3 taps on 2 levels, no feedback) [s:20261001-050941-chrono-2FYKPJ#46]
+      [s:20261001-050941-chrono-2FYKPJ#73]; what REVIVE restores was never seen.'
+  - id: regen
+    text: One life regenerates in 30 min (4/5, next in 29m 58s after a lost level)
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#47
+  - id: restart-cost
+    text: Restart on the 3-mistakes popup also costs a life (4 -> 3)
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#83
+  version_seen: 3.6.1
 - id: iq
   name: IQ score
   status: in_progress
   cases:
   - id: gain
     text: IQ gain after a won level
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#53
+  - id: daily-task
+    text: Each completed daily task adds about +2 IQ (121 -> 125 for two tasks)
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#65
+  - id: lost-level
+    text: 'IQ rose 118 -> 120 after a LOST event level: what gives IQ besides wins
+      and tasks'
     done: false
+  version_seen: 3.6.1
 - id: banner-ads
   name: Banner ads
   status: seen
   cases: []
+  version_seen: 3.6.1
 - id: interstitial-ads
   name: Interstitial ads
   status: in_progress
   cases:
   - id: stuck-playable
-    text: 'Bus Jam playable interstitial: find a close control or timer (Back, edge swipe, pill, corners
-      and home + launch all failed; try sw.py restart)'
-    done: false
+    text: 'Bus Jam playable interstitial: find a close control or timer (Back, edge
+      swipe, pill, corners and home + launch all failed; try sw.py restart)'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#41
+    note: 'Source corrected by the dream 2026-10-02 (was 20261001-071926-chrono-2FYKPJ#21,
+      a Play Store sheet X): sw.py restart left a playable with no close [s:20261001-071926-chrono-2FYKPJ#41].'
   - id: skip-video
-    text: 'Video interstitial: top-left skip icon opens a Play Store overlay; Back returns to the game
-      with the ad gone'
+    text: 'Video interstitial: top-left skip icon opens a Play Store overlay; Back
+      returns to the game with the ad gone'
     done: true
     source: 20261001-020937-chrono-2FYKPJ#5
   - id: mid-level
-    text: An interstitial can appear in the middle of a level while typing (about 330 s after the previous
-      one)
+    text: An interstitial can appear in the middle of a level while typing (about
+      330 s after the previous one)
     done: true
     source: 20261001-020937-chrono-2FYKPJ#15
+  - id: skip-early
+    text: 'Level 16 ad wall: the skip icon at the top left (45,110), tapped before
+      the ad opens the store, then Back (and launch if the screen stays blank) loads
+      the level 16 board'
+    done: true
+    source: 20261001-114433-chrono-2FYKPJ#18
+    note: Also [s:20261001-092740-chrono-2FYKPJ#9] [s:20261001-192245-chrono-2FYKPJ#17].
+      Every one of these sessions then crashed on the output filter right after the
+      board loaded.
+  - id: next-pill-hides
+    text: 'Next pill tapped early: the pill disappears, the ad keeps running and opens
+      the Play Store by itself 30-50 s later'
+    done: true
+    source: 20261001-224924-chrono-2FYKPJ#10
+    note: Also [s:20261001-190315-chrono-2FYKPJ#26].
+  - id: store-time
+    text: Time from CONTINUE LEVEL 16 to the ad opening the Play Store by itself
+    done: true
+    source: 20261001-190315-chrono-2FYKPJ#20
+    note: '67-120 s over 8 ads: about 73-120 s in [s:20261001-190315-chrono-2FYKPJ#5]
+      [s:20261001-190315-chrono-2FYKPJ#14] [s:20261001-190315-chrono-2FYKPJ#20], about
+      92, 69, 67, 74 s in [s:20261001-224924-chrono-2FYKPJ#1] [s:20261001-224924-chrono-2FYKPJ#4]
+      [s:20261001-224924-chrono-2FYKPJ#9] [s:20261001-224924-chrono-2FYKPJ#16].'
+  - id: endcard-wait
+    text: 'End card with no close: does it close after a 90+ s hands-off wait or on
+      a tap'
+    done: false
   page: features/interstitial-ads.md
   version_seen: 3.6.1
 - id: hints
@@ -105,8 +232,9 @@ features:
     text: 'Use a hint on a cell: what it reveals and the count change (2 -> 1)'
     done: false
   - id: buy
-    text: 'Hint +20 pack: Google Play sheet ''Hints Small Pack'', RSD 399, 1-tap buy (opened by a mis-scaled
-      tap; backed out, ''Purchase failed!'' toast, nothing bought)'
+    text: 'Hint +20 pack: Google Play sheet ''Hints Small Pack'', RSD 399, 1-tap buy
+      (opened by a mis-scaled tap; backed out, ''Purchase failed!'' toast, nothing
+      bought)'
     done: true
     source: 20261001-020937-chrono-2FYKPJ#9
   page: features/hints.md
@@ -117,49 +245,138 @@ features:
   cases:
   - id: open
     text: 'Tap the no-ads button: offer and price (do not buy)'
-    done: false
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#27
+  version_seen: 3.6.1
 - id: settings
   name: Settings
   status: in_progress
   cases:
   - id: open
     text: Open Settings and list options
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#3
+  - id: ads-toggle
+    text: 'ADS toggle in Settings: what it turns off (banners? interstitials?) or
+      leads to the no-ads offer'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#51
+  - id: promo
+    text: Promo Code entry screen
     done: false
+  - id: how-to-play
+    text: 'How to play screens: content'
+    done: false
+  - id: font
+    text: Font size x1/x2 change on a level
+    done: false
+  - id: language
+    text: Change Language list
+    done: false
+  version_seen: 3.6.1
 - id: shop
   name: Shop
   status: in_progress
   cases:
   - id: open
     text: Open the Shop (badge 1) and list offers
-    done: false
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#4
+  - id: free-hint
+    text: 'Claim the 1 Free Hint (GET): free or ad, cooldown'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#5
+  version_seen: 3.6.1
 - id: daily-challenge
   name: Daily Challenge
   status: in_progress
   cases:
   - id: unlock
     text: At which level the Daily Challenge unlocks
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#83
+  - id: play
+    text: 'Play the Daily Challenge for the day: rules, reward'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#36
+  - id: calendar
+    text: Calendar/past days of the Daily Challenge
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#28
+  - id: prev-month
+    text: 'The ''<'' arrow on the Daily Challenge calendar: can previous months (September)
+      be played'
     done: false
+  - id: win-reward
+    text: 'Daily Challenge win screen: no reward, only NEXT; the day counts toward
+      the Quote Race'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#36
+  - id: progress-kept
+    text: A won day stays counted (1/31) after a restart
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#41
+  - id: no-ad-entry
+    text: Opening the calendar from the main-screen card shows no interstitial
+    done: true
+    source: 20261001-224924-chrono-2FYKPJ#14
+  version_seen: 3.6.1
 - id: statistics
   name: Statistics
   status: in_progress
   cases:
   - id: open
     text: Open Statistics from the main screen
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#6
+  - id: achievements
+    text: 'ACHIEVEMENTS tab: COMING SOON in 3.6.1'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#7
+  - id: days-completed
+    text: Daily Challenges Days counter after a Daily Challenge win (0 before the
+      first win)
     done: false
+  version_seen: 3.6.1
 - id: collection
   name: Collection
   status: in_progress
   cases:
   - id: unlock
     text: At which level Collection unlocks
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#83
+  - id: open
+    text: 'Open Collection: what is collected'
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#84
+  - id: travels-month
+    text: 'Press to Start on a month card (Travels): what it starts (Daily Challenge
+      month?)'
     done: false
+  - id: events-tab
+    text: 'EVENTS tab: what event pictures are stored (Peter Pan?)'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#9
+  - id: specials-tab
+    text: SPECIALS tab content
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#10
+  - id: past-months
+    text: 'Past months (September..January) show ''Press to Start'': can past daily
+      challenges be played'
+    done: false
+  version_seen: 3.6.1
 - id: album
   name: Album
   status: in_progress
   cases:
   - id: unlock
-    text: At which level Album unlocks
-    done: false
+    text: 'At which level Album unlocks: tooltip "Complete 84 more levels" at level
+      15 (level 99)'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#11
+  version_seen: 3.6.1
 - id: leagues
   name: Leagues
   status: in_progress
@@ -167,14 +384,132 @@ features:
   - id: open
     text: Open Leagues from the main screen
     done: false
+  - id: unlock
+    text: 'At which level Leagues unlock: tooltip "Complete 35 more levels" at level
+      15 (level 50)'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#13
+  version_seen: 3.6.1
+- id: peter-pan-event
+  name: Peter Pan themed event (card word event)
+  status: in_progress
+  cases:
+  - id: intro
+    text: 'Launch popup: START NOW opens the event levels'
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#7
+    note: A forced popup and HOW IT WORKS pages; Home and Back do nothing until START
+      LEVEL 1 [s:20261001-050941-chrono-2FYKPJ#6].
+  - id: reward-level-3
+    text: 'Reach event level 3: gift reward'
+    done: false
+  - id: chapters
+    text: 'Chapter tabs 2-5 and the right arrow: what later chapters contain and when'
+    done: true
+    source: 20261001-114433-chrono-2FYKPJ#13
+  - id: timer
+    text: 'Event ends in 3d 20h: what happens to progress'
+    done: false
+  - id: draw-pile
+    text: 'Special Game: the hand refills by itself; tapping the draw pile with cards
+      left deals a new hand'
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#41
+  found_at:
+    text: level 9
+    value: 9
+  version_seen: 3.6.1
+- id: chest-hunt
+  name: Chest Hunt event (collect keys)
+  status: in_progress
+  cases:
+  - id: start
+    text: 'Event start popup GO: what the event screen shows'
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#49
+  - id: keys
+    text: How keys are earned (per won level?) and how many open the chest
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#24
+  - id: reward
+    text: 'Open the reward chest: contents'
+    done: false
+  - id: info
+    text: Open the (i) rules
+    done: false
+  - id: keys-x3
+    text: 'Win screen: CLAIM x3 keys via rewarded video (12 instead of 4)'
+    done: false
+  found_at:
+    text: level 9
+    value: 9
+  version_seen: 3.6.1
+- id: daily-tasks
+  name: Daily Tasks
+  status: in_progress
+  cases:
+  - id: list
+    text: 'Three daily tasks with IQ-icon rewards: letters 0/150, lockers 0/10, classic
+      levels 0/2'
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#70
+  - id: claim
+    text: 'Complete a task: claim reward, fill the segmented bar, bar end reward'
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#65
+  - id: info
+    text: Open the (i) of Daily Tasks
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#14
+  - id: reset
+    text: Tasks reset at about local midnight (timer 18h 35m at 05:24, 4h 55m at 19:05,
+      1h 10m at 22:50)
+    done: false
+  - id: bar-end
+    text: 'Fill all 9 segments of the daily bar: final reward'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#41
+  - id: sets
+    text: Tasks come in sets of 3; a finished set is replaced at once by a new set
+      (first try, no mistakes, Chest Hunt tokens)
+    done: true
+    source: 20261001-050941-chrono-2FYKPJ#70
+  found_at:
+    text: level 9
+    value: 9.0
+  version_seen: 3.6.1
+- id: secret-levels
+  name: Secret levels
+  status: in_progress
+  cases:
+  - id: where
+    text: 'Statistics counts Secret Levels Completed = 1: find where a secret level
+      is offered (daily-tasks bar end reward?)'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#41
+  - id: play
+    text: 'Play the Secret Level: mechanic, reward'
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#57
+  - id: once-per-cycle
+    text: One secret level per Daily Tasks cycle; then "Completed! New tasks in 16h"
+    done: true
+    source: 20261001-071926-chrono-2FYKPJ#59
+  - id: milestone-bar
+    text: 'The 5-milestone bar above the keyboard of a secret level: what it gives'
+    done: false
+  found_at:
+    text: level 14
+    value: 14.0
+  version_seen: 3.6.1
 tasks:
 - id: analyze
-  title: Analyze the game, version 3.6.1
+  title: Analyze the game
   kind: analyze
   requires: any
   status: open
   created: '2026-09-30T20:39:40'
-  version: 3.6.1
+  version: ''
   source: external
   note: find all features and work through all user cases
 - id: ftue
@@ -188,30 +523,51 @@ tasks:
   title: Check Quote Race placement and reward before it ends
   kind: followup
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-01T02:23:58'
   feature: quote-race
   not_before: '2026-10-01T08:23:58'
   source: game
-  note: the race ends about 2026-10-01T14:09 (started 02:10 with an 11h 59m timer); check before then
+  note: 'Correction by the dream 2026-10-02: the end was seen. On the next launch
+    a QUOTE RACE popup said "Finished / Good luck next time" with OK and no reward,
+    the race having stopped at 9 of 10 levels [s:20261001-190315-chrono-2FYKPJ#0]
+    [s:20261001-092740-chrono-2FYKPJ#3]. Level 16 was not fully blocked: it loaded
+    after the skip icon + Back in 092740, 114433 and 192245, but each of those sessions
+    crashed on the output filter right after the board loaded. Case quote-race/expired
+    holds the result; the finish case waits for the next race. Previously: "ended
+    about 14:09 on Oct 1 without a check: sessions 092740/114433 crashed and level
+    16 was blocked by ads".'
+  closed: '2026-10-01T23:02:37'
+  closed_by: 20261001-224924-chrono-2FYKPJ#0
 - id: level-9-resume
-  title: Resume at level 9 (Hannibal Lecter quote) and check whether the stuck ad cost the level
+  title: Resume at level 9 (Hannibal Lecter quote) and check whether the stuck ad
+    cost the level
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T02:23:58'
   feature: interstitial-ads
   source: game
+  closed: '2026-10-01T05:22:48'
+  closed_by: 20261001-050941-chrono-2FYKPJ#50
+  note: 'Level 9 resumed after restart: the quote kept letters up to ''I ATE HIS LIVER'';
+    the cells typed later (WITH SOME FAVA BEANS AND A) were empty again, so a mid-level
+    ad/kill loses only the unsaved tail. No life lost, mistakes 0/3.'
 - id: quote-race-info
   title: Open the Quote Race rules (i) and the chest preview from the race screen
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T05:00:00'
   source: session
   feature: quote-race
+  closed: '2026-10-01T11:44:50'
+  closed_by: 20261001-114433-chrono-2FYKPJ#0
+  note: 'Done in session 20261001-071926 (steps 16-17): chest preview and (i) rules
+    screen opened from the race screen; cases info/chest already marked done.'
 - id: ads-cadence
-  title: 'Measure when interstitials appear: on PLAY, mid-level, after a win; the time between them'
+  title: 'Measure when interstitials appear: on PLAY, mid-level, after a win; the
+    time between them'
   kind: followup
   requires: any
   status: open
@@ -222,8 +578,425 @@ tasks:
   title: Lose a life (3 mistakes) and record the regeneration timer
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T05:00:00'
   source: session
   feature: lives
-  note: do it on a level already decoded; costs a life
+  note: 'Lost event level 1 with 3 mistakes: lives 4/5, next life in 29m 58s, so one
+    life per 30 min [s:20261001-050941-chrono-2FYKPJ#47]; Restart also costs a life
+    [s:20261001-050941-chrono-2FYKPJ#83]. Closed by the dream 2026-10-02.'
+  closed: '2026-10-02T12:00:00'
+  closed_by: 20261001-050941-chrono-2FYKPJ#47
+- id: chest-hunt-end
+  title: Check Chest Hunt progress and reward before it ends
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T05:22:17'
+  feature: chest-hunt
+  not_before: '2026-10-01T23:22:17'
+  source: game
+- id: daily-tasks-day2-d1
+  title: 'Daily Tasks: check new tasks after the reset — day 1 of 2'
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-01T05:24:33'
+  feature: daily-tasks
+  not_before: '2026-10-02T00:05:00'
+  source: game
+  note: 'not_before moved by the dream 2026-10-02: the tasks reset at about local
+    midnight, not 05:24 (timer 18h 35m at 05:24 [s:20261001-050941-chrono-2FYKPJ#53],
+    4h 55m at 19:05 [s:20261001-190315-chrono-2FYKPJ#1]).'
+- id: daily-tasks-day2-d2
+  title: 'Daily Tasks: check new tasks after the reset — day 2 of 2'
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-01T05:24:33'
+  feature: daily-tasks
+  not_before: '2026-10-03T00:05:00'
+  source: game
+  note: 'not_before moved by the dream 2026-10-02: the tasks reset at about local
+    midnight, not 05:24 (timer 18h 35m at 05:24 [s:20261001-050941-chrono-2FYKPJ#53],
+    4h 55m at 19:05 [s:20261001-190315-chrono-2FYKPJ#1]).'
+- id: peter-pan-event-levels
+  title: 'Peter Pan event: win event levels with the card-cryptogram method (pieces
+    at 1,3,5,7,10), learn the draw pile'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T05:40:48'
+  feature: peter-pan-event
+  not_before: '2026-10-01T06:10:48'
+  source: game
+- id: unlock-daily-tasks
+  title: How Daily Tasks unlock (already on at level 9)
+  kind: replay
+  requires: fresh
+  status: open
+  created: '2026-10-01T05:40:48'
+  feature: daily-tasks
+  source: session
+- id: daily-challenge-play
+  title: Play the Daily Challenge (unlocked after level 14) and check its reward and
+    the Collection Travels month
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T05:40:48'
+  feature: daily-challenge
+  source: game
+  closed: '2026-10-01T11:44:51'
+  closed_by: 20261001-114433-chrono-2FYKPJ#0
+  note: Daily Challenge Oct 1 (Day 1, Budapest quote) won in session 20261001-071926
+    step 36, 177 s, with double locks; Travels month check remains as case collection/travels-month.
+- id: main-levels-15
+  title: 'Advance main levels from 15: Album unlock, Leagues unlock, Quote Race finish
+    (4 more levels)'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T05:40:49'
+  feature: quote-race
+  source: game
+  note: 'Level 16: take the skip-early route (task ads-endcard-escape). Four sessions
+    crashed on the output filter right after the level 16 board loaded: the player
+    must not read, decode or write the quote text; use the cryptogram solver on this
+    machine and quote only its counts.'
+- id: survey-1
+  title: 'Survey every screen: capture all entry points and map them to features'
+  kind: survey
+  requires: any
+  status: open
+  created: '2026-10-01T05:41:41'
+  source: external
+  note: 2 analysis sessions since the last survey
+- id: study-quote-race
+  title: 'Study Quote Race event: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: quote-race
+  source: external
+- id: study-lives
+  title: 'Study Lives: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: lives
+  source: external
+- id: study-iq
+  title: 'Study IQ score: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: iq
+  source: external
+- id: study-banner-ads
+  title: 'Study Banner ads: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: banner-ads
+  source: external
+- id: study-interstitial-ads
+  title: 'Study Interstitial ads: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: interstitial-ads
+  source: external
+- id: study-hints
+  title: 'Study Hints: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: hints
+  source: external
+- id: study-no-ads
+  title: 'Study Remove ads purchase: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: no-ads
+  source: external
+- id: study-settings
+  title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: settings
+  source: external
+- id: study-shop
+  title: 'Study Shop: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: shop
+  source: external
+- id: study-daily-challenge
+  title: 'Study Daily Challenge: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: daily-challenge
+  source: external
+- id: study-statistics
+  title: 'Study Statistics: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: statistics
+  source: external
+- id: study-collection
+  title: 'Study Collection: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: collection
+  source: external
+- id: study-album
+  title: 'Study Album: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: album
+  source: external
+- id: study-leagues
+  title: 'Study Leagues: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: leagues
+  source: external
+- id: study-peter-pan-event
+  title: 'Study Peter Pan themed event (card word event): open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: peter-pan-event
+  source: external
+- id: study-chest-hunt
+  title: 'Study Chest Hunt event (collect keys): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: chest-hunt
+  source: external
+- id: study-daily-tasks
+  title: 'Study Daily Tasks: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: daily-tasks
+  source: external
+- id: study-secret-levels
+  title: 'Study Secret levels: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:02'
+  feature: secret-levels
+  source: external
+- id: ads-endcard-escape
+  title: Find a way out of the unclosable PLAY interstitial end card on level start
+    (try Next skip after 5 s again, wait > 90 s, airplane-free ways)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T23:00:17'
+  feature: interstitial-ads
+  source: session
+  plan: 'On CONTINUE LEVEL 16: as soon as the skip icon shows at the top left, tap
+    it (45,110) before the ad opens the store, then Back once, then launch if the
+    screen is blank (reached the board in 092740, 114433, 192245). If the ad already
+    opened the store: Back, then on the end card wait 90+ s hands-off and try one
+    tap on Play free and on (i). Confirmed = the level loads. Never restart+CONTINUE
+    more than twice in a row.'
+  note: 'Early Next tap done: the pill disappears and the ad keeps running [s:20261001-224924-chrono-2FYKPJ#10];
+    waits so far at most 25 s on the end card [s:20261001-224924-chrono-2FYKPJ#7].'
+- id: unlock-leagues
+  title: 'Unlock Leagues: reach level 50 and open it'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-01T23:02:38'
+  feature: leagues
+  source: session
+  note: 'Locked tooltip at next level 15: ''Complete 35 more levels to unlock'''
+  target_text: level 50
+  target_value: 50.0
+- id: unlock-album
+  title: 'Unlock Album: reach level 99 and open it'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-01T23:02:38'
+  feature: album
+  source: session
+  note: 'Locked tooltip at next level 15: ''Complete 84 more levels to unlock'''
+  target_text: level 99
+  target_value: 99.0
+- id: ads-alt-entry
+  title: Find a level entry that starts without the unclosable interstitial (Peter
+    Pan GO, Daily Challenge Oct 2)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T23:02:38'
+  feature: interstitial-ads
+  not_before: '2026-10-02T00:05:00'
+  source: session
+  plan: 'After midnight: tap Peter Pan GO and start event level 1; then Daily Challenge
+    PLAY on Oct 2. Record per entry whether an interstitial appears before the board.
+    Confirmed if at least one entry reaches a playable board without an ad; then play
+    it (card-cryptogram pitfalls in the playbook / cryptogram solver).'
+  note: 'Partial: opening the Daily Challenge calendar showed no interstitial [s:20261001-224924-chrono-2FYKPJ#14];
+    no board was started from it yet. Peter Pan GO not tried.'
+- id: ads-level16-loop
+  title: 'Check whether the level-16 START ad loop is per-level or time-bound: try
+    CONTINUE once after a 2h+ gap and after winning another mode'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T23:02:38'
+  feature: interstitial-ads
+  not_before: '2026-10-02T01:02:38'
+  source: session
+  plan: Do one CONTINUE LEVEL 16 at session start (first action, no other ad seen
+    in the last 2 h); if an ad comes, wait it out 120 s without input and log whether
+    the end card closes itself. Then win a Daily Challenge or event level and try
+    CONTINUE again. Confirmed (time/cooldown-bound) if any try loads the level 16
+    board; refuted if all 4+ tries still loop.
+  note: 190315 added 5 more loops (9 of 9 CONTINUE taps with 224924) [s:20261001-190315-chrono-2FYKPJ#25];
+    but the skip-early route reached the board 3 times, so the wall is the ad type,
+    not a hard block. The 2 h+ gap try is still open.
+- id: event-row-third-card
+  title: Swipe the main-screen event carousel left and identify the third card (orange,
+    cut off at the right edge)
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-01T23:02:39'
+  feature: chest-hunt
+  source: session
+  plan: On the main screen swipe the Daily Challenge / Peter Pan card row from x~600
+    to x~150 at y~360. Confirmed if the third card is a known feature (Chest Hunt?);
+    otherwise record it as a new feature and reopen discovery.
+  closed: '2026-10-02T12:00:00'
+  closed_by: 20261001-071926-chrono-2FYKPJ#1
+  note: The third carousel card is the Chest Hunt event (18h 39m, progress 24/128,
+    GO) [s:20261001-071926-chrono-2FYKPJ#1]. Closed by the dream 2026-10-02.
+  result: confirmed
+- id: peter-pan-major-update
+  title: 'Peter Pan card shows a red ''Major Update'' tag: find what it means'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T23:02:39'
+  feature: peter-pan-event
+  source: session
+  plan: Tap the 'Major Update' tag and the GO on the Peter Pan card; read any popup.
+    Confirmed if the tag describes new event content; refuted if it is only a store
+    update prompt (then compare play/phone version 3.6.1).
+- id: iq-lost-level
+  title: Find why IQ rose after a lost event level (118 -> 120)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-02T12:00:00'
+  feature: iq
+  source: session
+  plan: Read IQ before and after one lost or quit level and after placing letters
+    without winning. Confirmed if placed letters give IQ.
+  note: '[s:20261001-050941-chrono-2FYKPJ#49]'
+- id: daily-tasks-kinds
+  title: 'Daily Tasks after the reset: record the task kinds of each set and whether
+    Daily Challenge and secret levels count for "first try" / "no mistakes"'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T12:00:00'
+  feature: daily-tasks
+  not_before: '2026-10-02T00:05:00'
+  source: game
+  note: 'Sets seen: [s:20261001-050941-chrono-2FYKPJ#53] [s:20261001-050941-chrono-2FYKPJ#70].'
+- id: secret-milestone-bar
+  title: Find what the 5-milestone bar above the keyboard of a secret level gives
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-02T12:00:00'
+  feature: secret-levels
+  source: session
+  plan: On the next secret level, watch the bar after each batch and on the win screen.
+    Confirmed if a milestone gives a reward.
+  note: '[s:20261001-071926-chrono-2FYKPJ#57]'
+- id: stats-days-completed
+  title: Check Statistics "Daily Challenges Days" after a Daily Challenge win
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T12:00:00'
+  feature: statistics
+  source: session
+  note: It showed Days 0 before the first win [s:20261001-071926-chrono-2FYKPJ#6];
+    the day was won at [s:20261001-071926-chrono-2FYKPJ#36].
+- id: win-card-level-time
+  title: Find what "Level Time" on the win card measures (longer than the logged level
+    time)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-02T12:00:00'
+  feature: iq
+  source: session
+  plan: Compare the win-card Level Time with the time from the board appearing to
+    the last letter on one level.
+  note: 01:24 vs 58 s [s:20261001-071926-chrono-2FYKPJ#24], 03:45 vs 177 s [s:20261001-071926-chrono-2FYKPJ#36],
+    02:00 vs 100 s [s:20261001-071926-chrono-2FYKPJ#57].
+- id: card-cryptogram-fast
+  title: 'Make card-cryptogram fast: a solver that re-reads the board after every
+    placement (the board auto-scrolls), or one cell+card pair per call when the target
+    is below y~800'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T12:00:00'
+  feature: peter-pan-event
+  source: session
+  note: Event level 1 lost in 551 s with 3 mistakes after the auto-scroll shifted
+    cells [s:20261001-050941-chrono-2FYKPJ#46]; budget 5 min.
+- id: cryptogram-solver-phone
+  title: Win two cryptogram levels on the phone with the cryptogram solver so it can
+    be published
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-02T12:00:00'
+  source: session
+  plan: sw.py solve cryptogram --run --rounds 6 on a settled board; level end with
+    the time. Confirmed if two levels are won within 5 min with 0-1 mistakes.
+  note: The solver exists only in state/ on chrono (lab 2026-10-01, 25 recorded frames,
+    0 wrong letters).

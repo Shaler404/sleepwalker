@@ -2,71 +2,75 @@
 game: com.oakever.meowdoku
 version: 1.18.0
 play_version: 1.18.0
-play_checked: '2026-10-01T02:46:28'
+play_checked: '2026-10-01T20:09:25'
 phone_version: 1.18.0
 discovery: open
 ftue_verified: '2026-10-01'
 progress:
-  text: level 43
-  value: 43.0
-  at: '2026-10-01T02:45:43'
-  session: 20261001-022624-chrono-2FYKPJ
+  text: level 126
+  value: 126.0
+  at: '2026-10-01T22:35:34'
+  session: 20261001-223249-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-01T04:13:01'
+  chrono: '2026-10-01T23:46:03'
 mechanics:
 - id: queens
   name: Cat placement on color regions (Queens-like)
   status: mastered
   method: solver
   levels:
-    won: 47
+    won: 128
     lost: 0
-    quit: 0
+    quit: 3
   recent:
-  - level: level 35
+  - level: level 122
     result: won
-    seconds: 56
-    model: sonnet
-  - level: level 35
+    seconds: 25
+    model: opus
+  - level: level 123
     result: won
-    seconds: 54
-    model: sonnet
-  - level: level 36
+    seconds: 23
+    model: opus
+  - level: level 124
+    result: quit
+    seconds: 116
+    model: haiku
+  - level: level 125
+    result: quit
+    seconds: 35
+    model: haiku
+  - level: level 126
     result: won
-    seconds: 68
-    model: sonnet
-  - level: level 37 pattern mode
+    seconds: 140
+    model: haiku
+  - level: level 127
     result: won
-    seconds: 53
-    model: sonnet
-  - level: level 38
+    seconds: 63
+    model: haiku
+  - level: level 128
     result: won
-    seconds: 165
-    model: sonnet
-  - level: level 39
+    seconds: 65
+    model: haiku
+  - level: level 129
     result: won
-    seconds: 29
-    model: sonnet
-  - level: level 40
+    seconds: 64
+    model: haiku
+  - level: level 125
     result: won
-    seconds: 28
+    seconds: 57
     model: sonnet
-  - level: level 41
+  - level: level 126
     result: won
-    seconds: 34
+    seconds: 35
     model: sonnet
-  - level: level 42
-    result: won
-    seconds: 30
-    model: sonnet
-  - level: level 43
-    result: won
-    seconds: 21
-    model: sonnet
-  best_s: 18
-  note: solver reads grid by saturation projection, clusters colors by hue (complete linkage to N groups),
-    detects cats by dark pixels, backtracks; run with --gap 0
+  best_s: 10
+  note: 'solver reads grid by saturation projection, clusters colors by hue (complete
+    linkage to N groups), detects cats by dark pixels, backtracks; run with --gap
+    0. Level counts and times from the bench slots 20261001-180616..185238 are wrong:
+    golden boards were recorded as levels, two fake wins (185238) and level_start
+    logged after solve_check (184651), so won/quit and recent times overstate levels;
+    real wins per the 2026-10-02 dream report'
   solver: solvers/com.oakever.meowdoku/queens.py
 features:
 - id: tutorial
@@ -74,8 +78,8 @@ features:
   status: documented
   cases:
   - id: steps
-    text: 'Tutorial on a 4x4 board: double tap places a cat, a single tap marks X, a swipe marks X on
-      several cells, the hint button; ends with Start Game'
+    text: 'Tutorial on a 4x4 board: double tap places a cat, a single tap marks X,
+      a swipe marks X on several cells, the hint button; ends with Start Game'
     done: true
     source: 20260930-233055-chrono-2FYKPJ#9
   page: features/tutorial.md
@@ -85,17 +89,18 @@ features:
   status: documented
   cases:
   - id: rules
-    text: 'Rules: one cat per colour region, per row and per column; cats never touch, diagonals included'
+    text: 'Rules: one cat per colour region, per row and per column; cats never touch,
+      diagonals included'
     done: true
     source: 20260930-233055-chrono-2FYKPJ#9
   - id: hard
-    text: 'Hard levels from level 30: a flame + "Hard" in the header and a Hard tag on the next-level
-      button; the same rules'
+    text: 'Hard levels from level 30: a flame + "Hard" in the header and a Hard tag
+      on the next-level button; the same rules'
     done: true
     source: 20261001-013526-chrono-2FYKPJ#67
   - id: level-intro-toast
-    text: 'Toasts at level start: "Zero mistakes! You''re in the top 8.8%", "No tools used! ... ahead
-      of 78.5%"'
+    text: 'Toasts at level start: "Zero mistakes! You''re in the top 8.8%", "No tools
+      used! ... ahead of 78.5%"'
     done: true
     source: 20260930-233055-chrono-2FYKPJ#51
   page: features/core-puzzle.md
@@ -119,14 +124,19 @@ features:
   status: in_progress
   cases:
   - id: wrong-placement-loses-fish
-    text: 'Wrong cat placement: cell gets an orange X, fish 3->2, placed cats close eyes (sad)'
+    text: 'Wrong cat placement: cell gets an orange X, fish 3->2, placed cats close
+      eyes (sad)'
     done: true
     source: 20261001-013526-chrono-2FYKPJ#81
   - id: restart
-    text: 'Restart on Out of Fishes screen: ad and result'
-    done: false
+    text: 'Restart on the Out of Fishes popup: same level number, a NEW board (other
+      regions), 3 fish, Hard kept, no cost or ad'
+    done: true
+    source: 20261001-115413-chrono-2FYKPJ#43
+    version: 1.18.0
   - id: zero
-    text: 'At 0 fish: "Out of Fishes" popup with Remaining N, Get 3 Fishes (AD) and Restart'
+    text: 'At 0 fish: "Out of Fishes" popup with Remaining N, Get 3 Fishes (AD) and
+      Restart'
     done: true
     source: 20261001-022624-chrono-2FYKPJ#40
   - id: refill-ad
@@ -140,7 +150,8 @@ features:
   status: documented
   cases:
   - id: cat-first-use
-    text: Cat booster places a correct cat instantly (no preview), counter 5->4, score +576
+    text: Cat booster places a correct cat instantly (no preview), counter 5->4, score
+      +576
     done: true
     source: 20261001-013526-chrono-2FYKPJ#79
   page: features/booster-cat.md
@@ -154,7 +165,8 @@ features:
     done: true
     source: 20260930-233055-chrono-2FYKPJ#113
   - id: mouse-first-use
-    text: 'Mouse booster: marks cells that cannot hold a cat with X marks, no confirmation; 2 -> 1'
+    text: 'Mouse booster: marks cells that cannot hold a cat with X marks, no confirmation;
+      2 -> 1'
     done: true
     source: 20261001-013526-chrono-2FYKPJ#80
   page: features/booster-lv21.md
@@ -164,24 +176,28 @@ features:
   status: in_progress
   cases:
   - id: open
-    text: 'Settings: Home popup has music, sound, voice, vibration, Save your progress, Language, Feedback,
-      Terms of Service, Privacy Policy, version 1.18.0; the in-level popup has the toggles, Pattern Mode,
-      Feedback and Restart'
+    text: 'Settings: Home popup has music, sound, voice, vibration, Save your progress,
+      Language, Feedback, Terms of Service, Privacy Policy, version 1.18.0; the in-level
+      popup has the toggles, Pattern Mode, Feedback and Restart'
     done: true
     source: 20261001-022624-chrono-2FYKPJ#67
   - id: pattern-mode
-    text: 'Pattern Mode: an icon on every colour region (stars, bells, paws ...); the solver still reads
-      the board; Restart restarts the level after an interstitial'
+    text: 'Pattern Mode: an icon on every colour region (stars, bells, paws ...);
+      the solver still reads the board; Restart restarts the level after an interstitial'
     done: true
     source: 20261001-013526-chrono-2FYKPJ#85
   - id: restart
-    text: 'In-level Restart: an interstitial, then a reset board, 3 fish and score 0; spent boosters are
-      not refunded'
+    text: 'In-level Restart: an interstitial, then a reset board, 3 fish and score
+      0; spent boosters are not refunded'
     done: true
     source: 20261001-013526-chrono-2FYKPJ#85
   - id: legal
-    text: 'Terms of Service and Privacy Policy links: what opens'
-    done: false
+    text: Terms of Service (222,1120) and Privacy Policy (507,1120) in Home settings
+      open oakevergames.com pages in Chrome; launch returns to the game with Settings
+      open
+    done: true
+    source: 20261001-115413-chrono-2FYKPJ#5
+    version: 1.18.0
   page: features/settings.md
   version_seen: 1.18.0
 - id: streak
@@ -199,13 +215,13 @@ features:
     text: 'Missing a day: streak reset behaviour'
     done: false
   - id: streak-popup-after-win
-    text: 'After the first win of a day: Daily Streak popup with current and best streak, the week row
-      and a gift on day 7'
+    text: 'After the first win of a day: Daily Streak popup with current and best
+      streak, the week row and a gift on day 7'
     done: true
     source: 20261001-013526-chrono-2FYKPJ#7
   - id: streak-counter-tap
-    text: Tap yarn counter on home opens Daily Streak page (same as post-win popup, with back arrow),
-      7-day row, gift on day 7
+    text: Tap yarn counter on home opens Daily Streak page (same as post-win popup,
+      with back arrow), 7-day row, gift on day 7
     done: true
     source: 20261001-013526-chrono-2FYKPJ#94
   found_at:
@@ -218,10 +234,22 @@ features:
   status: documented
   cases:
   - id: contents
-    text: 'Home: profile avatar, yarn streak counter, gear, leaderboard podium with timer, Level N, Daily
-      Challenge; no shop, offers or currency'
+    text: 'Home: profile avatar, yarn streak counter, gear, leaderboard podium with
+      timer, Level N, Daily Challenge; no shop, offers or currency'
     done: true
     source: 20261001-022624-chrono-2FYKPJ#0
+  - id: back-quit
+    text: Android Back on Home opens a "Quit - Are you sure you want to quit?" dialog
+      with Quit and an X (621,535)
+    done: true
+    source: 20261001-185238-chrono-2FYKPJ#7
+    version: 1.18.0
+  - id: level-button
+    text: The Level N button on Home is at y~1185 (730x1583 frame); a tap at y 1245
+      does nothing on Home
+    done: true
+    source: 20261001-185238-chrono-2FYKPJ#10
+    version: 1.18.0
   found_at:
     text: level 8
     value: 8.0
@@ -236,15 +264,17 @@ features:
     done: true
     source: 20260930-233055-chrono-2FYKPJ#35
   - id: play
-    text: 'Daily Challenge: header "Level 10/01", 3 fish, a timer, shared boosters, an interstitial on
-      entry; cleared in 01:03, "Beat 97.7% of players!", no currency reward'
+    text: 'Daily Challenge: header "Level 10/01", 3 fish, a timer, shared boosters,
+      an interstitial on entry; cleared in 01:03, "Beat 97.7% of players!", no currency
+      reward'
     done: true
     source: 20261001-013526-chrono-2FYKPJ#106
   - id: next-day
     text: 'Next-day Daily: rewards for finishing, Continue button meaning, calendar'
     done: false
   - id: done-state
-    text: 'After clearing: the home button shows a check, the time and TOP 2.3%, and does nothing on tap'
+    text: 'After clearing: the home button shows a check, the time and TOP 2.3%, and
+      does nothing on tap'
     done: true
     source: 20261001-022624-chrono-2FYKPJ#74
   found_at:
@@ -260,8 +290,8 @@ features:
     text: 'Pick fewer stars: feedback form vs store'
     done: false
   - id: appear
-    text: 'Appears once after the level 8 win: "Are you enjoying Meowdoku?", 5 stars, Rate Us, X; not
-      again through level 43'
+    text: 'Appears once after the level 8 win: "Are you enjoying Meowdoku?", 5 stars,
+      Rate Us, X; not again through level 43'
     done: true
     source: 20260930-233055-chrono-2FYKPJ#38
   found_at:
@@ -274,25 +304,26 @@ features:
   status: in_progress
   cases:
   - id: leaderboard
-    text: 'Leaderboard from the home podium: ranks 1-3 with gift boxes, "Playing now/Online now", an (i)
-      page; "Go to Collect" starts the next level'
+    text: 'Leaderboard from the home podium: ranks 1-3 with gift boxes, "Playing now/Online
+      now", an (i) page; "Go to Collect" starts the next level'
     done: true
     source: 20261001-022624-chrono-2FYKPJ#8
   - id: session-end
     text: 'Event session end after 24h: rank rewards'
     done: false
   - id: hearts
-    text: 'Hearts are cheers from other players: toast ''lynJ cheered for you'' and own heart counter
-      1; own fish 9 after 3 flawless wins -> 1st place'
+    text: 'Hearts are cheers from other players: toast ''<player> cheered for you'' and
+      own heart counter 1; own fish 9 after 3 flawless wins -> 1st place'
     done: true
     source: 20260930-233055-chrono-2FYKPJ#72
   - id: intro
-    text: 'After the level 10 win: "New Session" popup with a 24h timer, "Play games to collect fish and
-      rank up"'
+    text: 'After the level 10 win: "New Session" popup with a 24h timer, "Play games
+      to collect fish and rank up"'
     done: true
     source: 20260930-233055-chrono-2FYKPJ#49
   - id: after-win
-    text: From level 11 every win shows the leaderboard first ("You rose by N places", Tap to Continue)
+    text: From level 11 every win shows the leaderboard first ("You rose by N places",
+      Tap to Continue)
     done: true
     source: 20260930-233055-chrono-2FYKPJ#53
   found_at:
@@ -325,7 +356,8 @@ features:
     text: Sign in with Facebook/Google flow and what it syncs
     done: false
   - id: screen
-    text: 'Save your progress: Sign in with Facebook or Google and a Delete Account link (not used)'
+    text: 'Save your progress: Sign in with Facebook or Google and a Delete Account
+      link (not used)'
     done: true
     source: 20261001-022624-chrono-2FYKPJ#70
   found_at:
@@ -339,9 +371,11 @@ features:
     text: Switch language; list of all languages (scroll)
     done: false
   - id: list
-    text: 'Language list: English, Japanese, Spanish, French, Deutsch and more below; Confirm'
+    text: 'Language list has 9 languages: English, Japanese, Spanish, French, German,
+      Russian, Portuguese, Korean, Turkish (last), then Confirm'
     done: true
-    source: 20261001-022624-chrono-2FYKPJ#68
+    source: 20261001-060942-chrono-2FYKPJ#4
+    version: 1.18.0
   found_at:
     text: level 36
     value: 36.0
@@ -350,8 +384,8 @@ features:
   status: in_progress
   cases:
   - id: open
-    text: 'Feedback opens an in-app Helpshift page "Meowdoku Support": search, chat icon, tabs, popular
-      articles, Chat with us'
+    text: 'Feedback opens an in-app Helpshift page "Meowdoku Support": search, chat
+      icon, tabs, popular articles, Chat with us'
     done: true
     source: 20261001-022624-chrono-2FYKPJ#23
   found_at:
@@ -369,8 +403,8 @@ features:
     done: true
     source: 20261001-013526-chrono-2FYKPJ#15
   - id: interstitial
-    text: 'Interstitials on level start, Restart and the Daily Challenge: playables with no close button
-      (leave with `launch`) or videos with a skip icon'
+    text: 'Interstitials on level start, Restart and the Daily Challenge: playables
+      with no close button (leave with `launch`) or videos with a skip icon'
     done: true
     source: 20261001-013526-chrono-2FYKPJ#10
   - id: frequency
@@ -382,34 +416,108 @@ features:
   page: features/ads.md
   version_seen: 1.18.0
 - id: win-rank
-  name: Win screen titles (Exact, Untouchable, Stellar, Masterclass, Crystal Clear, Unreal)
+  name: Win screen titles (Exact, Untouchable, Stellar, Masterclass, Crystal Clear,
+    Unreal)
   status: in_progress
   cases:
   - id: thresholds
-    text: What decides Exact vs Stellar vs Unreal (mistakes/time?)
-    done: false
+    text: 'The title tier follows mistakes (fish lost), not time: flawless gives a
+      title from a pool; 1 mistake Brilliant; 2 mistakes Awesome or Brilliant'
+    done: true
+    source: 20261001-082114-chrono-2FYKPJ#53
+    version: 1.18.0
   - id: titles
-    text: 'Flawless wins show different titles: Exact (L1), Untouchable (L3), Stellar (L8), Masterclass
-      (L10), Crystal Clear (L29), Unreal (L40 Hard)'
+    text: 'Flawless wins show different titles: Exact (L1), Untouchable (L3), Stellar
+      (L8), Masterclass (L10), Crystal Clear (L29), Unreal (L40 Hard)'
     done: true
     source: 20260930-233055-chrono-2FYKPJ#23
+  - id: untouchable-no-mistakes
+    text: 0 fish lost gives Untouchable
+    done: true
+    source: 20261001-060942-chrono-2FYKPJ#19
+  - id: mapping-other-titles
+    text: 'Titles for 1 and 2 deliberate mistakes: 1 -> Brilliant (L57), 2 -> Awesome
+      (L58); score unchanged by mistakes'
+    done: true
+    source: 20261001-082114-chrono-2FYKPJ#53
+    version: 1.18.0
+  - id: hard-level-tag
+    text: 'Level button shows red ''Hard'' tag (seen before L90): which levels, extra
+      difficulty/rewards?'
+    done: false
   found_at:
     text: level 1
     value: 1.0
   page: features/win-rank.md
   version_seen: 1.18.0
+- id: golden-fish-level
+  name: Golden Fish bonus level (win-screen button after a flawless win)
+  status: in_progress
+  cases:
+  - id: trigger
+    text: The Golden Fish button replaces the next-level button on the win screen
+      of every 4th level from 54 (54, 58, 62, 66 ... 126), regardless of mistakes
+    done: true
+    source: 20261001-082114-chrono-2FYKPJ#31
+    version: 1.18.0
+  - id: reward
+    text: Reward for winning golden fish level
+    done: true
+    source: 20261001-060942-chrono-2FYKPJ#109
+  - id: fail
+    text: 'A wrong cat on the golden board (one fish) opens Out of Fish: Remaining
+      N, Get 1 Fish (AD), Restart, Skip to Level N'
+    done: true
+    source: 20261001-082114-chrono-2FYKPJ#34
+    version: 1.18.0
+  - id: skip
+    text: 'Skip to Level N on the win screen: an interstitial, then the next level,
+      no cost'
+    done: true
+    source: 20261001-082114-chrono-2FYKPJ#17
+    version: 1.18.0
+  - id: offer-interstitial
+    text: Tapping the Golden Fish button can play a ~33 s video interstitial before
+      the board (after L74); after L70 the board opened with no ad
+    done: true
+    source: 20261001-093348-chrono-2FYKPJ#65
+    version: 1.18.0
+  - id: score
+    text: Does a golden board score more than a normal board? Scores seen fit the
+      number of cats the player places (8 -> 7296, 10 -> 10080), not a golden bonus
+  found_at:
+    text: level 54
+    value: 54.0
+  page: features/golden-fish-level.md
+  version_seen: 1.18.0
+- id: level-start-banner
+  name: Level start stat banner
+  status: in_progress
+  cases:
+  - id: fun-fact
+    text: 'Variant "Fun fact: 55.4% of players needed a hint on that one. Not you!"
+      at the L126 start after a hint-free win'
+    done: true
+    source: 20261001-223249-chrono-2FYKPJ#5
+    version: 1.18.0
+  found_at:
+    text: level 66
+    value: 66.0
+  page: features/level-start-banner.md
+  version_seen: 1.18.0
 tasks:
 - id: analyze
-  title: Analyze the game, version 1.18.0
+  title: Analyze the game
   kind: analyze
   requires: any
   status: open
   created: '2026-09-30T20:39:39'
-  version: 1.18.0
+  version: ''
   source: external
   note: find all features and work through all user cases
 - id: streak-day-d1
-  title: Win a level to extend the daily streak; record the day's reward — day 1 of 7
+  title: Win a level to extend the daily streak; record the day's reward — day 1 of
+    7
   kind: daily
   requires: any
   status: open
@@ -418,7 +526,8 @@ tasks:
   not_before: '2026-10-01T23:34:51'
   source: game
 - id: streak-day-d2
-  title: Win a level to extend the daily streak; record the day's reward — day 2 of 7
+  title: Win a level to extend the daily streak; record the day's reward — day 2 of
+    7
   kind: daily
   requires: any
   status: open
@@ -427,7 +536,8 @@ tasks:
   not_before: '2026-10-02T23:34:51'
   source: game
 - id: streak-day-d3
-  title: Win a level to extend the daily streak; record the day's reward — day 3 of 7
+  title: Win a level to extend the daily streak; record the day's reward — day 3 of
+    7
   kind: daily
   requires: any
   status: open
@@ -436,7 +546,8 @@ tasks:
   not_before: '2026-10-03T23:34:51'
   source: game
 - id: streak-day-d4
-  title: Win a level to extend the daily streak; record the day's reward — day 4 of 7
+  title: Win a level to extend the daily streak; record the day's reward — day 4 of
+    7
   kind: daily
   requires: any
   status: open
@@ -445,7 +556,8 @@ tasks:
   not_before: '2026-10-04T23:34:51'
   source: game
 - id: streak-day-d5
-  title: Win a level to extend the daily streak; record the day's reward — day 5 of 7
+  title: Win a level to extend the daily streak; record the day's reward — day 5 of
+    7
   kind: daily
   requires: any
   status: open
@@ -454,7 +566,8 @@ tasks:
   not_before: '2026-10-05T23:34:51'
   source: game
 - id: streak-day-d6
-  title: Win a level to extend the daily streak; record the day's reward — day 6 of 7
+  title: Win a level to extend the daily streak; record the day's reward — day 6 of
+    7
   kind: daily
   requires: any
   status: open
@@ -463,7 +576,8 @@ tasks:
   not_before: '2026-10-06T23:34:51'
   source: game
 - id: streak-day-d7
-  title: Win a level to extend the daily streak; record the day's reward — day 7 of 7
+  title: Win a level to extend the daily streak; record the day's reward — day 7 of
+    7
   kind: daily
   requires: any
   status: open
@@ -481,27 +595,29 @@ tasks:
   not_before: '2026-10-01T23:43:31'
   source: game
 - id: verify-cases-l22
-  title: 'Cases pass from level 22: settings screen, hint/cat/mouse boosters first use, Daily Challenge
-    (now unlocked), profile Frame tab, streak counter tap, Rate Us low stars, wrong placement losing a
-    fish'
+  title: 'Cases pass from level 22: settings screen, hint/cat/mouse boosters first
+    use, Daily Challenge (now unlocked), profile Frame tab, streak counter tap, Rate
+    Us low stars, wrong placement losing a fish'
   kind: followup
   requires: any
   status: done
   created: '2026-09-30T23:55:04'
   source: game
-  note: 'Done: settings, hint/cat/mouse boosters, profile frames, streak tap, wrong placement (fish 3->2),
-    Daily Challenge cleared. Rate Us low stars not reachable: new task.'
+  note: 'Done: settings, hint/cat/mouse boosters, profile frames, streak tap, wrong
+    placement (fish 3->2), Daily Challenge cleared. Rate Us low stars not reachable:
+    new task.'
   closed: '2026-10-01T02:04:17'
   closed_by: 20261001-013526-chrono-2FYKPJ#145
 - id: advance-l22
-  title: Advance from level 22 with the queens solver; watch for new unlocks/events after level 21
+  title: Advance from level 22 with the queens solver; watch for new unlocks/events
+    after level 21
   kind: followup
   requires: any
   status: done
   created: '2026-09-30T23:55:04'
   source: game
-  note: 'Advanced levels 22-35 with solver, new: banner+interstitial ads from L23, Hard tag at L30; no
-    new unlock seen'
+  note: 'Advanced levels 22-35 with solver, new: banner+interstitial ads from L23,
+    Hard tag at L30; no new unlock seen'
   closed: '2026-10-01T02:04:17'
   closed_by: 20261001-013526-chrono-2FYKPJ#145
 - id: unlock-fish-event
@@ -513,7 +629,8 @@ tasks:
   feature: fish-event
   source: session
 - id: rate-us-low-stars
-  title: Trigger Rate Us popup again and test low-star rating path (did not appear in levels 22-35)
+  title: Trigger the Rate Us popup again and test the low-star path, never submit
+    (not seen again on levels 9-127)
   kind: followup
   requires: any
   status: open
@@ -530,9 +647,10 @@ tasks:
   source: game
   closed: '2026-10-01T02:33:37'
   closed_by: 20261001-022624-chrono-2FYKPJ#35
-  note: Pattern Mode ON draws distinct icons on each region (stars, leaves, bells, paws, fish, ...) keeping
-    colours; queens solver reads the board correctly and solved 9x9 level 37. First --run right after
-    closing settings misread (animation), re-run OK.
+  note: Pattern Mode ON draws distinct icons on each region (stars, leaves, bells,
+    paws, fish, ...) keeping colours; queens solver reads the board correctly and
+    solved 9x9 level 37. First --run right after closing settings misread (animation),
+    re-run OK.
 - id: test-feedback-btn
   title: Open Settings > Feedback and document the form (do not send)
   kind: followup
@@ -543,9 +661,10 @@ tasks:
   source: game
   closed: '2026-10-01T02:32:05'
   closed_by: 20261001-022624-chrono-2FYKPJ#27
-  note: 'Settings > Feedback opens in-app Helpshift web page ''Meowdoku Support'': search, tabs Popular/Get
-    Started/General/Account/Settings, articles (How to play, close an ad, Streak, place cat vs X, Daily
-    Challenge, delete account data), Chat with us button. Not sent.'
+  note: 'Settings > Feedback opens in-app Helpshift web page ''Meowdoku Support'':
+    search, tabs Popular/Get Started/General/Account/Settings, articles (How to play,
+    close an ad, Streak, place cat vs X, Daily Challenge, delete account data), Chat
+    with us button. Not sent.'
 - id: test-music-toggle
   title: Toggle music/sound/voice/vibration in settings and note effects
   kind: followup
@@ -556,9 +675,9 @@ tasks:
   source: game
   closed: '2026-10-01T02:32:40'
   closed_by: 20261001-022624-chrono-2FYKPJ#30
-  note: 4 toggles (music/sound/voice/vibration) flip ON/OFF instantly in Settings; music default OFF with
-    red dot (dot disappears after first toggle); audio/vibration effects not observable via screenshots.
-    Restored defaults.
+  note: 4 toggles (music/sound/voice/vibration) flip ON/OFF instantly in Settings;
+    music default OFF with red dot (dot disappears after first toggle); audio/vibration
+    effects not observable via screenshots. Restored defaults.
 - id: test-streak-gift
   title: Streak day-7 gift contents; streak reset when a day is missed
   kind: followup
@@ -569,10 +688,12 @@ tasks:
   source: game
   closed: '2026-10-01T02:42:40'
   closed_by: 20261001-022624-chrono-2FYKPJ#74
-  note: Day-7 gift box on Daily Streak page is not tappable early; support article says 7 days in a row
-    unlocks a mysterious reward; missing a day breaks the streak. Contents verified by streak-day-d7 task.
+  note: Day-7 gift box on Daily Streak page is not tappable early; support article
+    says 7 days in a row unlocks a mysterious reward; missing a day breaks the streak.
+    Contents verified by streak-day-d7 task.
 - id: test-daily-reward
-  title: 'Daily Challenge: check calendar/rewards after repeated days and what Continue gives'
+  title: 'Daily Challenge: check calendar/rewards after repeated days and what Continue
+    gives'
   kind: followup
   requires: any
   status: done
@@ -581,11 +702,11 @@ tasks:
   source: game
   closed: '2026-10-01T02:42:40'
   closed_by: 20261001-022624-chrono-2FYKPJ#74
-  note: 'Daily already done today: button inert after completion, no calendar/reward popup. Next-day check
-    requires new day (case daily-challenge/next-day).'
+  note: 'Daily already done today: button inert after completion, no calendar/reward
+    popup. Next-day check requires new day (case daily-challenge/next-day).'
 - id: test-ad-flow
-  title: 'Document ad flow: banner from level 23, interstitial on level start/Restart/Daily; check remove-ads
-    or rewarded options'
+  title: 'Document ad flow: banner from level 23, interstitial on level start/Restart/Daily;
+    check remove-ads or rewarded options'
   kind: followup
   requires: any
   status: done
@@ -594,9 +715,10 @@ tasks:
   source: game
   closed: '2026-10-01T02:42:39'
   closed_by: 20261001-022624-chrono-2FYKPJ#74
-  note: Banner at the bottom of levels; interstitials on level start (video with skip icon, or playable
-    without close; 'sw.py launch' dismisses); rewarded 'Get 3 Fishes' on Out of Fishes = ~30s playable,
-    launch returns with reward granted. No remove-ads found in home/level settings.
+  note: Banner at the bottom of levels; interstitials on level start (video with skip
+    icon, or playable without close; 'sw.py launch' dismisses); rewarded 'Get 3 Fishes'
+    on Out of Fishes = ~30s playable, launch returns with reward granted. No remove-ads
+    found in home/level settings.
 - id: test-lose-all-fish
   title: 'Lose all 3 fish: fail screen and revive options'
   kind: followup
@@ -607,8 +729,9 @@ tasks:
   source: game
   closed: '2026-10-01T02:36:36'
   closed_by: 20261001-022624-chrono-2FYKPJ#42
-  note: '3 wrong placements -> ''Out of Fishes'' popup (Remaining: N cats, Get 3 Fishes [rewarded ad],
-    Restart). Revive via ad restores 3 fish and keeps the board. Restart not tested.'
+  note: '3 wrong placements -> ''Out of Fishes'' popup (Remaining: N cats, Get 3 Fishes
+    [rewarded ad], Restart). Revive via ad restores 3 fish and keeps the board. Restart
+    not tested.'
 - id: survey-1
   title: 'Survey every screen: capture all entry points and map them to features'
   kind: survey
@@ -616,9 +739,10 @@ tasks:
   status: done
   created: '2026-10-01T02:09:17'
   source: external
-  note: 'Walked home, profile (avatar/frame), streak page, leaderboard + info, level settings, home settings,
-    language, save progress, support center articles, out-of-fishes, ads. New: save-progress, language,
-    support-center, leaderboard-event, ads, pattern-mode, win-rank.'
+  note: 'Walked home, profile (avatar/frame), streak page, leaderboard + info, level
+    settings, home settings, language, save progress, support center articles, out-of-fishes,
+    ads. New: save-progress, language, support-center, leaderboard-event, ads, pattern-mode,
+    win-rank.'
   closed: '2026-10-01T02:42:41'
   closed_by: 20261001-022624-chrono-2FYKPJ#74
   new_entries: 6
@@ -639,26 +763,37 @@ tasks:
   title: Scroll language list, document all languages
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T02:42:41'
   feature: language
   source: game
+  closed: '2026-10-01T06:10:48'
+  closed_by: 20261001-060942-chrono-2FYKPJ#4
+  note: 9 languages, list ends at Turkish
 - id: test-win-rank
   title: Determine what decides Exact/Stellar/Unreal win titles
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T02:42:41'
   feature: win-rank
   source: game
+  closed: '2026-10-01T06:15:15'
+  closed_by: 20261001-060942-chrono-2FYKPJ#28
+  note: 'Title tier follows mistakes (fish lost): flawless gives a rotating title
+    (Untouchable, Masterclass; seen with Exact/Stellar/Unreal earlier), score same
+    10080 for 10x10. Exact mistake-to-title mapping still to confirm: added task.'
 - id: pattern-mode-off
   title: Turn Pattern Mode back OFF (left ON by session 20261001-022624)
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T05:00:00'
   source: session
   feature: settings
+  closed: '2026-10-01T12:21:42'
+  closed_by: 20261001-115413-chrono-2FYKPJ#79
+  note: Pattern Mode in level Settings was ON; switched OFF at L96 (tile icons disappear)
 - id: daily-challenge-next
   title: 'Next day: play the new Daily Challenge and look for a reward or calendar'
   kind: daily
@@ -672,23 +807,435 @@ tasks:
   title: Lose all fish and tap Restart on the Out of Fishes popup
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T05:00:00'
   source: session
   feature: lives-fish
+  closed: '2026-10-01T12:10:17'
+  closed_by: 20261001-115413-chrono-2FYKPJ#43
+  note: Restart returns to same level (L90) with a freshly generated board, 3 fish.
 - id: booster-zero
   title: Use a booster down to 0 and record the refill offer (rewarded ad?)
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T05:00:00'
   source: session
   feature: hint
+  closed: '2026-10-01T12:15:27'
+  closed_by: 20261001-115413-chrono-2FYKPJ#57
+  note: Cat booster used 4x to 0; 5th tap -> rewarded ad (2 ads, ~40s) -> Reward granted
+    -> counter 1
 - id: legal-links
   title: Open Terms of Service and Privacy Policy from Home settings
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-01T05:00:00'
   source: session
   feature: settings
+  closed: '2026-10-01T11:55:43'
+  closed_by: 20261001-115413-chrono-2FYKPJ#5
+  note: Terms of Service and Privacy Policy open in Chrome (oakevergames.com/tos.html,
+    /p...; ToS updated Jan 1 2026, Privacy Aug 5 2026). launch returns to game with
+    Settings still open.
+- id: win-rank-mistake-tiers
+  title: 'Win a level with 1 and 2 mistakes deliberately and record the title and
+    score for each (flawless titles seen: Untouchable, Masterclass)'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T06:15:15'
+  feature: win-rank
+  source: game
+  closed: '2026-10-01T08:36:22'
+  closed_by: 20261001-082114-chrono-2FYKPJ#53
+  note: '1 mistake: Brilliant (9x9 8640); 2 mistakes: Awesome (10x10 10080); score
+    unaffected by mistakes. Flawless: Immaculate, Exceptional(Hard), Surgical, Perfect,
+    Purr-fect, Expert, Masterclass'
+- id: golden-fish-trigger
+  title: 'Find what triggers the Golden Fish button on win screen (seen after L54
+    flawless 9x9; not on L45-53 flawless wins): check next flawless wins and log levels'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T06:29:38'
+  feature: golden-fish-level
+  source: game
+  closed: '2026-10-01T08:30:02'
+  closed_by: 20261001-082114-chrono-2FYKPJ#31
+  note: 'Appears every 4 levels: L54, L58, L62; independent of mistakes (L58 had 2
+    mistakes)'
+- id: golden-fish-skip-link
+  title: 'Test the ''Skip to Level N'' link under Golden Fish button on a future win
+    screen: does it show an ad or cost anything'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T06:29:38'
+  feature: golden-fish-level
+  source: game
+  closed: '2026-10-01T08:26:35'
+  closed_by: 20261001-082114-chrono-2FYKPJ#17
+  note: Tapping 'Skip to Level N' (L58 win screen) shows a full-screen interstitial
+    ad (Hollywood Merge), after launch you land on Level 59 for free
+- id: golden-fish-fail
+  title: 'In a Golden Fish Challenge make a deliberate wrong move: record lose popup
+    and options'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T06:29:39'
+  feature: golden-fish-level
+  source: game
+  closed: '2026-10-01T08:31:11'
+  closed_by: 20261001-082114-chrono-2FYKPJ#34
+  note: 'Wrong cat in golden fish = immediate Out of Fish popup: Remaining: 8, ''Get
+    1 Fish'' (rewarded AD), ''Restart'', ''Skip to Level N'' link. Challenge board
+    can be 8x8 (L62)'
+- id: rate-us-trigger-search
+  title: 'Rate Us popup did not appear in L56-66 either: keep watching win screens/level
+    starts; test only low-star path, never submit'
+  kind: followup
+  requires: any
+  status: cancelled
+  created: '2026-10-01T08:36:20'
+  feature: rate-us
+  source: game
+  closed: '2026-10-02T12:00:00'
+  closed_by: dream-2026-10-02-chrono
+  note: 'duplicate of rate-us-low-stars (merged by the dream 2026-10-02): both wait
+    for the Rate Us popup to come back'
+- id: golden-fish-skip-from-failure
+  title: Test 'Skip to Level N' link on the Out of Fish popup in Golden Fish (ad?
+    cost?)
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T08:36:21'
+  feature: golden-fish-level
+  source: game
+  closed: '2026-10-01T09:49:24'
+  closed_by: 20261001-093348-chrono-2FYKPJ#67
+  note: 'Skip to Level N link on Out of Fish popup (L74 golden, 8x8): one tap lands
+    straight on next level (L75), no ad seen, no cost'
+- id: golden-fish-ad-fish
+  title: 'Test ''Get 1 Fish'' rewarded ad button in Golden Fish Out of Fish popup:
+    does the board continue'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T08:36:21'
+  feature: golden-fish-level
+  source: game
+  closed: '2026-10-01T09:43:11'
+  closed_by: 20261001-093348-chrono-2FYKPJ#45
+  note: 'Get 1 Fish rewarded ad (~25s, then launch): board continues with 1 fish and
+    the wrong X mark kept'
+- id: level-start-stat-banner
+  title: 'Collect variants of the level-start banner (''That was a clean solve! Only
+    18.2% can say the same.'', seen L65): when does it show'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T08:36:21'
+  feature: level-start-banner
+  source: game
+- id: survey-2
+  title: 'Survey every screen: capture all entry points and map them to features'
+  kind: survey
+  requires: any
+  status: done
+  created: '2026-10-01T08:36:55'
+  source: external
+  note: 'Walked home, profile, streak, settings, leaderboard + info, Golden Fish from
+    home, win overlays. New: Golden Fish button replaces Level N on home while golden
+    board is pending; ''Almost flawless'' banner.'
+  closed: '2026-10-01T09:38:14'
+  closed_by: 20261001-093348-chrono-2FYKPJ#26
+  new_entries: 0
+  at_progress: level 67
+- id: golden-home-pending
+  title: 'Check what happens if the Golden Fish win button is skipped/ignored: home
+    shows Golden Fish instead of Level N, does it expire?'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T09:59:34'
+  feature: golden-fish-level
+  source: game
+  closed: '2026-10-01T12:19:42'
+  closed_by: 20261001-115413-chrono-2FYKPJ#71
+  note: 'Ignored golden button at L86 + force restart: Home shows Golden Fish instead
+    of Level 87, persists after restart. Expiry over time -> new task golden-home-expiry.'
+- id: win-title-catalog
+  title: 'Catalog all win titles and subtitle lines by mistakes/board (new: Masterful,
+    Crystal Clear, Persevered, Immaculate)'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T09:59:34'
+  feature: win-rank
+  source: game
+  note: '"Masterful" was listed by an agent but no win frame showed it (20261001-115413-chrono-2FYKPJ);
+    confirm before adding it'
+- id: rate-us-keep-watching
+  title: Keep watching for Rate Us popup in L84+ (not seen L56-83)
+  kind: followup
+  requires: any
+  status: cancelled
+  created: '2026-10-01T09:59:35'
+  feature: rate-us
+  source: game
+  closed: '2026-10-01T22:49:43'
+  closed_by: review-20261001#None
+  note: duplicate of rate-us-trigger-search (same watch for the Rate Us popup)
+- id: golden-home-expiry
+  title: 'Leave Golden Fish pending on Home for 10+ min / next day: does the button
+    expire or stay?'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T12:19:41'
+  feature: golden-fish-level
+  source: game
+  closed: '2026-10-01T22:48:10'
+  closed_by: 20261001-223249-chrono-2FYKPJ#8
+  note: Golden Fish pending on Home since ~3 min; last frame (dimmed screen) at ~15
+    min still shows Golden Fish replacing Level 127, i.e. no expiry within ~12 min.
+    Next-day expiry not tested. Thin check (12 min, not 10+ min idle with the screen
+    awake); the next-day check is golden-home-expiry-nextday.
+- id: win-title-three-mistakes
+  title: 'Win a level with exactly 2 fish lost (1 left) done=Brilliant; test win after
+    Restart/Get 3 Fishes ad and win with 3 mistakes across a restart: titles?'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T12:19:41'
+  feature: win-rank
+  source: game
+- id: hard-level-catalog
+  title: 'Catalog Hard-tagged levels (Hard from L30; tag on the next-level button
+    seen before L90): frequency, reward, win titles'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T12:19:41'
+  feature: win-rank
+  source: game
+- id: rate-us-keep-watching-2
+  title: Rate Us popup still not seen through L95; keep watching
+  kind: followup
+  requires: any
+  status: cancelled
+  created: '2026-10-01T12:19:41'
+  feature: rate-us
+  source: game
+  closed: '2026-10-01T22:49:43'
+  closed_by: review-20261001#None
+  note: duplicate of rate-us-trigger-search (same watch for the Rate Us popup)
+- id: solver-taps-fail
+  title: 'Harness/solver: solve --run places no cats on banner-ad levels though solution
+    is correct; hand taps work. Investigate'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-01T12:19:42'
+  feature: settings
+  source: game
+  closed: '2026-10-02T12:00:00'
+  closed_by: 20261001-182015-chrono-2FYKPJ#4
+  note: 'Not reproduced: solve --run placed every cat with the banner ad up on L104-108
+    [s:20261001-182015-chrono-2FYKPJ#4] and L97-99 (bench 20261001-180616). The failures
+    in 20261001-115413 (L85, L86) came while Pattern Mode was ON; that is the likely
+    cause, not proven.'
+- id: study-score
+  title: 'Study Level score: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: score
+  source: external
+- id: study-lives-fish
+  title: 'Study Fish (3 mistake lives per level): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: lives-fish
+  source: external
+- id: study-settings
+  title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: settings
+  source: external
+- id: study-streak
+  title: 'Study Daily streak (yarn ball): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: streak
+  source: external
+- id: study-daily-challenge
+  title: 'Study Daily Challenge: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: daily-challenge
+  source: external
+- id: study-rate-us
+  title: 'Study Rate Us popup: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: rate-us
+  source: external
+- id: study-fish-event
+  title: 'Study Fish leaderboard event (podium on home): open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: fish-event
+  source: external
+- id: study-profile
+  title: 'Study Profile (avatar, frame, nickname): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: profile
+  source: external
+- id: study-save-progress
+  title: 'Study Save progress (Facebook/Google sign-in, Delete Account): open it,
+    walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: save-progress
+  source: external
+- id: study-language
+  title: 'Study Language selection: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: language
+  source: external
+- id: study-support-center
+  title: 'Study Feedback / Helpshift support center: open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: support-center
+  source: external
+- id: study-ads
+  title: 'Study Ads: banner, interstitial, rewarded revive: open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: ads
+  source: external
+- id: study-win-rank
+  title: 'Study Win screen titles (Exact, Untouchable, Stellar, Masterclass, Crystal
+    Clear, Unreal): open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: win-rank
+  source: external
+- id: study-golden-fish-level
+  title: 'Study Golden Fish bonus level (win-screen button after a flawless win):
+    open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: golden-fish-level
+  source: external
+- id: study-level-start-banner
+  title: 'Study Level start stat banner: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:30'
+  feature: level-start-banner
+  source: external
+- id: golden-home-expiry-nextday
+  title: Check whether the pending Golden Fish still replaces Level 127 on Home next
+    day
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-01T22:48:11'
+  feature: golden-fish-level
+  not_before: '2026-10-02T10:48:11'
+  source: game
+- id: level-banner-trigger
+  title: Find out what picks the level-start banner text (hint stat vs clean-solve
+    stat)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:44'
+  feature: level-start-banner
+  source: session
+  plan: 'Hypothesis: the banner comments on the previous level''s play. Win one level
+    using the Hint booster, one with 1 mistake, one flawless with no tools; screenshot
+    the next level start after each. Confirmed if the banner text changes with how
+    the previous level was played (e.g. no hint-stat banner after a hinted win); refuted
+    if variants appear regardless of play or only after interstitials.'
+- id: look-no-ads-iap
+  title: Look for a remove-ads purchase, shop or IAP offer (none seen through level
+    126)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T22:49:44'
+  feature: ads
+  source: session
+  plan: Check profile, settings (home and in-level), win screens, the Out of Fishes
+    and booster-zero popups, and the ad banner (i) for any purchase, no-ads offer
+    or Restore Purchases. Done when one is found and recorded, or every screen was
+    checked with none, which confirms the game has no IAP.
+- id: golden-score-compare
+  title: Does the score follow the number of cats the player places? Compare a golden
+    8x8 (7296), a normal 8x8 with and without a pre-placed cat (6048 / ?) and a 7x7
+    (6048)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-02T12:00:00'
+  feature: golden-fish-level
+  source: session
+  plan: Record the board size, pre-placed cats and the score of 3 normal 8x8 levels
+    and the next golden board; confirmed if score = cats placed x (528 + 48 x cats
+    placed) on every board
+- id: home-quit-confirm
+  title: 'Quit dialog on Home (Back): does Quit close the app and what does the X
+    keep'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-02T12:00:00'
+  feature: home
+  source: session
