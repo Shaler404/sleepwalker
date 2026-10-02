@@ -68,7 +68,8 @@ def clean(text: str, limit: int) -> str:
 
 
 def upload_pending(cfg: dict, max_n: int = 99) -> list[dict]:
-    """Upload the originals that did not go up at the end of their session. Stops at the daily quota."""
+    """Upload the originals that did not go up at the end of their session. Stops at the daily quota.
+    `sw.py gc` uploads youtube.uploads_per_gc of them a run and links the pages' footnotes to them."""
     from sw import RAW
 
     res = []
@@ -90,7 +91,7 @@ def upload_pending(cfg: dict, max_n: int = 99) -> list[dict]:
         original.unlink()
         for seg in meta_path.parent.glob("seg_*.mp4"):
             seg.unlink()
-        res.append({"session": meta["id"], "youtube": meta["youtube"]})
+        res.append({"session": meta["id"], "game": meta.get("game"), "youtube": meta["youtube"]})
     return res
 
 

@@ -136,6 +136,7 @@ check(v["summary"]["progress"]["text"] == "level 1", "a won level records the pr
 for n in (2, 3):
     sw("level", "start", f"level {n}", "--mechanic", "pull-pins", "--plan", "by the playbook", "--value", str(n))
     sw("taps", "50,50 60,60", "--why", "pins")
+    sw("shot")  # the win screen: a won level needs a frame after its last move
     r = sw("level", "end", "won", "--note", "fast")
 check(r["mechanic"]["status"] == "mastered" and r.get("mechanic_change", {}).get("status") == "mastered",
       f"two fast levels -> mastered: {r.get('mechanic_change')}")
@@ -243,6 +244,13 @@ r = sw("solve", "bad", expect_ok=False)
 check("refused" in json.dumps(r), "a solver that starts processes is refused")
 r = sw("solve", "nosuch", expect_ok=False)
 check("no solver" in json.dumps(r) and "solve(image" in json.dumps(r), "missing solver: the contract is explained")
+(T / "board.json").write_text('{"cells": 3}', encoding="utf-8")
+(sd / "typed.py").write_text("def solve(image, board=None, frame_scale=1.0):\n"
+                             "    return {'moves': [[5, 5]], 'note': f\"board of {board['cells']}\"}\n", encoding="utf-8")
+r = subprocess.run([sys.executable, str(DEV / "harness" / "sw.py"), "-d", "fake1", "solve", "typed", "--board", "board.json"],
+                   capture_output=True, text=True, encoding="utf-8", env=ENV, cwd=T)
+check(r.returncode == 0 and json.loads(r.stdout)["note"] == "board of 3",
+      f"--board with a path relative to the player's folder reaches the solver: {r.stdout[-300:]}")
 sw("end", "--status", "ok", "--summary", "solver")
 
 spec = importlib.util.spec_from_file_location("sw", DEV / "harness" / "sw.py")
@@ -292,11 +300,11 @@ for fg, expect in (("com.android.chrome", "com.android.chrome"), ("com.whatsapp"
     got = swm.leave_clean({"device": "fake1", "game": G, "dir": str(lc)})
     check(got == expect and bool(sent) == bool(expect),
           f"session end, {fg} on screen: {'go home' if expect else 'leave it'}")
-imgs = sorted(frames_dir().glob("*.png"))
-check(swm.changed_px(imgs[0], imgs[0]) == 0 and swm.changed_px(imgs[0], imgs[1]) > 0,
-      "frame change detection: same frame 0, different frames > 0")
-
 from PIL import Image  # noqa: E402
+
+imgs = [Image.open(p) for p in sorted(frames_dir().glob("*.png"))[:2]]
+check(swm.changed_share(imgs[0], imgs[0]) == 0 and swm.changed_share(imgs[0], imgs[1]) > 0,
+      "frame change detection: same frame 0, different frames > 0")
 
 
 class Phone:

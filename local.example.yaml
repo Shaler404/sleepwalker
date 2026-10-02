@@ -8,6 +8,8 @@ android:
   serials: []              # empty = all phones and emulators from `adb devices`
   hours: "0-24"            # hours when sessions may use the phones, e.g. "1-8"
   dnd: true                # "Do Not Disturb: alarms only" during a session, then the previous mode
+  stay_awake: false        # true: the screen stays on while charging during a session, then the previous setting
+                           # (stay_on_while_plugged_in); a phone setting, so off unless turned on here
   max_temp_c: 42           # hotter = pause
   min_battery: 20          # lower and not charging = pause
 
@@ -26,7 +28,7 @@ consult:                   # sw.py ask: one-shot advice from a stronger model on
   via: claude              # claude | codex (GPT through the Codex CLI and the owner's ChatGPT plan)
   model: ""                # empty = project.yaml models.consult for claude; for codex e.g. gpt-6-astra
   effort: ""               # codex only: model_reasoning_effort
-  timeout_s: 180
+  timeout_s: 90            # answers come in 25-120 s; longer waits gave nothing
 
 video:
   record: true             # record the session screen: the original for YouTube and for cutting clips
@@ -43,6 +45,7 @@ youtube:                   # the keys live only on this machine
   client_secret: E:/secrets/sleepwalker/youtube-client.json
   token: E:/secrets/sleepwalker/youtube-token.json
   privacy: unlisted        # without a Google project audit, YouTube makes it private anyway
+  uploads_per_gc: 5        # originals that did not go up at `end`, uploaded by one `sw.py gc` run
 
 raw:
   keep_originals_days: 3   # an original that was not uploaded to YouTube is deleted after this many days

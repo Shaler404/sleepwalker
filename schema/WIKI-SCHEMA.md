@@ -124,7 +124,7 @@ mechanics:                # kinds of levels and how the agent plays them (sectio
   solver: solvers/com.vitastudio.mahjong/core-match.py
   levels: {won: 14, lost: 1, quit: 1}
   best_s: 71
-  recent:                 # the last 10 levels
+  recent:                 # the last 10 levels (skipped: true / moves_before: N — not timed, section 10)
   - {level: level 14, result: won, seconds: 95, model: sonnet}
 features:
 - id: daily-reward
@@ -253,7 +253,9 @@ global `research.yaml` (`sw.py snapshot`), and `sw.py render` rebuilds `tasks.md
 ## 6. Skills
 
 `skills/<game>/<name>.yaml` is a macro for moving between screens. It is created from a transcript
-with `sw.py skill new`: steps in screen fractions, pHash of the screen before and after.
+with `sw.py skill new`: steps in screen fractions, pHash of the screen before and after. Each step's
+`wait` is the time the transcript took before its next action (at most 60 s; the last step: its settle
++ 0.5 s); `--wait STEP:SECONDS` sets single steps.
 
 ```yaml
 name: open-shop
@@ -261,16 +263,18 @@ description: Open the shop from the level map
 status: candidate        # candidate → verified (3 successes in a row) → broken (2 failures or a version change)
 version: 241.3.1
 pre_hash: b699809d63993ecc
+pre_region: [0.85, 0.03, 1.0, 0.12]   # optional: pre_hash is of this part of the frame (a control on a changing screen)
 post_hash: 8f9df0487398269d
 steps:
 - tap: [0.934, 0.052]
-  wait: 1.5
+  wait: 3.5
 source: 20261001-091500-chrono-FYKPJ#12-15
 ```
 
-`sw.py skill run` runs a skill only if the screen matches `pre_hash`, and counts a success only if
-the screen matches `post_hash` at the end. Results accumulate in `state/<game>/skills.jsonl`; the
-dream promotes and demotes skills based on them.
+`sw.py skill run` runs a skill only if the screen (or its `pre_region`) matches `pre_hash`, and counts
+a success only if the screen matches `post_hash` at the end. Results accumulate in
+`state/<game>/skills.jsonl` with `waited_s`, the sum of the waits; the dream promotes and demotes
+skills based on them and shortens the waits of slow ones.
 
 ## 7. How knowledge stays current
 
@@ -296,7 +300,7 @@ dream promotes and demotes skills based on them.
 |---|---|---|---|
 | Player (`sleepwalker-player`) | global knowledge, its own `state/<game>/` | `state/<game>/progress.md`, `inbox.md`, `playbook.md`, `solvers/`; the task and feature journal, the game's state on the phone and `raw/` — through `sw.py` | one game — one device (lock in `sw.py`); commits nothing |
 | The "play" orchestrator | `sw.py claim` responses | nothing (`sw.py claim` writes the planner's tasks to the journal) | does not commit or push |
-| Lab (`sleepwalker-lab`) | recorded level frames, the playbook | `state/<game>/solvers/`, `playbook.md`, `lab-log.md`; the mechanic's method | after a session whose mechanic is slow or unlearned; never touches the phone |
+| Lab (`sleepwalker-lab`) | recorded level frames, the playbook | `state/<game>/solvers/`, `playbook.md`, `lab-log.md`; the mechanic's method | after a session whose mechanic is slow or unlearned, or whose solver the player works around; never touches the phone |
 | Documenter (`sleepwalker-documenter`) | the finished session's `raw/`, `state/<game>/` | `state/<game>/pages/`, `docs-log.md` | runs right after each session; `check-pages` |
 | Reviewer (`sleepwalker-reviewer`) | the finished session's `raw/`, `state/<game>/` | goals, discovery and case closures through `sw.py … --game`; `state/<game>/reviews.md` | runs right after each session, never touches the phone |
 | Analyst (`sleepwalker-analyst`) | its machine's `raw/` and `state/`, the worktree | nothing | tools: Read, Grep, Glob |
@@ -341,6 +345,16 @@ consolidates it.
 - **Level cycle** — `level start --plan` (plan from the playbook and one look at the board), safe
   moves in batches and a risky one (`!X,Y`) last (`taps`), `level plan` when the plan has not worked for `play.level_rethink_min` minutes,
   `level end --note` (what worked, what to change) and a playbook update right after.
+- **Level records** — a level op (`research.jsonl`) is `{name, value, mechanic, result, seconds, solve_s,
+  moves, decisions, replans, model, note, shot}`: `solve_s` from its first move to its end, `shot` the frame
+  it was ended on. `level end won` needs a frame after the last move, of the game, and is refused for a
+  win with no moves under 15 s unless `--skipped` (a skip for a video: `skipped: true`). A start after
+  moves with no level open keeps `moves_before: N`; skipped and late-started levels are left out of
+  `best_s`, the typical time and the mastered/broken rule. `--bonus` boards (`bonus: true`) move no
+  progress and are filed under their name in the level catalog. `level end lost --retry` records the loss
+  and opens the same level again. `session.json` and `sw.py stats` count `moves_outside_level` (moves of
+  `taps` and `solve` with no level open in a game with mechanics) and `repeated_steps` (the same tap or
+  solver plan again on a screen it did not change: warned, then held back unless `--force`).
 - **Playbook** — `wiki/<game>/agent/playbook.md`, one section per mechanic: goal, controls, rules,
   method, level plan, pitfalls, level times. The player works in the local copy
   `state/<game>/playbook.md` (`sw.py playbook`); the dream merges it into the wiki. When a newer
@@ -380,10 +394,17 @@ consolidates it.
 - **Level catalog** — `wiki/<game>/levels.md` and `levels/<level>.webp`: for games whose design lives in
   the levels, the board of every level the agents met at its start, with the tries and the player's
   note (`sw.py level-catalog`, refreshed by the dream).
-- **Models by role** (`models` in `project.yaml`, overridable in `local.yaml`): `study` learns new or
-  broken mechanics (the strong model), `play` plays mastered mechanics and verifies cases (the fast
-  model), `consult` answers `sw.py ask`. `claim` picks the role per session; a `play` session that
-  meets gameplay to learn ends with `handoff` and the game goes back to the `study` model at once.
+- **Models by role** (`models` in `project.yaml`, overridable in `local.yaml` and per game in
+  `games.yaml`): `study` learns new or broken mechanics (the strong model), `play` plays mastered
+  mechanics and verifies cases (the fast model), `consult` answers `sw.py ask`. `claim` picks the role
+  per session: `study` while a mechanic is `studying` or `broken` and the session's tasks play levels
+  (follow-ups, replays and FTUE checks too), `play` once every mechanic is mastered and for menu-only
+  work (studies, surveys, dailies). A `play` session that meets gameplay to learn ends with
+  `handoff --to <mechanic>`; the game goes back to the `study` model at once, and the brief's
+  `model_why` names the mechanic.
   `sw.py stats --by-model` compares models: levels and features per hour, level times, the share of
-  session time the model spends thinking.
+  session time the model spends thinking, the share of actions after which nothing changed
+  (`same_screen_rate`: the hash and the pixels agree) or only a small part of the frame did
+  (`small_change_rate`: a board in play), restarts, refused commands per hour (`errors_per_hour`) and
+  `wasted_handoffs` (handoffs that did nothing).
 

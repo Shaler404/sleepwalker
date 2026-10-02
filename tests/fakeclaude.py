@@ -40,6 +40,7 @@ for i in range(1, levels + 1):
     sw("taps", "10,10 20,20", "--why", "moves")
     if model == "haiku" and i == 2:
         sw("ask", "which pin first?")
+    sw("shot")  # the win screen before level end
     sw("level", "end", "lost" if model == "haiku" and i == 1 else "won", "--note", "x")
 sw("end", "--status", "ok", "--summary", f"bench slot: {levels} levels")
 print(json.dumps({"type": "result", "is_error": False, "num_turns": 7, "duration_ms": 1234,
