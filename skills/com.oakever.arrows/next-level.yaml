@@ -1,0 +1,14 @@
+name: next-level
+game: com.oakever.arrows
+description: 'Result screen: tap Next Level once it has appeared (about 3 s after
+  the win)'
+status: candidate
+version: 1.31.0
+pre_hash: d0506e3e946fe594
+post_hash: a61f9f6662d8d860
+steps:
+- tap:
+  - 0.5
+  - 0.7644
+  wait: 1.5
+source: 20261001-204000-chrono-2FYKPJ#9-9

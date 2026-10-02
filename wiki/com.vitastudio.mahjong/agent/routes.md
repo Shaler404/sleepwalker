@@ -4,7 +4,7 @@ title: "Routes"
 type: agent
 version_seen: 3.39.1
 verified_at: 2026-10-01
-sources: [20260930-203959-chrono-2FYKPJ, 20260930-211039-chrono-2FYKPJ, 20260930-221457-chrono-2FYKPJ, 20260930-235817-chrono-2FYKPJ, 20261001-010125-chrono-2FYKPJ, 20261001-031723-chrono-2FYKPJ]
+sources: [20260930-203959-chrono-2FYKPJ, 20260930-211039-chrono-2FYKPJ, 20260930-221457-chrono-2FYKPJ, 20260930-235817-chrono-2FYKPJ, 20261001-010125-chrono-2FYKPJ, 20261001-031723-chrono-2FYKPJ, 20261001-063226-chrono-2FYKPJ, 20261001-110957-chrono-2FYKPJ]
 ---
 
 # Routes
@@ -23,3 +23,9 @@ Positions in the 730x1583 frame.
 - Daily Victories (skill `open-daily-victories`): the leaf pill (0.364, 0.082 of the screen) [s:20261001-010125-chrono-2FYKPJ#1].
 - Leagues: the league badge (0.852, 0.505) → (i) (0.926, 0.071) [s:20261001-010125-chrono-2FYKPJ#3] [s:20261001-010125-chrono-2FYKPJ#4].
 - Lost ad reward: on launch "Ad Reward Delivered" → Collect → open the chest → Collect [s:20261001-031723-chrono-2FYKPJ#1] [s:20261001-031723-chrono-2FYKPJ#3].
+- Booster at stock 0: Undo + (548,1470) opens Free Undo (one video = 2), Shuffle + (180,1470) opens
+  Free Shuffle (one video = 1); close the offer with X (665,488) [s:20261001-063226-chrono-2FYKPJ#2] [s:20261001-063226-chrono-2FYKPJ#64].
+- Hint at stock 0 (skill `free-hint-video`): Hint (365,1470) → Free Hint popup → watch (365,955) → 2 hints [s:20261001-110957-chrono-2FYKPJ#57] [s:20261001-110957-chrono-2FYKPJ#58].
+- League board → current level: the own-row chevron (665,1495) on the sticky bottom row starts the
+  current level [s:20261001-110957-chrono-2FYKPJ#70].
+- Win screen → next level: Continue (365,1350) past the league update, then Level N+1 [s:20261001-205148-chrono-2FYKPJ#72] [s:20261001-205148-chrono-2FYKPJ#73].

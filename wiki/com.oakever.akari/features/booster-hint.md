@@ -5,7 +5,7 @@ type: feature
 feature: booster-hint
 version_seen: 1.0.2
 verified_at: 2026-10-01
-sources: [20261001-003641-chrono-2FYKPJ, 20261001-035425-chrono-2FYKPJ, 20261001-070939-chrono-2FYKPJ, 20261001-100940-chrono-2FYKPJ]
+sources: [20261001-003641-chrono-2FYKPJ, 20261001-035425-chrono-2FYKPJ, 20261001-070939-chrono-2FYKPJ, 20261001-100940-chrono-2FYKPJ, 20261001-221517-chrono-2FYKPJ]
 ---
 
 # Hint booster (bulb)
@@ -100,7 +100,8 @@ Version 1.0.2.
 
 - Stock: 5 on a fresh install (level 1) [^s11]. The stock is shared across levels and not refilled by
   winning: 4 after one use on level 12 and still 4 on level 14 [^s12]; 1 after the refill on level 73 and
-  still 1 at the start of level 74 [^s13].
+  still 1 at the start of level 74 [^s13]; still 1 at the start of every level from 108 to 120, with
+  none used [^s16] [^s17].
 - Each use: −1 at the tap, before Apply [^s6]; the hint shows one deduction with a text reason and the
   cells it concerns [^s2].
 - At 0: AD badge; one rewarded video (about 40 s) = +1 hint [^s9] [^s10].
@@ -113,6 +114,7 @@ Version 1.0.2.
 |---|---|---|---|
 | Use | Tapped the bulb on level 12, then Apply | The next deduction with a text reason and highlighted cells; Apply placed both cats; 5 → 4 | ✅ [^s2] [^s3] |
 | Use until 0 | Four hints in a row on level 73, each applied | Cats and X marks placed; count 4 → 0, dropping at each tap; badge AD | ✅ [^s6] |
+| Not used | Played levels 108–120 without hints | 1 at the start of every level: no refill and no loss between levels | ✅ [^s16] [^s17] |
 | Refill at 0 | Tapped the AD badge on level 73, watched the video, closed the end card | +1 hint; board unchanged | ✅ [^s9] [^s10] |
 
 ## Not verified
@@ -137,3 +139,5 @@ Version 1.0.2.
 [^s13]: session 20261001-100940-chrono-2FYKPJ, step 20
 [^s14]: session 20261001-035425-chrono-2FYKPJ, step 11
 [^s15]: session 20261001-070939-chrono-2FYKPJ, step 5
+[^s16]: session 20261001-221517-chrono-2FYKPJ, step 1 — [video at 0:16](https://youtu.be/LMacAS64JRE?t=16)
+[^s17]: session 20261001-221517-chrono-2FYKPJ, step 41 — [video at 15:01](https://youtu.be/LMacAS64JRE?t=901)

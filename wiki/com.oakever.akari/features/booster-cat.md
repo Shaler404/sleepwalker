@@ -5,7 +5,7 @@ type: feature
 feature: booster-cat
 version_seen: 1.0.2
 verified_at: 2026-10-01
-sources: [20261001-003641-chrono-2FYKPJ, 20261001-024647-chrono-2FYKPJ, 20261001-035425-chrono-2FYKPJ]
+sources: [20261001-003641-chrono-2FYKPJ, 20261001-024647-chrono-2FYKPJ, 20261001-035425-chrono-2FYKPJ, 20261001-221517-chrono-2FYKPJ]
 ---
 
 # Cat booster
@@ -73,7 +73,8 @@ After the video the badge shows 1; the board, the hearts and the cat counter are
 Version 1.0.2.
 
 - Stock: 5 on a fresh install (level 1) [^s6]. The stock is shared across levels and is not refilled by
-  winning: after one use on level 12 it was still 4 at level 48 [^s7] [^s8].
+  winning: after one use on level 12 it was still 4 at level 48 [^s7] [^s8]. With 1 left and none used, it
+  showed 1 at the start of every level from 108 to 120 [^s10] [^s11].
 - Each use: −1, one correct cat placed at once, no confirmation [^s2].
 - At 0: AD badge; one rewarded video (about 15–20 s before it can be closed) = +1 [^s5].
 - No shop or purchase for boosters was found through level 55 [^s9].
@@ -83,6 +84,7 @@ Version 1.0.2.
 | Case | What was done | Result | Source |
 |---|---|---|---|
 | Use | Tapped the booster once on level 12 | One correct cat placed at once, no confirmation; 5 → 4 | [^s2] |
+| Not used | Played levels 108–120 without the booster | 1 at the start of every level: no refill and no loss between levels | [^s10] [^s11] |
 | Empty | Used it down to 0 on level 49, then tapped the AD badge | The badge shows AD; a rewarded video (about 20 s, "Reward granted", X top left) gives +1 | [^s3] [^s5] |
 
 ## Not verified
@@ -101,3 +103,5 @@ Version 1.0.2.
 [^s7]: session 20261001-024647-chrono-2FYKPJ, step 66
 [^s8]: session 20261001-024647-chrono-2FYKPJ, step 109
 [^s9]: session 20261001-035425-chrono-2FYKPJ, step 61
+[^s10]: session 20261001-221517-chrono-2FYKPJ, step 1 — [video at 0:16](https://youtu.be/LMacAS64JRE?t=16)
+[^s11]: session 20261001-221517-chrono-2FYKPJ, step 41 — [video at 15:01](https://youtu.be/LMacAS64JRE?t=901)

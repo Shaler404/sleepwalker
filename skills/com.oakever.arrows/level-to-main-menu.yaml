@@ -1,0 +1,13 @@
+name: level-to-main-menu
+game: com.oakever.arrows
+description: 'From a level: back arrow top left opens the main menu'
+status: candidate
+version: 1.31.0
+pre_hash: a61f9f6662d8d860
+post_hash: ff5f3e8080a2c07d
+steps:
+- tap:
+  - 0.0877
+  - 0.0613
+  wait: 1.5
+source: 20261001-204000-chrono-2FYKPJ#10-10

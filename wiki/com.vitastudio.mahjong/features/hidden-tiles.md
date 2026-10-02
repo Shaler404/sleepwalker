@@ -5,7 +5,7 @@ type: feature
 feature: hidden-tiles
 version_seen: 3.39.1
 verified_at: 2026-10-01
-sources: [20260930-235817-chrono-2FYKPJ, 20261001-010125-chrono-2FYKPJ, 20261001-031723-chrono-2FYKPJ, 20261001-063226-chrono-2FYKPJ, 20261001-083725-chrono-2FYKPJ, 20261001-110957-chrono-2FYKPJ]
+sources: [20260930-235817-chrono-2FYKPJ, 20261001-010125-chrono-2FYKPJ, 20261001-031723-chrono-2FYKPJ, 20261001-063226-chrono-2FYKPJ, 20261001-083725-chrono-2FYKPJ, 20261001-110957-chrono-2FYKPJ, 20261001-205148-chrono-2FYKPJ]
 ---
 
 # Face-down green tiles
@@ -128,12 +128,14 @@ Version 3.39.1.
 | Tap a seen green | Tapped a face-down green seen earlier as the twin of a tray tile | It went straight into the tray and matched | ✅ [^s2] |
 | Hint with greens | Used a Hint on level 12 | It highlighted a green and a 3-bamboo; the green was the 3-bamboo | ✅ [^s13] |
 | Free green straight into the tray | Tapped free greens on levels 12 and 16 | Some went into the tray on the first tap (L16: 3 of 9) | ⚠️ unexplained [^s18] [^s15] |
-| Tap a locked green | Tapped greens covered by other tiles on level 12 | Noted once as "ignores taps" and later as "shows its face and stays" | not verified [^s19] [^s18] |
+| Tap a locked green | Tapped two greens covered by higher greens on level 18 | Nothing happened: both stayed face down, nothing entered the tray; a free green tapped just before flipped to a grey cat | ✅ [^s20] |
+
+> ⚠️ Previously (v3.39.1, 2026-10-01): on level 12 a tap on a covered green was noted once as "ignores
+> taps" and once as "shows its face and stays" [^s19] [^s18]. On level 18 two covered greens ignored
+> the taps [^s20]; the "peek" was probably a green that was free (inferred).
 
 ## Not verified
 
-- What tapping a locked green does: nothing, or a peek at its face [^s19]
-  [^s18].
 - Why some free greens went straight into the tray on the first tap (L12, L16), and whether they had been
   seen before.
 - Whether the face-down tiles change colour with the Classic or Vintage tile set.
@@ -157,3 +159,4 @@ Version 3.39.1.
 [^s17]: session 20261001-110957-chrono-2FYKPJ, step 71
 [^s18]: session 20261001-010125-chrono-2FYKPJ, step 64 — [video at 27:48](https://youtu.be/vc6OylgqaTw?t=1668)
 [^s19]: session 20261001-010125-chrono-2FYKPJ, step 29 — [video at 11:42](https://youtu.be/vc6OylgqaTw?t=702)
+[^s20]: session 20261001-205148-chrono-2FYKPJ, step 18

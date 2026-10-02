@@ -4,8 +4,8 @@ title: "Settings"
 type: feature
 feature: settings
 version_seen: 1.18.0
-verified_at: 2026-10-01
-sources: [20261001-013526-chrono-2FYKPJ, 20261001-022624-chrono-2FYKPJ]
+verified_at: 2026-10-02
+sources: [20261001-013526-chrono-2FYKPJ, 20261001-022624-chrono-2FYKPJ, 20261001-060942-chrono-2FYKPJ, 20261001-115413-chrono-2FYKPJ]
 ---
 
 # Settings
@@ -42,6 +42,7 @@ and no Restart [^s2].
 | [Save your progress](#save-your-progress) | Home only: sign in with Facebook or Google, or delete the account |
 | [Language](#language) | Home only: pick the game language and confirm |
 | [Feedback](#feedback) | Opens the in-app support centre "Meowdoku Support" (Home and level) |
+| [Terms and Privacy](#terms-and-privacy) | Home only: the Terms of Service and Privacy Policy pages open in the browser |
 | [Gear in a level](#gear-in-a-level) | The gear inside a level opens the in-level popup |
 | [Settings in a level](#settings-in-a-level) | The level version: the toggles, Pattern Mode, Feedback and Restart |
 | [Pattern Mode](#pattern-mode) | Level only: draws an icon on every colour region |
@@ -65,11 +66,26 @@ Facebook", "Sign in with Google" and a "Delete Account" link. None of them was t
 
 ### Language
 
-Language opens a list. English was selected (green, with a check mark). Below it are
-Japanese, Spanish, French, Deutsch and more further down, plus a Confirm button. The player closed it
-without changing the language [^s9].
+Language opens a list of 9 languages: English (selected, green, with a check mark), Japanese, Spanish,
+French, German (Deutsch), Russian, Portuguese, Korean and Turkish, the last one; each shows its own name
+with the English name under it. A Confirm button sits under the list [^s9]
+[^s15] [^s16]. The player scrolled to the end
+and closed it without changing the language [^s17].
+
+> ⚠️ Previously (v1.18.0, 2026-10-01): "Japanese, Spanish, French, Deutsch and more further down" — the
+> rest of the list was not seen then.
 
 ![Language popup: English selected; Japanese, Spanish, French, Deutsch and more below; Confirm](../img/20261001-settings-tab-language-94276b98.webp) [^s9]
+
+![Language list scrolled to the end: German, Russian, Portuguese, Korean, Turkish (last); Confirm](../img/20261002-settings-language-list-end-94946b2f.webp) [^s16]
+
+### Terms and Privacy
+
+The links **Terms of Service** (222,1120) and **Privacy Policy** (507,1120) at the bottom of the Home
+popup leave the game: each opens a page on oakevergames.com in Chrome. The Terms page says "Last
+updated: January 1, 2026" [^s18] [^s19]. `sw.py
+launch` brought the game back with Settings still open [^s20]
+[^s21]. <!-- no-frame: the pages open in another app (Chrome) with its status bar and tabs; not published -->
 
 ### Feedback
 
@@ -100,7 +116,9 @@ button. It has no Language, no Save your progress and no legal links [^s4].
 When Pattern Mode is switched ON, a toast says "Pattern Mode On" [^s5]. After that, every colour region
 of the board shows its own icon (stars, bells, paws, hearts, yarn, fish bones, sprouts, grass), and the
 colours stay [^s11] [^s14]. This is probably meant for colour-blind players (inferred). With Pattern Mode ON the 9×9 level 37 was
-played and won as usual [^s14].
+played and won as usual [^s14]. Pattern Mode stays ON until it is switched off: it was left ON from
+level 43 and was still ON on level 90 [^s22]; it was switched OFF on level 96 (575,758) and the icons went away
+[^s23].
 
 ![Pattern Mode switched ON: toast "Pattern Mode On"](../img/20261001-settings-tab-pattern-mode-c1356f1f.webp) [^s5]
 
@@ -133,12 +151,13 @@ refunded (the counters stayed 4/4/1) [^s11]. See [Ads](ads.md).
 | Playing with Pattern Mode | Level 37 (9×9) with Pattern Mode ON | Won as usual; the icons do not change the rules | [^s14] |
 | Restart | In-level Restart | Interstitial, then a reset board, 3 fish and score 0; boosters not refunded | [^s11] |
 | Feedback | Opened from the level popup | The Helpshift "Meowdoku Support" page; nothing sent | [^s13] |
-| Language | Opened from Home, closed | The list of languages; nothing changed | [^s9] |
+| Language | Opened from Home, scrolled to the end, closed | 9 languages, Turkish last; nothing changed | [^s9] [^s16] |
+| Terms and Privacy | Tapped both links in the Home popup | Each opened an oakevergames.com page in Chrome; `launch` came back to Settings | ✅ [^s18] [^s21] |
+| Pattern Mode OFF | Switched Pattern Mode OFF on level 96 | The region icons disappeared | ✅ [^s23] |
 | Save your progress | Opened from Home, closed | Facebook / Google sign-in, Delete Account; not used | [^s10] |
 
 ## Not verified
 
-- What the Terms of Service and Privacy Policy links open.
 - Whether the sound, voice and vibration toggles really change the audio and vibration (screenshots cannot
   show it).
 - Whether Feedback in the Home popup opens the same page as in a level.
@@ -157,3 +176,13 @@ refunded (the counters stayed 4/4/1) [^s11]. See [Ads](ads.md).
 [^s12]: session 20261001-022624-chrono-2FYKPJ, step 30
 [^s13]: session 20261001-022624-chrono-2FYKPJ, step 27
 [^s14]: session 20261001-022624-chrono-2FYKPJ, step 35
+
+[^s15]: session 20261001-060942-chrono-2FYKPJ, step 2 — [video at 0:31](https://youtu.be/hiHOk1whnok?t=31)
+[^s16]: session 20261001-060942-chrono-2FYKPJ, step 4 — [video at 0:50](https://youtu.be/hiHOk1whnok?t=50)
+[^s17]: session 20261001-060942-chrono-2FYKPJ, step 5 — [video at 1:00](https://youtu.be/hiHOk1whnok?t=60)
+[^s18]: session 20261001-115413-chrono-2FYKPJ, step 2 — [video at 0:30](https://youtu.be/ATvMZzri7O8?t=30)
+[^s19]: session 20261001-115413-chrono-2FYKPJ, step 4 — [video at 0:58](https://youtu.be/ATvMZzri7O8?t=58)
+[^s20]: session 20261001-115413-chrono-2FYKPJ, step 3 — [video at 0:49](https://youtu.be/ATvMZzri7O8?t=49)
+[^s21]: session 20261001-115413-chrono-2FYKPJ, step 5 — [video at 1:13](https://youtu.be/ATvMZzri7O8?t=73)
+[^s22]: session 20261001-115413-chrono-2FYKPJ, step 43 — [video at 15:13](https://youtu.be/ATvMZzri7O8?t=913)
+[^s23]: session 20261001-115413-chrono-2FYKPJ, step 75 — [video at 25:42](https://youtu.be/ATvMZzri7O8?t=1542)

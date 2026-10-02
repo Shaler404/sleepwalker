@@ -5,7 +5,7 @@ type: feature
 feature: level-chest
 version_seen: 3.39.1
 verified_at: 2026-10-01
-sources: [20260930-211039-chrono-2FYKPJ, 20260930-221457-chrono-2FYKPJ, 20260930-235817-chrono-2FYKPJ]
+sources: [20260930-211039-chrono-2FYKPJ, 20260930-221457-chrono-2FYKPJ, 20260930-235817-chrono-2FYKPJ, 20261001-063226-chrono-2FYKPJ, 20261001-110957-chrono-2FYKPJ, 20261001-205148-chrono-2FYKPJ]
 ---
 
 # Level milestone chest
@@ -30,6 +30,8 @@ after level 4 four [^s5], after level 6 six [^s2].
 
 ![Level 6 win screen ('Brilliant!'): the chest bar has 6 of 10 segments filled (one per level won), goal 'Reach Level 10'](../img/20260930-level-chest-screen-c4a93a56.webp) [^s2]
 
+![L14 win screen: the chest bar shows 4 of 10 segments toward 'Reach Level 20'](../img/20261002-l14-win-brilliant-81a92e16.webp) [^s7]
+
 ## What you can do
 
 | Tab or button | What it does |
@@ -50,7 +52,8 @@ with the goal "Reach Level 20", and the booster counters went from Hint 0 / Undo
 
 ## How it works
 
-- One segment per level won; 10 segments per chest (v3.39.1) [^s1] [^s2].
+- One segment per level won; 10 segments per chest (v3.39.1) [^s1] [^s2]. After the Level 10 chest the
+  bar counts levels won since L10: 4/10 after L14, 7/10 after L17, 8/10 after L18 [^s7] [^s8] [^s9].
 - The milestones seen are Level 10 and then Level 20, so a chest every 10 levels (the Level 20 chest
   itself is inferred, not yet reached) [^s3].
 - The Level 10 chest gave +1 Hint and +1 Undo, read from the booster counters before and after; the
@@ -61,6 +64,7 @@ with the goal "Reach Level 20", and the booster counters went from Hint 0 / Undo
 | Case | What was done | Result | Source |
 |---|---|---|---|
 | Progress | Won levels 1, 3, 4 and 6 | One segment per level won: 1, 3, 4, 6 of 10 | [^s1] [^s4] [^s5] [^s2] |
+| Toward Level 20 | Won levels 14, 17 and 18 | 4, 7 and 8 of 10: one segment per level won since L10 | [^s7] [^s8] [^s9] |
 | Level 10 | Won Level 10 (Hard), tapped "Level 11" | The chest opened: +1 Hint, +1 Undo (by the stock change); the bar reset to "Reach Level 20" | [^s3] |
 
 ## Not verified
@@ -76,3 +80,6 @@ with the goal "Reach Level 20", and the booster counters went from Hint 0 / Undo
 [^s4]: session 20260930-221457-chrono-2FYKPJ, step 39
 [^s5]: session 20260930-221457-chrono-2FYKPJ, step 60
 [^s6]: session 20260930-235817-chrono-2FYKPJ, step 41
+[^s7]: session 20261001-063226-chrono-2FYKPJ, step 31
+[^s8]: session 20261001-110957-chrono-2FYKPJ, step 41
+[^s9]: session 20261001-205148-chrono-2FYKPJ, step 72

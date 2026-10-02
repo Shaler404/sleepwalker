@@ -5,7 +5,7 @@ type: feature
 feature: boosters
 version_seen: 3.39.1
 verified_at: 2026-10-01
-sources: [20260930-203959-chrono-2FYKPJ, 20260930-211039-chrono-2FYKPJ, 20260930-214524-chrono-2FYKPJ, 20260930-221457-chrono-2FYKPJ, 20260930-225122-chrono-2FYKPJ, 20260930-235817-chrono-2FYKPJ, 20261001-010125-chrono-2FYKPJ]
+sources: [20260930-203959-chrono-2FYKPJ, 20260930-211039-chrono-2FYKPJ, 20260930-214524-chrono-2FYKPJ, 20260930-221457-chrono-2FYKPJ, 20260930-225122-chrono-2FYKPJ, 20260930-235817-chrono-2FYKPJ, 20261001-010125-chrono-2FYKPJ, 20261001-063226-chrono-2FYKPJ, 20261001-205148-chrono-2FYKPJ]
 ---
 
 # Boosters: Shuffle, Hint, Undo
@@ -37,7 +37,7 @@ stock is 0 [^s1] [^s10] [^s6]. On level 6 the bar read Shuffle 3, Hint 4, Undo 8
 |---|---|
 | [Hint](#hint) | Lights a matching pair in cyan; a hand points at a tile that blocks it |
 | [Undo](#undo) | Returns the last tray tile to its board spot |
-| [Shuffle](#shuffle) | Keeps every tile position, gives the board tiles new faces (from level 6) |
+| [Shuffle](#shuffle) | Keeps the slots of the layout and moves the tiles between them, face-down greens included (from level 6) |
 | [Stock at zero](#stock-at-zero) | At stock 0: Hint "+" offers 2 hints for a video |
 
 ### Hint
@@ -64,11 +64,20 @@ badge stays; later each use spends 1 (10 → 8 after two undos on level 4), and 
 ### Shuffle
 
 Shuffle unlocks at level 6 with no popup: the padlock is replaced by the stock badge 3 [^s2]. It keeps
-every tile position and the layout shape and gives all board tiles new faces; the tray and the combo
+the slots and the layout shape and moves the board tiles between the slots, so every slot shows a new
+face; face-down greens move too, and every green counts as unseen again [^s20] [^s21]; the tray and the combo
 are kept; each use spends 1 (3 → 2 on level 6, 2 → 1 on level 10) [^s5] [^s9]. On a Hard level 10 one
 Shuffle opened 5 pairs [^s9].
 
 ![After Shuffle on level 6: every tile in the same place with a new face; Shuffle stock 3 -> 2, tray kept](../img/20260930-boosters-tab-shuffle-84ee3bb5.webp) [^s5]
+
+![Level 15 before a Shuffle: greens in the middle, one coffee card in the tray](../img/20261002-shuffle-l15-before-84ce4fef.webp) [^s20]
+
+![The same board after the Shuffle: the slots are unchanged, but tiles and greens sit in other slots; the coffee card stays in the tray](../img/20261002-shuffle-l15-after-85c66cbf.webp) [^s20]
+
+> ⚠️ Previously (v3.39.1, 2026-09-30): "Shuffle keeps every tile position and gives the board tiles new
+> faces" [^s5]. On level 15 the face-down greens were in other slots after a shuffle [^s20], so the tiles
+> themselves move between the slots; on boards without greens both readings look the same.
 
 ![Before Shuffle on level 6: note the top-left tile faces](../img/20261001-shuffle-before-85fe2ab9.webp) [^s19]
 
@@ -81,6 +90,8 @@ When a booster's stock reaches 0 its badge becomes a red "+"; all three were at 
 level [^s6]. Tapping Hint "+" opens the popup "Free Hint" — "Watch a video to get 2 Hints." with the
 button "Get Two" and a close cross [^s7]. After the video the reward was granted and Hint could be used
 again ([rewarded ads](rewarded-ads.md)) [^s13].
+
+Undo "+" at 0 offers 2 Undos for one video and Shuffle "+" 1 Shuffle (see [rewarded ads](rewarded-ads.md)) [^s22].
 
 ![All three boosters at stock 0 show a red '+' badge instead of a number; tapping Hint '+' (circled) opens the Free Hint offer](../img/20261001-boosters-tab-at-zero-9cac62b3.webp) [^s6]
 
@@ -110,7 +121,9 @@ Version 3.39.1.
 | Hint on level 2 | Tapped Hint | A cyan pair and a hand on the blocker; 5 → 4 | [^s11] |
 | Undo stock | Two undos on level 4 | 10 → 8; combo kept | [^s12] |
 | Shuffle unlock | Started level 6 | No popup; padlock replaced by stock 3 | [^s2] |
-| Shuffle | Used on level 6 | Same positions, new faces; 3 → 2 | [^s5] |
+| Shuffle | Used on level 6 | Same slots, new faces; 3 → 2 | [^s5] |
+| Shuffle with greens | Used on level 15 | Greens and faces in other slots; tray kept | [^s20] |
+| Hint at a dead end | Tapped Hint with no free pair on L18 | Only the Shuffle button glowed; the hint was spent (2 → 1) | [^s21] |
 | Shuffle | Used on Hard level 10 | Faces reshuffled, tray unchanged; 2 → 1 | [^s9] |
 | Hint at stock 1 | Tapped Hint | The tray tile and its half-hidden twin light up; stock 1 → 0 ("+") | [^s16] |
 | Hint at 0 | Tapped "+" | "Free Hint" popup: 2 hints for a video | [^s7] |
@@ -120,7 +133,6 @@ Version 3.39.1.
 
 ## Not verified
 
-- Undo "+" and Shuffle "+" at 0: what they offer.
 - Whether the stocks refill on their own between levels or only from rewards (chest, ads).
 
 [^s1]: session 20260930-203959-chrono-2FYKPJ, step 26 — [video at 5:41](https://youtu.be/2yK_ch59JAg?t=341)
@@ -142,3 +154,6 @@ Version 3.39.1.
 [^s17]: session 20260930-214524-chrono-2FYKPJ, step 70 — [video at 10:44](https://youtu.be/sWuok8myZrQ?t=644)
 [^s18]: session 20260930-235817-chrono-2FYKPJ, step 50 — [video at 26:10](https://youtu.be/6yY68DCT4w0?t=1570)
 [^s19]: session 20260930-221457-chrono-2FYKPJ, step 82
+[^s20]: session 20261001-063226-chrono-2FYKPJ, step 59
+[^s21]: session 20261001-205148-chrono-2FYKPJ, step 24
+[^s22]: session 20261001-063226-chrono-2FYKPJ, step 64

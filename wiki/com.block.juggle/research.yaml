@@ -1,24 +1,420 @@
 # Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
 game: com.block.juggle
-version: 10.8.0
+version: 10.6.5
 play_version: 10.8.0
-play_checked: '2026-10-01T02:46:28'
+play_checked: '2026-10-01T20:09:25'
 phone_version: 10.6.5
 discovery: open
-ftue_verified: null
-progress: null
+ftue_verified: '2026-10-01'
+progress:
+  text: classic best 724, 2 games
+  value: 2.0
+  at: '2026-10-01T23:20:00'
+  session: 20261001-230945-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-01T04:13:01'
-mechanics: []
-features: []
+  chrono: '2026-10-01T23:46:03'
+mechanics:
+- id: classic
+  name: classic
+  status: studying
+  method: solver
+  levels:
+    won: 0
+    lost: 0
+    quit: 2
+  recent:
+  - level: classic game 1
+    result: quit
+    seconds: 517
+    model: opus
+  - level: classic game 2
+    result: quit
+    seconds: 489
+    model: sonnet
+  solver: solvers/com.block.juggle/classic.py
+  note: 'lab 2026-10-01 #2: touch on a tray block (bbox-centre touches on empty cells/seams
+    failed up to 13x), aim 0.3 up / 0.2 ahead, low cutoff 1.5, warm-up pull after
+    refill, memory bars failed drops, green-bevel tray fix, gameover mode via --board
+    {"mode":"gameover"}'
+features:
+- id: consent
+  name: Terms and privacy consent
+  status: documented
+  cases:
+  - id: accept-first-launch
+    text: 'First launch: Terms of Use / Privacy window with one Accept button, then the
+      Android notification prompt'
+    done: true
+    source: 20261001-200952-chrono-2FYKPJ#1
+    version: 10.6.5
+  - id: notification-prompt-after-restart
+    text: The Android notification prompt comes back after the app is restarted (denied
+      on the first launch)
+    done: true
+    source: 20261001-200952-chrono-2FYKPJ#42
+    version: 10.6.5
+  - id: legal-from-settings
+    text: Open Terms of Service and Privacy Policy from More Settings
+    done: false
+  version_seen: 10.6.5
+  page: features/consent.md
+- id: tutorial
+  name: First-launch tutorial
+  status: documented
+  cases:
+  - id: one-move-tutorial
+    text: 'Scripted board with a 2x2 hole and a hand hint; the 2x2 clears 2 rows + 2 columns
+      (+6, Excellent!) and the endless classic game starts'
+    done: true
+    source: 20261001-200952-chrono-2FYKPJ#5
+    version: 10.6.5
+  version_seen: 10.6.5
+  page: features/tutorial.md
+- id: classic
+  name: Classic endless mode
+  status: in_progress
+  cases:
+  - id: game-over
+    text: 'Reach game over: what the result screen offers (revive, ad, replay)'
+    done: false
+  - id: clear-scoring
+    text: Scoring for 1, 2, 3+ lines and combos
+    done: false
+    note: one line about +10, two lines with one piece +60 and Good! [s:20261001-200952-chrono-2FYKPJ#30]; 3+ lines
+      and combos not seen
+  - id: live-best
+    text: The best score by the crown follows the current score during play
+    done: true
+    source: 20261001-230945-chrono-2FYKPJ#63
+    version: 10.6.5
+  - id: no-ad-in-play
+    text: Play a long game and watch for ads or interruptions during play
+    done: true
+    source: 20261001-230945-chrono-2FYKPJ#63
+    version: 10.6.5
+    note: no ad, banner or revive in 724 points / about 45 placements
+  version_seen: 10.6.5
+  page: features/classic.md
+- id: settings
+  name: Settings
+  status: in_progress
+  cases:
+  - id: sound-toggle
+    text: Toggle Sound on/off
+    done: false
+  - id: bgm-toggle
+    text: Toggle BGM on/off (BGM was off by default)
+    done: false
+  - id: vibration
+    text: Toggle Vibration and change its strength with -/+
+    done: false
+  - id: more-settings
+    text: 'Open More Settings: version, contact us, share, ToS, privacy, about'
+    done: true
+    source: 20261001-200952-chrono-2FYKPJ#7
+    version: 10.6.5
+    note: 'source corrected by the dream 2026-10-02: More Settings opened at step 7, not 42'
+  - id: more-settings-rows
+    text: Open Contact Us, Share with Friends and About Us from More Settings (social links
+      lead out of the app)
+    done: false
+  version_seen: 10.6.5
+  page: features/settings.md
+- id: more-games
+  name: More Games (built-in mini-games)
+  status: in_progress
+  note: 'renamed from "More Games (cross-promo)": the entries open in-app mini-games, not store
+    links [s:20261001-200952-chrono-2FYKPJ#35]'
+  cases:
+  - id: open-each
+    text: Open each of the 8 built-in mini-games and document their loop
+    done: false
+  - id: open-sudoku
+    text: Open Sudoku from More Games and return with the back arrow
+    done: true
+    source: 20261001-200952-chrono-2FYKPJ#35
+    version: 10.6.5
+    note: in-app 6x6 Sudoku with its own tutorial and Skip
+  version_seen: 10.6.5
+  page: features/more-games.md
+- id: skins
+  name: Skins
+  status: in_progress
+  cases:
+  - id: tap-default-skin
+    text: Tap the grey Default Skin button in Settings
+    done: true
+    source: 20261001-200952-chrono-2FYKPJ#32
+    version: 10.6.5
+    note: nothing happens, the screen does not change
+  version_seen: 10.6.5
+  page: features/skins.md
+- id: ads
+  name: Interstitial ads
+  status: documented
+  cases:
+  - id: replay-interstitial
+    text: Settings > Replay shows a full-screen interstitial
+    done: true
+    source: 20261001-200952-chrono-2FYKPJ#39
+    version: 10.6.5
+  - id: stuck-end-card
+    text: Get out of an interstitial end card that has no close control
+    done: true
+    source: 20261001-200952-chrono-2FYKPJ#41
+    version: 10.6.5
+    note: no X after 30+ s, Back ignored [s:20261001-200952-chrono-2FYKPJ#40]; only an app restart cleared it, the
+      best score survived [s:20261001-200952-chrono-2FYKPJ#42]
+  - id: game-over-ad
+    text: An ad or a rewarded offer at game over
+    done: false
+  version_seen: 10.6.5
+  page: features/ads.md
+- id: replay
+  name: Replay (restart game)
+  status: in_progress
+  cases:
+  - id: replay-ad
+    text: Replay from settings restarts the game after an interstitial ad; best score
+      kept
+    done: false
+    note: 'seen only as Replay + a stuck ad + an app restart, then a new board with the best
+      kept [s:20261001-200952-chrono-2FYKPJ#42]; the new board may come from the restart'
+    version: 10.6.5
+  version_seen: 10.6.5
+  page: features/replay.md
 tasks:
 - id: analyze
-  title: Analyze the game, version 10.8.0
+  title: Analyze the game
   kind: analyze
   requires: any
   status: open
   created: '2026-09-30T20:39:36'
-  version: 10.8.0
+  version: ''
   source: external
   note: find all features and work through all user cases
+- id: update-10.8.0
+  title: Recheck the features on version 10.8.0
+  kind: update
+  requires: any
+  status: open
+  created: '2026-10-01T20:09:27'
+  version: 10.8.0
+  source: external
+  note: 'a newer version is on Google Play: update the game on the phone, then recheck
+    the documented features and look for new ones'
+- id: scout-1
+  title: 'Map the game: play until the main menu and every entry point is visible;
+    list each entry point as open (a study goal), locked with its unlock condition
+    (an unlock goal) or unclear (an experiment)'
+  kind: scout
+  requires: any
+  status: done
+  created: '2026-10-01T20:09:27'
+  source: external
+  note: 'No main menu: the game opens straight into classic endless 8x8 mode. Only
+    entry: gear -> Settings (Sound, BGM, Vibration slider, More Games with 8 built-in
+    mini-games, More Settings with version/contact/share/social/ToS/privacy/about,
+    Replay which plays an interstitial, Default Skin grey and inactive). Open -> study-classic,
+    study-settings, study-more-games; unclear -> skins-unlock, adventure-mode (splash
+    says Adventure Master), ads-cadence. Game over not reached.'
+  closed: '2026-10-01T20:21:06'
+  closed_by: 20261001-200952-chrono-2FYKPJ#42
+  new_entries: 8
+  at_progress: null
+- id: study-classic
+  title: 'Study classic mode: game-over flow, revive offer, scoring and combos'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:20:47'
+  feature: classic
+  source: session
+  note: 'two games played for score ran 517 s and 489 s without game over [s:20261001-230945-chrono-2FYKPJ#63]; reach
+    the end screen with the solver gameover mode ({"mode": "gameover"} via --board), do not
+    play for score'
+- id: study-settings
+  title: 'Study Settings: sound, BGM, vibration, More Settings, contact'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:20:47'
+  feature: settings
+  source: session
+- id: study-more-games
+  title: 'Study More Games: 8 built-in mini-games (One Line, Tic Tac Toe, Fruit Merge,
+    Water Sort, Onet, Mahjong, Sudoku, Block Slide)'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:20:47'
+  feature: more-games
+  source: session
+- id: skins-unlock
+  title: 'The Default Skin button in Settings is grey and does nothing when tapped:
+    find what unlocks skins (score, games played, days)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T20:20:48'
+  feature: skins
+  source: session
+  plan: play several classic games, check the skin button after each game over and
+    after a day; confirmed if it becomes active with a visible condition
+- id: adventure-mode
+  title: 'The splash says Adventure Master but only classic is reachable: check whether
+    an Adventure mode appears after some games or a game over'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T20:20:48'
+  feature: classic
+  source: session
+  plan: reach game over 2-3 times and look for a mode switch or a home screen; confirmed
+    if a second mode entry appears
+- id: ads-cadence
+  title: 'When interstitials show: after Replay, after game over, after N moves'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T20:20:48'
+  feature: ads
+  source: session
+  plan: note every interstitial with the action before it during 3 games
+  note: 'data so far: an interstitial after Settings > Replay [s:20261001-200952-chrono-2FYKPJ#39]; none during play in
+    724 points / about 45 placements [s:20261001-230945-chrono-2FYKPJ#63]'
+- id: ftue-tutorial
+  title: 'Record the first-launch flow: consent, notification prompt, 1-step 2x2 tutorial'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-01T20:20:48'
+  feature: tutorial
+  source: session
+  closed: '2026-10-01T20:21:00'
+  closed_by: 20261001-200952-chrono-2FYKPJ#42
+  note: 'Seen this session on a fresh install (steps 0-5): Terms/Privacy consent with
+    one Accept button, Android notification prompt, no menu, a scripted board with
+    a 2x2 hole and a hand hint; placing the 2x2 clears 2 rows + 2 columns (+6, Excellent!)
+    and the endless classic game starts'
+- id: study-consent
+  title: 'Study Terms and privacy consent: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:22:52'
+  feature: consent
+  source: external
+- id: study-skins
+  title: 'Study Skins: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-01T20:22:52'
+  feature: skins
+  source: external
+  closed: '2026-10-02T04:30:00'
+  closed_by: dream
+  note: 'nothing to walk yet: the grey Default Skin button opens nothing [s:20261001-200952-chrono-2FYKPJ#32];
+    covered by skins-unlock, which sets a new study goal once skins open'
+- id: study-ads
+  title: 'Study Interstitial ads: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:22:52'
+  feature: ads
+  source: external
+- id: study-replay
+  title: 'Study Replay (restart game): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-01T20:22:52'
+  feature: replay
+  source: external
+  note: 'reopened by the dream of 2026-10-02: Replay was only seen with a stuck ad and an app
+    restart [s:20261001-200952-chrono-2FYKPJ#39-42]; tap Replay and leave the ad without restarting'
+- id: look-monetization
+  title: 'Look for monetization: a shop, a no-ads purchase, rewarded-ad placements
+    (revive, extra pieces) and banners'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T20:23:18'
+  feature: ads
+  source: session
+  plan: play classic to game over twice; at each game over and in Settings look for
+    a shop or no-ads button, a 'watch ad' offer and a bottom banner; confirmed if
+    any such entry is seen, refuted if two game overs show none
+- id: look-retention
+  title: 'Look for retention and LiveOps: daily rewards, daily challenge, streaks,
+    leaderboards or events on the next day''s launch'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-01T20:23:18'
+  not_before: '2026-10-02T16:23:18'
+  source: session
+  plan: launch the game at least 20 h after the last session and after a game over;
+    record any popup, calendar, challenge or event entry; confirmed if a new entry
+    or popup appears, refuted if the screen is unchanged
+- id: tutorial-score-jump
+  title: Explain the score jump from 6 to 124 between the tutorial and the first Settings
+    visit
+  kind: experiment
+  requires: fresh
+  status: open
+  created: '2026-10-01T20:23:19'
+  feature: tutorial
+  source: session
+  plan: on the next fresh install take a frame after every action from the tutorial
+    until the first gear tap; confirmed if a scripted bonus or a hidden placement
+    accounts for the extra 118 points
+  note: 'likely a count-up animation: the score counter animates up after a clear and frames
+    catch it mid-count (201 with +60 still on screen, best later 261) [s:20261001-200952-chrono-2FYKPJ#30]; not proven
+    for the tutorial jump'
+- id: classic-gameover
+  title: 'Reach game over in classic: record result screen, revive offer, ads'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-01T23:18:26'
+  feature: classic
+  source: session
+  closed: '2026-10-01T23:20:30'
+  closed_by: 20261001-230945-chrono-2FYKPJ#63
+  note: duplicate of study-classic, whose title and its game-over case already cover
+    the result screen, revive offer and ads
+- id: make-classic-fast
+  title: 'Make classic fast: check the lab fixes in play (touch on a tray block, warm-up pull
+    after a refill, barred-move memory) and reach game over with the gameover mode within
+    the 5-min budget'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-02T04:30:00'
+  feature: classic
+  source: session
+  plan: 'one classic game with `solve classic --run --rounds 20 --board FILE` where FILE holds
+    {"mode": "gameover"}; count rounds whose note says "did not drop (barred)" and the time to
+    the end screen; confirmed if game over is reached in under 5 min with no repeated plan on
+    the same frame'
+  note: 'session 20261001-230945-chrono-2FYKPJ lost ~24 of 63 steps to the solver repeating one plan on an unchanged
+    frame [s:20261001-230945-chrono-2FYKPJ#14-18] [s:20261001-230945-chrono-2FYKPJ#42-52] [s:20261001-230945-chrono-2FYKPJ#57-63]'
+- id: blue-diamond
+  title: 'Is the blue diamond behind the score a "current score = best score" marker?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-02T04:30:00'
+  feature: classic
+  source: session
+  plan: in a new game below the best score, take a frame before and right after the score
+    passes the best; confirmed if the diamond appears exactly when current >= best, refuted if
+    it shows below the best
+  note: 'seen at 201/201 [s:20261001-200952-chrono-2FYKPJ#30], 403/403 [s:20261001-230945-chrono-2FYKPJ#32], 724/724 [s:20261001-230945-chrono-2FYKPJ#63]; absent at 0
+    with best 261 [s:20261001-230945-chrono-2FYKPJ#0]'

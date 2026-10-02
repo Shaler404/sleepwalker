@@ -4,8 +4,8 @@ title: "Help Center (Helpshift)"
 type: feature
 feature: help-center
 version_seen: 1.0.2
-verified_at: 2026-10-01
-sources: [20261001-035425-chrono-2FYKPJ]
+verified_at: 2026-10-02
+sources: [20261001-035425-chrono-2FYKPJ, 20261001-070939-chrono-2FYKPJ, 20261001-091349-chrono-2FYKPJ]
 ---
 
 # Help Center (Helpshift)
@@ -46,10 +46,12 @@ MeowTrail?" (Beginners Guide), "How do I complete a level?" (Gameplay) and "Why 
 | [Items](#items) | Category tab with 4 articles about the Hint and Place items and ads [^s5] |
 | [Article](#article) | Tapping a title opens the article: its text, "Was this article helpful?" and related articles [^s4] |
 | [How can I get more hints?](#how-can-i-get-more-hints) | The article "How can I get more hints?" [^s6] |
+| [Skip or close an ad](#skip-or-close-an-ad) | The Ad Issues article "How can I skip or close an ad?" [^s8] |
+| [Chat with us](#chat-with-us) | A Helpshift chat with preset problem categories and a message field [^s9] |
 | [Result](#result) | X in the header closes the Help Center and returns to Settings [^s7] |
 
-Other tabs (Beginners Guide, Gameplay, Settings, Ad Issues, Notifications), the search field and icon, and
-**Chat with us** were seen but not opened [^s2] [^s5].
+Other tabs (Beginners Guide, Gameplay, Settings, Notifications), the search field and icon were seen but
+not opened [^s2] [^s5]. Ad Issues and Chat with us were opened in later sessions [^s8] [^s9].
 
 ### Failure & Revive
 
@@ -88,6 +90,26 @@ they will guide you to free hint opportunities." [^s6] See [Hint booster](booste
 
 ![Article How can I get more hints?: a few free hints for new players, then a reward video ad for more](../img/20261001-help-center-popup-bf2f6c30.webp) [^s6]
 
+### Skip or close an ad
+
+An Ad Issues article (also under Popular articles), "Last Updated: 93d": wait a few seconds after the ad
+starts, tap the X in the top-left or top-right corner; if an ad cannot be skipped, contact support
+through the Help Center with a screenshot. It says nothing about removing ads [^s8]. System Back returns to
+the list, but the frame right after it still showed the article: the list came a few seconds later [^s13] [^s10].
+
+![Article 'How can I skip or close an ad?': wait a few seconds, then the X at the top left or top right; contact support if the ad cannot be skipped](../img/20261002-help-center-skip-ad-article-bf466c21.webp) [^s13]
+
+### Chat with us
+
+The button at the bottom of the list opens a "MeowTrail Help Center" chat: a date line, a greeting from
+"MeowTrail Support" ("Hi, how can we help you?"), "Select your problem" with Ad issue, Bug or Crash,
+Suggestion, Rules issue and Subscription issue, and a free-text field "Or enter your message" with a send
+button; "Powered by Helpshift". Nothing was sent. Back returns to the article list, Back again to
+Settings [^s9] [^s11]. The "Subscription issue" category is the only hint of a subscription; no
+subscription or remove-ads offer exists in the game [^s12].
+
+![Chat with us: greeting from MeowTrail Support, five preset problems (Ad issue to Subscription issue), a message field; nothing sent](../img/20261002-help-center-chat-form-95606805.webp) [^s9]
+
 ### Result
 
 The back arrow < in an article returns to the article list. The X on the list screen closes the Help
@@ -114,15 +136,17 @@ Center, and the game shows the Settings popup again [^s7].
 | Read the revive article | Failure & Revive → "How can I revive after failing a level?" | Revive on the fail popup → reward video → one life back, progress kept; a toast if no ad is ready | [^s4] |
 | Read the hints article | Items → "How can I get more hints?" | A few free hints at the start, then a reward video for more | [^s6] |
 | Leave | Back from the article, then X | Back on the Settings popup | [^s7] |
+| Read the skip-ad article | Ad Issues → "How can I skip or close an ad?" | Wait, then the X in a top corner; support for unskippable ads; nothing about removing ads | [^s8] |
+| Open Chat with us | Chat with us at the bottom of the list (nothing sent) | Helpshift chat: 5 preset problems and a message field | [^s9] |
 
 ## Not verified
 
-- The articles in Beginners Guide, Gameplay, Settings, Ad Issues and Notifications. Whether an Ad Issues
-  article offers to remove ads for money.
+- The articles in Beginners Guide, Gameplay, Settings and Notifications; two of the three Ad Issues
+  articles ("Why are there so many ads?", "There is inappropriate content in an ad.") [^s10].
 - "What happens if I tap Restart after failing?", "What does the Hint item do?", "Why does it say 'Ad not
   loaded'?" and "What does the Place item do?".
-- The search field and the search and chat icons. **Chat with us** was not opened, and no messages should
-  be sent.
+- The search field and the search and chat icons. What the preset chat categories lead to (no messages
+  should be sent).
 - What the Yes/No helpfulness buttons do.
 
 [^s1]: session 20261001-035425-chrono-2FYKPJ, step 4
@@ -132,3 +156,9 @@ Center, and the game shows the Settings popup again [^s7].
 [^s5]: session 20261001-035425-chrono-2FYKPJ, step 10
 [^s6]: session 20261001-035425-chrono-2FYKPJ, step 11
 [^s7]: session 20261001-035425-chrono-2FYKPJ, step 13
+[^s8]: session 20261001-070939-chrono-2FYKPJ, step 3
+[^s9]: session 20261001-091349-chrono-2FYKPJ, step 3
+[^s10]: session 20261001-070939-chrono-2FYKPJ, step 5
+[^s11]: session 20261001-091349-chrono-2FYKPJ, step 5
+[^s12]: session 20261001-100940-chrono-2FYKPJ, step 17
+[^s13]: session 20261001-070939-chrono-2FYKPJ, step 4

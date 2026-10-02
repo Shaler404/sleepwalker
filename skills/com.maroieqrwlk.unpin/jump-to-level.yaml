@@ -1,0 +1,26 @@
+name: jump-to-level
+game: com.maroieqrwlk.unpin
+description: 'From the map: Jump to Level (video) beside the current node, close the
+  ad after Reward granted, Next Level, Tap to continue; the level counts as won'
+status: candidate
+version: 241.5.1
+pre_hash: 94e225eb6b8c529d
+post_hash: dab5d22dc324da25
+steps:
+- tap:
+  - 0.3068
+  - 0.6841
+  wait: 33
+- tap:
+  - 0.063
+  - 0.0689
+  wait: 3
+- tap:
+  - 0.4986
+  - 0.8023
+  wait: 3
+- tap:
+  - 0.4986
+  - 0.7581
+  wait: 4
+source: 20261001-054205-chrono-2FYKPJ#53-56

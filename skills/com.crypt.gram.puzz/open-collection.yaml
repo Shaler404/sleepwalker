@@ -1,0 +1,14 @@
+name: open-collection
+game: com.crypt.gram.puzz
+description: Open Collection (3rd bottom button) from the main screen; X top right
+  closes it
+status: candidate
+version: 3.6.1
+pre_hash: ecce2591933193b3
+post_hash: 852a2a6a7a7175b5
+steps:
+- tap:
+  - 0.6192
+  - 0.8781
+  wait: 1.5
+source: 20261001-050941-chrono-2FYKPJ#84-84

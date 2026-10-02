@@ -1,0 +1,18 @@
+name: open-help-center
+game: com.oakever.akari
+description: 'Open the Help Center (Helpshift) from Home: gear, then the orange Help
+  Center button'
+status: candidate
+version: 1.0.2
+pre_hash: be3ed0c1c16b0e2e
+post_hash: b58b60c14b651fe5  # the settled article list after a 3 s wait (the frame right after the tap is a loading screen)
+steps:
+- tap:
+  - 0.911
+  - 0.0802
+  wait: 1.5
+- tap:
+  - 0.4986
+  - 0.7738
+  wait: 3.0
+source: 20261001-091349-chrono-2FYKPJ#1-2

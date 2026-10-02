@@ -5,7 +5,7 @@ type: feature
 feature: core-level
 version_seen: 241.3.1
 verified_at: 2026-10-01
-sources: [20260930-192115-chrono-2FYKPJ, 20260930-201034-chrono-2FYKPJ, 20261001-054205-chrono-2FYKPJ]
+sources: [20260930-192115-chrono-2FYKPJ, 20260930-201034-chrono-2FYKPJ, 20261001-054205-chrono-2FYKPJ, 20261001-220948-chrono-2FYKPJ]
 ---
 
 # Core level: pulling pins
@@ -16,7 +16,7 @@ The level is the whole game: a container of balls held in place by pins, and a c
 pulls the pins one by one so that coloured balls fall into the cup and fill it to 100% [^s3] [^s4]. Grey
 balls are the obstacle: they turn coloured only when coloured balls touch them, and the colour spreads
 through the whole pile [^s5]; a grey ball that reaches the cup unpainted loses the level [^s6]. A win
-pays coins and fills the gift bar; a loss offers a retry [^s6] [^s8].
+pays coins and fills the gift bar; a loss offers a retry, or a skip of the level for a video [^s6] [^s8] [^s22].
 
 ## Where to find it
 
@@ -44,7 +44,8 @@ level (level 7 here) [^s2].
 | [Pin ring](#pin-ring) | A tap on a pin's ring pulls the pin out; the only move in the game |
 | [Restart](#restart) | Asks for confirmation, then an interstitial ad and a fresh board |
 | [Win](#win) | The cup is full: coins, gift progress, Tap to continue |
-| [Defeat](#defeat) | A grey ball fell into the cup: tip, Skip for a video, Retry |
+| [Defeat](#defeat) | A grey ball fell into the cup or balls fell out: tip, Skip for a video, Retry |
+| [Skip](#skip) | On the defeat screen: a rewarded video, then the level counts as passed |
 
 ### Pin ring
 
@@ -90,12 +91,32 @@ plays an interstitial of about 60 s with no close button, then the level from 0%
 
 ![Defeat screen: So Close! Level failed!, tip about grey balls, cross-promo card, Skip for a video and Retry (circled)](../img/20260930-core-level-tab-defeat-a7f08f78.webp) [^s6]
 
+The heading and the tip follow the loss: on level 27 (v241.5.1) the screen read "Pretty Close! Level
+failed!" with the tip "Balls fell out of the level! Avoid gaps to protect your balls from falling"
+[^s20]. When the player has a win streak, a [Watch your streak!](win-streak.md) popup comes before the
+defeat screen; the defeat screen appears after **No, thanks** [^s20] [^s23].
+
+### Skip
+
+**Skip** (green, with a video icon) on the defeat screen plays a rewarded video of about 25 s; it can be
+closed once the ad shows "Reward granted" [^s22]. After it the game goes on exactly as after a win: the
+league screen (league pins +1, 251 to 252; rank 723 to 717) with **Next Level!**, then "Impressive!
+Level completed!" with +18 coins and the gift bar (42%), and the map with the next level current (v241.5.1)
+[^s21] [^s22].
+
+![Defeat on level 27: Pretty Close! Level failed!, tip 'Balls fell out of the level!', Skip for a video (circled) and Retry](../img/20261001-core-level-tab-skip-b3708f70.webp) [^s20]
+
+![After Skip: 'Level completed!', +18 coins (3503->3521), gift to 42%](../img/20261001-core-level-result-bc3cc2c3.webp) [^s21]
+
 ## How it works
 
 - Only a tap on a pin's ring moves it [^s4].
 - Grey balls are painted by touching coloured balls, and the paint spreads through the pile [^s5]; a
   grey ball reaching the cup unpainted is an instant loss [^s6].
 - Restart and Retry both cost an interstitial ad [^s10] [^s11].
+- Skip on the defeat screen costs one rewarded video and pays like a win: coins, one league pin, gift
+  progress, and the next level opens (v241.5.1) [^s21] [^s22]. A win streak is lost first unless it is
+  kept on the streak popup [^s22] [^s23].
 - Progress seems to be saved only after the reward screen: level 7, cut off by an ad in the previous
   session, had to be played again (inferred, unverified) [^s18]. On v241.5.1 the same happened four
   times in one session: a post-win ad that could not be closed forced a game restart, and the restart
@@ -110,6 +131,7 @@ Coins for a win (v241.3.1):
 | 5 / 6 / 7 (hard) | +23 / +18 / +24 | [^s14] [^s15] [^s16] |
 | 7 (replay, session 2) | +24 | [^s8] |
 | 8 | +19 | [^s17] |
+| 27 (passed with Skip, v241.5.1) | +18 | [^s21] |
 
 ## Cases
 
@@ -119,12 +141,12 @@ Coins for a win (v241.3.1):
 | Defeat | Opened the way to the cup before the greys were painted (level 7) | "So Close! Level failed!", tip, cross-promo, Skip (video), Retry; no continue for coins | [^s6] |
 | Retry | Retry on the defeat screen | About 60 s interstitial with no close button, then the level from 0% | [^s11] |
 | Restart button | Restart in a level | Confirmation dialog; Restart → interstitial → fresh board | [^s9] [^s10] |
+| Skip for a video | Lost level 27 on purpose, No, thanks on the streak popup, Skip on the defeat screen (v241.5.1) | Rewarded video, then league pin +1, +18 coins, gift 42%, the map moved to level 28 | [^s21] [^s22] |
 | Post-win ad without close | Restarted the game during the ad (v241.5.1, 4 times) | The level index went back to the level just won; coins, keys and gift % kept | [^s19] |
 
 ## Not verified
 
 - Defeat by a bomb reaching the cup.
-- Skip for a video on the defeat screen: does the level count, is the reward paid.
 - Post-win ad without close: the loss of the level completion on restart — re-check on another device
   or network.
 
@@ -146,5 +168,9 @@ Coins for a win (v241.3.1):
 [^s17]: session 20260930-201034-chrono-2FYKPJ, step 67 — [video at 20:19](https://youtu.be/JGEX3-Rfkdw?t=1219)
 [^s18]: session 20260930-201034-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/JGEX3-Rfkdw?t=0)
 [^s19]: session 20261001-054205-chrono-2FYKPJ, step 51
+[^s20]: session 20261001-220948-chrono-2FYKPJ, step 3 — [video at 1:10](https://youtu.be/cPj7O98vvl0?t=70)
+[^s21]: session 20261001-220948-chrono-2FYKPJ, step 7 — [video at 3:15](https://youtu.be/cPj7O98vvl0?t=195)
+[^s22]: session 20261001-220948-chrono-2FYKPJ, step 8 — [video at 3:41](https://youtu.be/cPj7O98vvl0?t=221)
+[^s23]: session 20261001-220948-chrono-2FYKPJ, step 2 — [video at 0:50](https://youtu.be/cPj7O98vvl0?t=50)
 
 [^s12]: session 20260930-201034-chrono-2FYKPJ, step 55 — [video at 16:02](https://youtu.be/JGEX3-Rfkdw?t=962)

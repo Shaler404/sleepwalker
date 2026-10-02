@@ -4,8 +4,8 @@ title: Quote Race
 type: feature
 feature: quote-race
 version_seen: 3.6.1
-verified_at: 2026-10-01
-sources: [20261001-020937-chrono-2FYKPJ, 20261001-050941-chrono-2FYKPJ, 20261001-071926-chrono-2FYKPJ, 20261001-092740-chrono-2FYKPJ, 20261001-114433-chrono-2FYKPJ]
+verified_at: 2026-10-02
+sources: [20261001-020937-chrono-2FYKPJ, 20261001-050941-chrono-2FYKPJ, 20261001-071926-chrono-2FYKPJ, 20261001-092740-chrono-2FYKPJ, 20261001-114433-chrono-2FYKPJ, 20261001-190315-chrono-2FYKPJ, 20261001-192245-chrono-2FYKPJ, 20261001-224924-chrono-2FYKPJ]
 ---
 
 # Quote Race
@@ -108,6 +108,12 @@ PLAY at the bottom opens the next main level (the one START/CONTINUE on the main
   hours later [^s2] [^s4], then they stopped: they did not move during the session in which the player
   won levels 9–14 [^s11], and Lincoln still had 7, the others 6, at 2h 24m left [^s7].
 - The event lasted about 12 hours: 11h 59m at the start, 2h 25m about 9.5 hours later [^s8] [^s1].
+- When the race ran out before the player reached 10 levels (stopped at 9, 1st), the next launch showed
+  a QUOTE RACE popup "Finished" / "Good luck next time" with OK and an X; OK closed it, no reward was
+  given, and the race widget was gone from the main screen [^s20]
+  [^s21].
+
+![Quote Race popup on launch after the race ran out at 9 of 10 levels: 'Finished', 'Good luck next time', OK; no reward](../img/20261002-quote-race-finished-d13f6a25.webp) [^s20]
 
 | What (v3.6.1) | Value | Source |
 |---|---|---|
@@ -129,25 +135,31 @@ PLAY at the bottom opens the next main level (the one START/CONTINUE on the main
 | Main-screen widget on the right (laurel badge with the rank and a timer) opens the race screen | Tapped the laurel badge | Race screen: Me 9 levels, 1st, 2h 24m left | [^s7] |
 | Daily Challenge counts | Won the Daily Challenge of October 1 | Race 7 → 8 levels, 1st, "2 more to win" | [^s16] |
 | Secret level counts | Won the secret level | Race 9 levels, "1 more to win" | [^s17] |
+| The race runs out before 10 levels | Launched the game after the timer ended, at 9 of 10 levels | ✅ "Finished / Good luck next time" popup, OK, no reward | [^s20] [^s21] |
 | Finish 10 levels: placement and reward | — | not verified | |
 | Share arrow on the win screen quote card | — | not verified | |
 
 ## Not verified
 
-- The finish: the screen at 10 levels, the final placement and what the chest gives; the 10th level
-  (level 16) was not reached because interstitials blocked it [^s19].
-- What happens when the timer ends without a winner, and whether a new race starts after this one.
+- The finish: the screen at 10 levels, the final placement and what the chest gives. The 10th level
+  (level 16) loaded three times after the skip icon + Back on its interstitial, but each of those
+  sessions ended right after the board loaded, before the level was played
+  [^s22] [^s23] [^s24].
+  > ⚠️ Previously (v3.6.1, 2026-10-01): "the 10th level (level 16) was not reached because interstitials
+  > blocked it" [^s19].
+- Whether a new race starts after this one, and when (no race widget on the main screen at the next
+  sessions [^s25]).
 - Whether the rivals' progress follows a schedule (they jumped to 6–7 between sessions, then stood still).
 - The home button of the race screen (presumably back to the main screen).
 - The share arrow on the win screen's quote card.
 
-[^s1]: session 20261001-114433-chrono-2FYKPJ, step 0
+[^s1]: session 20261001-114433-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/orHIc1UWwXE?t=0)
 [^s2]: session 20261001-020937-chrono-2FYKPJ, step 2 — [video at 0:48](https://youtu.be/UqLGP_sLnX8?t=48)
 [^s3]: session 20261001-020937-chrono-2FYKPJ, step 1 — [video at 0:38](https://youtu.be/UqLGP_sLnX8?t=38)
 [^s4]: session 20261001-050941-chrono-2FYKPJ, step 52 — [video at 13:41](https://youtu.be/0QFSEGBnZG8?t=821)
 [^s5]: session 20261001-071926-chrono-2FYKPJ, step 16 — [video at 3:37](https://youtu.be/TiPdn57GNJY?t=217)
 [^s6]: session 20261001-071926-chrono-2FYKPJ, step 17 — [video at 3:44](https://youtu.be/TiPdn57GNJY?t=224)
-[^s7]: session 20261001-114433-chrono-2FYKPJ, step 1
+[^s7]: session 20261001-114433-chrono-2FYKPJ, step 1 — [video at 0:28](https://youtu.be/orHIc1UWwXE?t=28)
 [^s8]: session 20261001-020937-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/UqLGP_sLnX8?t=0)
 [^s9]: session 20261001-020937-chrono-2FYKPJ, step 3 — [video at 0:57](https://youtu.be/UqLGP_sLnX8?t=57)
 [^s10]: session 20261001-050941-chrono-2FYKPJ, step 53 — [video at 14:07](https://youtu.be/0QFSEGBnZG8?t=847)
@@ -158,5 +170,12 @@ PLAY at the bottom opens the next main level (the one START/CONTINUE on the main
 [^s15]: session 20261001-071926-chrono-2FYKPJ, step 24 — [video at 7:19](https://youtu.be/TiPdn57GNJY?t=439)
 [^s16]: session 20261001-071926-chrono-2FYKPJ, step 36 — [video at 13:29](https://youtu.be/TiPdn57GNJY?t=809)
 [^s17]: session 20261001-071926-chrono-2FYKPJ, step 57 — [video at 25:36](https://youtu.be/TiPdn57GNJY?t=1536)
-[^s18]: session 20261001-092740-chrono-2FYKPJ, step 3
-[^s19]: session 20261001-114433-chrono-2FYKPJ, step 2
+[^s18]: session 20261001-092740-chrono-2FYKPJ, step 3 — [video at 0:49](https://youtu.be/g7StIT6Li9U?t=49)
+[^s19]: session 20261001-114433-chrono-2FYKPJ, step 2 — [video at 0:39](https://youtu.be/orHIc1UWwXE?t=39)
+
+[^s20]: session 20261001-190315-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/UgPM48lteCw?t=0)
+[^s21]: session 20261001-190315-chrono-2FYKPJ, step 1 — [video at 0:42](https://youtu.be/UgPM48lteCw?t=42)
+[^s22]: session 20261001-092740-chrono-2FYKPJ, step 9 — [video at 4:32](https://youtu.be/g7StIT6Li9U?t=272)
+[^s23]: session 20261001-114433-chrono-2FYKPJ, step 18 — [video at 8:02](https://youtu.be/orHIc1UWwXE?t=482)
+[^s24]: session 20261001-192245-chrono-2FYKPJ, step 17 — [video at 7:58](https://youtu.be/bp2LGsK-mEE?t=478)
+[^s25]: session 20261001-224924-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/RSACUWOF_ak?t=0)
