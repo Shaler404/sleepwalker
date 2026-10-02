@@ -53,6 +53,11 @@ Goal and task kinds:
   - 4 (hard limit) — set tasks for the unfinished work and `end`;
   - 6 (the owner is taking the phone) — no more actions on the phone. Add tasks for the unfinished
     work (`task add` works without the phone) and immediately `end --status interrupted`.
+
+  Every refused or failed command — a wrong argument, a refusal, a timeout — is logged as an `error`
+  step of the session (the command without its `--why`, the message, the seconds), and the dream counts
+  them (`sw.py stats`: `errors`, `error_minutes`). Read the message and fix the command once; do not
+  retry it unchanged.
 - You write only to `state/<game>/progress.md`, `inbox.md`, `playbook.md` and `solvers/*.py`.
   `sw.py` maintains everything else for you.
 - **Every phone action goes through `sw.py`; never call `adb` yourself.** `sw.py` logs each step for the
@@ -114,7 +119,8 @@ them: no level is played just to play. Each goal says when it is done:
     ("Leagues open after the first event?") or an unlock goal with your best estimate in `--note`;
   - unclear (a badge, a timer, an icon without a label) → an experiment.
 
-  Close it with `task done scout-N --new-entries <entry points that were new> --note "what you mapped"`.
+  Close it with `task done scout-N --new-entries <entry points that were new> --note "what you mapped"`:
+  the count, or the new entry points by name, comma-separated (`--new-entries "Shop,Leagues"`).
 - **`unlock`** — play levels toward the target (the level cycle below), nothing else. When the target
   is reached, check that the feature opened, `mark` its entry point and `task done`: its study goal
   appears by itself. If the feature opened earlier or later than the target, say so in `--note`.
@@ -130,9 +136,9 @@ them: no level is played just to play. Each goal says when it is done:
   `sw.py gate lives --after-minutes 30 --note "0/5 lives, +1 every 30 min"` (types: energy, lives,
   timer, content, paywall, other; or `--at <ISO>`). Unlock goals wait; do the goals that need no
   progress, or end the session. `sw.py gate clear` if it opened earlier. Never wait a timer out with
-  `wait`: one call sleeps at most 60 s whatever you ask for, the screen dims after a few idle minutes
-  and the next tap fails with exit 3 (Meowdoku 223249: 13 waits, 12 minutes, then blocked). A check
-  that needs time is a task with `--after-hours` or `--at`.
+  `wait`: one call sleeps at most 60 s whatever you ask for (the reply says `asked` and `capped`), the
+  screen dims after a few idle minutes and the next tap fails with exit 3 (Meowdoku 223249: 13 waits,
+  12 minutes, then blocked). A check that needs time is a task with `--after-hours` or `--at`.
 - **Anything you notice outside your goals** — register it (`feature`, `case`, `task add`) and move
   on. The post-session review turns it into goals.
 - After each milestone record where you are: `sw.py progress "level 12" --value 12` (new features
@@ -228,19 +234,21 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
   broken mechanic is not yours to learn: write what you see into the playbook, `level end quit`, and
   `end --status handoff`. The strong model takes the game over right away.
 - Unsure what to do on a screen? `sw.py ask "question"` gets one-shot advice from a stronger model on
-  the last screenshot. It beats trying moves at random, but it costs 25–120 s and can time out at
-  180 s with nothing (twice in Pull the Pin): at most one `ask` per level or per stuck screen. The
-  answer is a hypothesis: check it with one tap before building on it (in Vita Mahjong the
-  consultant's reading of the green tiles was wrong; in Cryptogram it advised playing the ad, which
-  the rules forbid).
+  the last screenshot. It beats trying moves at random, but it costs 25–120 s and gives up after 90 s
+  with nothing (`consult.timeout_s`; two waits of 180 s in Pull the Pin gave nothing): at most one
+  `ask` per level or per stuck screen. The answer is a hypothesis: check it with one tap before building
+  on it (in Vita Mahjong the consultant's reading of the green tiles was wrong; in Cryptogram it advised
+  playing the ad, which the rules forbid; the consultant is now told the rules).
 
 1. Loop outside levels (menus, features, popups): frame → one action → the reply has a new frame →
    open it and compare with what you expected.
-   - `tap X Y --why "what I expect"`: X, Y are pixels of the last frame you got, whatever its size
-     (a `--hi` frame is larger than a normal one). Never convert coordinates between frames. Right
+   - `tap X Y --why "what I expect"` (or `tap X,Y`): X, Y are pixels of the last frame you got, whatever
+     its size (a `--hi` frame is larger than a normal one). Never convert coordinates between frames. Right
      after the kind of frame changes (a `--hi` frame after normal ones, or back) a tap needs
      `--frame <shot_n>` of the frame you read the coordinates from; without it the tap is refused.
-   - `swipe X1 Y1 X2 Y2 --why …`, `key back --why …`, `text "…" --why …`, `wait SECONDS`.
+     `--why` takes several words with or without quotes.
+   - `swipe X1 Y1 X2 Y2 --why …`, `key back --why …`, `text "…" --why …`, `wait SECONDS` (at most 60);
+     `shot`, `wait` and `launch` take an optional `--why`.
    - `taps "X,Y X,Y …" --why …` — several moves you already know, in one call.
    - `launch` — bring the game back if something else opened (an ad took you to a browser or store).
    - **An ad or an overlay that does not close** — in this order, with a look at the frame after
@@ -307,7 +315,8 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
      screen and state, and where the frame goes on the feature's page: `entry` (the screen with the
      button that opens it; `--at X,Y` the button, it gets circled), `screen` (the feature itself),
      `tab:<name>` (each tab or sub-screen), `popup`, `result`, `other`. A study goal marks at least the
-     entry, the screen and every tab. Popups and offers are content: `mark` first, then close;
+     entry, the screen and every tab. Popups and offers are content: `mark` first, then close. A frame
+     you passed already: `mark … --frame <shot_n>` marks that frame instead of the last one;
    - `clip begin "title"` … `clip end "what it shows"` — key moments, up to 20 seconds.
 5. Stop when the session's tasks are done, the budget is used up (`warnings`), you are stuck or the
    game crashed. Turn everything unfinished into tasks.

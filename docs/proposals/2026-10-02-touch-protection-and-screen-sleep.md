@@ -1,9 +1,9 @@
 # Touch protection and screen sleep end sessions with no record of the failed tap
 
 Status: proposed by the dream (chrono, 2026-10-02). Change in `harness/sw.py` (`cmd_start`, `guard`, `cmd_wait`,
-`finish`) and `local.yaml` (`android.stay_awake`). The missing step record is part of
-`2026-10-01-failed-commands-logged.md` (every refused command becomes an `error` step); this proposal adds what
-the harness should do about the phone.
+`finish`) and `local.yaml` (`android.stay_awake`). The missing step record is done: every refused command,
+exit 3 included, is an `error` step now (`log_refusal` in `sw.py`); this proposal adds what the harness should
+do about the phone, and the touch-protection details of point 2 on top of that step.
 
 ## The problem
 

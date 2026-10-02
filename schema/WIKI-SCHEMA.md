@@ -253,7 +253,9 @@ global `research.yaml` (`sw.py snapshot`), and `sw.py render` rebuilds `tasks.md
 ## 6. Skills
 
 `skills/<game>/<name>.yaml` is a macro for moving between screens. It is created from a transcript
-with `sw.py skill new`: steps in screen fractions, pHash of the screen before and after.
+with `sw.py skill new`: steps in screen fractions, pHash of the screen before and after. Each step's
+`wait` is the time the transcript took before its next action (at most 60 s; the last step: its settle
++ 0.5 s); `--wait STEP:SECONDS` sets single steps.
 
 ```yaml
 name: open-shop
@@ -261,16 +263,18 @@ description: Open the shop from the level map
 status: candidate        # candidate → verified (3 successes in a row) → broken (2 failures or a version change)
 version: 241.3.1
 pre_hash: b699809d63993ecc
+pre_region: [0.85, 0.03, 1.0, 0.12]   # optional: pre_hash is of this part of the frame (a control on a changing screen)
 post_hash: 8f9df0487398269d
 steps:
 - tap: [0.934, 0.052]
-  wait: 1.5
+  wait: 3.5
 source: 20261001-091500-chrono-FYKPJ#12-15
 ```
 
-`sw.py skill run` runs a skill only if the screen matches `pre_hash`, and counts a success only if
-the screen matches `post_hash` at the end. Results accumulate in `state/<game>/skills.jsonl`; the
-dream promotes and demotes skills based on them.
+`sw.py skill run` runs a skill only if the screen (or its `pre_region`) matches `pre_hash`, and counts
+a success only if the screen matches `post_hash` at the end. Results accumulate in
+`state/<game>/skills.jsonl` with `waited_s`, the sum of the waits; the dream promotes and demotes
+skills based on them and shortens the waits of slow ones.
 
 ## 7. How knowledge stays current
 
