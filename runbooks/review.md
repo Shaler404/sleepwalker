@@ -56,4 +56,7 @@ Append a block to `state/<game>/reviews.md`:
 - Blockers: what slowed the session down
 ```
 
+Last, publish the game's live tables to the Wiki tab (the players plan from this live view; the
+repository's copy comes with the nightly dream): `python harness/sw.py wiki-live <game>`.
+
 The last reply is one line: the game, goals closed, goals added, discovery.
