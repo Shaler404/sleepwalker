@@ -1,10 +1,13 @@
 """Shared test helpers: the repository root, a scratch folder, synthetic phone frames."""
+import hashlib
 import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TMP = Path(tempfile.gettempdir()) / "sleepwalker-tests"
-TMP.mkdir(exist_ok=True)
+# a scratch folder per checkout: worktrees that run their tests at the same time do not share or delete each
+# other's test state (the suites rmtree their folders at the start)
+TMP = Path(tempfile.gettempdir()) / "sleepwalker-tests" / hashlib.sha1(str(ROOT).lower().encode()).hexdigest()[:8]
+TMP.mkdir(parents=True, exist_ok=True)
 
 
 def frames_dir() -> Path:
