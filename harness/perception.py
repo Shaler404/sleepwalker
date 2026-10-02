@@ -93,6 +93,28 @@ def is_same_screen(a: str | None, b: str | None, threshold: int = 10) -> bool:
     return bool(a is not None and b is not None and hash_distance(a, b) <= threshold)
 
 
+STATUS_BAR = 0.04  # the top of the frame: the clock and notification icons change there, not the game
+
+
+def small_gray(img: Image.Image, top: float = STATUS_BAR) -> Image.Image:
+    """A small grayscale copy of the game area (90 px on the short edge, without the status bar)."""
+    g = img.convert("L")
+    g = g.crop((0, round(g.height * top), g.width, g.height))
+    k = 90 / min(g.size)
+    return g.resize((max(1, round(g.width * k)), max(1, round(g.height * k))))
+
+
+def changed_share(a: Image.Image, b: Image.Image) -> float:
+    """The share of the game area (0..1) whose pixels changed noticeably between two frames. pHash moves by
+    2–10 bits when a batch removes a few mahjong tiles, so the hash alone called a board that was being won
+    "unchanged" for 25 steps (Vita Mahjong 20261001-110957, 2026-10-01); this sees a single tile go."""
+    from PIL import ImageChops
+
+    ta, tb = small_gray(a), small_gray(b.resize(a.size) if b.size != a.size else b)
+    changed = ImageChops.difference(ta, tb).point(lambda v: 255 if v > 25 else 0).histogram()[255]
+    return round(changed / (ta.width * ta.height), 4)
+
+
 # --- OCR ------------------------------------------------------------------
 
 def ocr(img: Image.Image) -> list[dict]:

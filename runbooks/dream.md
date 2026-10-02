@@ -71,7 +71,9 @@ in `project.yaml`), no more than 5 at a time
   `state/<game>/inbox.md`, `<worktree>/wiki/<game>/research.yaml` and the feature pages. If the
   session's `raw` is deleted — only `inbox.md` and the session's line in `state/<game>/sessions.jsonl`.
   A `youtube` id in `session.json` next to a `youtube: uploadLimitExceeded` warning in `steps.jsonl` is
-  normal: `sw.py gc` uploads the original later. It is not a contradiction to report;
+  normal: `sw.py gc` uploads the original later. It is not a contradiction to report. Why a session
+  was blocked: `blocked_reason` in `session.json` and the `error` steps (a touch-protection refusal
+  carries the brightness, the wakefulness and whether the screen had dimmed);
 - what to return, as lists, each item with its source steps:
   - **features** — per feature: how it works, which cases were verified and how they ended, numbers
     (prices, timers, rewards), what is not verified yet; corrections to the map (duplicates, renames);
@@ -126,10 +128,11 @@ in `project.yaml`), no more than 5 at a time
   - Promotion and demotion — from `state/<game>/skills.jsonl`: `verified` — 3 successful runs in a
     row on the current version; `broken` — 2 failures in a row or a failure after a version change.
 - **Speed.** `python harness/sw.py stats <game>` — append a line to `agent/metrics.md`: date,
-  machine, sessions, steps per closed case, share of steps without a screen change, skills ok/fail,
-  typical level time per mechanic, moves with no level open (`moves_outside_level`) and repeated steps
-  (`repeated_steps`: the same tap or solver plan on an unchanged screen). Models are not compared or
-  changed here: they are chosen by hand with a benchmark (`runbooks/onboard.md`).
+  machine, sessions, steps per closed case, share of steps without a screen change (and with only a
+  small one, `small_change_rate`), skills ok/fail, typical level time per mechanic, moves with no level
+  open (`moves_outside_level`) and repeated steps (`repeated_steps`: the same tap or solver plan on an
+  unchanged screen). Models are not compared or changed here: they are chosen by hand with a benchmark
+  (`runbooks/onboard.md`).
   A mechanic whose levels stay over the budget gets a lesson or a task "Make <mechanic> fast:
   <idea>" (a solver, a heuristic).
   If the numbers do not improve, find out why (no route, a skill fails) and fix the route or the
