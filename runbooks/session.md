@@ -226,7 +226,8 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
   mechanic as above until its levels take less than the budget, then advance.
 - `play` — you are the fast model. Play mastered mechanics by the playbook and verify cases. A new or
   broken mechanic is not yours to learn: write what you see into the playbook, `level end quit`, and
-  `end --status handoff`. The strong model takes the game over right away.
+  `end --status handoff --to <mechanic>`. The strong model takes the game over right away, and its brief
+  names the mechanic.
 - Unsure what to do on a screen? `sw.py ask "question"` gets one-shot advice from a stronger model on
   the last screenshot. It beats trying moves at random, but it costs 25–120 s and can time out at
   180 s with nothing (twice in Pull the Pin): at most one `ask` per level or per stuck screen. The
@@ -315,7 +316,8 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
 ## 4. Finish
 
 1. `sw.py end --status ok|stuck|crashed|blocked|interrupted|handoff --summary "2–3 sentences"`
-   (`handoff` — the play model met gameplay to learn; an open level is recorded as `quit`).
+   (`handoff --to <mechanic>` — the play model met gameplay to learn; an open level is recorded as `quit`;
+   without `--to` the session's last level of a mechanic that is not mastered is taken).
 2. Rewrite `state/<game>/progress.md` briefly:
    - which tasks were closed and which were set;
    - where you stopped;

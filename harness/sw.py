@@ -48,7 +48,7 @@ The lab: making gameplay fast without the phone (runbooks/lab.md)
                                          advancing is blocked (energy, lives, timer, content, paywall) until then
   discovery open|closed                  whether all sections of the game have been found
   skill list | skill run NAME --why ...
-  end --status ok|stuck|crashed|blocked|interrupted|handoff --summary "..."
+  end --status ok|stuck|crashed|blocked|interrupted|handoff --summary "..." [--to MECHANIC (a handoff)]
 Knowledge
   games                                  games on the phones vs games.yaml: what is listed, what to add
   research GAME                          tasks and feature map: from the wiki + this machine's new journal entries
@@ -684,7 +684,8 @@ def level_warnings(cur: dict, info: dict) -> list[str]:
                     "solved, otherwise level end lost and go on (a benchmark slot never hands off)"]
         return [f"level over {pl['level_budget_min']} min, the time a human needs: the method is too slow. If the level "
                 "is nearly solved, finish it; then change the method (rules and a solver in the playbook), not the "
-                "moves. As the play model: sw.py mechanic <id> --status broken, then end --status handoff"]
+                f"moves. As the play model: sw.py mechanic {lv['mechanic']} --status broken, then end --status handoff "
+                f"--to {lv['mechanic']}"]
     if (now - lv["plan_t"]) / 60 >= pl["level_rethink_min"] and lv.get("rethink_for") != lv["plan_t"]:
         lv["rethink_for"] = lv["plan_t"]
         return [f"{pl['level_rethink_min']} min on this plan: stop trying moves. What blocks you? Re-read the board, "
@@ -1255,14 +1256,34 @@ def research_mode(view: dict, now: float) -> tuple[str, str]:
                      "goal needs; register anything new you notice as a feature or a goal, do not pursue it now")
 
 
-def model_role(view: dict, ready: list[dict]) -> tuple[str, str]:
-    """Which model plays: study (strong) while the game has gameplay to learn, play (fast) once every
-    known mechanic is mastered and for checks and surveys."""
-    if not {t["kind"] for t in ready} & {"analyze", "update", "scout", "unlock", "experiment"}:
-        return "play", "checks and studies: no gameplay to learn in this session"
+# Task kinds whose work plays levels. Follow-ups, replays and FTUE checks are in it: in Vita Mahjong
+# (2026-10-01, 204654 and 211823) three follow-ups that each needed a level won went to the fast model while
+# core-match was broken, and it handed off after 2.5-3.7 min twice in one evening.
+LEVEL_KINDS = {"analyze", "update", "scout", "unlock", "experiment", "ftue", "replay", "followup"}
+
+
+def last_session(game: str) -> dict:
+    return (read_jsonl(STATE() / game / "sessions.jsonl") or [{}])[-1]
+
+
+def model_role(view: dict, ready: list[dict], last: dict | None = None) -> tuple[str, str]:
+    """Which model plays: study (strong) while the game has gameplay to learn and the tasks play levels,
+    play (fast) once every known mechanic is mastered and for menu-only work (studies, surveys, dailies).
+    The game's last session handed off: the strong model takes the next one, unless the mechanic the
+    handoff named is mastered by now."""
+    if (last or {}).get("status") == "handoff":
+        mid = last.get("handoff_to")
+        m = find_mechanic(view, mid, create=False) if mid else None
+        if not m or m.get("status") != "mastered":
+            return "study", (f"handoff from {last['id']}: {mid} is {m.get('status') if m else 'new'}" if mid else
+                             f"handoff from {last['id']}: the fast model met gameplay to learn")
+    kinds = {t["kind"] for t in ready}
     todo = [m for m in view["mechanics"] if m.get("status") in ("studying", "broken")]
-    if todo:
-        return "study", "gameplay to learn: " + ", ".join(f"{m['id']} ({m['status']})" for m in todo)
+    if todo and kinds & LEVEL_KINDS:
+        return "study", ("gameplay to learn: " + ", ".join(f"{m['id']} ({m['status']})" for m in todo)
+                         + " — the tasks need levels")
+    if not kinds & {"analyze", "update", "scout", "unlock", "experiment"}:
+        return "play", "checks and studies: no gameplay to learn in this session"
     if not view["mechanics"]:
         return "study", "no mechanic learned yet: learn the core gameplay first"
     return "play", "every known mechanic is mastered"
@@ -1694,7 +1715,7 @@ def cmd_claim(args) -> None:
                 st = session_tasks(e["id"], dev, platform, now)
                 if st["ready"]:
                     rank = min(TASK_RANK.get(t["kind"], 9) for t in st["ready"])
-                    last = (read_jsonl(STATE() / e["id"] / "sessions.jsonl") or [{}])[-1]
+                    last = last_session(e["id"])
                     if last.get("status") == "handoff" and \
                             now - iso_to_t(last["started"]) - last.get("minutes", 0) * 60 < 1800:
                         rank = -1  # handed off to the strong model: continue this game right away
@@ -1724,7 +1745,7 @@ def cmd_claim(args) -> None:
 
             _, turn, _, _, e, st = min(cands, key=order)
             budget = budget_for(st["ready"])
-            role, role_why = model_role(st["view"], st["ready"])
+            role, role_why = model_role(st["view"], st["ready"], last_session(e["id"]))
             spec = role_spec(e["id"], role)
             model = spec["model"]
             save_session({"status": "reserved", "device": dev, "platform": platform, "game": e["id"],
@@ -2052,7 +2073,7 @@ def cmd_start(args) -> None:
             st = session_tasks(args.game, dev, platform, now)
             tasks = st["ready"]
             budget = budget_for(tasks) if tasks else 10
-            role = model_role(st["view"], tasks)[0]
+            role = model_role(st["view"], tasks, last_session(args.game))[0]
         budget = args.budget or budget
         if args.bench:
             tasks = []  # a benchmark slot: the brief says what to play
@@ -2107,7 +2128,7 @@ def cmd_start(args) -> None:
                           "(rules, method, solver) and make its levels take under "
                           f"{P()['play']['level_budget_min']} min before advancing further",
                  "play": "you are the fast model: play mastered mechanics by the playbook; a new or broken mechanic "
-                         "is not yours to learn: register it and end --status handoff"}
+                         "is not yours to learn: register it, level end quit and end --status handoff --to <mechanic>"}
     out({"session": sid, "device": dev, "version": cur["version"], "device_state": state, "hint": hint[state],
          "model": cur["model"], "effort": cur.get("effort"), "model_role": cur["model_role"],
          "role_hint": "a benchmark slot: play the levels the brief names; no handoff, no status changes"
@@ -2387,7 +2408,7 @@ def cmd_level(args) -> None:
                "playbook": str(ensure_playbook(cur["game"]))}
         if m.get("status") != "mastered" and cur.get("model_role") == "play" and not cur.get("bench"):
             res["handoff"] = (f"mechanic {mid} is {m.get('status')}: the study model learns it. Note what you see in "
-                              "the playbook, level end quit, then end --status handoff")
+                              f"the playbook, level end quit, then end --status handoff --to {mid}")
         return out(res)
     if not lv:
         fail("no level is open: sw.py level start \"level N\" --mechanic ID --plan \"...\"")
@@ -2453,17 +2474,46 @@ def lab_lock(game: str) -> Path:
 
 
 def lab_needed(view: dict) -> list[dict]:
-    """Mechanics the lab should work on: still being learned, broken, or mastered but over the level
-    budget in its recent levels."""
+    """Mechanics the lab should work on: still being learned, broken, mastered but over the level
+    budget in its recent levels, or a solver mechanic whose solver the player works around."""
     budget = P()["play"]["level_budget_min"] * 60
+    signs = solver_signs(view)
     res = []
     for m in view["mechanics"]:
         won = [r["seconds"] for r in m.get("recent", []) if r.get("result") == "won" and r.get("seconds")]
         slow = bool(won) and median(won) > budget
-        if m.get("status") in ("studying", "broken") or slow:
-            res.append({**mechanic_brief(m), "why": m.get("status") if m.get("status") != "mastered" else
-                        f"levels take {round(median(won) / 60, 1)} min, over {budget // 60}"})
+        why = m.get("status") if m.get("status") in ("studying", "broken") else \
+            f"levels take {round(median(won) / 60, 1)} min, over {budget // 60}" if slow else None
+        reasons = [r for r in (why, signs.get(m["id"])) if r]
+        if reasons:
+            res.append({**mechanic_brief(m), "why": "; ".join(reasons)})
     return res
+
+
+def solver_bypassed(spans: list[dict], last: int = 5) -> str | None:
+    """The signs that a mechanic's solver is worked around, over its last five recorded levels: the moves
+    placed by hand, the board typed for the solver (--board) in every call, or the solver giving up. The
+    levels stay within the budget while the model does the solver's work, so no other trigger sees it
+    (2026-10-01: about 60 Meowdoku queens levels placed by hand in four sessions under a mastered solver
+    label, and a MeowTrail akari board typed every level, three misreads; the lab never ran)."""
+    lv = [s.get("play") or {} for s in spans[-last:]]
+    hand = sum(k.get("hand", 0) > k.get("solver", 0) for k in lv)  # more than half of the level's moves
+    called = [k for k in lv if k.get("calls")]
+    gave = sum(bool(k.get("gave_up")) for k in lv)
+    signs = [f"solver bypassed: {hand} of {len(lv)} levels placed by hand" if hand >= 2 else None,
+             f"solver bypassed: board typed by hand (--board) in every solver call of {len(called)} levels"
+             if len(called) >= 2 and all(k["boards"] == k["calls"] for k in called) else None,
+             f"solver gave up in {gave} of {len(lv)} levels (no moves, the same moves, or no change on screen)"
+             if gave >= 2 else None]
+    return "; ".join(s for s in signs if s) or None
+
+
+def solver_signs(view: dict) -> dict[str, str]:
+    """{mechanic: sign} for each solver mechanic the player works around (solver_bypassed)."""
+    mids = [m["id"] for m in view["mechanics"] if m.get("method") == "solver"]
+    spans = level_spans(view["game"]) if mids else []
+    signs = {mid: solver_bypassed([s for s in spans if s["mechanic"] == mid]) for mid in mids}
+    return {k: v for k, v in signs.items() if v}
 
 
 def cmd_lab_check(args) -> None:
@@ -2487,8 +2537,26 @@ def cmd_lab_done(args) -> None:
     out({"ok": True, "log": str(p)})
 
 
+def tally_level(lv: dict, x: dict) -> None:
+    """Where a level's moves came from: by hand (tap, taps, swipe, text) or from the solver (solve rounds),
+    and its solver calls (solve checks and runs): how many took a typed board and how many runs gave up."""
+    k = lv.setdefault("play", {"hand": 0, "solver": 0, "calls": 0, "boards": 0, "gave_up": 0})
+    t = x.get("type")
+    if t in ("tap", "swipe", "text"):
+        k["hand"] += 1
+    elif t == "taps":
+        k["hand"] += x.get("n") or 0
+    elif t == "solve":
+        k["solver"] += x.get("n") or 0
+    elif t in ("solve_check", "solve_end"):
+        k["calls"] += 1
+        k["boards"] += bool(x.get("board"))
+        k["gave_up"] += bool(x.get("gave_up"))
+
+
 def level_spans(game: str, mech: str | None = None) -> list[dict]:
-    """Every recorded level: its session, mechanic, result and the frames taken while it was played."""
+    """Every recorded level: its session, mechanic, result, the frames taken while it was played and where
+    its moves came from (play: tally_level)."""
     spans = []
     moves = ("tap", "taps", "swipe", "key", "text", "solve", "restart", "launch")
     for d in sorted((RAW() / game).glob("*/")):
@@ -2515,6 +2583,8 @@ def level_spans(game: str, mech: str | None = None) -> list[dict]:
                     cur["frames"].append(f.as_posix())
             if f is not None and f.exists():
                 last, last_n = f.as_posix(), n
+            if cur is not None:
+                tally_level(cur, x)
             if cur is not None and x.get("type") == "research" and x.get("op") == "level":
                 before = cur.pop("_before", None)  # no frame at all during the level
                 if not cur["frames"] and before and before[0]:
@@ -2621,7 +2691,9 @@ def cmd_playbook(args) -> None:
     game = args.game or pick_session(args)["game"]
     p = ensure_playbook(game)
     view = research_view(game)
-    mech = [{**mechanic_brief(m), "solver_file": str(solver_path(game, m["id"]) or "")} for m in view["mechanics"]]
+    signs = solver_signs(view)  # a solver worked around: the lab takes it (lab-check), the player sees it here
+    mech = [{**mechanic_brief(m), "solver_file": str(solver_path(game, m["id"]) or ""),
+             **({"solver_sign": signs[m["id"]]} if m["id"] in signs else {})} for m in view["mechanics"]]
     print(f"# file: {p} (edit this file)\n")
     print(p.read_text(encoding="utf-8"))
     print("---\n" + yaml.safe_dump({"mechanics": mech, "level_budget_min": P()["play"]["level_budget_min"]},
@@ -2739,14 +2811,14 @@ def cmd_solve(args) -> None:
         moves = solver_moves(res, *cur["phys"])
         dest = draw_moves(frame(), moves, frame().with_name(f"{cur['last_shot']:05d}_solve.jpg"))
         log_step(cur, {"type": "solve_check", "mechanic": mech, "n": len(moves), "note": res.get("note"),
-                       "gap_s": gap})
+                       "board": bool(args.board), "gap_s": gap})
         save_session(cur)
         return out({"solver": res["solver"], "moves": len(moves), "note": res.get("note"),
                     "rescan": bool(res.get("rescan")), "done": bool(res.get("done")), "drawn": str(dest),
                     "hint": "open the drawn frame: numbers are the moves in order. Right: solve --run --rounds N. "
                             "Wrong: fix the solver (check it on saved frames with --image) or play by the playbook"})
     cap, pause = P()["play"]["batch_max"] * 5, args.gap if args.gap is not None else P()["play"]["batch_gap_s"]
-    total, stop, notes, n, prev = 0, None, [], 0, None
+    total, stop, notes, n, prev, gave_up = 0, None, [], 0, None, False
     for n in range(1, max(1, args.rounds) + 1):
         before = frame()
         res = run_solver(cur["game"], mech, before, args.board if n == 1 else None, cur["scale"],
@@ -2756,11 +2828,13 @@ def cmd_solve(args) -> None:
         notes.append(res.get("note"))
         if not moves:
             stop = "solved" if res.get("done") else f"the solver has no moves: {res.get('note') or 'no note'}"
+            gave_up = not res.get("done")
             break
         if moves == prev:
             # the same moves after playing them: the solver does not see their result (a misread board,
             # another screen on top); tapping them again would be blind
             stop = f"the solver repeats the moves of the previous round: its reading does not change ({res.get('note')})"
+            gave_up = True
             break
         prev = moves
         done, stopped = run_moves(cur, dev, moves[:cap], 1.0, pause)
@@ -2784,6 +2858,7 @@ def cmd_solve(args) -> None:
             break
         if changed_px(before, frame()) == 0:
             stop = "the moves changed nothing on screen: the solver misreads the board"
+            gave_up = True
             break
         lv = cur.get("level")
         if lv and time.time() - lv["t0"] > P()["play"]["level_budget_min"] * 60:
@@ -2791,6 +2866,9 @@ def cmd_solve(args) -> None:
             break
     else:
         stop = f"{args.rounds} round(s) played" + ("; the solver wants another look (rescan)" if res.get("rescan") else "")
+    # how the run ended, with --board or not: the lab sees a solver the player works around (lab_needed)
+    log_step(cur, {"type": "solve_end", "mechanic": mech, "rounds": n, "n": total, "board": bool(args.board),
+                   "gave_up": gave_up, "stopped": stop})
     if stop == "owner":
         fail(STOP_MSG, 6, done=total, hint="sw.py end --status interrupted --summary ...")
     out({"solver": solver_path(cur["game"], mech).as_posix(), "rounds": n, "moves_done": total, "stopped": stop,
@@ -2858,7 +2936,15 @@ def leave_clean(cur: dict) -> str | None:
     return None
 
 
-def finish(cur: dict, status: str, summary: str) -> dict:
+def handoff_mechanic(game: str, levels: list[dict]) -> str | None:
+    """The mechanic a handoff leaves to the strong model when the player did not name it: the session's
+    last level of a mechanic that is not mastered (the open level, recorded as quit, is the last one)."""
+    view = research_view(game)
+    return next((o["mechanic"] for o in reversed(levels)
+                 if (find_mechanic(view, o["mechanic"], create=False) or {}).get("status") != "mastered"), None)
+
+
+def finish(cur: dict, status: str, summary: str, to: str | None = None) -> dict:
     if cur["status"] == "reserved":
         remove(session_path(cur["device"]))
         return {"released": cur["device"], "game": cur["game"]}
@@ -2909,6 +2995,8 @@ def finish(cur: dict, status: str, summary: str) -> dict:
     ops = [o for o in journal(cur["game"]) if o.get("session") == cur["id"]]
     levels = [o for o in ops if o["op"] == "level"]
     gaps = [s["gap_s"] for s in steps if s.get("gap_s") is not None]
+    # the next claim names the mechanic in the strong model's brief (a handoff used to carry no target)
+    handoff_to = (to or handoff_mechanic(cur["game"], levels)) if status == "handoff" else None
     meta = {"id": cur["id"], "machine": machine(), "device": cur["device"], "game": cur["game"],
             "tasks": [t["id"] for t in cur.get("tasks", [])], "device_state": cur.get("device_state"),
             "version": cur.get("version"), "model": cur.get("model"), "effort": cur.get("effort"),
@@ -2918,7 +3006,7 @@ def finish(cur: dict, status: str, summary: str) -> dict:
             "gap_s_median": median(gaps),
             "levels": {"won": sum(o["result"] == "won" for o in levels), "lost": sum(o["result"] == "lost" for o in levels),
                        "won_s_median": median([o["seconds"] for o in levels if o["result"] == "won"])},
-            "status": status,
+            "status": status, **({"handoff_to": handoff_to} if handoff_to else {}),
             "summary": summary, "marks": sum(s["type"] == "mark" for s in steps),
             "features_touched": len({o.get("id") if o["op"] == "feature" else o.get("feature") for o in ops
                                      if o["op"] in ("feature", "case")}),
@@ -2930,14 +3018,17 @@ def finish(cur: dict, status: str, summary: str) -> dict:
     append_jsonl(STATE() / cur["game"] / "sessions.jsonl", {k: v for k, v in meta.items() if k != "clips"}
                  | {"clips": len(clips)})
     log_step(cur, {"type": "end", "status": status, "summary": summary})
-    return {"ended": cur["id"], "status": status, "dir": str(d), "marks": meta["marks"],
+    return {"ended": cur["id"], "status": status, **({"handoff_to": handoff_to} if handoff_to else {}),
+            "dir": str(d), "marks": meta["marks"],
             "cases_done": meta["cases_done"], "tasks_done": meta["tasks_done"], "tasks_added": meta["tasks_added"],
             "clips": [c["file"] for c in clips], "youtube": youtube,
             "research": summary_of(research_view(cur["game"]))}
 
 
 def cmd_end(args) -> None:
-    out(finish(pick_session(args, active=False), args.status, args.summary))
+    if args.to and args.status != "handoff":
+        fail("--to names the mechanic a handoff leaves to the strong model: use it with --status handoff")
+    out(finish(pick_session(args, active=False), args.status, args.summary, slug(args.to) if args.to else None))
 
 
 # --- skills ---------------------------------------------------------------------------------------
@@ -3107,6 +3198,13 @@ def cmd_pending(args) -> None:
     out({"machine": machine(), "pending": res, "count": len(res), "until": now_iso(end) if end else None})
 
 
+def wasted_handoff(row: dict) -> bool:
+    """A handoff session that did nothing: the fast model was sent to gameplay it may not learn (Vita Mahjong
+    2026-10-01: two in one evening, 3.7 and 2.5 min, while core-match was broken). A handoff after won levels
+    or closed tasks is not wasted: the fast model met the new gameplay on its way."""
+    return row["status"] == "handoff" and not (row["cases_done"] or row["tasks_done"] or row["levels_won"])
+
+
 def cmd_stats(args) -> None:
     """Is play getting better: per session, steps per closed case, share of steps with no screen change,
     skills, level times, the model's share of the time. Compares the first and second half of each game's
@@ -3148,7 +3246,9 @@ def cmd_stats(args) -> None:
             return round(sum(vals) / len(vals), 2) if vals else None
 
         view = research_view(game)
+        wasted = [r for r in rows if wasted_handoff(r)]
         per_game[game] = {"sessions": rows, "mechanics": [mechanic_brief(m) for m in view["mechanics"]],
+                          "wasted_handoffs": {"sessions": len(wasted), "minutes": round(sum(r["minutes"] for r in wasted), 1)},
                           "trend": {k: {"first_half": avg(rows[:half], k), "second_half": avg(rows[half:], k)}
                                     for k in ("steps_per_case", "same_screen_rate", "gap_s_median",
                                               "level_min_median")} if half else None}
@@ -3168,7 +3268,8 @@ def cmd_stats(args) -> None:
                       "gap_s_median": median([r["gap_s_median"] for r in rs]),
                       "model_time_share": median([r["model_time_share"] for r in rs]),
                       "same_screen_rate": median([r["same_screen_rate"] for r in rs]),
-                      "stuck_or_handoff": sum(r["status"] in ("stuck", "handoff") for r in rs)}
+                      "stuck_or_handoff": sum(r["status"] in ("stuck", "handoff") for r in rs),
+                      "wasted_handoffs": sum(wasted_handoff(r) for r in rs)}
     out({"machine": machine(), "by_model": res,
          "note": "compare models on the same games and task kinds; one session is not a result"})
 
@@ -4025,6 +4126,8 @@ def main() -> None:
     p = sub.add_parser("end")
     p.add_argument("--status", required=True, choices=["ok", "stuck", "interrupted", "crashed", "blocked", "handoff"])
     p.add_argument("--summary", required=True)
+    p.add_argument("--to", help="with --status handoff: the mechanic the strong model should take (default: the "
+                                "session's last level of a mechanic that is not mastered)")
     sub.add_parser("games")
     for name in ("research", "features"):
         p = sub.add_parser(name)
