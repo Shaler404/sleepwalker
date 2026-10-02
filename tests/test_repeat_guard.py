@@ -108,15 +108,17 @@ check(r["moves"] == 2 and not warned(r, "do not land"), "a check draws the moves
 r = sw("solve", "same", "--run")
 check(r["moves_done"] == 2, "a run after the check plays them (the check sent nothing)")
 r = sw("solve", "same", "--run")
-st = steps(sid2)[-1]
+st, end = [x for x in steps(sid2) if x["type"] == "solve"][-1], steps(sid2)[-1]
 check(r.get("repeated") is True and r["moves_done"] == 0 and "moves of step" in r["stopped"]
       and Path(r["drawn"]).exists() and st["type"] == "solve" and st["repeated"] and st["n"] == 0,
       f"the same moves on the same frame: not sent, drawn, logged as a repeat: {r['stopped']}")
+check(end["type"] == "solve_end" and end["gave_up"] and end["n"] == 0,
+      "the held-back run ends like a solver that gave up: a sign for the lab")
 r = sw("solve", "same")
 check(r["note"] == "call 2" and warned(r, "do not land"),
       f"the held-back call kept the solver's memory as it was; a check warns too: {r['note']}")
 r = sw("solve", "same", "--run", "--force")
-st = steps(sid2)[-1]
+st = [x for x in steps(sid2) if x["type"] == "solve"][-1]
 check(r["moves_done"] == 2 and st.get("forced") and st.get("repeated"), "--force sends them anyway")
 r = sw("level", "end", "lost", "--note", "the piece never landed", "--retry")
 r = sw("solve", "same", "--run")

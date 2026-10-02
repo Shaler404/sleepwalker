@@ -300,7 +300,7 @@ skills based on them and shortens the waits of slow ones.
 |---|---|---|---|
 | Player (`sleepwalker-player`) | global knowledge, its own `state/<game>/` | `state/<game>/progress.md`, `inbox.md`, `playbook.md`, `solvers/`; the task and feature journal, the game's state on the phone and `raw/` — through `sw.py` | one game — one device (lock in `sw.py`); commits nothing |
 | The "play" orchestrator | `sw.py claim` responses | nothing (`sw.py claim` writes the planner's tasks to the journal) | does not commit or push |
-| Lab (`sleepwalker-lab`) | recorded level frames, the playbook | `state/<game>/solvers/`, `playbook.md`, `lab-log.md`; the mechanic's method | after a session whose mechanic is slow or unlearned; never touches the phone |
+| Lab (`sleepwalker-lab`) | recorded level frames, the playbook | `state/<game>/solvers/`, `playbook.md`, `lab-log.md`; the mechanic's method | after a session whose mechanic is slow or unlearned, or whose solver the player works around; never touches the phone |
 | Documenter (`sleepwalker-documenter`) | the finished session's `raw/`, `state/<game>/` | `state/<game>/pages/`, `docs-log.md` | runs right after each session; `check-pages` |
 | Reviewer (`sleepwalker-reviewer`) | the finished session's `raw/`, `state/<game>/` | goals, discovery and case closures through `sw.py … --game`; `state/<game>/reviews.md` | runs right after each session, never touches the phone |
 | Analyst (`sleepwalker-analyst`) | its machine's `raw/` and `state/`, the worktree | nothing | tools: Read, Grep, Glob |
@@ -394,12 +394,17 @@ consolidates it.
 - **Level catalog** — `wiki/<game>/levels.md` and `levels/<level>.webp`: for games whose design lives in
   the levels, the board of every level the agents met at its start, with the tries and the player's
   note (`sw.py level-catalog`, refreshed by the dream).
-- **Models by role** (`models` in `project.yaml`, overridable in `local.yaml`): `study` learns new or
-  broken mechanics (the strong model), `play` plays mastered mechanics and verifies cases (the fast
-  model), `consult` answers `sw.py ask`. `claim` picks the role per session; a `play` session that
-  meets gameplay to learn ends with `handoff` and the game goes back to the `study` model at once.
+- **Models by role** (`models` in `project.yaml`, overridable in `local.yaml` and per game in
+  `games.yaml`): `study` learns new or broken mechanics (the strong model), `play` plays mastered
+  mechanics and verifies cases (the fast model), `consult` answers `sw.py ask`. `claim` picks the role
+  per session: `study` while a mechanic is `studying` or `broken` and the session's tasks play levels
+  (follow-ups, replays and FTUE checks too), `play` once every mechanic is mastered and for menu-only
+  work (studies, surveys, dailies). A `play` session that meets gameplay to learn ends with
+  `handoff --to <mechanic>`; the game goes back to the `study` model at once, and the brief's
+  `model_why` names the mechanic.
   `sw.py stats --by-model` compares models: levels and features per hour, level times, the share of
   session time the model spends thinking, the share of actions after which nothing changed
   (`same_screen_rate`: the hash and the pixels agree) or only a small part of the frame did
-  (`small_change_rate`: a board in play), restarts.
+  (`small_change_rate`: a board in play), restarts, refused commands per hour (`errors_per_hour`) and
+  `wasted_handoffs` (handoffs that did nothing).
 

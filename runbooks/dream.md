@@ -145,7 +145,9 @@ in `project.yaml`), no more than 5 at a time
   machine, sessions, steps per closed case, share of steps without a screen change (and with only a
   small one, `small_change_rate`), skills ok/fail, typical level time per mechanic, moves with no level
   open (`moves_outside_level`), repeated steps (`repeated_steps`: the same tap or solver plan on an
-  unchanged screen) and refused commands (`errors`, `error_minutes`). Models are not compared or changed
+  unchanged screen), refused commands (`errors`, `error_minutes`) and wasted handoffs
+  (`wasted_handoffs`: handoff sessions that closed nothing and won no level — the fast model was sent to
+  gameplay it may not learn; a problem for the process, section 7). Models are not compared or changed
   here: they are chosen by hand with a benchmark (`runbooks/onboard.md`).
   A mechanic whose levels stay over the budget gets a lesson or a task "Make <mechanic> fast:
   <idea>" (a solver, a heuristic).

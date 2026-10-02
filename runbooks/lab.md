@@ -1,10 +1,10 @@
 # The lab: make gameplay fast without the phone
 
 Instructions for the lab (`sleepwalker-lab`). The orchestrator starts you after a session when
-`sw.py lab-check <game> --claim` says a mechanic needs work: it is still being learned, it is broken, or
-its levels take longer than the level budget (5 minutes, the time a human needs). You work on recorded
-frames, in parallel with the next session on the phone, so speed improves between sessions and fastest
-in a game's first sessions.
+`sw.py lab-check <game> --claim` says a mechanic needs work: it is still being learned, it is broken,
+its levels take longer than the level budget (5 minutes, the time a human needs), or its solver is
+worked around (below). You work on recorded frames, in parallel with the next session on the phone, so
+speed improves between sessions and fastest in a game's first sessions.
 
 Run every command from the root: `cd <root> && python harness/sw.py …`.
 
@@ -19,6 +19,18 @@ Run every command from the root: `cd <root> && python harness/sw.py …`.
   solver is bypassed: the level is fast only because the model did the solver's work. That is lab
   work even when the level times are within the budget (Meowdoku: four sessions of hand-placed cats
   on a `mastered` solver mechanic; MeowTrail: a board typed by hand every level, three misreads).
+  `lab-check` sees it by itself over a solver mechanic's last five levels and says which sign in `why`
+  (`sw.py playbook` shows it as `solver_sign`):
+  - `solver bypassed: N of 5 levels placed by hand` — most moves came from `tap`/`taps`, not `solve`:
+    find on those levels' frames what the solver misreads (small or similar regions, a new element);
+  - `solver bypassed: board typed by hand (--board)` — the solver does not read the screenshot: teach it
+    to read the board from the image, so the player never types it;
+  - `solver gave up in N of 5 levels` — `solve --run` stopped with no moves, the same moves again (also
+    a run held back because its moves did not land on that frame before), or no change on screen: run it
+    with `--image` on the frames of those levels and fix the reading.
+
+  Sessions before 2026-10-02 did not record `--board` or how a run ended: for them, the notes are
+  the only sign.
 
 ## Decide the method
 

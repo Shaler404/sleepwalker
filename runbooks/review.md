@@ -39,7 +39,9 @@ documenter's and the dream's work.
    Do not wait for many levels: if nothing new appeared across the last levels and the map is
    complete, close it.
 4. **Order.** If a goal blocks others (the core gameplay is too slow to reach any unlock), say so in the
-   review note: the lab and the dream read it.
+   review note: the lab and the dream read it. You do not need to ask for the strong model while a
+   mechanic is studying or broken: `claim` gives it every session whose goals play levels (follow-ups
+   too), and a handoff names its mechanic for the next brief.
 
 ## Write
 

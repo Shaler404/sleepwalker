@@ -23,7 +23,8 @@ player subagents. The repository root is one level above this file (the owner's 
 3. For each `play` assignment, start the subagent the assignment names in `agent` (for example
    `sleepwalker-player-sonnet-low`: its model and effort are set in its definition; if that type is
    unavailable, `sleepwalker-player` with the assignment's `model` as the Agent tool's `model`). `study`
-   sessions get the game's model for learning gameplay, `play` sessions the one for playing it. Start
+   sessions get the game's model for learning gameplay (any session whose tasks play levels while a
+   mechanic is studying or broken, follow-ups included), `play` sessions the one for playing it. Start
    all of them at once, in the background, and wait for all of them. The brief is complete; the
    subagent does not see this conversation:
    ```
@@ -47,8 +48,9 @@ player subagents. The repository root is one level above this file (the owner's 
 
    This way sessions run back to back while games have work; the next hourly run sees the devices as
    occupied (`busy`) and does not interfere. A session that ended with `handoff` (the fast model met
-   gameplay it should not learn) comes back first from `claim`, with the strong model. When no device
-   is playing or busy, go on to the next step.
+   gameplay it should not learn) comes back first from `claim`, with the strong model and the mechanic
+   named in `model_why` (`handoff from <session>: <mechanic> is broken`). When no device is playing or
+   busy, go on to the next step.
 5. **The post-session review.** As soon as a player ends its session, start a `sleepwalker-reviewer`
    subagent for that session in the background (its model and effort are in its definition, written from
    `project.yaml` `models` by `sw.py install-agents`: pass no model). It does
