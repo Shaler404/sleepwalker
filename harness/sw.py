@@ -111,7 +111,8 @@ SYSTEM_OVERLAYS = ("com.google.android.permissioncontroller", "com.android.vendi
 ZEN = {"0": "off", "1": "priority", "2": "none", "3": "alarms"}
 DREAM_ZONES = ("wiki/", "skills/", "solvers/", "dreams/")
 # the dream's process PR: rules and proposals, never code (harness changes are proposed in docs/proposals/)
-PROCESS_ZONES = ("runbooks/", "schema/", "docs/proposals/")
+# the process PR fixes the tools too, with the tests (tests/run.py) passing; the owner merges it
+PROCESS_ZONES = ("runbooks/", "schema/", "docs/proposals/", "harness/", "tests/")
 FRESH_HINT = "a phone with a fresh install: uninstall the game and install it again (or clear its data), then connect the phone"
 # adb, ffmpeg and git run without a console window: otherwise every call flashes a window and steals focus
 NO_WINDOW = 0x08000000 if os.name == "nt" else 0  # CREATE_NO_WINDOW

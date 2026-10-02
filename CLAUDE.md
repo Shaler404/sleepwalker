@@ -19,6 +19,8 @@
 - Never put into git: `local.yaml`, `state/`, `raw/`, secrets, nicknames, email addresses, avatars,
   notifications and screenshots that are not from the game.
 - Never enter PINs, passwords or payment details. Real-money purchases are forbidden.
+- Tests: `python tests/run.py` (a fake phone, no device needed). A change to `harness/` comes with a test
+  and a passing run.
 - Every phone action goes through `harness/sw.py`, never `adb` directly: only `sw.py` logs the step,
   honours the owner taking the phone and stops a batch when a payment sheet comes up.
 - A solver (`solvers/`, `state/<game>/solvers/`) only computes moves from a screenshot: no files,

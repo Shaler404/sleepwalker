@@ -191,8 +191,12 @@ error`), the level times per mechanic and the analysts' agent errors. Find what 
 costs (minutes, levels, lost frames), and propose a fix for each:
 
 - a rule or an instruction — an edit of `runbooks/` or `schema/`;
-- a missing or wrong tool — a proposal in `docs/proposals/<date>-<slug>.md`: the problem with sources,
-  the change, how to test it (the owner or a Claude Code session implements it).
+- a missing or wrong tool — the fix itself in `harness/`, with a test in `tests/` that fails without it,
+  and `python tests/run.py` passing (its summary goes into the PR description). Small and safe first: a
+  change that touches how the phone is driven gets a test with the fake phone. Only a change too large or
+  too risky for one night stays a proposal in `docs/proposals/<date>-<slug>.md` (the problem with sources,
+  the change, how to test it). Settings of the phone itself are never changed by default: such a change
+  is off unless `local.yaml` turns it on.
 
 Each change in the process PR says in its description which sessions show the problem. In the same
 worktree, after the knowledge commit, on its own branch:
@@ -201,6 +205,7 @@ worktree, after the knowledge commit, on its own branch:
 git worktree add ../sleepwalker-process -b process/<machine>/<YYYY-MM-DD> origin/main
 … the sleepwalker-process subagent edits …
 python harness/sw.py check-zones ../sleepwalker-process --process
+cd ../sleepwalker-process && python tests/run.py; cd -      (must pass when harness/ or tests/ changed)
 git -C ../sleepwalker-process add -A && git -C ../sleepwalker-process commit -m "process(<machine>): <YYYY-MM-DD>" --author "Dreamer <dreamer@sleepwalker.local>"
 git -C ../sleepwalker-process push -u origin process/<machine>/<YYYY-MM-DD>
 gh label create process --repo <repo> --color 0e8a16 --force
