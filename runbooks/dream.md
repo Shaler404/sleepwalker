@@ -69,7 +69,9 @@ in `project.yaml`), no more than 5 at a time
 - what to read: `raw/<game>/<id>/steps.jsonl`, `session.json`, `clips.json`, `progress.md` (a copy
   as of the session's end), frames from `mark` steps (`shots/NNNNN.jpg`), the session's block in
   `state/<game>/inbox.md`, `<worktree>/wiki/<game>/research.yaml` and the feature pages. If the
-  session's `raw` is deleted — only `inbox.md` and the session's line in `state/<game>/sessions.jsonl`;
+  session's `raw` is deleted — only `inbox.md` and the session's line in `state/<game>/sessions.jsonl`.
+  A `youtube` id in `session.json` next to a `youtube: uploadLimitExceeded` warning in `steps.jsonl` is
+  normal: `sw.py gc` uploads the original later. It is not a contradiction to report;
 - what to return, as lists, each item with its source steps:
   - **features** — per feature: how it works, which cases were verified and how they ended, numbers
     (prices, timers, rewards), what is not verified yet; corrections to the map (duplicates, renames);
@@ -77,7 +79,8 @@ in `project.yaml`), no more than 5 at a time
   - **tactics** — how to beat the mechanics;
   - **lessons** — a rule "in situation X do Y because Z", scope: game or general;
   - **skills** — step ranges that reliably lead from one recognizable screen to another;
-  - **agent_errors** — loops, misses, lost goals;
+  - **agent_errors** — loops, misses, lost goals; levels played with no `level_start` / level op
+    (moves with no open level) and level records that do not match the frames;
   - **media** — the best frames (`mark`) and clips with a caption "what the frame shows and what
     matters";
   - **stale** — what in the wiki contradicts what was seen;
