@@ -15,10 +15,14 @@ Whatever you did not finish or cannot do now, turn into a goal or a task for lat
 Goal and task kinds:
 - `scout` — map the game: every entry point is open (→ a study goal), locked with its unlock
   condition (→ an unlock goal) or unclear (→ an experiment);
-- `study` — study one open feature: its screens, tabs and cases;
+- `study` — study one open feature: its screens, tabs and cases; a first look (`first-look-<feature>`,
+  first in the session) opens a feature that has just unlocked once, records what it is and decides whether
+  it needs a full study;
 - `unlock` — reach the progress that opens a feature ("reach level 20 to unlock Leagues");
 - `experiment` — test a hypothesis that needs play ("winning the race needs about 10 level wins:
-  play levels while the race runs and watch the race score"), then write down the conclusion;
+  play levels while the race runs and watch the race score"), then write down the conclusion; the planner
+  adds two kinds: "Find why <feature> appeared: <hypothesis>" and "Run each outcome once under <feature>: …"
+  (section 3, the feature model);
 - `update` — recheck the features on a newer version;
 - `ftue` — play the game from scratch;
 - `replay` — replay a stretch of the game from a fresh install;
@@ -117,17 +121,21 @@ them: no level is played just to play. Each goal says when it is done:
 
 - **`scout`** — map the game. Walk every screen you can reach: the main screen, the map, every
   button, icon, badge, tab and popup; `mark` each screen. For every entry point decide:
-  - open → `feature <id> "Name"` and a study goal (`task add study-<id> … --kind study --feature <id>`);
+  - open → `feature <id> "Name" --type <type> --appeared "…"` (the planner adds its study goal);
   - locked → what opens it (a level, a star count, a chapter; read the lock, the tooltip, the
-    tutorial) → an unlock goal with that target; if the condition is not shown, an experiment
-    ("Leagues open after the first event?") or an unlock goal with your best estimate in `--note`;
+    tutorial) → `feature <id> "Name" --type <type> --locked "level 30" --locked-value 30`: the planner makes the
+    unlock goal. One lock per locked entry: a modes menu that lists five locked modes is five features with
+    five locks. If the condition is not shown, lock it with your best estimate (`--locked "about level 20, not
+    shown" --locked-value 20`) and add an experiment for the guess ("Leagues open after the first event?");
   - unclear (a badge, a timer, an icon without a label) → an experiment.
 
   Close it with `task done scout-N --new-entries <entry points that were new> --note "what you mapped"`:
   the count, or the new entry points by name, comma-separated (`--new-entries "Shop,Leagues"`).
 - **`unlock`** — play levels toward the target (the level cycle below), nothing else. When the target
-  is reached, check that the feature opened, `mark` its entry point and `task done`: its study goal
-  appears by itself. If the feature opened earlier or later than the target, say so in `--note`.
+  is reached, check that the feature opened, `mark` its entry point and `task done`: its next goal
+  appears by itself (a first look for a lock recorded with `--locked`, else a study). If the feature opened
+  earlier or later than the target, say so in `--note`. When a won level or `progress` passes a recorded lock,
+  the reply's `planned` names the first look at once: do it next. A feature seen open: `feature <id> --unlocked`.
 - **`study`** — open the feature and go through it: every screen and tab (`mark` each), every user
   case (`case … --done`, numbers into `note`). New hypotheses that need play become experiments ("to
   see the win flow of the race we have to win one"). The goal is done when its cases are done; the
@@ -323,15 +331,38 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
      A blind pair of taps there drifted by a level, played a rewarded video, hit the back arrow and
      the gear, and opened the Play Store (four games). `taps` batches are for moves inside a level
      on a frame you have just read.
-2. **Feature map:**
-   - `feature <id> "Name"` — you found a feature;
+2. **Feature map** (the feature model: every feature has a type, and nothing about it is forgotten):
+   - `feature <id> "Name" --type <type> --appeared "after winning level 20"` — you found a feature. Always
+     with both:
+     - `--type`: a type from `sw.py types` (its description says what fits; `--type unknown` when none does:
+       the review starts the type designer). The type's checklist comes as open cases `chk-<item>` (why it
+       appeared, where to find it, what it looks like, and the type's own items): close each with
+       `case <feature> chk-<item> "what you saw" --done`, or with a text saying it does not apply;
+     - why it appeared, the trigger: `--appeared "…"` when you saw it (it closes `chk-appeared`), or
+       `--appeared-guess "…"` when you only suspect it (the planner makes "Find why <feature> appeared: …").
+       A feature registered without them is answered with a warning: fix it at once;
      `--status in_progress` — you are analyzing it;
-     `--status documented` — everything that can be verified now is verified;
+     `--status documented` — everything that can be verified now is verified, its checklist closed;
+   - a lock on screen ("Unlock at Level 30"): `feature <id> "Name" --type <type> --locked "level 30"
+     --locked-value 30`, one per locked entry; seen open: `feature <id> --unlocked`;
    - `case <feature> <id> "what to check"` — a user case: every player action and every branch
      (success, failure, not enough resources, repeat, cancel, first time, again);
      `--done` — verified at this step;
+   - **outcomes:** the base level's feature is typed `core-level`; win, restart, quit and exit come from its
+     checklist. Every other way a level ends is an outcome of its own, registered once it is seen:
+     `case <base> out-of-moves "Out of moves: the board locks with no move left" --outcome`. Every feature that
+     changes the level flow (a level type, an event, a streak) then owes one run of each outcome under it: its
+     cases `under-<outcome>` and the goal "Run each outcome once under <feature>: …". For that goal:
+     - deliberate losses are allowed, except when they spend premium currency or anything else that does not
+       come back; a loss that costs a life is fine;
+     - one cell at a time: start the level while the feature is on (`level start`), reach the outcome, mark
+       its screen (`mark … --feature <feature> --as result`), `level end` (a loss on purpose is
+       `level end lost --deliberate --note …`: it does not count against the mechanic), then close the cell:
+       `case <feature> under-<outcome> "as the base" --done`, or the text says what differed ("Stage failed
+       window, Tap to restart goes back to stage 1");
 3. **Goals and tasks for later:**
-   - a locked entry point: `task add unlock-leagues "Reach level 20 to unlock Leagues" --kind unlock --feature leagues --target "level 20" --target-value 20`;
+   - a locked entry point: its lock as data (above), and the planner makes `unlock-<feature>`; by hand only
+     for a target that is not a lock on screen: `task add unlock-leagues "Reach level 20 to unlock Leagues" --kind unlock --feature leagues --target "level 20" --target-value 20`;
    - an open feature you are not studying now: `task add study-shop "Study the shop" --kind study --feature shop`;
    - a hypothesis: `task add race-win "Winning the race needs about 10 level wins" --kind experiment --feature race --plan "play levels while the race runs, note the race score after each win"`;
    - timer: `task add <id> "Open the chest after the timer" --after-hours 8 --feature chest`;
@@ -342,21 +373,26 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
 
    Task done — `task done <id> --note "what I saw"`; an experiment — `task done <id> --result
    confirmed|refuted|inconclusive --note "the evidence and the conclusion"`; an unlock goal — when the
-   feature opened (its study goal is created by itself). No longer relevant (feature removed, duplicate)
-   — `task cancel <id> --reason "…"`. The analysis closes by itself when no goal is left, the search
+   feature opened (its first look or study goal is created by itself); "Find why … appeared" closes by itself
+   when you record `--appeared`, "Run each outcome once under …" when its last cell is closed. No longer
+   relevant (feature removed, duplicate) — `task cancel <id> --reason "…"`. The analysis closes by itself when no goal is left, the search
    for features is closed and every feature is documented.
 4. **Material for the wiki** — as you go, not at the end:
    - `note <type> "fact"` — prices, currencies, timers, rewards, conditions (type: economy, mechanic,
      ui, event, bug, question);
    - `mark "title" "what the frame shows and what matters" --feature <id> --as <place>` — every new
      screen and state, and where the frame goes on the feature's page: `entry` (the screen with the
-     button that opens it; `--at X,Y` the button, it gets circled), `screen` (the feature itself),
+     button that opens it; name the button in the description, `--at X,Y` keeps its point — nothing is
+     drawn on the frame), `screen` (the feature itself),
      `tab:<name>` (each tab or sub-screen), `popup`, `result`, `other`. A study goal marks at least the
      entry, the screen and every tab. Popups and offers are content: `mark` first, then close. A frame
      you passed already: `mark … --frame <shot_n>` marks that frame instead of the last one. A window
      the game opens with its own title (King's account panel, a first-launch consent popup) is the game:
      `app` is the game's package and `window` names the panel, so `mark` takes it;
-   - `clip begin "title"` … `clip end "what it shows"` — key moments, up to 20 seconds.
+   - `clip begin "title"` … `clip end "what it shows"` — key moments, up to 20 seconds: whatever means
+     something only in motion (an animated tutorial hand, a reward or unlock animation, a transition).
+     The documenter cuts the page's clip of one moment from the recording later (`sw.py clip-cut`), so a
+     `note` with what moved is enough when you are busy.
 5. Stop when the session's tasks are done, the budget is used up (`warnings`), you are stuck or the
    game crashed. Turn everything unfinished into tasks.
 

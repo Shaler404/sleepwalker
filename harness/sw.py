@@ -32,8 +32,9 @@ Levels: think first, then play fast
   playbook                               how to play this game: rules and methods per mechanic, level times
   level start "level 12" --mechanic ID --plan "..." [--value 12 | --bonus] [--hi]
   level plan "new plan"                  rethink: what blocks you, what you do differently now
-  level end won|lost|quit --note "what worked, what to change" [--skipped] [--retry]
-                                         won: after a frame of the win screen; lost --retry: the same level again
+  level end won|lost|quit --note "what worked, what to change" [--skipped] [--retry] [--deliberate]
+                                         won: after a frame of the win screen; lost --retry: the same level again;
+                                         lost --deliberate: an outcome run on purpose, not held against the mechanic
   mechanic ID "Name" [--status studying|mastered|broken] [--method manual|heuristic|solver] [--note ...]
   solve MECHANIC [--board FILE] [--run [--rounds N]] [--force] | solve MECHANIC --image FRAME
                                          the mechanic's solver: check its moves, play them, or test it on a frame
@@ -46,8 +47,10 @@ The lab: making gameplay fast without the phone (runbooks/lab.md)
   mark "title" "description" [--feature F --as entry|screen|tab:NAME|popup|result|other [--at X,Y]] [--frame N]
                                          a frame for the wiki (the last one, or shot N); --as says where it goes on
                                          the feature's page
-  feature ID "Name" [--status seen|in_progress|documented]
-  case FEATURE ID "what to check" [--done]
+  feature ID "Name" --type T --appeared "after level 20" | --appeared-guess "..." [--status seen|in_progress|documented]
+                                         a feature of a type (sw.py types): its checklist becomes cases chk-<item>
+  feature ID ["Name"] --locked "level 30" [--locked-value 30] | --unlocked   a lock seen on screen / seen open
+  case FEATURE ID "what to check" [--done] [--outcome]   --outcome: one way the base (core-level) level ends
   task add ID "what to do" [--kind followup|daily|replay|ftue] [--feature F] [--requires fresh]
            [--after-hours N | --at ISO] [--days N] [--note ...]
   task done ID [--note ...] [--new-entries N|name,name] | task cancel ID --reason ...
@@ -60,6 +63,10 @@ The lab: making gameplay fast without the phone (runbooks/lab.md)
 Knowledge
   games                                  games on the phones vs games.yaml: what is listed, what to add
   research GAME                          tasks and feature map: from the wiki + this machine's new journal entries
+  types [--prune] | audit GAME           the feature type catalog / the game's feature model: untyped, triggers,
+                                         open checklist items, locks, the matrix of outcomes (JSON)
+  type-add ID --name ... --description ... [--base T] [--affects-level-flow] --item ID:TEXT:KIND ...
+                                         the type designer's new type (state/feature-types.local.yaml)
   pending                                this machine's sessions that have not been through the "dream" yet
   stats [GAME] [--by-model]              play speed per session, level times; compare models
 "Dream"
@@ -68,15 +75,22 @@ Knowledge
   skill new GAME NAME --session SID --steps A-B --desc "..." --out SKILLS_DIR [--wait STEP:S,...]
             [--pre-region X1,Y1,X2,Y2]   each wait as long as the transcript's; the precondition on a part of the frame
   wiki-img SRC GAME_DIR SLUG | wiki-clip SRC GAME_DIR SLUG
-  page-skeleton GAME FEATURE --out GAME_DIR   a feature page laid out from its marked frames (the documenter)
+  check-zones WORKTREE [--process]       edits only in allowed zones, media within limits
+The documenter (runbooks/document.md; the dream checks its pages before publishing them)
+  pending-docs                           this machine's sessions no documenter has logged (docs-log.md), oldest first
+  doc-scope GAME SESSION                 the features a session changed: cases, outcomes, type, why it appeared, lock
+  page-skeleton GAME FEATURE --out GAME_DIR   a feature page laid out from its marked frames and its cases in the map
+  clip-cut GAME SESSION --from-step A --to-step B --slug S --out GAME_DIR [--max-s 10]
+                                         one moment from the session's recording as a clip (animated WebP)
   page-footnotes FILE [--game GAME]      inline [s:SESSION#STEP] sources of a page -> footnotes with the video links;
                                          footnotes whose video went up later get the link
   redact-image IMG --box X1,Y1,X2,Y2 ... black out personal data on a page's image or clip (pixels, or fractions <= 1)
-  check-pages DIR                        every feature page: entry point and screen frames, a frame per tab
+  check-pages DIR                        every feature page: its layout and frames, and the map: done cases and
+                                         checklist items on the page, the Outcomes table
   mark-tag GAME SESSION SHOT --feature F --as ROLE --desc "..." [--at X,Y]   tag an old frame for a page
-  check-zones WORKTREE [--process]       edits only in allowed zones, media within limits
 Maintenance
   gc                                     record sessions nobody ended, upload originals, link page footnotes, free space
+                                         (an uploaded original is deleted once its session is documented)
   install-agents
 """
 from __future__ import annotations
@@ -1462,7 +1476,21 @@ def mechanic_brief(m: dict) -> dict:
 
 
 TASK_FIELDS = ("title", "kind", "version", "requires", "feature", "not_before", "source", "note", "target_text",
-               "target_value", "plan")
+               "target_value", "plan", "rank")
+# The bookkeeping of a journal op, never a field of the feature or case it changes
+OP_META = ("op", "t", "session", "step", "game_version")
+
+
+def keep_fields(obj: dict, op: dict, handled: tuple) -> None:
+    """The op's other fields kept as given: the feature model's (type, appeared, locked, unlocked_at on a feature;
+    outcome and note on a case) and whatever it adds later. None clears a field (a lock seen open)."""
+    for k, v in op.items():
+        if k in OP_META or k in handled:
+            continue
+        if v is None:
+            obj.pop(k, None)
+        else:
+            obj[k] = v
 
 
 def apply_op(view: dict, op: dict) -> None:
@@ -1472,11 +1500,25 @@ def apply_op(view: dict, op: dict) -> None:
         f = find_feature(view, op["id"])
         if new and view.get("progress"):  # where in the game the feature first showed up
             f["found_at"] = {k: view["progress"].get(k) for k in ("text", "value")}
-        for k in ("name", "status", "page"):
+        for k in ("name", "status", "page", "type"):
             if op.get(k):
                 f[k] = op[k]
+        # the feature model's fields have their own rules below (a fact is not replaced by a guess, a lock opens)
+        keep_fields(f, op, ("id", "name", "status", "page", "type", "appeared", "locked", "unlocked"))
         if op.get("status") == "documented":
             f["version_seen"] = op.get("game_version") or view.get("version")
+        ap = op.get("appeared")
+        if ap and not ((f.get("appeared") or {}).get("certainty") == "fact" and ap.get("certainty") != "fact"):
+            f["appeared"] = ap  # a fact is not replaced by a later guess
+        if op.get("locked"):
+            f["locked"] = op["locked"]
+            f.pop("unlocked_at", None)
+        elif "locked" in op and op["locked"] is None:  # a lock cleared by hand (the review)
+            f.pop("locked", None)
+        if op.get("unlocked") and (f.get("locked") or not f.get("unlocked_at")):
+            lk, pr = f.pop("locked", None), view.get("progress") or {}
+            f["unlocked_at"] = {"text": pr.get("text"), "value": pr.get("value"), "source": op.get("source"),
+                                **({"lock": lk.get("text")} if lk else {})}
     elif kind == "case":
         f = find_feature(view, op["feature"])
         c = next((c for c in f.setdefault("cases", []) if c["id"] == op["id"]), None)
@@ -1485,6 +1527,9 @@ def apply_op(view: dict, op: dict) -> None:
             f["cases"].append(c)
         if op.get("text"):
             c["text"] = op["text"]
+        keep_fields(c, op, ("id", "feature", "text", "done", "source", "after", "outcome"))
+        if op.get("outcome"):  # one way the base level ends (the feature model's matrix)
+            c["outcome"] = True
         if op.get("done"):
             c.update(done=True, source=op.get("source"))
             if op.get("game_version"):
@@ -1507,7 +1552,8 @@ def apply_op(view: dict, op: dict) -> None:
         m["levels"][op["result"]] = m["levels"].get(op["result"], 0) + 1
         m["recent"] = (m.get("recent", []) + [{"level": op.get("name"), "result": op["result"],
                                                  "seconds": op.get("seconds"), "model": op.get("model"),
-                                                 **{k: op[k] for k in ("skipped", "moves_before") if op.get(k)}}])[-10:]
+                                                 **{k: op[k] for k in ("skipped", "moves_before", "deliberate")
+                                                    if op.get(k)}}])[-10:]
         if (op["result"] == "won" and timed(op) and op.get("seconds")
                 and (not m.get("best_s") or op["seconds"] < m["best_s"])):
             m["best_s"] = op["seconds"]
@@ -1577,7 +1623,153 @@ def research_view(game: str, until: float | None = None, base: Path | None = Non
     for op in journal(game):
         if op["t"] > since and (until is None or op["t"] <= until):
             apply_op(view, op)
+    derive_cases(view)
     return view
+
+
+# --- the feature model: types, checklists, outcomes and the matrix ---------------------------------------
+# Every feature has a type from schema/feature-types.yaml (merged with this machine's state/feature-types.local.yaml);
+# the type's checklist becomes open cases chk-<item>, so nothing is forgotten. On a feature whose type affects the
+# level flow, every known outcome of the base level (the outcome cases of the core-level features) is an open case
+# under-<outcome> until it is run once under it. (2026-10-02, the owner: Pull the Pin's Multi Stage loss flow, a
+# different fail window and a restart back to stage 1, was found only by accident in a benchmark.)
+
+TYPE_KINDS = ("look", "outcome", "experiment")
+UNKNOWN_TYPE = "unknown"  # typed, but no type fits yet: the reviewer starts the type designer
+BASE_TYPE = "core-level"  # the base level of a mechanic: its outcome cases are the outcomes of the matrix
+_CATALOG: dict = {}
+
+
+def types_paths() -> tuple[Path, Path]:
+    """The published catalog and this machine's own types (sw.py type-add), used at once."""
+    return ROOT / "schema" / "feature-types.yaml", STATE() / "feature-types.local.yaml"
+
+
+def type_item(it) -> dict:
+    it = it if isinstance(it, dict) else {"id": str(it)}
+    return {"id": slug(str(it.get("id"))), "text": str(it.get("text") or it.get("id")).strip(),
+            "kind": it.get("kind") if it.get("kind") in TYPE_KINDS else "look"}
+
+
+def load_catalog(pub: dict, loc: dict) -> dict:
+    """The published types, then the local ones: a local type with a published id overrides the fields it gives
+    and its items by id. Every checklist starts with the universal items (appeared, entry, screen)."""
+    universal = [type_item(x) for x in pub.get("universal") or []]
+    uids = {u["id"] for u in universal}
+    types: dict[str, dict] = {}
+    for local, data in ((False, pub), (True, loc)):
+        for t in data.get("types") or []:
+            if not isinstance(t, dict) or not t.get("id"):
+                continue
+            tid = slug(str(t["id"]))
+            cur = types.setdefault(tid, {"id": tid, "name": tid, "description": "", "base": None,
+                                         "affects_level_flow": False, "checklist": []})
+            for k in ("name", "description"):
+                if t.get(k):
+                    cur[k] = " ".join(str(t[k]).split())
+            if "base" in t:
+                cur["base"] = slug(str(t["base"])) if t["base"] else None
+            if "affects_level_flow" in t:
+                cur["affects_level_flow"] = bool(t["affects_level_flow"])
+            byid = {i["id"]: i for i in cur["checklist"]}
+            for i in map(type_item, t.get("checklist") or []):
+                if i["id"] in byid:
+                    byid[i["id"]].update(i)
+                else:
+                    cur["checklist"].append(i)
+                    byid[i["id"]] = i
+            if local:
+                cur["local"] = True
+    for t in types.values():
+        t["checklist"] = [dict(u) for u in universal] + [i for i in t["checklist"] if i["id"] not in uids]
+    return {"universal": universal, "types": types}
+
+
+def catalog() -> dict:
+    """The merged catalog, read again whenever either file changes."""
+    paths = types_paths()
+    key = tuple((str(p), p.stat().st_mtime_ns, p.stat().st_size) if p.exists() else str(p) for p in paths)
+    if _CATALOG.get("key") != key:
+        _CATALOG.update(key=key, value=load_catalog(read_yaml(paths[0]), read_yaml(paths[1])))
+    return _CATALOG["value"]
+
+
+def feature_types() -> dict[str, dict]:
+    return catalog()["types"]
+
+
+def type_checklist(tid: str | None) -> list[dict]:
+    """A type's checklist; `unknown` has the universal items only; an untyped feature has none."""
+    if tid == UNKNOWN_TYPE:
+        return catalog()["universal"]
+    t = feature_types().get(tid or "")
+    return t["checklist"] if t else []
+
+
+def flow_type(tid: str | None) -> bool:
+    t = feature_types().get(tid or "")
+    return bool(t and t.get("affects_level_flow"))
+
+
+def outcome_key(cid: str) -> str:
+    """chk-win (an outcome item of the core-level checklist) and win are the same outcome."""
+    return cid[4:] if cid.startswith("chk-") else cid
+
+
+def outcome_label(text: str) -> str:
+    """An outcome's short name, the text before its first colon: "Win: the win screen ..." gives "Win"."""
+    return text.split(": ", 1)[0].strip().rstrip(".") or text
+
+
+def known_outcomes(view: dict) -> list[tuple[str, str]]:
+    """The base level's outcomes in this game: (key, label) of every outcome case on a core-level feature."""
+    seen: dict[str, str] = {}
+    for f in view["features"]:
+        if f.get("type") == BASE_TYPE:
+            for c in f.get("cases", []):
+                if c.get("outcome"):
+                    seen.setdefault(outcome_key(c["id"]), outcome_label(c.get("text") or c["id"]))
+    return list(seen.items())
+
+
+def derive_cases(view: dict) -> None:
+    """The cases the feature model owes, added to the view (idempotent): the type's checklist on every typed
+    feature, chk-appeared closed by a fact, and under-<outcome> on every flow-affecting feature for every known
+    outcome, whichever side appeared first. A type change adds the new type's missing items; a former type's
+    items that are still open go, the done ones stay."""
+    for f in view["features"]:
+        items = type_checklist(f.get("type"))
+        if not items:
+            continue
+        own = {f"chk-{it['id']}" for it in items}
+        f["cases"] = [c for c in f.get("cases", []) if c.get("done") or c["id"] in own or not c["id"].startswith("chk-")]
+        cases = f["cases"]
+        byid = {c["id"]: c for c in cases}
+        for it in items:
+            cid = f"chk-{it['id']}"
+            c = byid.get(cid)
+            if c is None:
+                c = byid[cid] = {"id": cid, "text": it["text"], "done": False}
+                cases.append(c)
+            elif c.get("text") in (None, "", cid):  # closed before the type gave it a text
+                c["text"] = it["text"]
+            if f.get("type") == BASE_TYPE and it["kind"] == "outcome":
+                c["outcome"] = True
+        ap, c = f.get("appeared") or {}, byid.get("chk-appeared")
+        if c and ap.get("certainty") == "fact" and not c.get("done"):
+            c.update(done=True, source=ap.get("source"))
+    outcomes = known_outcomes(view)
+    for f in view["features"]:
+        if not flow_type(f.get("type")):
+            continue
+        cases = f.setdefault("cases", [])
+        byid = {c["id"]: c for c in cases}
+        for key, label in outcomes:
+            cid, text = f"under-{key}", f"{label} under {f.get('name') or f['id']}: as the base, or what differs"
+            if cid not in byid:
+                cases.append({"id": cid, "text": text, "done": False})
+            elif byid[cid].get("text") in (None, "", cid):
+                byid[cid]["text"] = text
 
 
 def open_tasks(view: dict) -> list[dict]:
@@ -1748,6 +1940,8 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
                         "note": "a newer version is on Google Play: update the game on the phone, then recheck "
                                 "the documented features and look for new ones"})
     view = research_view(game)
+    if plan_feature_goals(game, view):  # before the analysis may close: these goals keep it open
+        view = research_view(game)
     # analyze and update tasks close themselves once the feature map is complete
     for t in open_tasks(view):
         # a recheck for a newer version than the docs describe stays open: the map is complete for the old one
@@ -1783,8 +1977,9 @@ def plan_goals(game: str, view: dict, now: float) -> None:
         write_op(game, {"op": "task", "id": "scout-1", "kind": "scout", "title": SCOUT_TITLE, "requires": "any",
                         "source": "external", "note": "the first map of the game"})
     studied = {t.get("feature") for t in goals if t["kind"] == "study"}
-    for f in view["features"]:
-        if f.get("status") in OPEN_STATUSES and f["id"] not in studied and not find_task(view, f"study-{f['id']}"):
+    for f in view["features"]:  # a locked feature cannot be studied: its unlock goal comes first, then a first look
+        if f.get("status") in OPEN_STATUSES and not f.get("locked") and f["id"] not in studied and \
+                not find_task(view, f"study-{f['id']}"):
             write_op(game, {"op": "task", "id": f"study-{f['id']}", "kind": "study", "feature": f["id"],
                             "title": f"Study {f.get('name') or f['id']}: open it, walk its screens and tabs, verify "
                                      "its cases", "requires": "any", "source": "external"})
@@ -1793,6 +1988,106 @@ def plan_goals(game: str, view: dict, now: float) -> None:
         n = len([t for t in view["tasks"] if t["kind"] in ("scout", "survey")]) + 1
         write_op(game, {"op": "task", "id": f"scout-{n}", "kind": "scout", "title": SCOUT_TITLE, "requires": "any",
                         "source": "external", "note": "no goal left while the search for features is open"})
+
+
+# The feature model's goals. A first look goes before everything else in a session; the matrix of outcomes waits
+# behind the unlock and study goals (TASK_RANK: study 4, unlock 6).
+FIRST_LOOK_RANK, MATRIX_RANK = 0, 7
+FIRST_LOOK = "First look at {name}: open it once, record what it is and decide whether it needs a full study"
+APPEARED_PLAN = ("find the moment {name} shows up and what comes just before it ({guess}); confirmed when a frame "
+                 "shows the trigger. Record it with feature {fid} --appeared \"...\": the goal closes by itself")
+MATRIX_PLAN = ("while {name} is on, reach each listed outcome of the base level once, one at a time (a deliberate loss "
+               "is allowed unless it spends premium currency); mark the outcome screen (mark --feature {fid} --as "
+               "result) and close its cell: case {fid} under-<outcome> \"as the base\" or \"what differs\" --done")
+
+
+def task_rank(t: dict) -> float:
+    """A goal's place in a session: its own rank (the feature model's goals), else its kind's."""
+    return t["rank"] if t.get("rank") is not None else TASK_RANK.get(t["kind"], 9)
+
+
+def lock_reached(f: dict, progress) -> bool:
+    lk = f.get("locked") or {}
+    return lk.get("value") is not None and progress is not None and float(progress) >= float(lk["value"])
+
+
+def feature_goal_ops(view: dict) -> list[tuple[str, dict]]:
+    """What the feature model asks of the plan, as (action, op): an unlock goal for every lock seen on screen; a
+    first look as soon as the progress passes the lock or the feature is seen open; an experiment for every typed
+    feature whose trigger is a hypothesis or unknown; one experiment per flow-affecting feature with its open
+    outcomes. Goals close when their data is in; a cancelled goal is left alone."""
+    tasks = {t["id"]: t for t in view["tasks"]}
+    progress = (view.get("progress") or {}).get("value")
+    labels = dict(known_outcomes(view))
+    res: list[tuple[str, dict]] = []
+
+    def is_open(tid: str) -> bool:
+        return tid in tasks and tasks[tid].get("status", "open") == "open"
+
+    def task(action: str, **op) -> None:
+        res.append((action, {"op": "task", "requires": "any", "source": "session", **op}))
+
+    def close(tid: str, note: str) -> None:
+        res.append(("closed", {"op": "task_done", "id": tid, "source": "planner", "note": note}))
+
+    def keep(g: dict | None, title: str, **op) -> None:
+        """Create the goal, or retitle it (reopening a done one) when what it asks changed."""
+        if g is None:
+            task("created", title=title, **op)
+        elif g.get("status") != "cancelled" and g.get("title") != title:
+            task("reopened" if g.get("status") == "done" else "updated", id=op["id"], title=title,
+                 plan=op.get("plan"), reopen=True)
+
+    for f in view["features"]:
+        fid, name, lk = f["id"], f.get("name") or f["id"], f.get("locked")
+        unlocks = [t for t in view["tasks"] if t["kind"] == "unlock" and t.get("feature") == fid]
+        if lk and f"unlock-{fid}" not in tasks and not any(t.get("status") != "cancelled" for t in unlocks):
+            task("created", id=f"unlock-{fid}", kind="unlock", feature=fid, title=f"Unlock {name}: {lk['text']}",
+                 target_text=lk["text"], **({"target_value": lk["value"]} if lk.get("value") is not None else {}),
+                 note="the lock seen on screen (feature --locked)")
+        opened = f.get("unlocked_at") or {}
+        if (opened.get("lock") or (lk and lock_reached(f, progress))) and f"first-look-{fid}" not in tasks:
+            why = (f"seen open at {opened.get('text') or 'the current progress'} (locked: {opened['lock']})"
+                   if opened.get("lock") else f"the progress ({(view.get('progress') or {}).get('text')}) passed "
+                                              f"the lock: {lk['text']}")
+            task("created", id=f"first-look-{fid}", kind="study", feature=fid, rank=FIRST_LOOK_RANK,
+                 title=FIRST_LOOK.format(name=name), note=why)
+        if opened.get("lock") and not lk:  # a recorded lock seen open; hand-made unlock goals are the players'
+            for t in unlocks:
+                if t.get("status", "open") == "open":
+                    close(t["id"], f"seen open at {opened.get('text') or 'the current progress'}")
+        ap, gid = f.get("appeared") or {}, f"appeared-{fid}"
+        if ap.get("certainty") == "fact":
+            if is_open(gid):
+                close(gid, f"the trigger is recorded as a fact: {ap.get('text')} [{ap.get('source')}]")
+        elif f.get("type") and not lk:
+            guess = ap.get("text") or "unknown"
+            keep(tasks.get(gid), f"Find why {name} appeared: {guess}", id=gid, kind="experiment", feature=fid,
+                 plan=APPEARED_PLAN.format(name=name, fid=fid, guess=guess if ap else "no hypothesis yet"))
+        if flow_type(f.get("type")):
+            under = [c for c in f.get("cases", []) if c["id"].startswith("under-")]
+            todo = [labels.get(c["id"][6:], c["id"][6:]) for c in under if not c.get("done")]
+            gid = f"outcomes-{fid}"
+            if todo and not lk:
+                keep(tasks.get(gid), f"Run each outcome once under {name}: {', '.join(todo)}", id=gid,
+                     kind="experiment", feature=fid, rank=MATRIX_RANK, plan=MATRIX_PLAN.format(name=name, fid=fid))
+            elif under and not todo and is_open(gid):
+                close(gid, f"every known outcome of the base level was run under {name}")
+    return res
+
+
+def plan_feature_goals(game: str, view: dict | None = None) -> list[dict]:
+    """Write the feature model's goals at once: the planner calls it, and so do the commands that change what it
+    reads (feature, case, progress, a won level, a done unlock goal), so a first look comes the moment the threshold
+    is passed. Idempotent; written as the planner's ops, like plan_goals. Only while the analysis is open."""
+    view = view or research_view(game)
+    if not any(t["kind"] in ("analyze", "update") for t in open_tasks(view)):
+        return []
+    res = []
+    for action, op in feature_goal_ops(view):
+        write_op(game, op)
+        res.append({"id": op["id"], "action": action, **({"title": op["title"]} if op.get("title") else {})})
+    return res
 
 
 def eligible(t: dict, state: str, installed_v: str | None, now: float) -> tuple[bool, str | None]:
@@ -1824,7 +2119,7 @@ def session_tasks(game: str, dev: str, platform: str, now: float) -> dict:
             ok, why = False, f"progress is blocked by {gate['type']} until {gate['until']}"
         if ok:
             item = {k: t.get(k) for k in ("id", "title", "kind", "feature", "note", "target_text", "target_value",
-                                          "plan") if t.get(k) not in (None, "")}
+                                          "plan", "rank") if t.get(k) not in (None, "")}
             if t["kind"] == "unlock" and t.get("target_value") and progress >= float(t["target_value"]):
                 item["hint"] = "the target is reached: check whether the feature has opened"
             if t.get("requires") == "fresh":
@@ -1832,8 +2127,8 @@ def session_tasks(game: str, dev: str, platform: str, now: float) -> dict:
             ready.append(item)
         elif why:
             blocked.append({"id": t["id"], "why": why})
-    # nearest unlock first among unlock goals
-    ready.sort(key=lambda t: (TASK_RANK.get(t["kind"], 9),
+    # nearest unlock first among unlock goals; a goal with its own rank (a first look) first among its equals
+    ready.sort(key=lambda t: (task_rank(t), t.get("rank") is None,
                               float(t.get("target_value") or 0) - progress if t["kind"] == "unlock" else 0, t["id"]))
     cap = P()["session"]["max_goals"]
     return {"ready": ready[:cap], "more": len(ready) - min(len(ready), cap), "blocked": blocked, "state": state,
@@ -1966,7 +2261,7 @@ def op_cur(args) -> dict:
 
 
 def op_source(cur: dict, args) -> str:
-    return getattr(args, "source", None) or f"{cur['id']}#{cur['step']}"
+    return getattr(args, "source", None) or (f"{cur['id']}#{cur['step']}" if cur.get("step") is not None else cur["id"])
 
 
 def summary_of(view: dict) -> dict:
@@ -1976,6 +2271,7 @@ def summary_of(view: dict) -> dict:
     return {"status": status, "why": why, "version": view.get("version"), "play_version": view.get("play_version"),
             "features": len(view["features"]),
             "documented": sum(f.get("status") == "documented" for f in view["features"]),
+            "untyped": sum(not f.get("type") for f in view["features"]),
             "open_features": [f["id"] for f in view["features"] if f.get("status") in OPEN_STATUSES],
             "discovery": view["discovery"], "ftue_verified": view.get("ftue_verified"),
             "mode": research_mode(view, now)[0], "gate": gate_active(view, now), "progress": view.get("progress"),
@@ -2075,7 +2371,7 @@ def cmd_claim(args) -> None:
                     continue
                 st = session_tasks(e["id"], dev, platform, now)
                 if st["ready"]:
-                    rank = min(TASK_RANK.get(t["kind"], 9) for t in st["ready"])
+                    rank = min(task_rank(t) for t in st["ready"])
                     last = last_session(e["id"])
                     if last.get("status") == "handoff" and \
                             now - iso_to_t(last["started"]) - last.get("minutes", 0) * 60 < 1800:
@@ -2725,7 +3021,7 @@ def cmd_mark(args) -> None:
             at = [float(v) for v in args.at.split(",")]
             assert len(at) == 2
         except (ValueError, AssertionError):
-            fail("--at is X,Y in pixels of the marked frame: the button to circle")
+            fail("--at is X,Y in pixels of the marked frame: the control the frame is about")
     shot = Path(cur["dir"]) / "shots" / f"{n:05d}.jpg"
     rec = {"type": "mark", "title": args.title, "desc": args.desc, "shot": n, "file": shot.as_posix()}
     if args.feature:
@@ -2750,24 +3046,78 @@ def cmd_clip(args) -> None:
     out({"ok": True, "clips": len(cur["clips"])})
 
 
+UNTYPED_HINT = ("untyped: give it a type from `sw.py types` (feature {fid} --type T); --type unknown when none fits "
+                "(the post-session review starts the type designer)")
+APPEARED_ASK = ("why did it appear? Record the trigger: --appeared \"after winning level 20\" when you saw it, or "
+                "--appeared-guess \"...\" (a hypothesis: the planner makes an experiment to find it)")
+
+
 def cmd_feature(args) -> None:
     cur = op_cur(args)
-    op = {"op": "feature", "id": slug(args.id), "name": args.name}
+    fid = slug(args.id)
+    f = find_feature(research_view(cur["game"]), fid, create=False)
+    if f is None and not args.name:
+        fail(f'a new feature needs its name: feature {fid} "Name" --type T')
+    if args.appeared and args.appeared_guess:
+        fail("--appeared is what you saw, --appeared-guess a hypothesis: give one")
+    if args.locked_value is not None and not args.locked:
+        fail('--locked-value goes with --locked "level 30": the lock as it reads on screen')
+    if args.locked and args.unlocked:
+        fail("--locked records a lock seen on screen, --unlocked the feature seen open: give one")
+    op = {"op": "feature", "id": fid, **({"name": args.name} if args.name else {})}
     if args.status:
         op["status"] = args.status
+    if args.type:
+        ty = slug(args.type)
+        if ty != UNKNOWN_TYPE and ty not in feature_types():
+            fail(f"no feature type {ty}: one of {', '.join(feature_types())}, or {UNKNOWN_TYPE} when none fits "
+                 "(sw.py types lists them with their checklists)")
+        op["type"] = ty
+    src = op_source(cur, args)
+    if args.appeared or args.appeared_guess:
+        op["appeared"] = {"text": args.appeared or args.appeared_guess,
+                          "certainty": "fact" if args.appeared else "hypothesis", "source": src}
+    if args.locked:
+        op["locked"] = {"text": args.locked, "value": args.locked_value}
+    if args.unlocked:
+        op.update(unlocked=True, source=src)
     log_op(cur, op)
-    out({"ok": True, "feature": find_feature(research_view(cur["game"]), slug(args.id), create=False)})
+    planned = plan_feature_goals(cur["game"])
+    f2 = find_feature(research_view(cur["game"]), fid, create=False)
+    warnings = []
+    if not f2.get("type"):
+        warnings.append(UNTYPED_HINT.format(fid=fid))
+    if f is None and not f2.get("appeared"):
+        warnings.append(APPEARED_ASK)
+    left = [c["id"] for c in f2.get("cases", []) if c["id"].startswith("chk-") and not c.get("done")]
+    if args.status == "documented" and left:
+        warnings.append(f"documented with {len(left)} checklist items open: {', '.join(left)}; close each "
+                        "(case ... --done, its text saying what was seen or that it does not apply)")
+    out({"ok": True, "feature": f2, **({"warnings": warnings} if warnings else {}),
+         **({"planned": planned} if planned else {})})
 
 
 def cmd_case(args) -> None:
     cur = op_cur(args)
-    op = {"op": "case", "feature": slug(args.feature), "id": slug(args.id)}
+    fid, cid = slug(args.feature), slug(args.id)
+    op = {"op": "case", "feature": fid, "id": cid}
+    if args.outcome:
+        f = find_feature(research_view(cur["game"]), fid, create=False)
+        if not f or f.get("type") != BASE_TYPE:
+            now_is = "not registered" if not f else f"typed {f['type']}" if f.get("type") else "untyped"
+            fail(f"an outcome is one way the base level ends: it goes on the base level's feature, typed {BASE_TYPE} "
+                 f"(feature <id> --type {BASE_TYPE}); {fid} is {now_is}")
+        if cid.startswith(("chk-", "under-")):
+            fail("an outcome is named by how the level ends (out-of-moves, bomb, timer): not chk- or under-")
+        op["outcome"] = True
     if args.text:
         op["text"] = args.text
     if args.done:
         op.update(done=True, source=op_source(cur, args))
     log_op(cur, op)
-    out({"ok": True, "feature": find_feature(research_view(cur["game"]), slug(args.feature), create=False)})
+    planned = plan_feature_goals(cur["game"])
+    out({"ok": True, "feature": find_feature(research_view(cur["game"]), fid, create=False),
+         **({"planned": planned} if planned else {})})
 
 
 def cmd_task(args) -> None:
@@ -2821,7 +3171,12 @@ def cmd_task(args) -> None:
                      **({"new_entry_names": args.entry_names} if getattr(args, "entry_names", None) else {}),
                      **({"result": args.result} if args.result else {})})
         view = research_view(cur["game"])
-        if t and t.get("kind") == "unlock" and t.get("feature") and not any(
+        lf = find_feature(view, t["feature"], create=False) if t and t.get("kind") == "unlock" and t.get("feature") else None
+        if lf and lf.get("locked"):
+            # a lock recorded as data: the feature is open now, and the planner makes its first look at once
+            log_op(cur, {"op": "feature", "id": lf["id"], "unlocked": True, "source": op_source(cur, args)})
+            created = next((p["id"] for p in plan_feature_goals(cur["game"]) if p["id"].startswith("first-look-")), None)
+        elif t and t.get("kind") == "unlock" and t.get("feature") and not any(
                 x["kind"] == "study" and x.get("feature") == t["feature"] for x in view["tasks"]):
             # the feature is open now: studying it is the next goal
             f = find_feature(view, t["feature"], create=False) or {"name": t["feature"]}
@@ -2837,7 +3192,8 @@ def cmd_task(args) -> None:
 def cmd_progress(args) -> None:
     cur = pick_session(args)
     log_op(cur, {"op": "progress", "text": args.text, "value": args.value})
-    out({"ok": True, "progress": research_view(cur["game"]).get("progress")})
+    planned = plan_feature_goals(cur["game"])  # a lock passed: its first look comes at once
+    out({"ok": True, "progress": research_view(cur["game"]).get("progress"), **({"planned": planned} if planned else {})})
 
 
 def cmd_gate(args) -> None:
@@ -2928,10 +3284,12 @@ def win_problem(cur: dict, lv: dict, op: dict, skipped: bool) -> str | None:
 
 def mechanic_change(cur: dict, mid: str) -> tuple[dict, dict | None]:
     """A mechanic is mastered after two levels in a row within the budget, broken after two in a row lost or
-    over it. A quit (session over) says nothing, nor does the time of a skipped win or a late start."""
+    over it. A quit (session over) says nothing, nor does the time of a skipped win or a late start, nor a loss
+    played on purpose (--deliberate: an outcome run under a condition feature, the feature model's matrix)."""
     m = find_mechanic(research_view(cur["game"]), mid)
     budget = P()["play"]["level_budget_min"] * 60
-    last2 = [r for r in m.get("recent", []) if r["result"] == "lost" or r["result"] == "won" and timed(r)][-2:]
+    last2 = [r for r in m.get("recent", []) if r["result"] == "lost" and not r.get("deliberate")
+             or r["result"] == "won" and timed(r)][-2:]
     fast = len(last2) == 2 and all(r["result"] == "won" and (r["seconds"] or 1e9) <= budget for r in last2)
     slow = len(last2) == 2 and all(r["result"] == "lost" or (r["seconds"] or 0) > budget for r in last2)
     change = None
@@ -2982,14 +3340,18 @@ def level_end(cur: dict, args, lv: dict, now: float) -> None:
         fail("--retry opens the same level again after a loss: level end lost --retry")
     if args.skipped and args.result != "won":
         fail("--skipped marks a win the game gave for a video, not a solve: level end won --skipped")
+    if args.deliberate and args.result != "lost":
+        fail("--deliberate marks a loss played on purpose (an outcome under a feature): level end lost --deliberate")
     op = {**level_op(cur, lv, args.result, args.note, now), "shot": cur.get("last_shot"),
-          **({"skipped": True} if args.skipped else {})}
+          **({"skipped": True} if args.skipped else {}), **({"deliberate": True} if args.deliberate else {})}
     problem = win_problem(cur, lv, op, args.skipped) if args.result == "won" else None
     if problem:
         fail(problem, level=lv["name"], shot_n=cur.get("last_shot"))
     log_op(cur, op)
+    planned = []
     if args.result == "won" and not lv.get("bonus"):  # a bonus board is not a step of the level progress
         log_op(cur, {"op": "progress", "text": lv["name"], "value": lv.get("value")})
+        planned = plan_feature_goals(cur["game"])  # a lock passed: its first look comes at once
     cur["level"] = None
     for k in ("outside", "last_solve", "last_tap", "won_t", "restarts_t"):  # restarts_t: the game moved on
         cur.pop(k, None)
@@ -3004,6 +3366,7 @@ def level_end(cur: dict, args, lv: dict, now: float) -> None:
     out({"ok": True, "level": lv["name"], "result": args.result, "minutes": round(op["seconds"] / 60, 1),
          "mechanic": mechanic_brief(m), **({"mechanic_change": change} if change else {}),
          **({"retry": f"{lv['name']!r} is open again with a new clock"} if args.retry else {}),
+         **({"planned": planned} if planned else {}),
          "next": "update the playbook now (state/<game>/playbook.md): what worked, what to change; the next level "
                  "starts from it"})
 
@@ -3649,9 +4012,7 @@ def upload_original(cur: dict, summary: str) -> str | None:
 
         vid = yt.upload(d / "original.mkv", f"{cur['title']} · {cur['id'][:15]}",
                         f"sleepwalker session {cur['id']}\n{summary}", L()["youtube"])
-        (d / "original.mkv").unlink()
-        for seg in d.glob("seg_*.mp4"):
-            seg.unlink()
+        # the original stays for the documenter's clips (sw.py clip-cut): gc deletes it once the session is documented
         return vid
     except Exception as ex:
         log_step(cur, {"type": "warn", "text": f"youtube: {ex}"})
@@ -3980,6 +4341,149 @@ def cmd_research(args) -> None:
     print(yaml.safe_dump({"summary": summary_of(view), **view}, allow_unicode=True, sort_keys=False))
 
 
+LOCAL_TYPES_HEADER = ("# This machine's feature types (sw.py type-add, the type designer), used at once on this machine.\n"
+                      "# The dream's process improver moves them into schema/feature-types.yaml (runbooks/dream.md, "
+                      "section 7);\n# `sw.py types --prune` drops the ones published since. Every type also has the "
+                      "universal items.\n")
+
+
+def published_type_ids() -> set[str]:
+    return {slug(str(t.get("id"))) for t in read_yaml(types_paths()[0]).get("types") or [] if isinstance(t, dict)}
+
+
+def write_local_types(types: list[dict]) -> Path:
+    p = types_paths()[1]
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with open(p, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(LOCAL_TYPES_HEADER + yaml.safe_dump({"types": types}, allow_unicode=True, sort_keys=False, width=120))
+    return p
+
+
+def cmd_types(args) -> None:
+    """The merged catalog: the published types and this machine's (`local: true`)."""
+    pub, loc = types_paths()
+    pruned = []
+    if args.prune:  # published since: the schema has them now, the local copies would only shadow later edits
+        published, keep = published_type_ids(), []
+        for t in read_yaml(loc).get("types") or []:
+            (pruned if slug(str(t.get("id"))) in published else keep).append(t)
+        if pruned:
+            write_local_types(keep)
+        pruned = [slug(str(t.get("id"))) for t in pruned]
+    c = catalog()
+    out({"published": str(pub), "local": str(loc) if loc.exists() else None, "universal": c["universal"],
+         "types": list(c["types"].values()), **({"pruned": pruned} if args.prune else {})})
+
+
+def parse_type_item(spec: str) -> dict:
+    """ID:TEXT:KIND; the text may hold colons of its own."""
+    iid, sep, rest = spec.partition(":")
+    text, sep2, kind = rest.rpartition(":")
+    if not (sep and sep2 and slug(iid) and text.strip()) or kind.strip() not in TYPE_KINDS:
+        fail(f"--item is ID:TEXT:KIND with KIND one of {', '.join(TYPE_KINDS)}, not: {spec}")
+    return {"id": slug(iid), "text": text.strip(), "kind": kind.strip()}
+
+
+def cmd_type_add(args) -> None:
+    """The type designer's new type, into state/feature-types.local.yaml: used at once on this machine."""
+    tid = slug(args.id)
+    if tid == UNKNOWN_TYPE or tid in published_type_ids():
+        fail(f"{tid} is {'reserved' if tid == UNKNOWN_TYPE else 'a published type'}: a new type gets a new id; a "
+             "change to a published type goes through the dream's process PR")
+    base = slug(args.base) if args.base else None
+    if base and base not in feature_types():
+        fail(f"no type {base} to base it on: one of {', '.join(feature_types())}")
+    items = [parse_type_item(s) for s in args.item or []]
+    ids, uids = [i["id"] for i in items], {u["id"] for u in catalog()["universal"]}
+    if not items:
+        fail("a type needs its own checklist: --item ID:TEXT:KIND, at least one (the universal items come by themselves)")
+    if len(set(ids)) != len(ids) or uids & set(ids):
+        fail(f"checklist item ids are unique and not the universal ones ({', '.join(sorted(uids))}): {', '.join(ids)}")
+    entry = {"id": tid, "name": args.name, "description": " ".join(args.description.split()), "base": base,
+             "affects_level_flow": bool(args.affects_level_flow), "checklist": items}
+    old = read_yaml(types_paths()[1]).get("types") or []
+    replaced = any(slug(str(t.get("id"))) == tid for t in old)
+    p = write_local_types([t for t in old if slug(str(t.get("id"))) != tid] + [entry])
+    out({"ok": True, "type": feature_types()[tid], "written": str(p), **({"replaced": True} if replaced else {}),
+         "next": f"set the feature's type: sw.py feature <id> --type {tid} --game <game>"})
+
+
+def feature_audit(view: dict) -> dict:
+    """The feature model of one game: what is untyped, which triggers are unknown, which checklist items are open,
+    which locks have no unlock goal, and the matrix of the base level's outcomes under each condition feature."""
+    types, labels = feature_types(), dict(known_outcomes(view))
+    game = view["game"]
+
+    def brief(f: dict) -> dict:
+        return {"id": f["id"], "name": f.get("name"), "status": f.get("status")}
+
+    def goal(tid: str) -> dict | None:
+        t = find_task(view, tid)
+        return {"id": tid, "status": t.get("status", "open")} if t else None
+
+    untyped, unknown, foreign, missing, guesses, checklist, locks, matrix = ([] for _ in range(8))
+    for f in view["features"]:
+        fid, ty = f["id"], f.get("type")
+        if not ty:
+            untyped.append(brief(f))
+        elif ty == UNKNOWN_TYPE:
+            unknown.append(brief(f))
+        elif ty not in types:
+            foreign.append({**brief(f), "type": ty})
+        ap = f.get("appeared")
+        if not ap:
+            missing.append(fid)
+        elif ap.get("certainty") != "fact":
+            guesses.append({"feature": fid, "hypothesis": ap.get("text"), "source": ap.get("source"),
+                            "goal": goal(f"appeared-{fid}")})
+        chk = [c for c in f.get("cases", []) if c["id"].startswith("chk-")]
+        left = [{"id": c["id"], "text": c.get("text")} for c in chk if not c.get("done")]
+        if left:
+            checklist.append({"feature": fid, "type": ty, "done": len(chk) - len(left), "total": len(chk), "open": left})
+        if f.get("locked"):
+            ug = [t["id"] for t in view["tasks"] if t["kind"] == "unlock" and t.get("feature") == fid
+                  and t.get("status") != "cancelled"]
+            locks.append({"feature": fid, "locked": f["locked"], "unlock_goal": ug[0] if ug else None})
+        if flow_type(ty):
+            under = [c for c in f.get("cases", []) if c["id"].startswith("under-")]
+            matrix.append({"feature": fid, "name": f.get("name"), "type": ty,
+                           "open": [c["id"][6:] for c in under if not c.get("done")],
+                           "closed": [c["id"][6:] for c in under if c.get("done")], "goal": goal(f"outcomes-{fid}")})
+    base = [f["id"] for f in view["features"] if f.get("type") == BASE_TYPE]
+    no_goal = [x["feature"] for x in locks if not x["unlock_goal"]]
+    hints = []
+    if untyped:
+        hints.append(f"{len(untyped)} untyped: type each (feature ID --type T --game {game}; sw.py types); when none "
+                     "fits, --type unknown and start the type designer")
+    if unknown:
+        hints.append("start the type designer (sleepwalker-typist) for each unknown-type feature")
+    if foreign:
+        hints.append("types this machine's catalog does not have (another machine's local types): sw.py sync, or "
+                     "start the type designer")
+    if matrix and not labels:
+        hints.append(f"features change the level flow but no base outcome is known: type the base level {BASE_TYPE} "
+                     "and register each loss kind (case ID KIND \"...\" --outcome)")
+    if no_goal:
+        hints.append(f"locks without an unlock goal: the planner makes them (sw.py plan {game}, or the next feature "
+                     "or case op)")
+    return {"game": game,
+            "counts": {"features": len(view["features"]), "untyped": len(untyped), "unknown_type": len(unknown),
+                       "appeared_fact": sum((f.get("appeared") or {}).get("certainty") == "fact" for f in view["features"]),
+                       "appeared_hypothesis": len(guesses), "appeared_missing": len(missing),
+                       "checklist_open": sum(len(x["open"]) for x in checklist), "locks": len(locks),
+                       "locks_without_unlock_goal": len(no_goal),
+                       "matrix_open": sum(len(x["open"]) for x in matrix),
+                       "matrix_closed": sum(len(x["closed"]) for x in matrix)},
+            "untyped": untyped, "unknown_type": unknown, "type_not_in_catalog": foreign,
+            "appeared_missing": missing, "appeared_hypothesis": guesses, "checklist_open": checklist,
+            "locks": locks, "locks_without_unlock_goal": no_goal, "base_levels": base,
+            "outcomes": [{"id": k, "label": v} for k, v in labels.items()], "matrix": matrix, "hints": hints}
+
+
+def cmd_audit(args) -> None:
+    out(feature_audit(research_view(find_game(args.game)["id"])))
+
+
 def dreamed_ids() -> set[str]:
     ids: set[str] = set()
     for p in (ROOT / "dreams").glob("*.md"):
@@ -3998,6 +4502,109 @@ def cmd_pending(args) -> None:
     # until: a moment after the end of the last session; snapshot includes the journal up to it
     end = max((iso_to_t(s["started"]) + s["minutes"] * 60 + 60 for s in res), default=None)
     out({"machine": machine(), "pending": res, "count": len(res), "until": now_iso(end) if end else None})
+
+
+# Ops that change a feature's page: the feature itself, its cases, and the feature model's fields and outcome cases
+FEATURE_OPS = ("feature", "case", "outcome", "type", "appeared", "locked", "unlocked")
+FEATURE_FIELDS = ("type", "appeared", "locked", "unlocked_at")
+
+
+def op_feature(op: dict) -> str | None:
+    """The feature an op changes: a feature op's id, the feature of a case (or of another feature-model op)."""
+    if op.get("op") == "feature":
+        return op.get("id")
+    return op.get("feature") if op.get("op") in FEATURE_OPS else None
+
+
+def doc_scope(game: str, sid: str, ops: list[dict] | None = None) -> dict[str, dict]:
+    """The features a session changed, for its documenter: its feature and case ops (the journal by session and the
+    research steps of its steps.jsonl), the review's closures that cite it, and the frames marked for a feature.
+    Not only the marked ones (2026-10-02: Multi Stage's loss flow reached the map and never the page)."""
+    ops = journal(game) if ops is None else ops
+    steps = read_jsonl(RAW() / game / sid / "steps.jsonl")
+    mine = [o for o in ops if o.get("session") == sid or str(o.get("source") or "").startswith(f"{sid}#")]
+    mine += [x for x in steps if x.get("type") == "research" and x.get("op")]
+    scope: dict[str, dict] = {}
+
+    def entry(fid: str) -> dict:
+        return scope.setdefault(fid, {"changed": set(), "cases": set(), "marks": set()})
+
+    for o in mine:
+        fid = op_feature(o)
+        if not fid:
+            continue
+        e = entry(fid)
+        e["changed"].add(o["op"])
+        if o["op"] == "feature":
+            e["changed"] |= {k for k in FEATURE_FIELDS if k in o}
+        if o["op"] == "case":
+            e["cases"].add(o.get("id"))
+            if o.get("outcome"):
+                e["changed"].add("outcome")
+    marks = [x for x in steps if x.get("type") == "mark"]
+    marks += [x for x in read_jsonl(STATE() / game / "marks.jsonl") if x.get("session") == sid]
+    for x in marks:
+        if x.get("feature"):
+            entry(x["feature"])["marks"].add(x.get("role") or "other")
+    return scope
+
+
+def cmd_doc_scope(args) -> None:
+    """What the documenter of a session writes: each feature whose ops the session changed, with its type, why it
+    appeared, its lock, the cases the session touched, its open checklist items and its page."""
+    game = find_game(args.game)["id"]
+    ops = journal(game)
+    if not (RAW() / game / args.session / "steps.jsonl").exists() and not any(o.get("session") == args.session for o in ops):
+        fail(f"no session {args.session} of {game} on this machine")
+    view = research_view(game)
+    res = []
+    for fid, e in sorted(doc_scope(game, args.session, ops).items()):
+        f = find_feature(view, fid, create=False)
+        cases = (f or {}).get("cases", [])
+        page = STATE() / game / "pages" / "features" / f"{fid}.md"
+        res.append({"feature": fid, "name": (f or {}).get("name") or fid, "type": (f or {}).get("type"),
+                    "status": (f or {}).get("status"), **({} if f else {"in_map": False}),
+                    "changed": sorted(e["changed"]), "marks": sorted(e["marks"]),
+                    "cases": [{k: c[k] for k in ("id", "text", "done", "source", "outcome", "note") if c.get(k) is not None}
+                              for c in cases if c["id"] in e["cases"]],
+                    **{k: f[k] for k in FEATURE_FIELDS if f and f.get(k) is not None},
+                    "open_checklist": [c["id"] for c in cases if str(c["id"]).startswith(CHECK_PREFIXES)
+                                       and not c.get("done")],
+                    "outcomes_table": bool(f) and has_base(f), "page": str(page) if page.exists() else None})
+    out({"game": game, "session": args.session, "features": res, "count": len(res)})
+
+
+def docs_log(game: str) -> str:
+    """The documenters' log of a game: each block names the session it documented."""
+    p = STATE() / game / "docs-log.md"
+    return p.read_text(encoding="utf-8") if p.exists() else ""
+
+
+def cmd_pending_docs(args) -> None:
+    """This machine's sessions no documenter has logged in state/<game>/docs-log.md, oldest first (their frames are
+    deleted first): bench slots and sessions started outside the orchestrator included. A session that changed no
+    feature and marked no frame has nothing to document and is only counted; so is one whose raw/ is gone."""
+    res, empty, gone, logs, ops = [], 0, 0, {}, {}
+    for f in sorted(STATE().glob("*/sessions.jsonl")):
+        for s in read_jsonl(f):
+            game, sid = s.get("game") or f.parent.name, s.get("id")
+            if not sid or s.get("machine") not in (None, machine()):
+                continue
+            if game not in logs:
+                logs[game], ops[game] = docs_log(game), journal(game)
+            if sid in logs[game]:
+                continue
+            if not (RAW() / game / sid / "steps.jsonl").exists():
+                gone += 1
+                continue
+            scope = doc_scope(game, sid, ops[game])
+            if not scope:
+                empty += 1
+                continue
+            res.append({"game": game, "session": sid, "status": s.get("status"), "started": s.get("started"),
+                        **({"bench": s["bench"]} if s.get("bench") else {}), "features": sorted(scope)})
+    res.sort(key=lambda r: r.get("started") or "")
+    out({"machine": machine(), "pending": res, "count": len(res), "nothing_to_document": empty, "raw_gone": gone})
 
 
 def wasted_handoff(row: dict) -> bool:
@@ -4346,26 +4953,71 @@ def cmd_mark_tag(args) -> None:
     out({"ok": True, "tagged": rec})
 
 
-def page_image(m: dict, game_dir: Path, slug_: str) -> str:
-    """The marked frame as a wiki WebP; the entry point's button circled when the mark gave --at."""
-    from PIL import ImageDraw
-
+def page_image(m: dict, game_dir: Path, slug_: str, long_edge: int = 1080) -> str:
+    """The marked frame as a clean wiki WebP: nothing is drawn on it (the owner, 2026-10-02: no circles on pages).
+    A mark's --at stays in its record; the caption names the control."""
     img = Image.open(m["file"]).convert("RGB")
-    if m.get("at") and m.get("model_size"):
-        k = img.width / m["model_size"][0]
-        x, y, r = m["at"][0] * k, m["at"][1] * k, img.width * 0.09
-        ImageDraw.Draw(img).ellipse((x - r, y - r, x + r, y + r), outline=(235, 30, 30), width=max(6, img.width // 110))
     name = f"{m['session'][:8]}-{slug(slug_)}-{screen_hash(img)[:8]}.webp"
     dest = game_dir / "img" / name
     dest.parent.mkdir(parents=True, exist_ok=True)
     if not dest.exists():
-        save_for_wiki(img, str(dest))
+        save_for_wiki(img, str(dest), long_edge=long_edge)
     return f"../img/{name}"
 
 
+# --- the feature model (types, checklists, outcomes): what a page is held against ----------------------------
+# Case ids the harness makes from a feature's type: `chk-<item>` (the type's checklist) and `under-<outcome>` (how a
+# base level's outcome goes under a feature that affects the level flow). Every other case is the player's.
+CHECK_PREFIXES = ("chk-", "under-")
+
+
+def has_base(f: dict) -> bool:
+    """A feature whose type has a base type (a level type over core-level): its page has an Outcomes table. Without
+    the type in the catalog, its under-<outcome> cases say so."""
+    t = feature_types().get(f.get("type") or "")
+    if t is not None:
+        return bool(t.get("base"))
+    return any(str(c.get("id", "")).startswith("under-") for c in f.get("cases", []))
+
+
+def base_outcomes(view: dict) -> dict[str, str]:
+    """The ways a base level ends (cases with outcome: true; the core-level features first): outcome id -> its text."""
+    res: dict[str, str] = {}
+    for f in sorted(view["features"], key=lambda f: f.get("type") != "core-level"):
+        for c in f.get("cases", []):
+            if c.get("outcome"):
+                res.setdefault(c["id"], c.get("text") or c["id"])
+    return res
+
+
+def step_frame(game: str, sid: str, step) -> dict | None:
+    """The frame a step left on screen (a case's source), when it shows the game: a mark-like record for page_image."""
+    d = RAW() / game / str(sid)
+    rec = next((x for x in read_jsonl(d / "steps.jsonl") if x.get("step") == step and x.get("shot")), None)
+    if not rec:
+        return None
+    n = int(rec["shot"])
+    app = frame_step(d, n)[1]
+    f = d / "shots" / f"{n:05d}.jpg"
+    if not f.exists() or (app and app != game):
+        return None
+    return {"session": str(sid), "step": step, "shot": n, "file": f.as_posix()}
+
+
+def case_marker(cid: str) -> str:
+    """The case's id on its row: check-pages holds the page against the map by it."""
+    return f"<!-- case:{cid} -->"
+
+
+def cell(text) -> str:
+    """Text for a table cell: one line, no column breaks."""
+    return re.sub(r"\s+", " ", str(text or "")).replace("|", "/").strip()
+
+
 def cmd_page_skeleton(args) -> None:
-    """A feature page laid out from the frames marked for it (latest frame per place) and its cases, with
-    sources as footnotes. The text is left to the documenter: <!-- --> comments say what goes where."""
+    """A feature page laid out from the frames marked for it (latest frame per place) and its cases in the map, with
+    sources as footnotes. The text is left to the documenter: <!-- --> comments say what goes where; every case carries
+    its id (<!-- case:ID -->), so check-pages holds the page against the map. Frames are clean: nothing is drawn."""
     game, fid = find_game(args.game)["id"], slug(args.feature)
     view = research_view(game)
     f = find_feature(view, fid, create=False) or {"id": fid, "name": fid, "cases": []}
@@ -4376,26 +5028,63 @@ def cmd_page_skeleton(args) -> None:
     gdir = Path(args.out)
     notes, sources = [], []
 
-    def src(m) -> str:
-        key = (m["session"], m["step"])
+    def cite(key: tuple) -> str:
         if key not in sources:
             sources.append(key)
         return f"[^s{sources.index(key) + 1}]"
+
+    def src(m) -> str:
+        return cite((m["session"], m["step"]))
+
+    def map_source(source, local: bool = True) -> str:
+        """A footnote for a map source SESSION#STEP this machine recorded (local=False: any session)."""
+        sid, _, st = str(source or "").partition("#")
+        return cite((sid, int(st))) if st.isdigit() and (not local or (RAW() / game / sid).exists()) else ""
 
     def img(role: str, label: str) -> list[str]:
         m = latest.get(role)
         if not m:
             notes.append(role)
             return [f"<!-- no frame marked as {role}: mark one (sw.py mark … --feature {fid} --as {role}) -->"]
-        return [f"![{m.get('desc') or m.get('title') or label}]({page_image(m, gdir, f'{fid}-{role}')}) {src(m)}"]
+        desc = m.get("desc") or m.get("title") or label
+        lines = [f"![{desc}]({page_image(m, gdir, f'{fid}-{role}')}) {src(m)}"]
+        if role == "entry":  # nothing is drawn on the frame: the caption names the control
+            lines.append(f"*{cell(desc)}*")
+        return lines
 
+    def sentence(text: str) -> str:
+        text = str(text).strip().rstrip(".")
+        return text[:1].upper() + text[1:]
+
+    ap = f.get("appeared") if isinstance(f.get("appeared"), dict) else {}
+    if ap.get("text"):
+        fn = map_source(ap.get("source"), local=False)
+        if ap.get("certainty") == "fact":  # a fact without its source fails check-pages: it says so here
+            why = [f"{sentence(ap['text'])}{' ' + fn if fn else ''}."
+                   + ("" if fn else " <!-- a fact needs its source (SESSION#STEP), or it is a hypothesis -->")]
+        else:
+            why = [f"Hypothesis: {str(ap['text']).strip().rstrip('.')}, not verified{' ' + fn if fn else ''}."]
+    else:
+        why = ['<!-- Why the feature appeared (its trigger): a fact with its source, or "Hypothesis: …, not verified". '
+               'The map has no "appeared" for it yet. -->']
+    lock = []
+    if isinstance(f.get("locked"), dict) and f["locked"].get("text"):
+        lock.append(f"<!-- the map: locked until {f['locked']['text']}: where the lock shows and what opens it -->")
+    if f.get("unlocked_at"):
+        u = f["unlocked_at"]
+        lock.append(f"<!-- the map: seen open at {u.get('text') if isinstance(u, dict) else u} -->")
+    outcomes = has_base(f)
+    cases = f.get("cases", [])
     tabs = [r[4:] for r in latest if r.startswith("tab:")]
     L_ = ["---", f"game: {game}", f'title: "{f.get("name") or fid}"', "type: feature", f"feature: {fid}",
           f"version_seen: {f.get('version_seen') or view.get('version') or ''}", f"verified_at: {dt.date.today()}",
           f"sources: [{', '.join(sorted({m['session'] for m in marks}))}]", "---", "",
           f"# {f.get('name') or fid}", "",
-          "<!-- One paragraph: what the feature is for the player. -->", "",
-          "## Where to find it", "", "<!-- From which screen and which button; the route. -->", "",
+          "<!-- One paragraph: what the feature is for the player. A dry analysis: facts and frames, no notes on why "
+          "it was designed so. -->", "",
+          "## Why it appeared", "", *why, "",
+          "## Where to find it", "", "<!-- From which screen and which control (named: nothing is drawn on the frame); "
+                                     "the route. -->", *lock, "",
           *img("entry", "entry point"), "",
           "## What it looks like", "", "<!-- What is on the screen and what matters. -->", "",
           *img("screen", "screen"), ""]
@@ -4408,28 +5097,48 @@ def cmd_page_skeleton(args) -> None:
     for role in ("popup", "result"):
         if role in latest:
             L_ += [f"### {'Popup' if role == 'popup' else 'Result'}", "", *img(role, role), ""]
-    L_ += ["## How it works", "", "<!-- Rules, timers, prices, rewards: numbers with the version. -->", "",
-           "## Cases", "", "| Case | What was done | Result | Source |", "|---|---|---|---|"]
-    for c in f.get("cases", []):
-        s = ""
-        if c.get("source") and "#" in str(c["source"]):
-            sid, _, st = str(c["source"]).partition("#")
-            if st.isdigit() and (RAW() / game / sid).exists():
-                key = (sid, int(st))
-                if key not in sources:
-                    sources.append(key)
-                s = f"[^s{sources.index(key) + 1}]"
-        L_.append(f"| {c.get('text') or c['id']} | <!-- --> | {'✅' if c.get('done') else 'not verified'} | {s} |")
-    L_ += ["", "## Not verified", "", *[f"- {c.get('text') or c['id']}" for c in f.get("cases", []) if not c.get("done")],
-           ""]
+    L_ += ["## How it works", "", "<!-- Rules, timers, prices, rewards: numbers with the version. Motion (an animated "
+                                  "hand, a reward or unlock animation, a transition) is a clip: sw.py clip-cut. -->", ""]
+    unders = [c for c in cases if str(c["id"]).startswith("under-")]
+    if outcomes:  # a level type over its base level: every outcome of the base level under this feature
+        names = base_outcomes(view)
+        L_ += ["## Outcomes", "", "<!-- Each way the base level ends, under this feature: the same as the base, or "
+                                  "what differs. -->", ""]
+        if unders:
+            L_ += ["| Outcome | As the base or what differs | Frame |", "|---|---|---|"]
+        else:
+            L_ += ["<!-- the map has no under-<outcome> cases for this feature yet -->"]
+        for c in unders:
+            oid = c["id"][len("under-"):]
+            name = cell(names.get(oid) or oid.replace("-", " "))
+            what, frame = "not verified", "—"
+            if c.get("done"):
+                fn = map_source(c.get("source"))
+                what = (cell(c.get("note")) or "<!-- the same as the base, or what differs -->") + (f" {fn}" if fn else "")
+                sid, _, st = str(c.get("source") or "").partition("#")
+                fr = step_frame(game, sid, int(st)) if st.isdigit() else None
+                frame = (f"![{name}]({page_image(fr, gdir, f'{fid}-outcome-{oid}', long_edge=640)})" if fr
+                         else "<!-- no frame -->")
+            L_.append(f"| {name} {case_marker(c['id'])} | {what} | {frame} |")
+        L_.append("")
+    L_ += ["## Cases", "", "| Case | What was done | Result | Source |", "|---|---|---|---|"]
+    for c in cases:
+        if outcomes and c in unders:
+            continue  # its row is in Outcomes
+        L_.append(f"| {cell(c.get('text') or c['id'])} {case_marker(c['id'])} | <!-- --> | "
+                  f"{'✅' if c.get('done') else 'not verified'} | {map_source(c.get('source'))} |")
+    L_ += ["", "## Not verified", "",
+           *[f"- {cell(c.get('text') or c['id'])} {case_marker(c['id'])}" for c in cases if not c.get("done")], ""]
     L_ += [f"[^s{i + 1}]: {step_source(game, sid, st)}" for i, (sid, st) in enumerate(sources)]
+    text, _ = page_footnotes("\n".join(L_) + "\n", game)  # inline sources in the map's notes become footnotes
     dest = gdir / "features" / f"{fid}.md"
     if dest.exists():
         dest = dest.with_name(f"{fid}.skeleton.md")  # never overwrite the written page: merge by hand
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text("\n".join(L_) + "\n", encoding="utf-8")
+    dest.write_bytes(text.encode("utf-8"))
     out({"page": str(dest), "frames": {r: m["shot"] for r, m in latest.items()}, "tabs": tabs,
-         "missing_frames": notes, "sources": len(sources)})
+         "missing_frames": notes, "sources": len(sources), "cases": len(cases), "outcomes": outcomes,
+         "appeared": ap.get("certainty") if ap.get("text") else None})
 
 
 INLINE_SOURCE = re.compile(r"\[s:([0-9]{8}-[0-9]{6}-[^#\]\s]+)#([0-9]+)\]")
@@ -4537,14 +5246,125 @@ def cmd_redact_image(args) -> None:
     out({"image": str(p), "size": [w, h], "boxes": len(boxes)})
 
 
-def page_problems(p: Path) -> list[str]:
+CASE_ID = re.compile(r"<!--\s*case:([A-Za-z0-9_.:-]+)\s*-->")
+STOPWORDS = frozenset("the and for with from that this what when does into onto its are was were has have not can will "
+                      "after before then than only also whether".split())
+# Notes on why the game was designed so: a page is a dry analysis, facts and frames (the owner, 2026-10-02)
+DESIGN_INTENT = re.compile(r"\b(designed to|(?:is|are) meant to|intended to|to encourage|to motivate|to retain|"
+                           r"to monetize|design intent|the (?:developers?|designers?) (?:want|wanted|intend))", re.I)
+
+
+def front_matter(s: str) -> dict:
+    if not s.startswith("---"):
+        return {}
+    try:
+        d = yaml.safe_load(s.split("---", 2)[1])
+    except (yaml.YAMLError, IndexError):
+        return {}
+    return d if isinstance(d, dict) else {}
+
+
+def text_words(s: str) -> set[str]:
+    """The words of a case or of a page row, for matching pages written before case ids: lower case, no footnotes,
+    comments or stop words, a plural s dropped."""
+    s = re.sub(r"\[\^?s[^\]]*\]|<!--.*?-->", " ", s, flags=re.S)
+
+    def stem(w: str) -> str:  # match, matches, matched; stage, stages
+        w = w[:-1] if len(w) > 3 and w.endswith("s") else w
+        w = w[:-2] if len(w) > 5 and w.endswith("ed") else w[:-3] if len(w) > 5 and w.endswith("ing") else w
+        return w[:-1] if len(w) > 3 and w.endswith("e") else w
+
+    return {stem(w) for w in re.findall(r"[a-z0-9]+", s.lower()) if len(w) > 2 and w not in STOPWORDS}
+
+
+def loosely_shown(text: str, lines: list[str], cid: str = "") -> bool:
+    """The case is on one of these lines in other words: half of the shorter one's words are shared (at least two).
+    The case's title (before a colon, without parentheses) is tried too: a map case says "Walls and Pins: unlock
+    sources (…)" where an old page's row says "Walls and Pins"; and a row named as the case's id ("Win" for win)."""
+    head = re.split(r"[:—]", text, maxsplit=1)[0]
+    variants = [text_words(v) for v in (text, re.sub(r"\([^)]*\)", " ", text), re.sub(r"\([^)]*\)", " ", head))]
+    variants = [a for i, a in enumerate(variants) if a and (i < 2 or len(a) >= 2)]
+    named = text_words(cid.replace("-", " "))
+    for ln in lines:
+        first = text_words(ln.lstrip(" -*"))
+        if named and named <= first and len(first) <= 3:
+            return True
+        b = text_words(ln)
+        for a in variants:
+            common = len(a & b)
+            if b and common >= min(2, len(a), len(b)) and common / min(len(a), len(b)) >= 0.5:
+                return True
+    return False
+
+
+def map_problems(s: str, section, view_of) -> tuple[list[str], list[str]]:
+    """The page against the feature map of its game (front matter game and feature): every case done in the map is
+    on the page (its <!-- case:ID -->) or under Not verified, and so is every checklist item (chk-*, under-*) of the
+    feature's type; a feature whose type has a base type has its Outcomes table. A page written before case ids is
+    matched by the player's cases' text (checklist items only by their ids), and gets one note instead of a problem
+    per row."""
+    fm = front_matter(s)
+    game, fid = fm.get("game"), fm.get("feature")
+    if not game or not fid or fm.get("type", "feature") != "feature":
+        return [], []
+    f = find_feature(view_of(str(game)), str(fid), create=False)
+    if f is None:
+        return [], [f"feature {fid} is not in the map of {game}"]
+    probs, notes = [], []
+    ids = set(CASE_ID.findall(s))
+    # lines that carry a case id show that case only; a row is matched by its first cell (the case's name)
+    nv_items = [ln for ln in (section("Not verified") or "").splitlines()
+                if ln.lstrip().startswith(("-", "*")) and not CASE_ID.search(ln)]
+    rows = [ln.strip().strip("|").split("|")[0] for ln in
+            ((section("Cases") or "") + "\n" + (section("Outcomes") or "")).splitlines()
+            if ln.lstrip().startswith("|") and not CASE_ID.search(ln)]
+    cases = f.get("cases", [])
+    if cases and not ids:
+        notes.append("no case ids: the cases were matched by their text (page-skeleton writes <!-- case:ID --> "
+                     "into each row)")
+    for c in cases:
+        cid, text = str(c["id"]), c.get("text") or str(c["id"])
+        if cid in ids:
+            continue
+        # a checklist item is made by the harness from a template: only its id shows it (its text is like its siblings')
+        if not cid.startswith(CHECK_PREFIXES) and (loosely_shown(text, nv_items)
+                                                   or (not ids and loosely_shown(text, rows, cid))):
+            continue
+        if c.get("done"):
+            probs.append(f"case '{cid}' is done in the map ({c.get('source') or 'no source'}) but not on the page: "
+                         f"a Cases row with <!-- case:{cid} -->, or the case under Not verified ({text[:90]})")
+        elif cid.startswith(CHECK_PREFIXES):
+            probs.append(f"checklist item '{cid}' is neither on the page nor under Not verified ({text[:90]})")
+    if has_base(f) and section("Outcomes") is None:
+        probs.append("no '## Outcomes' section: the feature's type has a base type (a row per under-<outcome> case: "
+                     "outcome | as the base or what differs | frame)")
+    return probs, notes
+
+
+def page_problems(p: Path, view_of=None) -> tuple[list[str], list[str]]:
+    """The page's problems (check-pages fails on them) and notes (it does not)."""
     s = p.read_text(encoding="utf-8")
     probs = []
+    if view_of is None:
+        view_of = functools.cache(research_view)
 
     def section(title: str) -> str | None:
         m = re.search(rf"^##+ {re.escape(title)}\s*$(.*?)(?=^##+ |\Z)", s, re.M | re.S)
         return m.group(1) if m else None
 
+    why = section("Why it appeared")
+    if why is None:
+        probs.append("no '## Why it appeared' section (right after the intro): a fact with its source, or "
+                     "'Hypothesis: …, not verified'")
+    else:
+        body = re.sub(r"<!--.*?-->", "", why, flags=re.S).strip()
+        if not body:
+            probs.append("'Why it appeared' is empty: a fact with its source, or 'Hypothesis: …, not verified'")
+        elif "[^s" not in body and not re.search(r"hypothes|not verified", body, re.I):
+            probs.append("'Why it appeared' states a fact without its source [^sN]")
+        where = re.search(r"^##+ Where to find it\s*$", s, re.M)
+        if where and where.start() < re.search(r"^##+ Why it appeared\s*$", s, re.M).start():
+            probs.append("'Why it appeared' goes right after the intro, before 'Where to find it'")
     for title, key in (("Where to find it", "entry"), ("What it looks like", "screen")):
         body = section(title)
         if body is None:
@@ -4565,15 +5385,34 @@ def page_problems(p: Path) -> list[str]:
             probs.append(f"missing image {ref}")
     if re.search(r"\[s:[^\]]+\]", s):
         probs.append("inline [s:…] sources: use footnotes [^sN] with the video link")
-    return probs
+    text = re.sub(r"<!--.*?-->|^\[\^s\d+\]:[^\n]*", "", s, flags=re.S | re.M)
+    for m in sorted({m.group(0).lower() for m in DESIGN_INTENT.finditer(text)}):
+        probs.append(f"a note on design intent ('{m}'): the page is a dry analysis, facts and frames")
+    mp, notes = map_problems(s, section, view_of)
+    return probs + mp, notes
 
 
 def cmd_check_pages(args) -> None:
+    """Every feature page: the layout (why it appeared, entry and screen frames, a frame per tab) and the feature map
+    (done cases and checklist items on the page, the Outcomes table). Notes do not fail the check. The map is the
+    research.yaml next to the pages (a wiki: the dream's worktree), else --map WIKI's, else the published one; this
+    machine's journal on top."""
     root = Path(args.dir)
     pages = sorted(p for p in root.glob("**/features/*.md") if not p.name.endswith(".skeleton.md"))
-    res = {str(p.relative_to(root)): page_problems(p) for p in pages}
-    bad = {k: v for k, v in res.items() if v}
-    out({"pages": len(pages), "ok": len(pages) - len(bad), "problems": bad})
+    view = functools.cache(research_view)  # one view per game and map
+
+    def view_for(p: Path):
+        def view_of(game: str) -> dict:
+            base = p.parent.parent / "research.yaml"
+            if not base.exists() and args.map:
+                base = Path(args.map) / game / "research.yaml"
+            return view(game, None, base if base.exists() else None)
+        return view_of
+
+    res = {str(p.relative_to(root)): page_problems(p, view_for(p)) for p in pages}
+    bad = {k: v[0] for k, v in res.items() if v[0]}
+    notes = {k: v[1] for k, v in res.items() if v[1]}
+    out({"pages": len(pages), "ok": len(pages) - len(bad), "problems": bad, **({"notes": notes} if notes else {})})
     sys.exit(1 if bad else 0)
 
 
@@ -4593,6 +5432,76 @@ def cmd_wiki_clip(args) -> None:
     (gd / "clips").mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, gd / "clips" / name)
     out({"path": f"clips/{name}", "mb": round((gd / "clips" / name).stat().st_size / 1048576, 2)})
+
+
+def clip_span(steps: list[dict], a: int, b: int) -> tuple[float, float]:
+    """The wall-clock span of one moment: from just before the move of step A to just after the frame of step B.
+    The move started after the frame before it plus the player's thinking (gap_s; a batch of moves earlier still),
+    else a settle and a second and a half before step A's frame."""
+    first: dict = {}
+    for x in steps:
+        first.setdefault(x.get("step"), x)
+    ra, rb = first[a], first[b]
+    start = ra["t"] - (ra.get("settle") or 1.0) - 1.5
+    prev = [x["t"] for x in steps if x["t"] < ra["t"] and x.get("shot") is not None]
+    if prev and ra.get("gap_s") is not None:
+        start = min(start, max(prev) + ra["gap_s"] - 0.5)
+    return start, rb["t"] + 0.5
+
+
+def cmd_clip_cut(args) -> None:
+    """One moment of a finished session as a page clip: steps A..B cut from the session's recording, on the timeline
+    the footnotes use, into GAME_DIR/clips/<date>-<slug>.webp (animated WebP within the media limits). One clip per
+    moment, at most --max-s (the owner, 2026-10-02: the decisive move and its result, never a whole level). When the
+    original is gone it refuses and gives the moment's YouTube link."""
+    game = find_game(args.game)["id"]
+    d = RAW() / game / args.session
+    steps = read_jsonl(d / "steps.jsonl")
+    if not steps:
+        fail(f"no session {args.session} of {game} on this machine")
+    v = L()["video"]
+    if not 0 < args.max_s <= v["clip_max_seconds"]:
+        fail(f"--max-s is more than 0 and at most video.clip_max_seconds ({v['clip_max_seconds']})")
+    a, b = args.from_step, args.to_step
+    have = {x.get("step") for x in steps}
+    if a not in have or b not in have or b < a:
+        fail(f"steps {a}..{b}: both are steps of the session, the second not before the first",
+             last_step=max((x.get("step") or 0 for x in steps), default=0))
+    t0, t1 = clip_span(steps, a, b)
+    if t1 - t0 > args.max_s:
+        fail(f"steps {a}-{b} take {t1 - t0:.1f} s, over {args.max_s:g} s: a clip is one moment, the decisive move and "
+             "its result; cut a shorter span (a whole level is never a clip)")
+    tl = timeline({"dir": str(d), "rec": {"t0": steps[0]["t"]}})  # the footnotes' timeline (step_source)
+    s, e = max(0.0, to_pos(tl, t0) or 0.0), to_pos(tl, t1) or 0.0
+    meta, src = read_json(d / "session.json"), d / "original.mkv"
+    link = f"https://youtu.be/{meta['youtube']}?t={int(s)}" if meta.get("youtube") else None
+    footnote = step_source(game, args.session, a)
+    if not src.exists():
+        if link:
+            fail(f"the original of {args.session} is gone (uploaded and cleaned up): link the moment instead",
+                 youtube=link, footnote=footnote)
+        fail(f"no recording of {args.session} (not recorded, or deleted after raw.keep_originals_days): "
+             "describe the moment with frames", footnote=footnote)
+    name = f"{args.session[:8]}-{slug(args.slug)}.webp"
+    dest = Path(args.out) / "clips" / name
+    if dest.exists():
+        fail(f"{dest} exists: one clip per moment (another moment takes another --slug)", clip=f"../clips/{name}")
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        encode_clip(src, s, max(0.5, e - s), dest)
+    except (subprocess.CalledProcessError, OSError, ValueError, IndexError) as ex:
+        dest.unlink(missing_ok=True)
+        fail(f"ffmpeg could not cut the clip (local.yaml tools.ffmpeg / ffprobe): {ex}")
+    mb = dest.stat().st_size / 1048576 if dest.exists() else 0
+    if not mb or mb > v["clip_max_mb"]:
+        dest.unlink(missing_ok=True)
+        fail(f"the clip came out {mb:.1f} MB (the limit is {v['clip_max_mb']} MB): cut a shorter span")
+    secs = round(e - s, 1)
+    caption = f"*Clip {secs:g} s" + (f" · [original on YouTube from {int(s) // 60}:{int(s) % 60:02d}]({link})"
+                                     if link else "") + "*"
+    out({"clip": f"../clips/{name}", "path": str(dest), "seconds": secs, "mb": round(mb, 2),
+         "original_from_s": round(s, 1), "footnote": footnote, "caption": caption,
+         "markdown": f"![<what the clip shows and what matters>](../clips/{name}) [^sN]\n{caption}"})
 
 
 def link_pages(uploaded: list[dict]) -> dict:
@@ -4624,6 +5533,14 @@ def cmd_gc(args) -> None:
             uploaded = [*uploaded, {"error": str(ex)[:300]}]
     now, freed, done = time.time(), 0, dreamed_ids()
     keep = L()["raw"]
+    logs, ops = {}, {}
+
+    def documented(game: str, sid: str) -> bool:
+        """The documenter is done with the session (its docs-log names it), or the session has nothing to document."""
+        if game not in logs:
+            logs[game], ops[game] = docs_log(game), journal(game)
+        return sid in logs[game] or not doc_scope(game, sid, ops[game])
+
     for d in RAW().glob("*/*/"):
         meta = d / "session.json"
         if not meta.exists():
@@ -4631,8 +5548,11 @@ def cmd_gc(args) -> None:
         age_days = (now - meta.stat().st_mtime) / 86400
         m = json.loads(meta.read_text(encoding="utf-8"))
         victims = []
-        if m.get("youtube") or age_days > keep["keep_originals_days"]:
-            victims += [d / "original.mkv", *d.glob("seg_*.mp4")]
+        recording = [d / "original.mkv", *d.glob("seg_*.mp4")]
+        # an uploaded original stays until the session is documented: the documenter cuts its clips from it
+        if any(v.exists() for v in recording) and (age_days > keep["keep_originals_days"] or (
+                m.get("youtube") and documented(m.get("game") or d.parent.name, m["id"]))):
+            victims += recording
         if m["id"] in done and age_days > keep["keep_shots_days"]:
             victims += [d / "shots", d / "clips"]
         for v in victims:
@@ -4676,7 +5596,8 @@ def install_agents() -> dict:
             (dest / f"{name}.md").write_text(fm + body, encoding="utf-8")
             done.append(f"{name}.md")
     return {"installed": len(done), "to": str(dest),
-            "roles": {r: models().get(r) for r in ("reviewer", "documenter", "lab", "process", "analyst", "critic")}}
+            "roles": {r: models().get(r) for r in ("reviewer", "documenter", "lab", "typist", "process", "analyst",
+                                                    "critic")}}
 
 
 # --- choosing models: a local benchmark, run by hand -------------------------------------------------
@@ -4977,6 +5898,8 @@ def parser() -> argparse.ArgumentParser:
     q.add_argument("result", choices=["won", "lost", "quit"])
     q.add_argument("--note", required=True, help="what worked, what to change next time")
     q.add_argument("--skipped", action="store_true", help="won: the game skipped the level for a video")
+    q.add_argument("--deliberate", action="store_true",
+                   help="lost on purpose, to run an outcome under a feature: not counted against the mechanic")
     q.add_argument("--retry", action="store_true", help="lost: open the same level again on a new clock")
     p = sub.add_parser("mechanic")
     p.add_argument("id")
@@ -5033,23 +5956,46 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("desc")
     p.add_argument("--feature", help="the feature whose page the frame goes to")
     p.add_argument("--as", dest="role", help="entry | screen | tab:<name> | popup | result | other")
-    p.add_argument("--at", help="X,Y of the button to circle (an entry point), in pixels of the marked frame")
+    p.add_argument("--at", help="X,Y of the control the frame is about (an entry point), in pixels of the marked frame: "
+                                "kept in the record, nothing is drawn; name the control in the description")
     p.add_argument("--frame", type=int, help="the screenshot number (shot_n) to mark, if not the last one")
     p = sub.add_parser("clip")
     p.add_argument("edge", choices=["begin", "end"])
     p.add_argument("text")
     p = sub.add_parser("feature")
     p.add_argument("id")
-    p.add_argument("name")
+    p.add_argument("name", nargs="?", help="needed for a new feature")
     p.add_argument("--status", choices=["seen", "in_progress", "documented"])
+    p.add_argument("--type", help="its type from `sw.py types` (its checklist becomes open cases chk-<item>), or unknown")
+    p.add_argument("--appeared", help='why it appeared, as seen: "after winning level 20"')
+    p.add_argument("--appeared-guess", help="why it appeared, a hypothesis: the planner makes an experiment to find it")
+    p.add_argument("--locked", help='a lock seen on screen, as it reads: "level 30" (the planner makes the unlock goal)')
+    p.add_argument("--locked-value", type=float, help="the lock as a number on the progress scale: 30")
+    p.add_argument("--unlocked", action="store_true", help="the feature is seen open (a first look comes at once)")
     p.add_argument("--game", help="outside a session (the post-session review)")
+    p.add_argument("--source", help="session#step that shows it, when recorded outside the session")
     p = sub.add_parser("case")
     p.add_argument("feature")
     p.add_argument("id")
     p.add_argument("text", nargs="?")
     p.add_argument("--done", action="store_true")
+    p.add_argument("--outcome", action="store_true",
+                   help="one way the base level ends (on the core-level feature): every flow-affecting feature gets "
+                        "the case under-<id>")
     p.add_argument("--game", help="outside a session (the post-session review)")
     p.add_argument("--source", help="session#step that shows it, when recorded outside the session")
+    p = sub.add_parser("types")
+    p.add_argument("--prune", action="store_true", help="drop the local types the published catalog has now")
+    p = sub.add_parser("type-add")
+    p.add_argument("id", help="a generic kind of feature, never a game's own name")
+    p.add_argument("--name", required=True)
+    p.add_argument("--description", required=True, help="what makes a feature this type, in words that fit every game")
+    p.add_argument("--base", help="the type it is a variant of")
+    p.add_argument("--affects-level-flow", action="store_true",
+                   help="a level is played, won or lost differently while it is on: the base outcomes run under it")
+    p.add_argument("--item", action="append", help="ID:TEXT:KIND, KIND one of look|outcome|experiment; repeat it")
+    p = sub.add_parser("audit")
+    p.add_argument("game")
     p = sub.add_parser("task")
     ts = p.add_subparsers(dest="task_cmd", required=True)
     q = ts.add_parser("add")
@@ -5138,11 +6084,24 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--feature", required=True)
     p.add_argument("--as", dest="role", required=True, help="entry | screen | tab:<name> | popup | result | other")
     p.add_argument("--desc", required=True, help="what the frame shows and what matters")
-    p.add_argument("--at", help="X,Y of the button to circle, in pixels of shots/NNNNN_m.jpg")
+    p.add_argument("--at", help="X,Y of the control the frame is about, in pixels of shots/NNNNN_m.jpg (kept in the "
+                                "record, nothing is drawn: name the control in --desc)")
     p = sub.add_parser("page-skeleton")
     p.add_argument("game")
     p.add_argument("feature")
     p.add_argument("--out", required=True, help="the game's folder: features/<id>.md and img/ go there")
+    p = sub.add_parser("doc-scope")
+    p.add_argument("game")
+    p.add_argument("session")
+    sub.add_parser("pending-docs")
+    p = sub.add_parser("clip-cut")
+    p.add_argument("game")
+    p.add_argument("session")
+    p.add_argument("--from-step", type=int, required=True, help="the step of the decisive move")
+    p.add_argument("--to-step", type=int, required=True, help="the step whose frame shows its result")
+    p.add_argument("--slug", required=True, help="what the moment is, e.g. stage-failed-restart")
+    p.add_argument("--out", required=True, help="the game's folder: clips/<date>-<slug>.webp goes there")
+    p.add_argument("--max-s", type=float, default=10, help="the longest span cut (one moment: about 10 s)")
     p = sub.add_parser("redact-image")
     p.add_argument("image")
     p.add_argument("--box", action="append", required=True, help="X1,Y1,X2,Y2 in pixels of the image, or fractions")
@@ -5151,6 +6110,8 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--game", help="default: the page's front matter")
     p = sub.add_parser("check-pages")
     p.add_argument("dir", help="a wiki or a game folder")
+    p.add_argument("--map", help="a wiki folder whose research.yaml the pages are held against (the dream's worktree), "
+                                 "when the pages have none next to them")
     p = sub.add_parser("check-zones")
     p.add_argument("worktree")
     p.add_argument("--process", action="store_true", help="the dream's process PR: runbooks/, schema/, docs/proposals/")
@@ -5192,7 +6153,9 @@ def handlers() -> dict:
         "ask": cmd_ask, "bench": cmd_bench, "plan": cmd_plan, "page-skeleton": cmd_page_skeleton,
         "check-pages": cmd_check_pages, "mark-tag": cmd_mark_tag, "wiki-mirror": cmd_wiki_mirror, "wiki-live": cmd_wiki_live,
         "lab-check": cmd_lab_check, "lab-done": cmd_lab_done, "level-frames": cmd_level_frames,
+        "types": cmd_types, "type-add": cmd_type_add, "audit": cmd_audit,
         "page-footnotes": cmd_page_footnotes, "redact-image": cmd_redact_image, "level-catalog": cmd_level_catalog,
+        "doc-scope": cmd_doc_scope, "pending-docs": cmd_pending_docs, "clip-cut": cmd_clip_cut,
         "tap": lambda a: action(a, "tap", lambda d, k: (d.double_tap if a.double else d.tap)(s(a.x, k), s(a.y, k)),
                                 {"x": a.x, "y": a.y, **({"double": True} if a.double else {})}, ((a.x, a.y),)),
         "swipe": lambda a: action(a, "swipe", lambda d, k: d.swipe(s(a.x1, k), s(a.y1, k), s(a.x2, k), s(a.y2, k)),

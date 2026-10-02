@@ -109,13 +109,26 @@ in `project.yaml`), no more than 5 at a time
   thumbnail per level the agents met), link it from the game's `index.md`, and open the new thumbnails: an
   ad that is not cut off by the bottom crop is blacked out with `redact-image`.
 - **Pages** are written by the documenter after each session in `state/<game>/pages/`. Publish them:
-  first `python harness/sw.py page-footnotes state/<game>/pages/features/<id>.md` for each page (footnotes
-  whose original went up to YouTube after the page was written get their video link; `gc` does it for the
-  originals it uploads), then copy `state/<game>/pages/features/*.md` (not `*.skeleton.md`) and
-  `state/<game>/pages/img/` into `<worktree>/wiki/<game>/features/` and `img/`, then
-  `python harness/sw.py check-pages <worktree>/wiki`.
-  You do not write pages from transcripts; a page that fails the check goes back to the documenter's
-  notes in the report.
+  1. `python harness/sw.py page-footnotes state/<game>/pages/features/<id>.md` for each page (footnotes
+     whose original went up to YouTube after the page was written get their video link; `gc` does it for
+     the originals it uploads).
+  2. `python harness/sw.py check-pages state/<game>/pages --map <worktree>/wiki` — after the snapshot and
+     your edits of `research.yaml`, so the pages are held against the map this dream publishes: the
+     layout, and every case done in the map and every checklist item (`chk-*`, `under-*`) on the page or
+     under "Not verified".
+  3. A page that fails goes back to the documenter, not into the wiki: start a `sleepwalker-documenter`
+     subagent with the brief `Repository root: <root>. Instructions: <root>/runbooks/document.md,
+     "Rebuilding a page". game: <game>  feature: <id>  check-pages problems: <the page's problems>`
+     (at most 3 per game per dream, one at a time per game), then check again. A page still failing is
+     not copied; name it with its problems in the report.
+  4. Copy the pages that pass (`state/<game>/pages/features/*.md`, not `*.skeleton.md`) with the images
+     and clips they use (`state/<game>/pages/img/`, `clips/`) into `<worktree>/wiki/<game>/features/`,
+     `img/` and `clips/`.
+  5. `python harness/sw.py check-pages <worktree>/wiki`: the published pages the map has moved past (a
+     case done since, no case ids) are listed in the report as rebuilds for the next dreams; while a game
+     has documenter slots left from step 3, rebuild them the same way.
+
+  You do not write pages from transcripts.
 - **How to play** — for each game with sessions: merge this machine's `state/<game>/playbook.md` into
   `wiki/<game>/agent/playbook.md` (keep what other machines contributed; one section per mechanic;
   numbers and claims with sources). Add the level times per mechanic from `sw.py playbook --game
@@ -159,7 +172,8 @@ in `project.yaml`), no more than 5 at a time
   - A contradiction — a "⚠️ Previously" block, no silent replacement.
 - **Media.** `python harness/sw.py wiki-img <frame> <worktree>/wiki/<game> <slug>` and
   `python harness/sw.py wiki-clip <clip.webp> <worktree>/wiki/<game> <slug>`. No more than 5 new
-  clips per game per dream; do not replace already embedded ones without a reason.
+  clips per game per dream, the documenters' clips included; do not replace already embedded ones
+  without a reason. A page's clip is one moment of about 10 s, never a whole level.
 - **Overviews.** `python harness/sw.py render <worktree>/wiki` rebuilds each game's `tasks.md` and
   `features.md` and the overview `wiki/tasks.md` ("Which phone is needed"). Update the game's
   `index.md` and the game's line in `wiki/index.md`.
@@ -218,6 +232,15 @@ repeats and what it costs (minutes, levels, lost frames), and propose a fix for 
   too risky for one night stays a proposal in `docs/proposals/<date>-<slug>.md` (the problem with sources,
   the change, how to test it). Settings of the phone itself are never changed by default: such a change
   is off unless `local.yaml` turns it on.
+
+**Local feature types.** First `python harness/sw.py types --prune` (it drops from
+`state/feature-types.local.yaml` the types the published catalog has since a merge). Every type left there is one
+this machine's type designer made (`sw.py types` marks it `local: true`) and is already in use. Move each into
+`schema/feature-types.yaml` in the process worktree under the same id (features carry it), with the same fields
+and its checklist after the three universal aliases (`*appeared`, `*entry`, `*screen`); when it looks like a
+published type, say so in the description for the maintainer instead of merging it. The description names the
+features it types (game, feature, the session that showed it): those are its sources, so a moved type is reason
+enough for the process PR.
 
 Each change in the process PR says in its description which sessions show the problem. In the same
 worktree, after the knowledge commit, on its own branch:
