@@ -7,6 +7,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 SP = Path(__file__).resolve().parent
@@ -62,6 +63,10 @@ sw("mark", "Skins", "Themes, Trails, Walls", "--feature", "collections", "--as",
 sw("feature", "collections", "Collections")
 sw("case", "collections", "open", "Open Collections from the map", "--done")
 sw("end", "--status", "ok", "--summary", "collections")
+# why it appeared: a field of the feature op (the feature model's contract), written as the journal has it
+with open(T / "state" / G / "research.jsonl", "a", encoding="utf-8") as f:
+    f.write(json.dumps({"t": time.time(), "session": sid, "op": "feature", "id": "collections",
+                        "appeared": {"text": "the coin box shows after the first win", "certainty": "hypothesis"}}) + "\n")
 
 pages = T / "state" / G / "pages"
 r = sw("page-skeleton", G, "collections", "--out", str(pages), device=False)
