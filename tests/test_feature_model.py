@@ -305,7 +305,7 @@ r = sw("type-add", "puzzle-race", "--name", "Puzzle race", "--description", "A r
 ty = r["type"]
 check([i["id"] for i in ty["checklist"]] == ["appeared", "entry", "screen", "board", "finish"] and ty["local"] and
       ty["affects_level_flow"] and ty["base"] == "event" and ty["checklist"][3]["text"] == "The race board: ranks and points",
-      "type-add: universal items first, the text keeps its colons, marked local")
+      f"type-add: universal items first, the text keeps its colons, marked local: {ty}")
 raw = LOCAL_TYPES.read_bytes()
 check(b"puzzle-race" in raw and b"\r\n" not in raw, "written to state/feature-types.local.yaml with LF endings")
 check(any(t["id"] == "puzzle-race" and t.get("local") for t in sw("types", device=False)["types"]), "types lists it")

@@ -20,6 +20,7 @@ uploaded through the API becomes private: only the channel owner can watch it.
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -87,10 +88,11 @@ def upload_pending(cfg: dict, max_n: int = 99) -> list[dict]:
             if "exceeded" in str(ex) or "uploadLimitExceeded" in str(ex) or "quota" in str(ex).lower():
                 break  # the daily limit: try again on a later run
             continue
+        st = meta_path.stat()
         meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
-        original.unlink()
-        for seg in meta_path.parent.glob("seg_*.mp4"):
-            seg.unlink()
+        # still dated at the session's end (gc counts keep_originals_days from it); the original stays for the
+        # documenter's clips until gc sees the session documented
+        os.utime(meta_path, (st.st_atime, st.st_mtime))
         res.append({"session": meta["id"], "game": meta.get("game"), "youtube": meta["youtube"]})
     return res
 

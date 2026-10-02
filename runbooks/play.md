@@ -64,6 +64,13 @@ player subagents. The repository root is one level above this file (the owner's 
    but `Instructions: <path>/runbooks/document.md`. Wait for
    the reviewers and documenters too before you finish the run.
 
+   Sessions that ended without one (bench slots, sessions started by hand, a documenter that crashed):
+   `python harness/sw.py pending-docs` lists this machine's sessions no documenter has logged, oldest
+   first. Start documenters for the first few of them (at most 3 per run), with the same brief; never two
+   documenters of one game at once (they would write the same pages): a game's next one starts when its
+   last one is done. Skip the sessions whose documenter you already started in this run; the rest wait
+   for the next run.
+
    When a reviewer's last reply names features for the type designer (`typist: <feature> <session>#<step>`), start
    a `sleepwalker-typist` subagent in the background for each, one at a time per game, with the brief in
    `runbooks/review.md`, section "The type designer"; wait for them before you finish the run.
@@ -82,7 +89,8 @@ player subagents. The repository root is one level above this file (the owner's 
    time without a note.
 7. `python harness/sw.py gc` — record the sessions nobody ended (`adopted`: their process died before
    `end`), upload the originals that did not go up and link the pages' footnotes to them, clean up old
-   records in `raw/`.
+   records in `raw/` (an uploaded original once its session is documented: the documenter cuts its clips
+   from it, so run `gc` after the documenters are done).
 8. Summary: one line per device — game, status, tasks closed and new; for idle devices — the
    reason.
 

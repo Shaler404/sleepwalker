@@ -26,6 +26,8 @@ Local — on each machine, not in git
 │   ├── playbook.md             how to play: the player's working copy of agent/playbook.md (section 10)
 │   ├── solvers/<mechanic>.py   solvers the player wrote, used at once, published by the dream
 │   ├── sessions.jsonl          index of this machine's sessions
+│   ├── pages/                  the documenter's pages: features/<id>.md, img/, clips/ (the dream publishes them)
+│   ├── docs-log.md             the documenters' log: each session documented, its pages and gaps
 │   └── skills.jsonl            skill runs: success or failure
 ├── state/sessions/<device>.json  which session is running on the device (one game — one device)
 ├── state/devices/<device>.json   the state of each game on the phone: fresh | progressed
@@ -78,27 +80,48 @@ sources: [20261001-091500-chrono-FYKPJ]
 ---
 ```
 
-Feature page — written by the documenter after each session (`runbooks/document.md`), laid out by
-`sw.py page-skeleton` from the frames marked for the feature, checked by `sw.py check-pages`:
+Feature page — written by the documenter after each session (`runbooks/document.md`) for every
+feature the session changed (`sw.py doc-scope`), laid out by `sw.py page-skeleton` from the frames
+marked for the feature and its cases in the map, checked by `sw.py check-pages` against the layout and
+the map:
 
 1. one paragraph: what the feature is for the player;
-2. `## Where to find it` — from which screen and which button, with that screen's frame and the
-   button circled (`mark --as entry --at X,Y`);
-3. `## What it looks like` — the feature's screen (`--as screen`);
-4. `## What you can do` — a table of its tabs and buttons; every row has its own `### <name>` section
+2. `## Why it appeared` — the trigger (the map's `appeared`): a fact with its source ("after winning
+   level 20 [^s3]"), or "Hypothesis: …, not verified";
+3. `## Where to find it` — from which screen and which control, with that screen's frame; the control
+   is named in the text and in the caption under the frame (`mark --as entry --at X,Y` keeps the point
+   in the record; nothing is drawn on frames);
+4. `## What it looks like` — the feature's screen (`--as screen`);
+5. `## What you can do` — a table of its tabs and buttons; every row has its own `### <name>` section
    with its frame (`--as tab:<name>`);
-5. `## How it works` — rules, timers, prices, rewards, with the version;
-6. `## Cases` — case, what was done, result, source;
-7. `## Not verified`.
+6. `## How it works` — rules, timers, prices, rewards, with the version;
+7. `## Outcomes` — only for a feature whose type has a base type (a level type over `core-level`):
+   one row per `under-<outcome>` case — outcome | as the base or what differs | frame;
+8. `## Cases` — case, what was done, result, source; each row carries its case id
+   `<!-- case:<id> -->`;
+9. `## Not verified` — open cases, each with its id too.
 
 A page without an entry or screen frame says why in `<!-- no-entry: … -->` / `<!-- no-screen: … -->`.
+
+**Held against the map.** Every case done in the map is on the page (its `case:<id>`) or under
+"Not verified", and so is every checklist item of the feature's type (`chk-<item>`, `under-<outcome>`):
+a page that misses one fails `check-pages` and does not get published. A page written before case
+ids is matched by its rows' text and gets the note "no case ids"; checklist items count only by their
+ids.
+
+**A dry analysis.** Facts and frames: what is there, what was done, what happened. No notes on why the
+game was designed so ("designed to keep players…" fails the check); what is inferred is marked as such.
 
 - Every non-trivial fact ends with a footnote `[^sN]`; the footnote names the session and step and
   links the moment in the YouTube original (`sw.py page-skeleton` writes them). No inline `[s:…]`.
 - Frame: `![what the frame shows and what matters](../img/<file>.webp)`. The caption is not "shop
-  screenshot" but "shop: 6 packs, prices 0.99–49.99 $, offer timer 23:59:12".
-- Clip: `![what it shows](../clips/<file>.webp)` and the line
-  `*Clip 14 s · [original on YouTube from 3:05](https://youtu.be/<id>?t=185)*` if the original is uploaded.
+  screenshot" but "shop: 6 packs, prices 0.99–49.99 $, offer timer 23:59:12". Frames are clean: no
+  circles or arrows drawn on them.
+- Clip: anything whose meaning is motion — an animated tutorial hand, a reward or unlock animation, a
+  transition, physics — is a clip, not a still. One clip per moment: the decisive move and its result,
+  at most about 10 s (`sw.py clip-cut` cuts it from the session's recording), never a whole level and
+  never two clips for one moment. `![what it shows](../clips/<file>.webp)` and the line
+  `*Clip 7 s · [original on YouTube from 3:05](https://youtu.be/<id>?t=185)*` if the original is uploaded.
 - A contradiction is not overwritten: the old statement moves into a block `> ⚠️ Previously (v1.41, 2026-09-20): …`.
 - Links between pages are relative. External links go only to Google Play and YouTube.
 
@@ -272,9 +295,11 @@ global `research.yaml` (`sw.py snapshot`), and `sw.py render` rebuilds `tasks.md
 ## 5. Images and clips
 
 - No Git LFS and no MP4: GitHub does not play `<video>` from a repository (verified 2026-09-30).
-  A clip is an animated WebP up to 20 s, 720 px, 12 fps, up to 8 MB; a long moment becomes several
-  clips. A frame is a WebP up to 1080 px.
-- The original recording goes to YouTube and never enters the repository.
+  A clip is an animated WebP up to 20 s, 720 px, 12 fps, up to 8 MB; a page's clip is one moment of
+  about 10 s (section 3). A frame is a WebP up to 1080 px.
+- The original recording goes to YouTube and never enters the repository. It stays on the machine
+  until the session is documented (the documenter cuts its clips from it), then `sw.py gc` deletes it;
+  an original never uploaded goes after `raw.keep_originals_days`.
 - Media are added, not rewritten: git keeps the history. No more than 5 new clips per game per
   dream. GitHub recommends keeping a repository under 1 GB.
 - Personal data — nicknames, email, avatars, notifications, other apps, payment windows — never goes
@@ -332,7 +357,7 @@ skills based on them and shortens the waits of slow ones.
 | Player (`sleepwalker-player`) | global knowledge, its own `state/<game>/` | `state/<game>/progress.md`, `inbox.md`, `playbook.md`, `solvers/`; the task and feature journal, the game's state on the phone and `raw/` — through `sw.py` | one game — one device (lock in `sw.py`); commits nothing |
 | The "play" orchestrator | `sw.py claim` responses | nothing (`sw.py claim` writes the planner's tasks to the journal) | does not commit or push |
 | Lab (`sleepwalker-lab`) | recorded level frames, the playbook | `state/<game>/solvers/`, `playbook.md`, `lab-log.md`; the mechanic's method | after a session whose mechanic is slow or unlearned, or whose solver the player works around; never touches the phone |
-| Documenter (`sleepwalker-documenter`) | the finished session's `raw/`, `state/<game>/` | `state/<game>/pages/`, `docs-log.md` | runs right after each session; `check-pages` |
+| Documenter (`sleepwalker-documenter`) | the finished session's `raw/`, `state/<game>/` | `state/<game>/pages/` (frames, clips), `docs-log.md` | runs right after each session, and for sessions `pending-docs` lists; `check-pages` against the map |
 | Reviewer (`sleepwalker-reviewer`) | the finished session's `raw/`, `state/<game>/` | goals, discovery, types, triggers, locks and case closures through `sw.py … --game`; `state/<game>/reviews.md` | runs right after each session, never touches the phone |
 | Type designer (`sleepwalker-typist`) | the type catalog, one feature's frames and notes | a new type through `sw.py type-add` (`state/feature-types.local.yaml`); the feature's type through `sw.py feature --type --game` | when a feature fits no type; never touches the phone |
 | Analyst (`sleepwalker-analyst`) | its machine's `raw/` and `state/`, the worktree | nothing | tools: Read, Grep, Glob |

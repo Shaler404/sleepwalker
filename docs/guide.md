@@ -456,8 +456,10 @@ The rules are in `schema/WIKI-SCHEMA.md`, section 4. In short:
    The screen is recorded for the whole session (`screenrecord` in 3-minute segments).
 2. At the end of the session `sw.py` cuts the clips: animated WebP up to 20 s, 720 px, up to 8 MB. GitHub does not
    play `<video>` from the repository, but WebP plays right in the article.
-3. The original recording goes to YouTube (`harness/youtube.py`) and is deleted from disk; clips link to
-   it with a timestamp. Until the Google project passes an audit, videos uploaded through the API are private.
+3. The original recording goes to YouTube (`harness/youtube.py`); clips link to it with a timestamp. It stays
+   on disk until the session is documented — the documenter cuts each page's clip of one moment from it
+   (`sw.py clip-cut`) — and `sw.py gc` deletes it then. Until the Google project passes an audit, videos
+   uploaded through the API are private.
 4. The dream moves media into the wiki (`sw.py wiki-img`, `sw.py wiki-clip`); screenshots are WebP up to 1080 px.
 5. A screenshot that is not from the game (a notification, another app) cannot be marked; personal data never goes into the wiki.
 

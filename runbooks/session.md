@@ -382,13 +382,17 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
      ui, event, bug, question);
    - `mark "title" "what the frame shows and what matters" --feature <id> --as <place>` — every new
      screen and state, and where the frame goes on the feature's page: `entry` (the screen with the
-     button that opens it; `--at X,Y` the button, it gets circled), `screen` (the feature itself),
+     button that opens it; name the button in the description, `--at X,Y` keeps its point — nothing is
+     drawn on the frame), `screen` (the feature itself),
      `tab:<name>` (each tab or sub-screen), `popup`, `result`, `other`. A study goal marks at least the
      entry, the screen and every tab. Popups and offers are content: `mark` first, then close. A frame
      you passed already: `mark … --frame <shot_n>` marks that frame instead of the last one. A window
      the game opens with its own title (King's account panel, a first-launch consent popup) is the game:
      `app` is the game's package and `window` names the panel, so `mark` takes it;
-   - `clip begin "title"` … `clip end "what it shows"` — key moments, up to 20 seconds.
+   - `clip begin "title"` … `clip end "what it shows"` — key moments, up to 20 seconds: whatever means
+     something only in motion (an animated tutorial hand, a reward or unlock animation, a transition).
+     The documenter cuts the page's clip of one moment from the recording later (`sw.py clip-cut`), so a
+     `note` with what moved is enough when you are busy.
 5. Stop when the session's tasks are done, the budget is used up (`warnings`), you are stuck or the
    game crashed. Turn everything unfinished into tasks.
 

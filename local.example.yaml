@@ -48,5 +48,6 @@ youtube:                   # the keys live only on this machine
   uploads_per_gc: 5        # originals that did not go up at `end`, uploaded by one `sw.py gc` run
 
 raw:
-  keep_originals_days: 3   # an original that was not uploaded to YouTube is deleted after this many days
+  keep_originals_days: 3   # an original is deleted after this many days; an uploaded one as soon as its session
+                           # is documented (the documenter cuts page clips from it)
   keep_shots_days: 14      # session screenshots and clips after the "dream"
