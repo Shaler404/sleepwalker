@@ -244,6 +244,13 @@ r = sw("solve", "bad", expect_ok=False)
 check("refused" in json.dumps(r), "a solver that starts processes is refused")
 r = sw("solve", "nosuch", expect_ok=False)
 check("no solver" in json.dumps(r) and "solve(image" in json.dumps(r), "missing solver: the contract is explained")
+(T / "board.json").write_text('{"cells": 3}', encoding="utf-8")
+(sd / "typed.py").write_text("def solve(image, board=None, frame_scale=1.0):\n"
+                             "    return {'moves': [[5, 5]], 'note': f\"board of {board['cells']}\"}\n", encoding="utf-8")
+r = subprocess.run([sys.executable, str(DEV / "harness" / "sw.py"), "-d", "fake1", "solve", "typed", "--board", "board.json"],
+                   capture_output=True, text=True, encoding="utf-8", env=ENV, cwd=T)
+check(r.returncode == 0 and json.loads(r.stdout)["note"] == "board of 3",
+      f"--board with a path relative to the player's folder reaches the solver: {r.stdout[-300:]}")
 sw("end", "--status", "ok", "--summary", "solver")
 
 spec = importlib.util.spec_from_file_location("sw", DEV / "harness" / "sw.py")

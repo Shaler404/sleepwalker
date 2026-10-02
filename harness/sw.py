@@ -3388,6 +3388,11 @@ def cmd_solve(args) -> None:
     level is done, the moves change nothing, something else comes on screen, or --rounds are used up.
     --image checks the solver on a saved frame without the phone."""
     mech = slug(args.mechanic)
+    if args.board:  # the solver runs in a temporary folder: a relative path would not resolve, like --image
+        board = Path(args.board).resolve()
+        if not board.is_file():
+            fail(f"--board {args.board}: no such file (a JSON file with the board you read from the frame)")
+        args.board = str(board)
     if args.image:
         game = args.game or pick_session(args)["game"]
         src = Path(args.image).resolve()  # the solver runs in a temporary folder: a relative path would not resolve
