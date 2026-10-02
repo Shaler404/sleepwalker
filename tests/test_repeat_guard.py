@@ -68,6 +68,9 @@ r = run("tap", "100", "100", "--why", "and again")
 o = json.loads(r.stdout)
 check(r.returncode == 5 and "third time" in o["error"] and Path(o["shot"]).exists(),
       "the third is refused with exit 5, and the reply carries the frame to look at")
+errs = [x for x in steps(sid) if x["type"] == "error"]
+check(len(errs) == 1 and errs[0]["code"] == 5 and "third time" in errs[0]["text"] and errs[0]["repeated"]
+      and errs[0]["cmd"] == "tap 100 100 --why …", f"the refusal is one error step, like any refused command: {errs}")
 r = sw("tap", "100", "100", "--why", "sure", "--force")
 check(r["shot_n"] > 0, "tap --force goes through")
 r = sw("tap", "400", "400", "--why", "another control")

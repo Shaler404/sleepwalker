@@ -74,7 +74,9 @@ player subagents. The repository root is one level above this file (the owner's 
    `session.crash_backoff_hours`: report it under the idle reasons with the error. Three Cryptogram
    sessions in a row crashed on the same API error at the turn cadence and cost 52 minutes of phone
    time without a note.
-7. `python harness/sw.py gc` — clean up old records in `raw/`.
+7. `python harness/sw.py gc` — record the sessions nobody ended (`adopted`: their process died before
+   `end`), upload the originals that did not go up and link the pages' footnotes to them, clean up old
+   records in `raw/`.
 8. Summary: one line per device — game, status, tasks closed and new; for idle devices — the
    reason.
 

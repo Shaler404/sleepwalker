@@ -44,5 +44,19 @@ s2, n2 = swm.page_footnotes(s + f"\nOne more fact [s:{A}#29] and [s:{A}#30].\n",
 check(n2 == 1 and s2.count("[^s2]") == 3 and "[^s5]:" in s2, "a second run reuses its footnotes and adds only new ones")
 s3, n3 = swm.page_footnotes(s2, G)
 check(n3 == 0 and s3 == s2, "nothing left to convert: the page is unchanged")
+
+# the original went up after the page was written (uploadLimitExceeded at the end): its footnotes get the link
+s4, k = swm.link_footnotes(s3, G)
+check(k == 0 and s4 == s3, "no video yet: the footnotes stay as they are")
+(T / "raw" / G / A / "session.json").write_text(json.dumps({"id": A, "youtube": "abc123"}), encoding="utf-8")
+s4, k = swm.link_footnotes(s3, G)
+la, lb = " — [video at 0:29](https://youtu.be/abc123?t=29)", " — [video at 0:30](https://youtu.be/abc123?t=30)"
+check(k == 2 and f"[^s2]: session {A}, step 29{la}\n" in s4 and f"[^s5]: session {A}, step 30{lb}\n" in s4
+      and f"[^s3]: session {B}, step 1\n" in s4, "footnotes of the session now on YouTube get the link")
+check(s4.replace(la, "").replace(lb, "") == s3, "nothing else on the page changes")
+s5, k5 = swm.link_footnotes(s4, G)
+check(k5 == 0 and s5 == s4, "a linked footnote is left alone")
+s6, k6 = swm.link_footnotes(s3, G, only={B})
+check(k6 == 0 and s6 == s3, "only: the sessions just uploaded")
 print("all ok")
 shutil.rmtree(T, ignore_errors=True)

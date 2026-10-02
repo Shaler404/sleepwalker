@@ -69,7 +69,8 @@ one feature at a time; the brief names the game and the feature instead of a ses
 1. Unless `state/<game>/pages/features/<id>.md` exists, copy the published page
    `wiki/<game>/features/<id>.md` there, and the images it uses from `wiki/<game>/img/` to
    `state/<game>/pages/img/`. Then `python harness/sw.py page-footnotes state/<game>/pages/features/<id>.md`:
-   the inline sources become footnotes with the video links.
+   the inline sources become footnotes with the video links. A footnote without a link (the original was
+   not on YouTube yet) gets it later from the same command or from `sw.py gc`; you do not add links by hand.
 2. The sessions that touched the feature are the page's `sources` and footnotes. What the player did at
    each step is in `raw/<game>/<session>/steps.jsonl` (`why`, `note`, `shot`), the frames in
    `raw/<game>/<session>/shots/NNNNN_m.jpg`. Those sessions marked frames without `--feature`: tag the
