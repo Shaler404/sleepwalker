@@ -1,0 +1,263 @@
+# The feature type catalog. Every feature in a game's research.yaml has a type from this list (or `unknown`).
+# A type gives a checklist; sw.py turns each item into an open case `chk-<item>` on every feature of the type,
+# so nothing is forgotten. Changed only through a pull request (the dream's process PR). A machine's new types
+# live in state/feature-types.local.yaml (written by `sw.py type-add`, the type designer) and are used at once;
+# the dream's process improver moves them here (runbooks/dream.md, section 7).
+#
+# A type:
+#   id                  a generic kind of feature, never a game's own name
+#   name, description   what makes a feature this type, in words that fit every game
+#   base                the type it is a variant of, or null (a level type is judged against the core level)
+#   affects_level_flow  true when a level is played, won or lost differently while a feature of this type is on:
+#                       every known outcome of the base level is then run once under it (cases `under-<outcome>`)
+#   checklist           items {id, text, kind}; kind: look (a screen to see and mark), outcome (an ending to
+#                       reach), experiment (needs play to test). Every type also has the universal items below,
+#                       first: sw.py adds them when a type leaves them out. The items never ask to pay or to spend
+#                       premium currency.
+#
+# On a feature typed core-level, the items of kind outcome are the base level's outcomes; each loss kind is
+# added as its own outcome case (sw.py case <feature> <kind> "..." --outcome).
+
+universal:
+- &appeared {id: appeared, kind: experiment, text: "Why it appeared: the trigger that brought it up (the first launch, a level won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to test"}
+- &entry {id: entry, kind: look, text: "Where to find it: the screen and the button that open it (mark --as entry --at X,Y)"}
+- &screen {id: screen, kind: look, text: "What it looks like: its screen (mark --as screen)"}
+
+types:
+- id: core-level
+  name: Core level
+  description: The base level of a mechanic, the board the game is mostly played on. Every way a level can end is
+    an outcome; a feature that changes the level flow runs each of them once.
+  base: null
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: rules, kind: look, text: "Rules: the goal, the controls, what blocks a move and how the level is lost (the game's own tutorial or How to play)"}
+  - {id: hud, kind: look, text: "The level screen: every element of the HUD (level number, moves or timer, goal, boosters, pause or settings)"}
+  - {id: win, kind: outcome, text: "Win: the win screen, its rewards and what comes next"}
+  - {id: loss, kind: experiment, text: "Each loss: lose the level every way it can be lost; register each kind as an outcome (case <feature> <kind> \"...\" --outcome) with its screen and what the loss costs"}
+  - {id: retry, kind: look, text: "After a loss: the retry and continue offers (extra moves, a revive) and their price (a video, coins, a life)"}
+  - {id: restart, kind: outcome, text: "Restart: restart the level from inside it: the confirmation and what it costs"}
+  - {id: quit, kind: outcome, text: "Quit: leave the level for the map or home: the confirmation and what it costs (a life, a streak)"}
+  - {id: exit-app, kind: outcome, text: "Exit the app: leave the app in the middle of the level and come back: is the level kept, restarted or lost"}
+  - {id: elements, kind: look, text: "Level elements: each obstacle or special piece the levels introduce is its own feature (type level-element), with the level it first shows on"}
+
+- id: level-type
+  name: Level type
+  description: A kind of level that differs from the base level and comes up among the regular ones (hard,
+    multi-stage, challenge, boss, bonus or secret levels).
+  base: core-level
+  affects_level_flow: true
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: announce, kind: look, text: "How it is announced: the map node, the badge or the popup before it, and what it says"}
+  - {id: differs, kind: look, text: "What differs in play from the base level: the board, the rules, the limits, stages, a timer"}
+  - {id: win, kind: outcome, text: "Its win: the win screen and the reward, against the base level's"}
+  - {id: loss, kind: outcome, text: "Each loss: its fail screen and what the loss costs (a life, a streak, stage progress)"}
+  - {id: retry, kind: look, text: "Retry and continue offers after a loss and their price (a video, coins); where a retry sends you (the start, the same stage)"}
+  - {id: frequency, kind: experiment, text: "Where and how often it comes up: which levels (fixed numbers, every Nth), from which level"}
+
+- id: mode
+  name: Game mode
+  description: A separate way to play with its own entry, outside the main level sequence (a challenge mode, a
+    mini-game, an endless mode next to the levels).
+  base: null
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: rules, kind: look, text: "Rules: the goal and how it differs from the core game"}
+  - {id: win, kind: outcome, text: "A win: its screen and what it pays"}
+  - {id: loss, kind: outcome, text: "A loss: its screen, what it costs and the retry offers"}
+  - {id: progression, kind: look, text: "Progression inside the mode: stages, stars, a best score"}
+  - {id: limits, kind: look, text: "Limits: attempts, energy, a timer or a schedule; what more attempts cost"}
+
+- id: event
+  name: Event
+  description: A time-limited competition or collection drive (a race, a ranking, a collect-the-items event, a
+    seasonal event) that runs while levels are played.
+  base: null
+  affects_level_flow: true
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: rules, kind: look, text: "Rules: what earns points or items and what the goal is"}
+  - {id: timer, kind: look, text: "Its timer and schedule: how long it runs and when it comes back"}
+  - {id: in-level, kind: look, text: "What shows during a level while it runs (a bar, a counter, collectibles)"}
+  - {id: progress, kind: experiment, text: "Progress per level: the points or items after a win, and after a loss"}
+  - {id: rewards, kind: look, text: "The rewards per rank or milestone"}
+  - {id: end, kind: experiment, text: "The end: the results screen and the reward paid (a follow-up at the timer's end)"}
+
+- id: streak
+  name: Streak
+  description: A counter that grows with consecutive wins or consecutive days and breaks (a win streak, a daily
+    streak, a first-try crown).
+  base: null
+  affects_level_flow: true
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: counter, kind: look, text: "The counter: where it shows and what it counts"}
+  - {id: rewards, kind: look, text: "The reward for each step of the streak"}
+  - {id: in-level, kind: look, text: "What shows during a level while the streak runs"}
+  - {id: break, kind: experiment, text: "What breaks it (a loss, a quit, a missed day) and what the break costs"}
+  - {id: save, kind: look, text: "Offers to keep it after a break and their price (a video, coins)"}
+
+- id: offer
+  name: Offer
+  description: Something sold for real money or premium currency (the shop, an IAP pack, a limited-time offer, a
+    no-ads purchase, a subscription). Documented up to the price button, never paid.
+  base: null
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: contents, kind: look, text: "Contents and price of every pack or tier"}
+  - {id: frequency, kind: experiment, text: "How often it comes up by itself (after a level, a loss, a session start) and whether it comes back"}
+  - {id: timer, kind: look, text: "Its timer or limit, if any"}
+  - {id: buy-path, kind: look, text: "The way to buy: the game's own screens up to the price button; do not tap the price (it opens the payment sheet), never pay"}
+  - {id: close, kind: look, text: "Closing it: the close button and what comes up after"}
+
+- id: currency-booster
+  name: Currency or booster
+  description: A currency (coins, gems, keys, lives, energy) or a booster (hint, shuffle, undo, a pre-level
+    booster), with what one unit does, where it comes from and where it goes.
+  base: null
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: effect, kind: look, text: "What it does: the effect of one unit or one use"}
+  - {id: balance, kind: look, text: "The balance: where it shows and the starting amount"}
+  - {id: sources, kind: experiment, text: "Sources: every way to get it (a level win, a video, a daily reward, a pack) and how much"}
+  - {id: sinks, kind: experiment, text: "Sinks: every way it is spent and the price"}
+  - {id: empty, kind: experiment, text: "At zero: what happens and the offers to refill it (never spend premium currency to get there)"}
+  - {id: refill, kind: look, text: "Refill timer, if any: how long one unit takes and the maximum"}
+
+- id: meta-progress
+  name: Meta progress
+  description: Long-term progression outside the levels (collections, skins, albums, a gacha, chests on the map,
+    a level-milestone chest, achievements, a score bar).
+  base: null
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: progress, kind: look, text: "The progress: the bar, the album or the counter, what fills it and where it is now"}
+  - {id: items, kind: look, text: "The items: every set, skin or tier, which are owned and which are locked, with their condition"}
+  - {id: earn, kind: experiment, text: "How an item or a step is earned (wins, keys, a spin, a pack)"}
+  - {id: use, kind: look, text: "Using an item: equip a skin, open a chest, spin; what changes"}
+  - {id: complete, kind: experiment, text: "Completing a set or the bar: the reward"}
+
+- id: daily
+  name: Daily
+  description: Something that renews every day (daily rewards, a login calendar, daily tasks, a daily challenge).
+  base: null
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: today, kind: look, text: "Today's claim, task list or challenge: what it gives"}
+  - {id: calendar, kind: look, text: "The calendar or the task list: every day or task and its reward"}
+  - {id: next-day, kind: experiment, text: "The next day: what renews and when (a daily follow-up)"}
+  - {id: missed, kind: experiment, text: "A missed day: what is lost or reset"}
+  - {id: play, kind: outcome, text: "If it is a board: play it once, its win and its loss"}
+
+- id: ad-placement
+  name: Ad placement
+  description: A place where the game shows an ad (a banner, an interstitial after a level, a rewarded video for a
+    revive, a double reward or a skip, a cross-promo widget).
+  base: null
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: kind, kind: look, text: "The kind: banner, interstitial, rewarded video or cross-promo, and where it shows"}
+  - {id: frequency, kind: experiment, text: "How often it shows: after which action, every Nth level, a cooldown"}
+  - {id: reward, kind: look, text: "Rewarded: the offer screen before it and what watching gives"}
+  - {id: close, kind: look, text: "How it closes: the timer before the close cross, where the cross is, what comes after"}
+
+- id: social
+  name: Social
+  description: A ranking or a group with other players (leagues, leaderboards, friends, teams). The agent records
+    it and never plays against people or writes in a chat.
+  base: null
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: board, kind: look, text: "The board: ranks, the player's place, the number of players"}
+  - {id: points, kind: experiment, text: "What earns points (a level win, a score) and how many"}
+  - {id: period, kind: look, text: "The period and its timer: when it resets"}
+  - {id: rewards, kind: look, text: "Rewards per rank, promotion and relegation"}
+  - {id: end, kind: experiment, text: "The end of a period: the results screen and the reward (a follow-up)"}
+
+- id: system
+  name: System
+  description: The game's frame around play (settings, consent, rate us, help and support, language,
+    notifications, profile, account and cloud save, statistics).
+  base: null
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: options, kind: look, text: "Every option or button and what it changes (each toggle once, set back after)"}
+  - {id: answers, kind: experiment, text: "For a prompt (consent, rate us, notifications): what each answer does and whether it comes back"}
+  - {id: links, kind: look, text: "Links out (privacy, terms, help): where they lead (back to the game at once)"}
+
+- id: tutorial
+  name: Tutorial
+  description: The first-time experience and the how-to-play screens that teach the game.
+  base: null
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: steps, kind: look, text: "Each step and what it teaches, with a frame (an animated hand is a clip)"}
+  - {id: skip, kind: experiment, text: "Whether it can be skipped, and what happens when the app is left in the middle of it"}
+  - {id: end, kind: look, text: "Where it ends and what opens after it"}
+  - {id: replay, kind: look, text: "Whether it can be seen again (How to play, a help button)"}
+
+- id: hub
+  name: Hub screen
+  description: A screen that leads to the rest of the game (the home screen, the level map, a modes or
+    collections menu).
+  base: null
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: entries, kind: look, text: "Every entry point on it: open (a feature), locked (feature --locked with its condition) or unclear (an experiment)"}
+  - {id: badges, kind: look, text: "Badges, timers and counters on it and what each points to"}
+  - {id: changes, kind: experiment, text: "What changes on it with progress (new buttons, a moving map, a theme)"}
+
+- id: level-element
+  name: Level element
+  description: Something inside levels that the base level is built from or scored by (an obstacle, a special
+    piece, face-down tiles, a combo, a move counter, an in-level helper).
+  base: core-level
+  affects_level_flow: false
+  checklist:
+  - *appeared
+  - *entry
+  - *screen
+  - {id: first-level, kind: look, text: "The first level it shows on and how the game introduces it"}
+  - {id: rules, kind: look, text: "What it does and how it is used"}
+  - {id: interactions, kind: experiment, text: "How it interacts with the other pieces"}
+  - {id: loss, kind: experiment, text: "Whether it adds a way to lose: then that loss is an outcome of the base level (case <base> <kind> \"...\" --outcome)"}

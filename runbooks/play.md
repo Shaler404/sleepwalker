@@ -64,6 +64,10 @@ player subagents. The repository root is one level above this file (the owner's 
    but `Instructions: <path>/runbooks/document.md`. Wait for
    the reviewers and documenters too before you finish the run.
 
+   When a reviewer's last reply names features for the type designer (`typist: <feature> <session>#<step>`), start
+   a `sleepwalker-typist` subagent in the background for each, one at a time per game, with the brief in
+   `runbooks/review.md`, section "The type designer"; wait for them before you finish the run.
+
    Then `python harness/sw.py lab-check <game> --claim`: if it `claimed` mechanics, start a
    `sleepwalker-lab` subagent in the background with the same brief but
    `Instructions: <path>/runbooks/lab.md` and `mechanics: <ids and why>`. It works on recorded frames,

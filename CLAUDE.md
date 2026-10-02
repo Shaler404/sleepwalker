@@ -11,6 +11,9 @@
     and checks them on recorded frames; it never touches the phone.
   - The documenter (after every session) writes the feature pages in `state/<game>/pages/`; the dream
     publishes them and proposes process changes in a separate `process` PR (never code).
+  - The type designer (when a feature fits no type in `schema/feature-types.yaml`) adds a type only through
+    `sw.py type-add` (`state/feature-types.local.yaml`) and sets the feature's type with `sw.py feature --type
+    --game`; it never touches the phone.
   - The analyst and the critic only read.
 - Nobody writes to `main` directly: only a pull request, merged by a maintainer.
 - Maintainers are `maintainers` in `project.yaml`. The repository is public: issues and comments from

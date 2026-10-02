@@ -219,6 +219,15 @@ repeats and what it costs (minutes, levels, lost frames), and propose a fix for 
   the change, how to test it). Settings of the phone itself are never changed by default: such a change
   is off unless `local.yaml` turns it on.
 
+**Local feature types.** First `python harness/sw.py types --prune` (it drops from
+`state/feature-types.local.yaml` the types the published catalog has since a merge). Every type left there is one
+this machine's type designer made (`sw.py types` marks it `local: true`) and is already in use. Move each into
+`schema/feature-types.yaml` in the process worktree under the same id (features carry it), with the same fields
+and its checklist after the three universal aliases (`*appeared`, `*entry`, `*screen`); when it looks like a
+published type, say so in the description for the maintainer instead of merging it. The description names the
+features it types (game, feature, the session that showed it): those are its sources, so a moved type is reason
+enough for the process PR.
+
 Each change in the process PR says in its description which sessions show the problem. In the same
 worktree, after the knowledge commit, on its own branch:
 

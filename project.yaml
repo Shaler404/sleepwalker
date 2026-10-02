@@ -45,7 +45,7 @@ research:
 
 # Which model does what, with its effort when it has one ("opus:high"; haiku takes none). These are the
 # defaults: a game's own models in games.yaml (chosen by the benchmark in runbooks/onboard.md) come first,
-# and a machine can override the defaults in local.yaml. The roles' agents (reviewer, documenter, lab,
+# and a machine can override the defaults in local.yaml. The roles' agents (reviewer, documenter, lab, typist,
 # analyst, critic) get their model and effort in their definitions: `sw.py sync` reinstalls them when this
 # file changes (or run `sw.py install-agents`).
 models:
@@ -55,6 +55,7 @@ models:
   reviewer: opus             # the post-session review: goals and discovery (runbooks/review.md)
   documenter: opus:medium    # the feature pages after each session (runbooks/document.md); docs/bench/2026-10-01-writers.md
   lab: opus                  # makes slow or unlearned mechanics fast between sessions (runbooks/lab.md)
+  typist: fable:high         # the type designer: a new feature type with its checklist when none fits (runbooks/review.md)
   process: fable:high        # the dream's main job: what to improve in the process (runbooks/dream.md 7); docs/bench/2026-10-01-process.md
   analyst: opus              # the dream's session analysts
   critic: opus               # the dream's critic
