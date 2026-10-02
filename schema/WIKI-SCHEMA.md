@@ -124,7 +124,7 @@ mechanics:                # kinds of levels and how the agent plays them (sectio
   solver: solvers/com.vitastudio.mahjong/core-match.py
   levels: {won: 14, lost: 1, quit: 1}
   best_s: 71
-  recent:                 # the last 10 levels
+  recent:                 # the last 10 levels (skipped: true / moves_before: N — not timed, section 10)
   - {level: level 14, result: won, seconds: 95, model: sonnet}
 features:
 - id: daily-reward
@@ -341,6 +341,16 @@ consolidates it.
 - **Level cycle** — `level start --plan` (plan from the playbook and one look at the board), safe
   moves in batches and a risky one (`!X,Y`) last (`taps`), `level plan` when the plan has not worked for `play.level_rethink_min` minutes,
   `level end --note` (what worked, what to change) and a playbook update right after.
+- **Level records** — a level op (`research.jsonl`) is `{name, value, mechanic, result, seconds, solve_s,
+  moves, decisions, replans, model, note, shot}`: `solve_s` from its first move to its end, `shot` the frame
+  it was ended on. `level end won` needs a frame after the last move, of the game, and is refused for a
+  win with no moves under 15 s unless `--skipped` (a skip for a video: `skipped: true`). A start after
+  moves with no level open keeps `moves_before: N`; skipped and late-started levels are left out of
+  `best_s`, the typical time and the mastered/broken rule. `--bonus` boards (`bonus: true`) move no
+  progress and are filed under their name in the level catalog. `level end lost --retry` records the loss
+  and opens the same level again. `session.json` and `sw.py stats` count `moves_outside_level` (moves of
+  `taps` and `solve` with no level open in a game with mechanics) and `repeated_steps` (the same tap or
+  solver plan again on a screen it did not change: warned, then held back unless `--force`).
 - **Playbook** — `wiki/<game>/agent/playbook.md`, one section per mechanic: goal, controls, rules,
   method, level plan, pitfalls, level times. The player works in the local copy
   `state/<game>/playbook.md` (`sw.py playbook`); the dream merges it into the wiki. When a newer

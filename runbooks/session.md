@@ -51,6 +51,9 @@ Goal and task kinds:
 - **`sw.py` error codes:**
   - 3 (screen locked, touches blocked, phone gone) — immediately `end --status blocked`;
   - 4 (hard limit) — set tasks for the unfinished work and `end`;
+  - 5 (the same tap a third time on a screen the last two did not change, or a skill's start screen not
+    found) — nothing was sent: open the frame in the reply and compare your point with the control before
+    acting again; `--force` only when the frame shows the tap is right;
   - 6 (the owner is taking the phone) — no more actions on the phone. Add tasks for the unfinished
     work (`task add` works without the phone) and immediately `end --status interrupted`.
 - You write only to `state/<game>/progress.md`, `inbox.md`, `playbook.md` and `solvers/*.py`.
@@ -155,9 +158,13 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    no level open are in no level's time, and a start logged after the reading makes the level look
    faster than it was (a Meowdoku bench slot recorded 23–26 s a level against 47–52 s from the Level
    tap). Every level you play gets its pair of records: six MeowTrail wins and eighteen Meowdoku wins
-   played without `level start` count as nothing in the statistics. A board without a level number (a
-   golden board, a challenge, a daily) gets its own name — `level start "golden after L98"` — never the
-   next level's number: bench slots that named golden boards as levels shifted every later label by one.
+   played without `level start` count as nothing in the statistics. `sw.py` keeps you to it: in a game
+   with mechanics, `taps` and `solve` with no level open come back with "no level is open" and the
+   session counts them as `moves_outside_level` (the dream reads it); a `level start` after such moves
+   says how many, and that level's time does not count as a level time. A board without a level number (a
+   golden board, a challenge, a daily) gets its own name and `--bonus` — `level start "golden after L98"
+   --bonus` — never the next level's number: bench slots that named golden boards as levels shifted every
+   later label by one. A bonus win does not move the progress.
    A mechanic you have not met yet: read the game's own rules first (tutorial, "How to play") and
    write them into the playbook *before* the first move — goal, controls, what blocks a move, how you
    lose — and plan from them.
@@ -186,10 +193,19 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    from it. A won level records the progress by itself. `level end won` only when the frame in front
    of you shows the win screen or the next level's number: a solver's `done`, a `solve --run` that
    stopped, or a plan that is finished is not a win. Early records in two games double-counted
-   levels and mislabelled the next ones. A stage or a try that you lose and retry (Retry Stage, Restart,
-   a new board under the same number) is `level end lost`, then a new `level start` with the same name:
-   a loss fixed by a retry is still a loss (Pull the Pin L23: one stage lost, the session records 4 won,
-   0 lost). A skip for a video is not a solve: say so in the note.
+   levels and mislabelled the next ones. So `sw.py` refuses `level end won`:
+   - right after a move (`tap`, `taps`, `solve --run`): the frame a move returns comes a second after
+     it, before a win screen is up. Take a frame (`shot`), look at it, then end the level;
+   - when the frame shows another app (the Play Store, a browser): `launch`, `shot`, then end it;
+   - with no moves in the level and under 15 s: that is the previous win screen, a bonus offer or a
+     skip. A level the game skipped for a video is `level end won --skipped` (not a solve: its time
+     counts nowhere).
+
+   The record keeps the frame it was ended on, for the review and the lab. A stage or a try that you
+   lose and retry (Retry Stage, Restart, a new board under the same number) is
+   `level end lost --note "…" --retry`: the loss is recorded and the same level opens again on a new
+   clock. A loss fixed by a retry is still a loss (Pull the Pin L23: one stage lost, the session records
+   4 won, 0 lost).
 5. **Make it fast.** Two levels in a row within the budget mark the mechanic `mastered`; two lost or
    slow levels in a row mark it `broken`. When levels stay slow, change the method, not the effort:
    - **solver** — logic puzzles where every piece is visible (mahjong, sudoku-like, light-up,
@@ -215,8 +231,14 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
      draws its moves without touching the phone. On the phone, `sw.py solve <mechanic>` draws the moves
      on a fresh frame; when they are right, `sw.py solve <mechanic> --run --rounds 20` plays rounds of
      frame → solver → moves until the level is done, the solver has no moves, the moves change nothing
-     or the level runs over its time. Then `sw.py mechanic <id> --method solver`. A solver only
-     computes: code that touches files, the network or processes is refused;
+     or the level runs over its time. It stops with `solved` only after a round of that call changed the
+     frame; "the solver says done on a frame that did not change" means look at the frame (an ad, the
+     last win screen: Meowdoku L46 was recorded won from one). Either way, `shot` before `level end won`.
+     Moves the solver already played on this same frame are not sent again (`repeated: true`, the moves
+     drawn on the frame): they do not land, so place one by hand and look, or fix the solver; `--force`
+     sends them anyway (Block Blast sent one plan 16 times in a session). Then
+     `sw.py mechanic <id> --method solver`. A solver only computes: code that touches files, the network
+     or processes is refused;
    - **heuristic** — games with randomness (match-3, block puzzles): a short list of rules in the
      playbook, e.g. "moves that make a special piece first";
    - **manual** — physics and reaction games: what to look at and in which order.
@@ -258,7 +280,9 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
         never while a win screen, a post-win interstitial or a "level complete" reward is up — the
         win is not saved yet (Pull the Pin reverted a won level four times, Vita Mahjong restarted a
         half-played level after a relaunch). First `launch`, then `wait 30`, only then restart, and
-        record an open level as `quit`;
+        record an open level as `quit`. Within two minutes of `level end won` a restart is refused
+        until you add `--after-win` (after that `launch` and `wait 30`); with a level open the reply
+        reminds you it ends as `quit` unless you end it;
      4. the same ad comes back on the same button after a restart — it has no cooldown across
         restarts, so a third try is wasted (Cryptogram lost three sessions to the PLAY interstitial):
         do the goals that do not need that button, set a task for the rest and move on.
@@ -272,8 +296,11 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
      take "stuck: end the session" as a prompt to look, not an order. A tap that changed nothing is not
      repeated as it is: compare its point with the control's bounds on the frame first (a MeowTrail
      bench slot tapped 30 px below the Level button for 4 minutes, another 150 s above the win button).
-     The second identical tap is the last; the same goes for a solver that returns the same moves on
-     the same frame — place one move by hand and look.
+     The second identical tap (within 25 px, `tap` or the same `taps` batch) on a screen that did not
+     change comes back with "same tap twice with no change"; the third is refused with exit 5 and the
+     frame (`--force` sends it). A `wait`, a key, a swipe or a solver call in between starts the count
+     over; a `shot` does not. The same goes for a solver that returns the same moves on the same frame —
+     place one move by hand and look.
    - After an ad, a `launch`, a win screen or a popup the next action is one tap, then the frame.
      A blind pair of taps there drifted by a level, played a rewarded video, hit the back arrow and
      the gear, and opened the Play Store (four games). `taps` batches are for moves inside a level
