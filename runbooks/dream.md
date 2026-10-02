@@ -127,8 +127,9 @@ in `project.yaml`), no more than 5 at a time
     row on the current version; `broken` — 2 failures in a row or a failure after a version change.
 - **Speed.** `python harness/sw.py stats <game>` — append a line to `agent/metrics.md`: date,
   machine, sessions, steps per closed case, share of steps without a screen change, skills ok/fail,
-  typical level time per mechanic. Models are not compared or changed here: they are chosen by hand
-  with a benchmark (`runbooks/onboard.md`).
+  typical level time per mechanic, moves with no level open (`moves_outside_level`) and repeated steps
+  (`repeated_steps`: the same tap or solver plan on an unchanged screen). Models are not compared or
+  changed here: they are chosen by hand with a benchmark (`runbooks/onboard.md`).
   A mechanic whose levels stay over the budget gets a lesson or a task "Make <mechanic> fast:
   <idea>" (a solver, a heuristic).
   If the numbers do not improve, find out why (no route, a skill fails) and fix the route or the

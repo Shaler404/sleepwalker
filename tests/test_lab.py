@@ -52,6 +52,7 @@ for i in (1, 2):
     sw("level", "start", f"level {i}", "--mechanic", "pins", "--plan", "x", "--value", str(i))
     sw("taps", "10,10 20,20", "--why", "moves")
     sw("tap", "30", "30", "--why", "one more")
+    sw("shot")
     sw("level", "end", "won" if i == 1 else "lost", "--note", "slow by eye")
 sw("end", "--status", "ok", "--summary", "two levels")
 

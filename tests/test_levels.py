@@ -136,6 +136,7 @@ check(v["summary"]["progress"]["text"] == "level 1", "a won level records the pr
 for n in (2, 3):
     sw("level", "start", f"level {n}", "--mechanic", "pull-pins", "--plan", "by the playbook", "--value", str(n))
     sw("taps", "50,50 60,60", "--why", "pins")
+    sw("shot")  # the win screen: a won level needs a frame after its last move
     r = sw("level", "end", "won", "--note", "fast")
 check(r["mechanic"]["status"] == "mastered" and r.get("mechanic_change", {}).get("status") == "mastered",
       f"two fast levels -> mastered: {r.get('mechanic_change')}")

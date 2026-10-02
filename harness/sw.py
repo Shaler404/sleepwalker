@@ -19,16 +19,18 @@ Session
   start GAME                             start the game and screen recording, first screenshot, session tasks
   device-state fresh|progressed [--note] the game on this phone: fresh install or progressed
   shot [--hi] | wait SEC | launch         screenshot (--hi: full resolution) / wait, then screenshot / bring the game back
-  restart --why ...                      force-stop the game and start it again: the way out of an ad that will not close
+  restart --why ... [--after-win]        force-stop the game and start it again: the way out of an ad that will not close
   tap X Y --why ... | swipe X1 Y1 X2 Y2 --why ... | key back --why ... | text "..." --why ...
   taps "X,Y X,Y:2 X1,Y1>X2,Y2 !X,Y" --why ...  safe moves in a row (:2 a double tap), a risky one (!) last
+                                         (tap/taps --force: a third identical tap on an unchanged screen)
 Levels: think first, then play fast
   playbook                               how to play this game: rules and methods per mechanic, level times
-  level start "level 12" --mechanic ID --plan "..." [--value 12] [--hi]
+  level start "level 12" --mechanic ID --plan "..." [--value 12 | --bonus] [--hi]
   level plan "new plan"                  rethink: what blocks you, what you do differently now
-  level end won|lost|quit --note "what worked, what to change"
+  level end won|lost|quit --note "what worked, what to change" [--skipped] [--retry]
+                                         won: after a frame of the win screen; lost --retry: the same level again
   mechanic ID "Name" [--status studying|mastered|broken] [--method manual|heuristic|solver] [--note ...]
-  solve MECHANIC [--board FILE] [--run [--rounds N]] | solve MECHANIC --image FRAME
+  solve MECHANIC [--board FILE] [--run [--rounds N]] [--force] | solve MECHANIC --image FRAME
                                          the mechanic's solver: check its moves, play them, or test it on a frame
   ask "question"                         one-shot advice from a stronger model on the last screenshot
 The lab: making gameplay fast without the phone (runbooks/lab.md)
@@ -77,6 +79,7 @@ import datetime as dt
 import functools
 import io
 import json
+import math
 import os
 import re
 import shutil
@@ -748,14 +751,101 @@ def coord_frame(cur: dict, args, has_points: bool) -> tuple[float, int, int]:
     return cur["scale"], w, h
 
 
+# --- the level record: moves against levels, repeats on an unchanged screen --------------------------------
+
+LEVEL_TOOLS = ("taps", "solve")  # level play; a single tap, a swipe or a skill also walks menus
+TAP_NEAR = 25  # pixels of the frame: a tap this close to the previous one is the same tap
+
+
+def add_warnings(info: dict, msgs: list[str]) -> dict:
+    if msgs:
+        info["warnings"] = info.get("warnings", []) + msgs
+    return info
+
+
+def levels_game(cur: dict) -> bool:
+    """A game with levels: research.yaml has mechanics (looked up once a session), or a level was started."""
+    if "levels_game" not in cur:
+        cur["levels_game"] = bool(research_view(cur["game"]).get("mechanics"))
+    return cur["levels_game"]
+
+
+def book_moves(cur: dict, tool: str, done: int, t: float) -> list[str]:
+    """After a command that moved the game (or read a board for the solver): a win now needs a new frame, the
+    open level gets the time of its first move, and a level tool with no level open is counted and warned
+    about. (2026-10-02, dream: 17 Meowdoku levels and six MeowTrail wins were played with no level open and
+    count as nothing; a bench slot started the clock after the board was read and solved.)"""
+    if tool not in ("tap", "taps"):
+        cur.pop("last_tap", None)  # another action in between: the next tap is not a repeat
+    if done:
+        cur["looked"] = False
+    lv = cur.get("level")
+    if lv:
+        if done and not lv.get("move_t"):
+            lv["move_t"] = t
+        return []
+    if tool not in LEVEL_TOOLS or not levels_game(cur):
+        return []
+    cur["outside"] = cur.get("outside", 0) + done + (tool == "solve")  # moves and solver calls: level start shows them
+    cur["moves_outside_level"] = cur.get("moves_outside_level", 0) + done
+    return ["no level is open: these moves are in no level's time (`level start` first)"]
+
+
+def repeated_steps(steps: list[dict]) -> int:
+    """Steps that repeated an action on a screen it had not changed: taps warned about or refused, solver
+    moves held back or sent with --force. The dream sees the loops without reading the transcripts."""
+    return sum(bool(x.get("repeated")) for x in steps)
+
+
+def tap_points(moves) -> list[list[float]]:
+    return [list(p) for m in moves for p in move_points(m)]
+
+
+def same_tap(a, b) -> bool:
+    return bool(a) and len(a) == len(b) and all(math.dist(p, q) <= TAP_NEAR for p, q in zip(a, b))
+
+
+def refuse_repeat_tap(cur: dict, args, pts: list) -> None:
+    """The third tap on the same point with no change on screen is not sent. (2026-10-02, dream: MeowTrail and
+    Meowdoku bench slots tapped 30-60 px off a button for minutes and lost a slot, instead of comparing the
+    point with the button on the frame.)"""
+    lt = cur.get("last_tap") or {}
+    if getattr(args, "force", False) or lt.get("same_n", 0) < 2 or not same_tap(lt.get("pts"), pts):
+        return
+    log_step(cur, {"type": "refused", "what": "tap", "points": pts, "repeated": True, "why": args.why})
+    fail("the same tap a third time with no change on screen: it does not reach the control. Open the frame and "
+         "compare the point with the control's bounds before another tap (--force sends it anyway)", 5,
+         shot=str(Path(cur["dir"]) / "shots" / f"{cur['last_shot']:05d}_m.jpg"), shot_n=cur["last_shot"])
+
+
+def note_tap(cur: dict, pts: list, info: dict) -> bool:
+    """Remember a tap and whether it changed the screen; True (and a warning) for the second tap on the same
+    point with no change. No change means the same hash and no changed pixels: a typed letter or a placed
+    piece moves the pixels when the hash stays the same."""
+    shots = Path(cur["dir"]) / "shots"
+    unchanged = info["same_as_prev"] and bool(cur.get("prev_shot")) and changed_px(
+        shots / f"{cur['prev_shot']:05d}.jpg", shots / f"{cur['last_shot']:05d}.jpg") == 0
+    lt = cur.get("last_tap") or {}
+    n = (lt.get("same_n", 0) + 1 if same_tap(lt.get("pts"), pts) else 1) if unchanged else 0
+    cur["last_tap"] = {"pts": pts, "same_n": n}
+    if n >= 2:
+        add_warnings(info, ["same tap twice with no change: the control is probably elsewhere. Compare the point "
+                            "with its bounds on the frame before another tap; a third one is refused"])
+    return n >= 2
+
+
 def action(args, name: str, fn, rec: dict, points: tuple = ()) -> None:
     cur = pick_session(args)
     scale, w, h = coord_frame(cur, args, bool(points))
     if any(not (0 <= x <= w and 0 <= y <= h) for x, y in points):
         fail(f"coordinates outside the {w}x{h} frame: use pixels of the frame you read them from")
     guard(cur)
+    pts = [list(p) for p in points] if name == "tap" else None
+    if pts:
+        refuse_repeat_tap(cur, args, pts)
     gap = gap_s(cur)
     dev = open_device(cur)
+    t = time.time()
     fn(dev, scale)
     cur["step"] += 1
     cur["moves"] = cur.get("moves", 0) + 1
@@ -763,9 +853,11 @@ def action(args, name: str, fn, rec: dict, points: tuple = ()) -> None:
     time.sleep(args.settle)
     size = cur.get("model_size")
     info = take_shot(cur, dev, getattr(args, "hi", False))
+    rep = bool(pts) and note_tap(cur, pts, info)
+    add_warnings(info, book_moves(cur, name, 1, t))
     log_step(cur, {"type": name, **rec, "why": args.why, "model_size": size, "settle": args.settle,
                    "shot": info["shot_n"], "same": info["same_as_prev"], "app": info["app"], "hash": cur["last_hash"],
-                   "gap_s": gap})
+                   "gap_s": gap, **({"repeated": True} if rep else {})})
     save_session(cur)
     out(info)
 
@@ -842,8 +934,11 @@ def cmd_taps(args) -> None:
     if bad:
         fail(f"coordinates outside the {w}x{h} frame: use pixels of the frame you read them from", moves=bad[:5])
     guard(cur)
+    pts = tap_points(moves)
+    refuse_repeat_tap(cur, args, pts)
     gap = gap_s(cur)
     dev = open_device(cur)
+    t = time.time()
     done, stopped = run_moves(cur, dev, moves, scale,
                               args.gap if args.gap is not None else P()["play"]["batch_gap_s"])
     cur["step"] += 1
@@ -852,10 +947,12 @@ def cmd_taps(args) -> None:
     time.sleep(args.settle)
     size = cur.get("model_size")
     info = take_shot(cur, dev, args.hi)
+    rep = note_tap(cur, pts, info)
+    add_warnings(info, book_moves(cur, "taps", done, t))
     log_step(cur, {"type": "taps", "moves": [list(m) for m in moves[:done]], "n": done, "risky": risky[-1],
                    "why": args.why, "model_size": size, "settle": args.settle, "shot": info["shot_n"],
                    "same": info["same_as_prev"], "app": info["app"], "hash": cur["last_hash"], "gap_s": gap,
-                   **({"stopped": stopped} if stopped else {})})
+                   **({"stopped": stopped} if stopped else {}), **({"repeated": True} if rep else {})})
     save_session(cur)
     if stopped == "owner":
         fail(STOP_MSG, 6, done=done, hint="sw.py end --status interrupted --summary ...")
@@ -1095,7 +1192,7 @@ def median(xs):
 
 
 def mechanic_brief(m: dict) -> dict:
-    won = [r["seconds"] for r in m.get("recent", []) if r.get("result") == "won"]
+    won = [r["seconds"] for r in m.get("recent", []) if r.get("result") == "won" and timed(r)]
     return {"id": m["id"], "name": m.get("name"), "status": m.get("status"), "method": m.get("method"),
             **({"solver": m["solver"]} if m.get("solver") else {}), "levels": m.get("levels"),
             "typical_min": round(median(won) / 60, 1) if won else None,
@@ -1147,8 +1244,10 @@ def apply_op(view: dict, op: dict) -> None:
         m.setdefault("levels", {"won": 0, "lost": 0, "quit": 0})
         m["levels"][op["result"]] = m["levels"].get(op["result"], 0) + 1
         m["recent"] = (m.get("recent", []) + [{"level": op.get("name"), "result": op["result"],
-                                                 "seconds": op.get("seconds"), "model": op.get("model")}])[-10:]
-        if op["result"] == "won" and op.get("seconds") and (not m.get("best_s") or op["seconds"] < m["best_s"]):
+                                                 "seconds": op.get("seconds"), "model": op.get("model"),
+                                                 **{k: op[k] for k in ("skipped", "moves_before") if op.get(k)}}])[-10:]
+        if (op["result"] == "won" and timed(op) and op.get("seconds")
+                and (not m.get("best_s") or op["seconds"] < m["best_s"])):
             m["best_s"] = op["seconds"]
     elif kind == "discovery":
         view["discovery"] = op["value"]
@@ -2067,7 +2166,7 @@ def cmd_start(args) -> None:
                "device": dev, "dir": str(d), "t0": now, "last_action": now, "step": 0, "shots": 0, "scale": 1.0,
                "same_streak": 0, "budget_min": budget, "max_steps": budget * s["steps_per_min"], "clips": [],
                "clip_open": None, "model": model, "effort": effort, "model_role": role or "play", "moves": 0,
-               **({"bench": args.bench} if args.bench else {})}
+               "looked": True, **({"bench": args.bench} if args.bench else {})}
         save_session(cur)
     info = {"version": None, "install_time": None}
     state = game_state(dev, args.game, info)
@@ -2137,6 +2236,7 @@ def cmd_shot(args) -> None:
     cur = pick_session(args)
     check_stop(cur)
     info = take_shot(cur, open_device(cur), args.hi)
+    cur["looked"] = True  # a frame after the last move: a win can be recorded from it
     log_step(cur, {"type": "shot", "shot": info["shot_n"], "app": info["app"], "hash": cur["last_hash"]})
     save_session(cur)
     out(info)
@@ -2148,28 +2248,42 @@ def cmd_wait(args) -> None:
     time.sleep(min(args.seconds, 60))
     cur["last_action"] = time.time()
     info = take_shot(cur, open_device(cur), args.hi)
+    cur["looked"] = True
+    cur.pop("last_tap", None)  # time has passed: a control may work now
     log_step(cur, {"type": "wait", "seconds": args.seconds, "shot": info["shot_n"], "same": info["same_as_prev"],
                    "hash": cur["last_hash"]})
     save_session(cur)
     out(info)
 
 
+RESTART_AFTER_WIN_S = 120
+
+
 def cmd_restart(args) -> None:
     """A playable ad or an overlay that cannot be closed held the first Cryptogram session for five minutes
     (2026-10-01): force-stopping the game and starting it again is the way out. Progress inside the level
-    may be lost."""
+    may be lost. Right after a win it is refused without --after-win: the win screen or its interstitial
+    was still up and the win was not saved (Pull the Pin went back a level four times, 2026-10-01)."""
     cur = pick_session(args)
     guard(cur)
+    lv = cur.get("level")
+    if not lv and time.time() - cur.get("won_t", 0) < RESTART_AFTER_WIN_S and not args.after_win:
+        fail("a win may not be saved yet: `launch`, `wait 30`, then restart with --after-win", 2,
+             won_s_ago=round(time.time() - cur["won_t"]))
     dev = open_device(cur)
     dev.stop(cur["game"])
     time.sleep(1.5)
     dev.launch(cur["game"])
     cur["step"] += 1
     cur["last_action"] = time.time()
+    cur.pop("last_tap", None)
     time.sleep(8 if cur["platform"] == "android" else 0)
     info = take_shot(cur, dev)
     log_step(cur, {"type": "restart", "why": args.why, "shot": info["shot_n"], "app": info["app"], "hash": cur["last_hash"]})
     save_session(cur)
+    if lv:
+        add_warnings(info, [f"level {lv['name']!r} is still open: it is recorded as quit when the session ends unless "
+                            "you end it first (level end lost|quit, then level start when the board is back)"])
     out({"restarted": cur["game"], **info})
 
 
@@ -2180,6 +2294,8 @@ def cmd_launch(args) -> None:
     dev.launch(cur["game"])
     cur["step"] += 1
     cur["last_action"] = time.time()
+    cur["looked"] = True
+    cur.pop("last_tap", None)
     time.sleep(4)
     info = take_shot(cur, dev)
     log_step(cur, {"type": "launch", "shot": info["shot_n"], "app": info["app"], "hash": cur["last_hash"]})
@@ -2363,54 +2479,59 @@ def level_hint(m: dict, game: str) -> str:
             "is visible (a logic puzzle), a solver beats playing by eye: state/<game>/solvers/<mechanic>.py")
 
 
-def cmd_level(args) -> None:
-    cur = pick_session(args)
-    lv, now = cur.get("level"), time.time()
-    if args.level_cmd == "start":
-        if lv:
-            fail(f"level {lv['name']!r} is still open: sw.py level end won|lost|quit --note ...")
-        mid = slug(args.mechanic)
-        view = research_view(cur["game"])
-        m = find_mechanic(view, mid, create=False)
-        new = m is None
-        if new:
-            log_op(cur, {"op": "mechanic", "id": mid, "name": args.mechanic_name or mid, "status": "studying",
-                         "method": "manual"})
-            m = find_mechanic(research_view(cur["game"]), mid)
-        cur["level"] = {"name": args.name, "value": args.value, "mechanic": mid, "t0": now, "plan_t": now,
-                        "plan": args.plan, "replans": 0, "step0": cur["step"], "moves0": cur.get("moves", 0),
-                        "hi": args.hi}
-        log_step(cur, {"type": "level_start", "name": args.name, "mechanic": mid, "plan": args.plan})
-        save_session(cur)
-        res = {"ok": True, "level": args.name, "mechanic": mechanic_brief(m), "new_mechanic": new,
-               "budget_min": P()["play"]["level_budget_min"], "hint": level_hint(m, cur["game"]),
-               "playbook": str(ensure_playbook(cur["game"]))}
-        if m.get("status") != "mastered" and cur.get("model_role") == "play" and not cur.get("bench"):
-            res["handoff"] = (f"mechanic {mid} is {m.get('status')}: the study model learns it. Note what you see in "
-                              "the playbook, level end quit, then end --status handoff")
-        return out(res)
-    if not lv:
-        fail("no level is open: sw.py level start \"level N\" --mechanic ID --plan \"...\"")
-    if args.level_cmd == "plan":
-        lv.update(plan=args.plan, plan_t=now, replans=lv["replans"] + 1)
-        log_step(cur, {"type": "level_plan", "name": lv["name"], "plan": args.plan})
-        save_session(cur)
-        return out({"ok": True, "level": lv["name"], "replans": lv["replans"],
-                    "minutes": round((now - lv["t0"]) / 60, 1)})
-    secs = round(now - lv["t0"])
-    op = {"op": "level", "name": lv["name"], "value": lv.get("value"), "mechanic": lv["mechanic"],
-          "result": args.result, "seconds": secs, "decisions": cur["step"] - lv["step0"],
+ZERO_MOVE_WIN_S = 15  # a "win" with no moves faster than this is a screen left over, not a solved level
+
+
+def timed(r: dict) -> bool:
+    """A level whose time measures play: not skipped for a video, and its clock not started after its moves."""
+    return not r.get("skipped") and not r.get("moves_before")
+
+
+def open_level(cur: dict, name: str, value, mid: str, plan: str, hi: bool, bonus: bool, now: float,
+               moves_before: int = 0) -> None:
+    cur["level"] = {"name": name, "value": value, "mechanic": mid, "t0": now, "plan_t": now, "plan": plan,
+                    "replans": 0, "step0": cur["step"], "moves0": cur.get("moves", 0), "hi": hi,
+                    **({"bonus": True} if bonus else {}), **({"moves_before": moves_before} if moves_before else {})}
+    cur["levels_game"] = True
+    for k in ("outside", "won_t", "last_solve", "last_tap"):  # a new try: counts and repeats start over
+        cur.pop(k, None)
+
+
+def level_op(cur: dict, lv: dict, result: str, note: str, now: float) -> dict:
+    """The level's record in the journal. solve_s is the time from its first move: an ad at the start or a
+    late start does not hide how fast the level was played (2026-10-02, dream: bench slots compared clocks
+    started before and after the board was read)."""
+    op = {"op": "level", "name": lv["name"], "value": lv.get("value"), "mechanic": lv["mechanic"], "result": result,
+          "seconds": round(now - lv["t0"]), "decisions": cur["step"] - lv["step0"],
           "moves": cur.get("moves", 0) - lv["moves0"], "replans": lv["replans"], "model": cur.get("model"),
-          "note": args.note}
-    log_op(cur, op)
-    if args.result == "won":
-        log_op(cur, {"op": "progress", "text": lv["name"], "value": lv.get("value")})
-    cur["level"] = None
-    save_session(cur)
-    # a mechanic is mastered after two levels in a row within the budget, broken after two in a row without
-    m = find_mechanic(research_view(cur["game"]), lv["mechanic"])
+          "note": note}
+    if lv.get("move_t"):
+        op["solve_s"] = round(now - lv["move_t"])
+    return {**op, **{k: lv[k] for k in ("bonus", "moves_before") if lv.get(k)}}
+
+
+def win_problem(cur: dict, lv: dict, op: dict, skipped: bool) -> str | None:
+    """Why a claimed win has no evidence on the frame it is claimed on. (2026-10-01, dream: Meowdoku levels
+    were recorded won with two cats missing and from a stale ad frame, a MeowTrail level after the solver's
+    "no solution", a 5 s win with no moves from the previous win screen.)"""
+    app = cur.get("last_app")
+    if app and app != cur["game"]:
+        return f"the last frame shows {app}, not the game: take a frame of the game's win screen first (launch, shot)"
+    if not cur.get("looked"):
+        return ("take a frame of the win screen first (sw.py shot): the frame a move returns is taken a second "
+                "after it, before a win screen is up")
+    if op["moves"] == 0 and not lv.get("moves_before") and op["seconds"] < ZERO_MOVE_WIN_S and not skipped:
+        return (f"a win with no moves in {ZERO_MOVE_WIN_S} s is the previous win screen, a bonus offer or a skip: "
+                "look at the frame; if it is a skip for a video, --skipped")
+    return None
+
+
+def mechanic_change(cur: dict, mid: str) -> tuple[dict, dict | None]:
+    """A mechanic is mastered after two levels in a row within the budget, broken after two in a row lost or
+    over it. A quit (session over) says nothing, nor does the time of a skipped win or a late start."""
+    m = find_mechanic(research_view(cur["game"]), mid)
     budget = P()["play"]["level_budget_min"] * 60
-    last2 = [r for r in m.get("recent", []) if r["result"] != "quit"][-2:]  # a quit (session over) says nothing
+    last2 = [r for r in m.get("recent", []) if r["result"] == "lost" or r["result"] == "won" and timed(r)][-2:]
     fast = len(last2) == 2 and all(r["result"] == "won" and (r["seconds"] or 1e9) <= budget for r in last2)
     slow = len(last2) == 2 and all(r["result"] == "lost" or (r["seconds"] or 0) > budget for r in last2)
     change = None
@@ -2422,11 +2543,85 @@ def cmd_level(args) -> None:
         change = {"status": "broken", "note": f"two levels in a row lost or over {budget // 60} min"}
     if change:
         log_op(cur, {"op": "mechanic", "id": m["id"], **change})
-        m = find_mechanic(research_view(cur["game"]), lv["mechanic"])
-    out({"ok": True, "level": lv["name"], "result": args.result, "minutes": round(secs / 60, 1),
+        m = find_mechanic(research_view(cur["game"]), mid)
+    return m, change
+
+
+def level_start(cur: dict, args, now: float) -> None:
+    if cur.get("level"):
+        fail(f"level {cur['level']['name']!r} is still open: sw.py level end won|lost|quit --note ...")
+    if args.bonus and args.value is not None:
+        fail("a bonus board has no level number: drop --value, the name says which board it is")
+    mid = slug(args.mechanic)
+    m = find_mechanic(research_view(cur["game"]), mid, create=False)
+    new = m is None
+    if new:
+        log_op(cur, {"op": "mechanic", "id": mid, "name": args.mechanic_name or mid, "status": "studying",
+                     "method": "manual"})
+        m = find_mechanic(research_view(cur["game"]), mid)
+    before = cur.get("outside", 0)
+    open_level(cur, args.name, args.value, mid, args.plan, args.hi, args.bonus, now, before)
+    log_step(cur, {"type": "level_start", "name": args.name, "mechanic": mid, "plan": args.plan,
+                   **({"bonus": True} if args.bonus else {}), **({"moves_before": before} if before else {})})
+    save_session(cur)
+    res = {"ok": True, "level": args.name, "mechanic": mechanic_brief(m), "new_mechanic": new,
+           "budget_min": P()["play"]["level_budget_min"], "hint": level_hint(m, cur["game"]),
+           "playbook": str(ensure_playbook(cur["game"]))}
+    if before:
+        res["moves_before"] = before
+        res["warnings"] = [f"{before} moves and solver calls since the last level end are not in this level; the "
+                           "clock starts now. Start the level before you read the board"]
+    if m.get("status") != "mastered" and cur.get("model_role") == "play" and not cur.get("bench"):
+        res["handoff"] = (f"mechanic {mid} is {m.get('status')}: the study model learns it. Note what you see in "
+                          "the playbook, level end quit, then end --status handoff")
+    out(res)
+
+
+def level_end(cur: dict, args, lv: dict, now: float) -> None:
+    if args.retry and args.result != "lost":
+        fail("--retry opens the same level again after a loss: level end lost --retry")
+    if args.skipped and args.result != "won":
+        fail("--skipped marks a win the game gave for a video, not a solve: level end won --skipped")
+    op = {**level_op(cur, lv, args.result, args.note, now), "shot": cur.get("last_shot"),
+          **({"skipped": True} if args.skipped else {})}
+    problem = win_problem(cur, lv, op, args.skipped) if args.result == "won" else None
+    if problem:
+        fail(problem, level=lv["name"], shot_n=cur.get("last_shot"))
+    log_op(cur, op)
+    if args.result == "won" and not lv.get("bonus"):  # a bonus board is not a step of the level progress
+        log_op(cur, {"op": "progress", "text": lv["name"], "value": lv.get("value")})
+    cur["level"] = None
+    for k in ("outside", "last_solve", "last_tap", "won_t"):
+        cur.pop(k, None)
+    if args.result == "won":
+        cur["won_t"] = now  # a restart in the next minutes may undo the win: cmd_restart asks for --after-win
+    if args.retry:  # a stage lost and retried: the loss is recorded, the same level runs on a new clock
+        open_level(cur, lv["name"], lv.get("value"), lv["mechanic"], lv["plan"], lv.get("hi"), lv.get("bonus"), now)
+        log_step(cur, {"type": "level_start", "name": lv["name"], "mechanic": lv["mechanic"], "plan": lv["plan"],
+                       "retry": True, **({"bonus": True} if lv.get("bonus") else {})})
+    save_session(cur)
+    m, change = mechanic_change(cur, lv["mechanic"])
+    out({"ok": True, "level": lv["name"], "result": args.result, "minutes": round(op["seconds"] / 60, 1),
          "mechanic": mechanic_brief(m), **({"mechanic_change": change} if change else {}),
+         **({"retry": f"{lv['name']!r} is open again with a new clock"} if args.retry else {}),
          "next": "update the playbook now (state/<game>/playbook.md): what worked, what to change; the next level "
                  "starts from it"})
+
+
+def cmd_level(args) -> None:
+    cur = pick_session(args)
+    lv, now = cur.get("level"), time.time()
+    if args.level_cmd == "start":
+        return level_start(cur, args, now)
+    if not lv:
+        fail("no level is open: sw.py level start \"level N\" --mechanic ID --plan \"...\"")
+    if args.level_cmd == "plan":
+        lv.update(plan=args.plan, plan_t=now, replans=lv["replans"] + 1)
+        log_step(cur, {"type": "level_plan", "name": lv["name"], "plan": args.plan})
+        save_session(cur)
+        return out({"ok": True, "level": lv["name"], "replans": lv["replans"],
+                    "minutes": round((now - lv["t0"]) / 60, 1)})
+    level_end(cur, args, lv, now)
 
 
 def cmd_mechanic(args) -> None:
@@ -2458,7 +2653,7 @@ def lab_needed(view: dict) -> list[dict]:
     budget = P()["play"]["level_budget_min"] * 60
     res = []
     for m in view["mechanics"]:
-        won = [r["seconds"] for r in m.get("recent", []) if r.get("result") == "won" and r.get("seconds")]
+        won = [r["seconds"] for r in m.get("recent", []) if r.get("result") == "won" and timed(r) and r.get("seconds")]
         slow = bool(won) and median(won) > budget
         if m.get("status") in ("studying", "broken") or slow:
             res.append({**mechanic_brief(m), "why": m.get("status") if m.get("status") != "mastered" else
@@ -2488,18 +2683,23 @@ def cmd_lab_done(args) -> None:
 
 
 def level_spans(game: str, mech: str | None = None) -> list[dict]:
-    """Every recorded level: its session, mechanic, result and the frames taken while it was played."""
+    """Every recorded level: its session, mechanic, result and the frames taken while it was played. A level
+    started late (moves before its start) begins at the first frame after the previous level ended: its board
+    was read and played before the start (2026-10-02, dream: Meowdoku bench slots, win screens as boards)."""
     spans = []
     moves = ("tap", "taps", "swipe", "key", "text", "solve", "restart", "launch")
     for d in sorted((RAW() / game).glob("*/")):
-        cur, last, last_n = None, None, 0
+        cur, last, last_n, since = None, None, 0, []
         shot = lambda n: d / "shots" / f"{n:05d}.jpg"  # noqa: E731
         for x in read_jsonl(d / "steps.jsonl"):
-            n = int(x["shot"]) if x.get("shot") and x.get("type") != "mark" else None
+            n = int(x["shot"]) if x.get("shot") and x.get("type") not in ("mark", "research") else None
             f = shot(n) if n else None
             if x.get("type") == "level_start":
                 cur = {"session": d.name, "level": x.get("name"), "mechanic": x.get("mechanic"), "frames": [],
                        "_before": (last, last_n)}
+                if x.get("moves_before") and since:
+                    cur["frames"] = list(since)
+                    del cur["_before"]
             elif cur is not None and f is not None and f.exists():
                 if "_before" in cur:
                     # the board as the level began: a frame taken after the start and before the first move
@@ -2515,11 +2715,16 @@ def level_spans(game: str, mech: str | None = None) -> list[dict]:
                     cur["frames"].append(f.as_posix())
             if f is not None and f.exists():
                 last, last_n = f.as_posix(), n
+                if last not in since:
+                    since.append(last)
+            if x.get("type") == "research" and x.get("op") == "level":
+                since = []
             if cur is not None and x.get("type") == "research" and x.get("op") == "level":
                 before = cur.pop("_before", None)  # no frame at all during the level
                 if not cur["frames"] and before and before[0]:
                     cur["frames"].append(before[0])
-                cur.update(result=x.get("result"), seconds=x.get("seconds"), value=x.get("value"), note=x.get("note"))
+                cur.update(result=x.get("result"), seconds=x.get("seconds"), value=x.get("value"), note=x.get("note"),
+                           bonus=bool(x.get("bonus")))
                 spans.append(cur)
                 cur = None
     return [s for s in spans if mech is None or s["mechanic"] == mech]
@@ -2544,7 +2749,8 @@ def cmd_level_catalog(args) -> None:
     for s in level_spans(game):
         if not s["frames"] or s.get("result") is None:
             continue
-        key = (f"{int(s['value']):04d}" if isinstance(s.get("value"), (int, float))
+        # a bonus board (golden, challenge, daily) is filed under its name: a number would shift every later level
+        key = (f"{int(s['value']):04d}" if isinstance(s.get("value"), (int, float)) and not s.get("bonus")
                else slug(s.get("level") or "level"))
         lv = by.setdefault(key, {"key": key, "level": s.get("level"), "mechanic": s.get("mechanic"), "tries": [],
                                  "frame": s["frames"][0], "note": None})
@@ -2707,6 +2913,54 @@ def changed_px(a: Path, b: Path) -> int:
     return ImageChops.difference(ta, tb).point(lambda v: 255 if v > 25 else 0).histogram()[255]
 
 
+def solve_repeat(cur: dict, mech: str, moves: list) -> int | None:
+    """The step whose solver moves were played on this same frame, when the solver returns them again: they did
+    not land. (2026-10-02, dream: Block Blast sent the same plan again on an unchanged board 16 times in one
+    session, 38 % of its steps; each loop ended only with a drag by hand.)"""
+    ls = cur.get("last_solve") or {}
+    if (moves and ls.get("mech") == mech and ls.get("moves") == [list(m) for m in moves]
+            and hash_distance(ls["hash"], cur["last_hash"]) <= HASH_MATCH):
+        return ls["step"]
+    return None
+
+
+def repeat_msg(step: int) -> str:
+    return (f"the solver returns the moves of step {step} on the same frame: they do not land. Place one by hand on "
+            "this frame, or fix the solver (--force sends them anyway)")
+
+
+def solve_check(cur: dict, args, mech: str, frame: Path, gap) -> None:
+    """The solver's moves drawn on a fresh frame, nothing played."""
+    res = run_solver(cur["game"], mech, frame, args.board, cur["scale"], state=solver_state(cur, mech))
+    res.pop("state", None)  # a check plays nothing: the memory stays as it was
+    moves = solver_moves(res, *cur["phys"])
+    rep = solve_repeat(cur, mech, moves)
+    cur["looked"] = True  # a fresh frame after the last move
+    warn = book_moves(cur, "solve", 0, time.time()) + ([repeat_msg(rep)] if rep is not None else [])
+    dest = draw_moves(frame, moves, frame.with_name(f"{cur['last_shot']:05d}_solve.jpg"))
+    log_step(cur, {"type": "solve_check", "mechanic": mech, "n": len(moves), "note": res.get("note"),
+                   "gap_s": gap})
+    save_session(cur)
+    out(add_warnings({"solver": res["solver"], "moves": len(moves), "note": res.get("note"),
+                      "rescan": bool(res.get("rescan")), "done": bool(res.get("done")), "drawn": str(dest),
+                      "hint": "open the drawn frame: numbers are the moves in order. Right: solve --run --rounds N. "
+                              "Wrong: fix the solver (check it on saved frames with --image) or play by the playbook"},
+                     warn))
+
+
+def solve_refused(cur: dict, args, mech: str, res: dict, moves: list, rep: int, frame: Path, gap, info: dict) -> None:
+    """The same moves on the same frame are not sent again: the reply draws them on the frame instead."""
+    res.pop("state", None)  # nothing is played: the memory stays as it was
+    dest = draw_moves(frame, moves, frame.with_name(f"{cur['last_shot']:05d}_solve.jpg"))
+    warn = book_moves(cur, "solve", 0, time.time())
+    log_step(cur, {"type": "solve", "mechanic": mech, "round": 1, "n": 0, "moves": [list(m) for m in moves],
+                   "repeated": True, "repeat_of": rep, "note": res.get("note"), "why": args.why,
+                   "shot": cur["last_shot"], "hash": cur["last_hash"], "gap_s": gap})
+    save_session(cur)
+    out(add_warnings({"solver": res["solver"], "rounds": 0, "moves_done": 0, "repeated": True,
+                      "stopped": repeat_msg(rep), "drawn": str(dest), **info}, warn))
+
+
 def cmd_solve(args) -> None:
     """Run the mechanic's solver. Without --run the moves are only drawn on a fresh full-resolution frame
     for checking. With --run, rounds of frame -> solver -> moves until the solver has no moves or says the
@@ -2734,28 +2988,24 @@ def cmd_solve(args) -> None:
     info = take_shot(cur, dev)
     frame = lambda: Path(cur["dir"]) / "shots" / f"{cur['last_shot']:05d}.jpg"  # noqa: E731
     if not args.run:
-        res = run_solver(cur["game"], mech, frame(), args.board, cur["scale"], state=solver_state(cur, mech))
-        res.pop("state", None)  # a check plays nothing: the memory stays as it was
-        moves = solver_moves(res, *cur["phys"])
-        dest = draw_moves(frame(), moves, frame().with_name(f"{cur['last_shot']:05d}_solve.jpg"))
-        log_step(cur, {"type": "solve_check", "mechanic": mech, "n": len(moves), "note": res.get("note"),
-                       "gap_s": gap})
-        save_session(cur)
-        return out({"solver": res["solver"], "moves": len(moves), "note": res.get("note"),
-                    "rescan": bool(res.get("rescan")), "done": bool(res.get("done")), "drawn": str(dest),
-                    "hint": "open the drawn frame: numbers are the moves in order. Right: solve --run --rounds N. "
-                            "Wrong: fix the solver (check it on saved frames with --image) or play by the playbook"})
+        return solve_check(cur, args, mech, frame(), gap)
     cap, pause = P()["play"]["batch_max"] * 5, args.gap if args.gap is not None else P()["play"]["batch_gap_s"]
-    total, stop, notes, n, prev = 0, None, [], 0, None
+    total, stop, notes, n, prev, changed, t0 = 0, None, [], 0, None, False, time.time()
     for n in range(1, max(1, args.rounds) + 1):
-        before = frame()
+        before, h_before = frame(), cur["last_hash"]
         res = run_solver(cur["game"], mech, before, args.board if n == 1 else None, cur["scale"],
                          state=solver_state(cur, mech))
-        keep_solver_state(cur, mech, res)
         moves = solver_moves(res, *cur["phys"])
+        rep = solve_repeat(cur, mech, moves) if n == 1 else None
+        if rep is not None and not args.force:
+            return solve_refused(cur, args, mech, res, moves, rep, before, gap, info)
+        keep_solver_state(cur, mech, res)
         notes.append(res.get("note"))
         if not moves:
-            stop = "solved" if res.get("done") else f"the solver has no moves: {res.get('note') or 'no note'}"
+            # "solved" needs a round of this call that changed the frame: a solver that says done on a frame
+            # nothing changed may be reading an ad or the last win screen (2026-10-01, dream: Meowdoku level 46)
+            stop = (("solved" if changed else "the solver says done on a frame that did not change: look at it")
+                    if res.get("done") else f"the solver has no moves: {res.get('note') or 'no note'}")
             break
         if moves == prev:
             # the same moves after playing them: the solver does not see their result (a misread board,
@@ -2770,19 +3020,23 @@ def cmd_solve(args) -> None:
         cur["last_action"] = time.time()
         time.sleep(args.settle)
         info = take_shot(cur, dev, args.hi)
-        log_step(cur, {"type": "solve", "mechanic": mech, "round": n, "n": done, "note": res.get("note"),
-                       "rescan": bool(res.get("rescan")), "done": bool(res.get("done")), "why": args.why,
-                       "shot": info["shot_n"], "same": info["same_as_prev"], "app": info["app"],
+        cur["last_solve"] = {"mech": mech, "hash": h_before, "moves": [list(m) for m in moves], "step": cur["step"]}
+        log_step(cur, {"type": "solve", "mechanic": mech, "round": n, "n": done, "moves": [list(m) for m in moves[:done]],
+                       "note": res.get("note"), "rescan": bool(res.get("rescan")), "done": bool(res.get("done")),
+                       "why": args.why, "shot": info["shot_n"], "same": info["same_as_prev"], "app": info["app"],
                        "hash": cur["last_hash"], "gap_s": gap if n == 1 else None,
-                       **({"stopped": stopped} if stopped else {})})
+                       **({"stopped": stopped} if stopped else {}),
+                       **({"repeated": True, "forced": True} if rep is not None else {})})
         save_session(cur)
         if stopped:
             stop = stopped
             break
+        changed = changed_px(before, frame()) > 0
         if res.get("done"):
-            stop = "the solver says these moves finish the level"
+            stop = ("the solver says these moves finish the level" if changed
+                    else "the solver says done on a frame that did not change: look at it")
             break
-        if changed_px(before, frame()) == 0:
+        if not changed:
             stop = "the moves changed nothing on screen: the solver misreads the board"
             break
         lv = cur.get("level")
@@ -2791,10 +3045,14 @@ def cmd_solve(args) -> None:
             break
     else:
         stop = f"{args.rounds} round(s) played" + ("; the solver wants another look (rescan)" if res.get("rescan") else "")
+    add_warnings(info, book_moves(cur, "solve", total, t0))
+    save_session(cur)
     if stop == "owner":
         fail(STOP_MSG, 6, done=total, hint="sw.py end --status interrupted --summary ...")
+    done_claim = stop == "solved" or "finish the level" in stop
     out({"solver": solver_path(cur["game"], mech).as_posix(), "rounds": n, "moves_done": total, "stopped": stop,
-         "notes": notes[-3:], **info})
+         "notes": notes[-3:], **({"next": "take a frame of the win screen (shot): level end won needs it"}
+                                 if done_claim else {}), **info})
 
 
 def cmd_ask(args) -> None:
@@ -2867,10 +3125,7 @@ def finish(cur: dict, status: str, summary: str) -> dict:
         cur["clips"].append({**cur["clip_open"], "desc": "", "t1": cur["last_action"] + 2})
     lv = cur.get("level")
     if lv:  # a level left open: the session ended in the middle of it
-        log_op(cur, {"op": "level", "name": lv["name"], "value": lv.get("value"), "mechanic": lv["mechanic"],
-                     "result": "quit", "seconds": round(time.time() - lv["t0"]), "decisions": cur["step"] - lv["step0"],
-                     "moves": cur.get("moves", 0) - lv["moves0"], "replans": lv["replans"], "model": cur.get("model"),
-                     "note": f"session ended ({status})"})
+        log_op(cur, level_op(cur, lv, "quit", f"session ended ({status})", time.time()))
         cur["level"] = None
     stop_recording(cur)
     info = None
@@ -2917,7 +3172,8 @@ def finish(cur: dict, status: str, summary: str) -> dict:
             "minutes": round((time.time() - cur["t0"]) / 60, 1), "steps": cur["step"], "moves": cur.get("moves"),
             "gap_s_median": median(gaps),
             "levels": {"won": sum(o["result"] == "won" for o in levels), "lost": sum(o["result"] == "lost" for o in levels),
-                       "won_s_median": median([o["seconds"] for o in levels if o["result"] == "won"])},
+                       "won_s_median": median([o["seconds"] for o in levels if o["result"] == "won" and timed(o)])},
+            "moves_outside_level": cur.get("moves_outside_level", 0), "repeated_steps": repeated_steps(steps),
             "status": status,
             "summary": summary, "marks": sum(s["type"] == "mark" for s in steps),
             "features_touched": len({o.get("id") if o["op"] == "feature" else o.get("feature") for o in ops
@@ -2978,6 +3234,7 @@ def skill_run(args) -> None:
         save_session(cur)
         fail("not the screen the skill starts from: do the steps by hand", 5, shot=pre["shot"])
     w, h = cur["phys"]
+    t = time.time()
     for st in sk["steps"]:
         if "tap" in st:
             dev.tap(int(st["tap"][0] * w), int(st["tap"][1] * h))
@@ -2990,6 +3247,7 @@ def skill_run(args) -> None:
     cur["step"] += len(sk["steps"])
     cur["last_action"] = time.time()
     info = take_shot(cur, dev)
+    add_warnings(info, book_moves(cur, "skill", len(sk["steps"]), t))
     ok = hash_distance(sk["post_hash"], cur["last_hash"]) <= HASH_MATCH
     log_step(cur, {"type": "skill", "name": args.name, "ok": ok, "why": args.why, "shot": info["shot_n"],
                    "hash": cur["last_hash"]})
@@ -3125,7 +3383,7 @@ def cmd_stats(args) -> None:
             gaps = [x["gap_s"] for x in steps if x.get("gap_s") is not None]
             sk = [r for r in runs if r["session"] == s["id"]]
             lv = [o for o in lv_ops if o.get("session") == s["id"]]
-            won = [o["seconds"] for o in lv if o["result"] == "won"]
+            won = [o["seconds"] for o in lv if o["result"] == "won" and timed(o)]
             done = s.get("cases_done", 0) + len(s.get("tasks_done", []))
             rows.append({"session": s["id"], "game": game,
                          "model": (s.get("model") or "?") + (f":{s['effort']}" if s.get("effort") else ""),
@@ -3137,8 +3395,11 @@ def cmd_stats(args) -> None:
                          "same_screen_rate": round(sum(bool(x.get("same")) for x in acts) / len(acts), 2) if acts else None,
                          "gap_s_median": median(gaps),
                          "model_time_share": round(sum(gaps) / (s["minutes"] * 60), 2) if gaps and s["minutes"] else None,
-                         "levels_won": len(won), "levels_lost": sum(o["result"] == "lost" for o in lv),
+                         "levels_won": sum(o["result"] == "won" for o in lv),
+                         "levels_lost": sum(o["result"] == "lost" for o in lv),
                          "level_min_median": round(median(won) / 60, 1) if won else None,
+                         # moves of levels never started; the same action again on an unchanged screen
+                         "moves_outside_level": s.get("moves_outside_level"), "repeated_steps": repeated_steps(steps),
                          "skills_ok": sum(r["ok"] for r in sk), "skills_fail": sum(not r["ok"] for r in sk)})
         all_rows += rows
         half = len(rows) // 2
@@ -3149,6 +3410,7 @@ def cmd_stats(args) -> None:
 
         view = research_view(game)
         per_game[game] = {"sessions": rows, "mechanics": [mechanic_brief(m) for m in view["mechanics"]],
+                          **{k: sum(r[k] or 0 for r in rows) for k in ("moves_outside_level", "repeated_steps")},
                           "trend": {k: {"first_half": avg(rows[:half], k), "second_half": avg(rows[half:], k)}
                                     for k in ("steps_per_case", "same_screen_rate", "gap_s_median",
                                               "level_min_median")} if half else None}
@@ -3729,9 +3991,13 @@ def bench_rows(plan: dict) -> list[dict]:
         lv = [o for o in ops if o.get("session") == s["id"] and o["op"] == "level"]
         cost = read_json(STATE() / "bench" / plan["id"] / f"slot-{n}.json")
         asks = [x for x in read_jsonl(RAW() / game / s["id"] / "steps.jsonl") if x.get("type") == "ask"]
+        won = [o for o in lv if o["result"] == "won" and not o.get("skipped")]  # a skip for a video is no play
         rows.append({"slot": n, "variant": f"{slot.get('model')}" + (f":{slot['effort']}" if slot.get("effort") else ""),
                      "session": s["id"], "minutes": s["minutes"], "status": s["status"],
-                     "won": [o["seconds"] for o in lv if o["result"] == "won"],
+                     "won": [o["seconds"] for o in won],
+                     # from the first move to the end: an ad at the start or a late start does not count
+                     "solve_s": [o["solve_s"] for o in won if o.get("solve_s") is not None],
+                     "late_starts": sum(bool(o.get("moves_before")) for o in lv),
                      "lost": sum(o["result"] == "lost" for o in lv), "moves": s.get("moves") or 0,
                      "gap_s": s.get("gap_s_median"),
                      # a consultation is a stronger model's work: it counts in the player's cost
@@ -3806,7 +4072,9 @@ def cmd_bench(args) -> None:
         cost = [r["cost_usd"] for r in rs if r["cost_usd"] is not None]
         table.append({"variant": v, "slots": len(rs), "levels_won": len(won), "levels_lost": sum(r["lost"] for r in rs),
                       "won_per_hour": round(len(won) / hours, 1), "asks": sum(r["asks"] for r in rs),
-                      "level_s_median": median(won), "decision_s_median": median([r["gap_s"] for r in rs]),
+                      "level_s_median": median(won), "solve_s_median": median([x for r in rs for x in r["solve_s"]]),
+                      "late_starts": sum(r["late_starts"] for r in rs),
+                      "decision_s_median": median([r["gap_s"] for r in rs]),
                       "moves_per_won": round(sum(r["moves"] for r in rs) / len(won), 1) if won else None,
                       "cost_usd": round(sum(cost), 2) if cost else None,
                       "cost_per_won_usd": round(sum(cost) / len(won), 3) if cost and won else None,
@@ -3862,6 +4130,8 @@ def main() -> None:
     sub.add_parser("launch")
     p = sub.add_parser("restart")
     p.add_argument("--why", required=True)
+    p.add_argument("--after-win", action="store_true",
+                   help="restart within two minutes of a won level: after launch and wait 30 the win is saved")
     for name, nargs in (("tap", ["x", "y"]), ("swipe", ["x1", "y1", "x2", "y2"])):
         p = sub.add_parser(name)
         for n in nargs:
@@ -3878,6 +4148,9 @@ def main() -> None:
     for name in ("tap", "swipe", "taps"):
         sub.choices[name].add_argument("--frame", type=int,
                                        help="the screenshot number (shot_n) your coordinates come from")
+    for name in ("tap", "taps"):
+        sub.choices[name].add_argument("--force", action="store_true",
+                                       help="send a third identical tap on a screen the last two did not change")
     for name in ("tap", "swipe", "key", "text", "taps"):
         sp = sub.choices[name]
         sp.add_argument("--why", required=True, help="what you expect to see after the action")
@@ -3894,12 +4167,16 @@ def main() -> None:
     q.add_argument("--mechanic-name", help="a readable name for a new mechanic")
     q.add_argument("--plan", required=True, help="the plan for this level, from the playbook and one look at the board")
     q.add_argument("--value", type=float, help="the level number")
+    q.add_argument("--bonus", action="store_true",
+                   help="a board without a level number (golden, challenge, daily): no progress on its win")
     q.add_argument("--hi", action="store_true", help="full-resolution screenshots during the level")
     q = ls.add_parser("plan")
     q.add_argument("plan", help="the new plan after rethinking: what blocked you, what you do differently")
     q = ls.add_parser("end")
     q.add_argument("result", choices=["won", "lost", "quit"])
     q.add_argument("--note", required=True, help="what worked, what to change next time")
+    q.add_argument("--skipped", action="store_true", help="won: the game skipped the level for a video")
+    q.add_argument("--retry", action="store_true", help="lost: open the same level again on a new clock")
     p = sub.add_parser("mechanic")
     p.add_argument("id")
     p.add_argument("name", nargs="?")
@@ -3942,6 +4219,8 @@ def main() -> None:
     p.add_argument("--settle", type=float, default=1.0)
     p.add_argument("--hi", action="store_true")
     p.add_argument("--why", default="solver moves")
+    p.add_argument("--force", action="store_true",
+                   help="with --run: send the moves the solver already played on this same frame")
     p = sub.add_parser("ask")
     p.add_argument("question")
     p.add_argument("--model", help="instead of local.yaml consult.model / project.yaml models.consult")

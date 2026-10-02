@@ -109,6 +109,8 @@ check(set(t) == {"sonnet:low", "opus:medium", "haiku"} and t["haiku"]["levels_lo
 check(t["sonnet:low"]["levels_won"] == 4 and t["sonnet:low"]["cost_usd"] == 0.6 and t["opus:medium"]["cost_per_won_usd"] == 0.45,
       f"won levels and cost per variant: {t['sonnet:low']}")
 check(t["sonnet:low"]["model_ids"] == ["claude-sonnet-x"], "the report shows the model the CLI really ran")
+check(all(x["solve_s_median"] is not None and x["late_starts"] == 0 for x in rep["variants"]),
+      "the report times levels from their first move too (solve_s), next to the level time")
 check(t["haiku"]["asks"] == 2 and t["haiku"]["cost_usd"] == round(2 * 0.1 + 2 * 0.07, 2),
       f"consultations count in the player's cost: {t['haiku']}")
 st = sw("stats", "--by-model", device=False)
