@@ -86,7 +86,10 @@ Goal and task kinds:
    Do tasks marked `only_if_fresh` only if the install is fresh. Otherwise skip them: they will wait
    for a fresh phone.
 3. **Fresh install.** Play FTUE from the start and record when and how each feature unlocks: cases
-   like "unlocks at level N". This closes `ftue` and `replay` tasks.
+   like "unlocks at level N". This closes `ftue` and `replay` tasks. If the game hides its main screen
+   behind the first levels (Candy Crush Saga: no map through level 7), play them as levels of the core
+   mechanic — `level start`, the level cycle — until the main screen appears; a scout that ends before
+   it leaves a `ftue` task with the level reached, not a second scout.
 4. **Progressed game — harvest.** Document everything already unlocked and keep playing. How the
    game reached this state is not visible, so set tasks for the gaps:
    - `task add ftue "Play FTUE from scratch: how the game reaches this progress" --kind ftue --requires fresh`
@@ -126,7 +129,10 @@ them: no level is played just to play. Each goal says when it is done:
   rewarded ad for a refill, a free daily refill, gifts). If there are none, record the gate:
   `sw.py gate lives --after-minutes 30 --note "0/5 lives, +1 every 30 min"` (types: energy, lives,
   timer, content, paywall, other; or `--at <ISO>`). Unlock goals wait; do the goals that need no
-  progress, or end the session. `sw.py gate clear` if it opened earlier.
+  progress, or end the session. `sw.py gate clear` if it opened earlier. Never wait a timer out with
+  `wait`: one call sleeps at most 60 s whatever you ask for, the screen dims after a few idle minutes
+  and the next tap fails with exit 3 (Meowdoku 223249: 13 waits, 12 minutes, then blocked). A check
+  that needs time is a task with `--after-hours` or `--at`.
 - **Anything you notice outside your goals** — register it (`feature`, `case`, `task add`) and move
   on. The post-session review turns it into goals.
 - After each milestone record where you are: `sw.py progress "level 12" --value 12` (new features
@@ -145,6 +151,13 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
 1. **Before the level: plan.** `sw.py playbook` has the rules and the method for each mechanic (a kind
    of level). Look at the board once (`shot --hi` when the pieces are small) and write the plan:
    `sw.py level start "level 12" --value 12 --mechanic core-match --plan "clear the top layer first, keep the tray empty"`.
+   `level start` comes before the look you act on and before any `solve`: moves and solver calls with
+   no level open are in no level's time, and a start logged after the reading makes the level look
+   faster than it was (a Meowdoku bench slot recorded 23–26 s a level against 47–52 s from the Level
+   tap). Every level you play gets its pair of records: six MeowTrail wins and eighteen Meowdoku wins
+   played without `level start` count as nothing in the statistics. A board without a level number (a
+   golden board, a challenge, a daily) gets its own name — `level start "golden after L98"` — never the
+   next level's number: bench slots that named golden boards as levels shifted every later label by one.
    A mechanic you have not met yet: read the game's own rules first (tutorial, "How to play") and
    write them into the playbook *before* the first move — goal, controls, what blocks a move, how you
    lose — and plan from them.
@@ -173,7 +186,10 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    from it. A won level records the progress by itself. `level end won` only when the frame in front
    of you shows the win screen or the next level's number: a solver's `done`, a `solve --run` that
    stopped, or a plan that is finished is not a win. Early records in two games double-counted
-   levels and mislabelled the next ones.
+   levels and mislabelled the next ones. A stage or a try that you lose and retry (Retry Stage, Restart,
+   a new board under the same number) is `level end lost`, then a new `level start` with the same name:
+   a loss fixed by a retry is still a loss (Pull the Pin L23: one stage lost, the session records 4 won,
+   0 lost). A skip for a video is not a solve: say so in the note.
 5. **Make it fast.** Two levels in a row within the budget mark the mechanic `mastered`; two lost or
    slow levels in a row mark it `broken`. When levels stay slow, change the method, not the effort:
    - **solver** — logic puzzles where every piece is visible (mahjong, sudoku-like, light-up,
@@ -232,8 +248,12 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
      1. wait for its timer (`wait 10`, up to three times): the skip or the close cross appears after
         5–30 s on interstitials and after about 25 s on rewarded videos. Tap only a labelled control
         or an X you can see; a corner tapped on a guess opens the Play Store or starts another ad;
-     2. the Play Store or a browser came up (the reply says "not the game on screen") — `launch`,
-        not `key back`: back lands in the ad again, `launch` returns to the game and a reward is kept;
+     2. the Play Store or a browser came up (the reply's `app` is `com.android.vending` or a browser) —
+        `launch` first: when the store is a sheet over the game it returns to the game and a reward is
+        kept. If the reply after `launch` still names the store, the ad opened the listing as its own
+        screen: `key back` once, look, then `launch`. A second `launch` or a `restart` leaves the store
+        in front (Cryptogram 190315, 192245, 224924 and Pull the Pin 075644 spent 1.5–3 min a session on
+        launch/restart pairs with the store up; Back worked at once every time);
      3. `restart --why …` — force-stop the game and start it again. Only when nothing is at stake:
         never while a win screen, a post-win interstitial or a "level complete" reward is up — the
         win is not saved yet (Pull the Pin reverted a won level four times, Vita Mahjong restarted a
@@ -249,7 +269,11 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    - Follow the `warnings` field in the reply. Three steps without a screen change — change strategy.
      `same_as_prev` compares perceptual hashes, so on a board where a batch removes a few tiles it
      can stay `true` while the board changes: judge by the frame, and when the frame shows progress
-     take "stuck: end the session" as a prompt to look, not an order.
+     take "stuck: end the session" as a prompt to look, not an order. A tap that changed nothing is not
+     repeated as it is: compare its point with the control's bounds on the frame first (a MeowTrail
+     bench slot tapped 30 px below the Level button for 4 minutes, another 150 s above the win button).
+     The second identical tap is the last; the same goes for a solver that returns the same moves on
+     the same frame — place one move by hand and look.
    - After an ad, a `launch`, a win screen or a popup the next action is one tap, then the frame.
      A blind pair of taps there drifted by a level, played a rewarded video, hit the back arrow and
      the gear, and opened the Play Store (four games). `taps` batches are for moves inside a level

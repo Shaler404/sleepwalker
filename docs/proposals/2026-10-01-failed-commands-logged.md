@@ -43,3 +43,18 @@ Five games, seven sessions. None of this shows in `stats`.
 - `sw.py -d <device> tap 10 --why x` (missing Y) logs an `error` step with the message; `sw.py stats`
   shows `errors: 1`.
 - With `consult.timeout_s: 1`, `sw.py ask "x"` fails fast, logs an `error` step with `seconds`.
+
+## Addendum (dream chrono, 2026-10-02)
+
+The same slips kept costing steps on 2026-10-01, and two new ones appeared in three games:
+
+- `mark --frame N` does not exist, though `tap --frame N` does: players tried it to mark an earlier frame and
+  lost the mark — Amaze GO! [s:20261001-204000-chrono-2FYKPJ#17], Vita Mahjong (the L19 intro)
+  [s:20261001-205148-chrono-2FYKPJ#75]. Add `--frame <shot_n>` to `mark`: the frame it marks is that shot,
+  not the last one.
+- `task done --new-entries` takes a count; a list of names is an argparse error
+  [s:20261001-204000-chrono-2FYKPJ#22]. Accept a comma-separated list and count it.
+- `ask` timed out at 180 s again in Pull the Pin [s:20261001-102608-chrono-2FYKPJ#1], and the touch-protection
+  refusal (exit 3) left no step either [s:20261001-081207-chrono-2FYKPJ#18] [s:20261001-175320-chrono-2FYKPJ#4]
+  [s:20261001-223249-chrono-2FYKPJ#8]: the `error` step of point 1 covers both (see also
+  `2026-10-02-touch-protection-and-screen-sleep.md`).
