@@ -32,8 +32,9 @@ Levels: think first, then play fast
   playbook                               how to play this game: rules and methods per mechanic, level times
   level start "level 12" --mechanic ID --plan "..." [--value 12 | --bonus] [--hi]
   level plan "new plan"                  rethink: what blocks you, what you do differently now
-  level end won|lost|quit --note "what worked, what to change" [--skipped] [--retry]
-                                         won: after a frame of the win screen; lost --retry: the same level again
+  level end won|lost|quit --note "what worked, what to change" [--skipped] [--retry] [--deliberate]
+                                         won: after a frame of the win screen; lost --retry: the same level again;
+                                         lost --deliberate: an outcome run on purpose, not held against the mechanic
   mechanic ID "Name" [--status studying|mastered|broken] [--method manual|heuristic|solver] [--note ...]
   solve MECHANIC [--board FILE] [--run [--rounds N]] [--force] | solve MECHANIC --image FRAME
                                          the mechanic's solver: check its moves, play them, or test it on a frame
@@ -46,8 +47,10 @@ The lab: making gameplay fast without the phone (runbooks/lab.md)
   mark "title" "description" [--feature F --as entry|screen|tab:NAME|popup|result|other [--at X,Y]] [--frame N]
                                          a frame for the wiki (the last one, or shot N); --as says where it goes on
                                          the feature's page
-  feature ID "Name" [--status seen|in_progress|documented]
-  case FEATURE ID "what to check" [--done]
+  feature ID "Name" --type T --appeared "after level 20" | --appeared-guess "..." [--status seen|in_progress|documented]
+                                         a feature of a type (sw.py types): its checklist becomes cases chk-<item>
+  feature ID ["Name"] --locked "level 30" [--locked-value 30] | --unlocked   a lock seen on screen / seen open
+  case FEATURE ID "what to check" [--done] [--outcome]   --outcome: one way the base (core-level) level ends
   task add ID "what to do" [--kind followup|daily|replay|ftue] [--feature F] [--requires fresh]
            [--after-hours N | --at ISO] [--days N] [--note ...]
   task done ID [--note ...] [--new-entries N|name,name] | task cancel ID --reason ...
@@ -60,6 +63,10 @@ The lab: making gameplay fast without the phone (runbooks/lab.md)
 Knowledge
   games                                  games on the phones vs games.yaml: what is listed, what to add
   research GAME                          tasks and feature map: from the wiki + this machine's new journal entries
+  types [--prune] | audit GAME           the feature type catalog / the game's feature model: untyped, triggers,
+                                         open checklist items, locks, the matrix of outcomes (JSON)
+  type-add ID --name ... --description ... [--base T] [--affects-level-flow] --item ID:TEXT:KIND ...
+                                         the type designer's new type (state/feature-types.local.yaml)
   pending                                this machine's sessions that have not been through the "dream" yet
   stats [GAME] [--by-model]              play speed per session, level times; compare models
 "Dream"
@@ -1462,7 +1469,7 @@ def mechanic_brief(m: dict) -> dict:
 
 
 TASK_FIELDS = ("title", "kind", "version", "requires", "feature", "not_before", "source", "note", "target_text",
-               "target_value", "plan")
+               "target_value", "plan", "rank")
 
 
 def apply_op(view: dict, op: dict) -> None:
@@ -1472,11 +1479,21 @@ def apply_op(view: dict, op: dict) -> None:
         f = find_feature(view, op["id"])
         if new and view.get("progress"):  # where in the game the feature first showed up
             f["found_at"] = {k: view["progress"].get(k) for k in ("text", "value")}
-        for k in ("name", "status", "page"):
+        for k in ("name", "status", "page", "type"):
             if op.get(k):
                 f[k] = op[k]
         if op.get("status") == "documented":
             f["version_seen"] = op.get("game_version") or view.get("version")
+        ap = op.get("appeared")
+        if ap and not ((f.get("appeared") or {}).get("certainty") == "fact" and ap.get("certainty") != "fact"):
+            f["appeared"] = ap  # a fact is not replaced by a later guess
+        if op.get("locked"):
+            f["locked"] = op["locked"]
+            f.pop("unlocked_at", None)
+        if op.get("unlocked") and (f.get("locked") or not f.get("unlocked_at")):
+            lk, pr = f.pop("locked", None), view.get("progress") or {}
+            f["unlocked_at"] = {"text": pr.get("text"), "value": pr.get("value"), "source": op.get("source"),
+                                **({"lock": lk.get("text")} if lk else {})}
     elif kind == "case":
         f = find_feature(view, op["feature"])
         c = next((c for c in f.setdefault("cases", []) if c["id"] == op["id"]), None)
@@ -1485,6 +1502,8 @@ def apply_op(view: dict, op: dict) -> None:
             f["cases"].append(c)
         if op.get("text"):
             c["text"] = op["text"]
+        if op.get("outcome"):  # one way the base level ends (the feature model's matrix)
+            c["outcome"] = True
         if op.get("done"):
             c.update(done=True, source=op.get("source"))
             if op.get("game_version"):
@@ -1507,7 +1526,8 @@ def apply_op(view: dict, op: dict) -> None:
         m["levels"][op["result"]] = m["levels"].get(op["result"], 0) + 1
         m["recent"] = (m.get("recent", []) + [{"level": op.get("name"), "result": op["result"],
                                                  "seconds": op.get("seconds"), "model": op.get("model"),
-                                                 **{k: op[k] for k in ("skipped", "moves_before") if op.get(k)}}])[-10:]
+                                                 **{k: op[k] for k in ("skipped", "moves_before", "deliberate")
+                                                    if op.get(k)}}])[-10:]
         if (op["result"] == "won" and timed(op) and op.get("seconds")
                 and (not m.get("best_s") or op["seconds"] < m["best_s"])):
             m["best_s"] = op["seconds"]
@@ -1577,7 +1597,153 @@ def research_view(game: str, until: float | None = None, base: Path | None = Non
     for op in journal(game):
         if op["t"] > since and (until is None or op["t"] <= until):
             apply_op(view, op)
+    derive_cases(view)
     return view
+
+
+# --- the feature model: types, checklists, outcomes and the matrix ---------------------------------------
+# Every feature has a type from schema/feature-types.yaml (merged with this machine's state/feature-types.local.yaml);
+# the type's checklist becomes open cases chk-<item>, so nothing is forgotten. On a feature whose type affects the
+# level flow, every known outcome of the base level (the outcome cases of the core-level features) is an open case
+# under-<outcome> until it is run once under it. (2026-10-02, the owner: Pull the Pin's Multi Stage loss flow, a
+# different fail window and a restart back to stage 1, was found only by accident in a benchmark.)
+
+TYPE_KINDS = ("look", "outcome", "experiment")
+UNKNOWN_TYPE = "unknown"  # typed, but no type fits yet: the reviewer starts the type designer
+BASE_TYPE = "core-level"  # the base level of a mechanic: its outcome cases are the outcomes of the matrix
+_CATALOG: dict = {}
+
+
+def types_paths() -> tuple[Path, Path]:
+    """The published catalog and this machine's own types (sw.py type-add), used at once."""
+    return ROOT / "schema" / "feature-types.yaml", STATE() / "feature-types.local.yaml"
+
+
+def type_item(it) -> dict:
+    it = it if isinstance(it, dict) else {"id": str(it)}
+    return {"id": slug(str(it.get("id"))), "text": str(it.get("text") or it.get("id")).strip(),
+            "kind": it.get("kind") if it.get("kind") in TYPE_KINDS else "look"}
+
+
+def load_catalog(pub: dict, loc: dict) -> dict:
+    """The published types, then the local ones: a local type with a published id overrides the fields it gives
+    and its items by id. Every checklist starts with the universal items (appeared, entry, screen)."""
+    universal = [type_item(x) for x in pub.get("universal") or []]
+    uids = {u["id"] for u in universal}
+    types: dict[str, dict] = {}
+    for local, data in ((False, pub), (True, loc)):
+        for t in data.get("types") or []:
+            if not isinstance(t, dict) or not t.get("id"):
+                continue
+            tid = slug(str(t["id"]))
+            cur = types.setdefault(tid, {"id": tid, "name": tid, "description": "", "base": None,
+                                         "affects_level_flow": False, "checklist": []})
+            for k in ("name", "description"):
+                if t.get(k):
+                    cur[k] = " ".join(str(t[k]).split())
+            if "base" in t:
+                cur["base"] = slug(str(t["base"])) if t["base"] else None
+            if "affects_level_flow" in t:
+                cur["affects_level_flow"] = bool(t["affects_level_flow"])
+            byid = {i["id"]: i for i in cur["checklist"]}
+            for i in map(type_item, t.get("checklist") or []):
+                if i["id"] in byid:
+                    byid[i["id"]].update(i)
+                else:
+                    cur["checklist"].append(i)
+                    byid[i["id"]] = i
+            if local:
+                cur["local"] = True
+    for t in types.values():
+        t["checklist"] = [dict(u) for u in universal] + [i for i in t["checklist"] if i["id"] not in uids]
+    return {"universal": universal, "types": types}
+
+
+def catalog() -> dict:
+    """The merged catalog, read again whenever either file changes."""
+    paths = types_paths()
+    key = tuple((str(p), p.stat().st_mtime_ns, p.stat().st_size) if p.exists() else str(p) for p in paths)
+    if _CATALOG.get("key") != key:
+        _CATALOG.update(key=key, value=load_catalog(read_yaml(paths[0]), read_yaml(paths[1])))
+    return _CATALOG["value"]
+
+
+def feature_types() -> dict[str, dict]:
+    return catalog()["types"]
+
+
+def type_checklist(tid: str | None) -> list[dict]:
+    """A type's checklist; `unknown` has the universal items only; an untyped feature has none."""
+    if tid == UNKNOWN_TYPE:
+        return catalog()["universal"]
+    t = feature_types().get(tid or "")
+    return t["checklist"] if t else []
+
+
+def flow_type(tid: str | None) -> bool:
+    t = feature_types().get(tid or "")
+    return bool(t and t.get("affects_level_flow"))
+
+
+def outcome_key(cid: str) -> str:
+    """chk-win (an outcome item of the core-level checklist) and win are the same outcome."""
+    return cid[4:] if cid.startswith("chk-") else cid
+
+
+def outcome_label(text: str) -> str:
+    """An outcome's short name, the text before its first colon: "Win: the win screen ..." gives "Win"."""
+    return text.split(": ", 1)[0].strip().rstrip(".") or text
+
+
+def known_outcomes(view: dict) -> list[tuple[str, str]]:
+    """The base level's outcomes in this game: (key, label) of every outcome case on a core-level feature."""
+    seen: dict[str, str] = {}
+    for f in view["features"]:
+        if f.get("type") == BASE_TYPE:
+            for c in f.get("cases", []):
+                if c.get("outcome"):
+                    seen.setdefault(outcome_key(c["id"]), outcome_label(c.get("text") or c["id"]))
+    return list(seen.items())
+
+
+def derive_cases(view: dict) -> None:
+    """The cases the feature model owes, added to the view (idempotent): the type's checklist on every typed
+    feature, chk-appeared closed by a fact, and under-<outcome> on every flow-affecting feature for every known
+    outcome, whichever side appeared first. A type change adds the new type's missing items; a former type's
+    items that are still open go, the done ones stay."""
+    for f in view["features"]:
+        items = type_checklist(f.get("type"))
+        if not items:
+            continue
+        own = {f"chk-{it['id']}" for it in items}
+        f["cases"] = [c for c in f.get("cases", []) if c.get("done") or c["id"] in own or not c["id"].startswith("chk-")]
+        cases = f["cases"]
+        byid = {c["id"]: c for c in cases}
+        for it in items:
+            cid = f"chk-{it['id']}"
+            c = byid.get(cid)
+            if c is None:
+                c = byid[cid] = {"id": cid, "text": it["text"], "done": False}
+                cases.append(c)
+            elif c.get("text") in (None, "", cid):  # closed before the type gave it a text
+                c["text"] = it["text"]
+            if f.get("type") == BASE_TYPE and it["kind"] == "outcome":
+                c["outcome"] = True
+        ap, c = f.get("appeared") or {}, byid.get("chk-appeared")
+        if c and ap.get("certainty") == "fact" and not c.get("done"):
+            c.update(done=True, source=ap.get("source"))
+    outcomes = known_outcomes(view)
+    for f in view["features"]:
+        if not flow_type(f.get("type")):
+            continue
+        cases = f.setdefault("cases", [])
+        byid = {c["id"]: c for c in cases}
+        for key, label in outcomes:
+            cid, text = f"under-{key}", f"{label} under {f.get('name') or f['id']}: as the base, or what differs"
+            if cid not in byid:
+                cases.append({"id": cid, "text": text, "done": False})
+            elif byid[cid].get("text") in (None, "", cid):
+                byid[cid]["text"] = text
 
 
 def open_tasks(view: dict) -> list[dict]:
@@ -1748,6 +1914,8 @@ def plan_game(game: str, installed_versions: list[str], now: float) -> None:
                         "note": "a newer version is on Google Play: update the game on the phone, then recheck "
                                 "the documented features and look for new ones"})
     view = research_view(game)
+    if plan_feature_goals(game, view):  # before the analysis may close: these goals keep it open
+        view = research_view(game)
     # analyze and update tasks close themselves once the feature map is complete
     for t in open_tasks(view):
         # a recheck for a newer version than the docs describe stays open: the map is complete for the old one
@@ -1783,8 +1951,9 @@ def plan_goals(game: str, view: dict, now: float) -> None:
         write_op(game, {"op": "task", "id": "scout-1", "kind": "scout", "title": SCOUT_TITLE, "requires": "any",
                         "source": "external", "note": "the first map of the game"})
     studied = {t.get("feature") for t in goals if t["kind"] == "study"}
-    for f in view["features"]:
-        if f.get("status") in OPEN_STATUSES and f["id"] not in studied and not find_task(view, f"study-{f['id']}"):
+    for f in view["features"]:  # a locked feature cannot be studied: its unlock goal comes first, then a first look
+        if f.get("status") in OPEN_STATUSES and not f.get("locked") and f["id"] not in studied and \
+                not find_task(view, f"study-{f['id']}"):
             write_op(game, {"op": "task", "id": f"study-{f['id']}", "kind": "study", "feature": f["id"],
                             "title": f"Study {f.get('name') or f['id']}: open it, walk its screens and tabs, verify "
                                      "its cases", "requires": "any", "source": "external"})
@@ -1793,6 +1962,106 @@ def plan_goals(game: str, view: dict, now: float) -> None:
         n = len([t for t in view["tasks"] if t["kind"] in ("scout", "survey")]) + 1
         write_op(game, {"op": "task", "id": f"scout-{n}", "kind": "scout", "title": SCOUT_TITLE, "requires": "any",
                         "source": "external", "note": "no goal left while the search for features is open"})
+
+
+# The feature model's goals. A first look goes before everything else in a session; the matrix of outcomes waits
+# behind the unlock and study goals (TASK_RANK: study 4, unlock 6).
+FIRST_LOOK_RANK, MATRIX_RANK = 0, 7
+FIRST_LOOK = "First look at {name}: open it once, record what it is and decide whether it needs a full study"
+APPEARED_PLAN = ("find the moment {name} shows up and what comes just before it ({guess}); confirmed when a frame "
+                 "shows the trigger. Record it with feature {fid} --appeared \"...\": the goal closes by itself")
+MATRIX_PLAN = ("while {name} is on, reach each listed outcome of the base level once, one at a time (a deliberate loss "
+               "is allowed unless it spends premium currency); mark the outcome screen (mark --feature {fid} --as "
+               "result) and close its cell: case {fid} under-<outcome> \"as the base\" or \"what differs\" --done")
+
+
+def task_rank(t: dict) -> float:
+    """A goal's place in a session: its own rank (the feature model's goals), else its kind's."""
+    return t["rank"] if t.get("rank") is not None else TASK_RANK.get(t["kind"], 9)
+
+
+def lock_reached(f: dict, progress) -> bool:
+    lk = f.get("locked") or {}
+    return lk.get("value") is not None and progress is not None and float(progress) >= float(lk["value"])
+
+
+def feature_goal_ops(view: dict) -> list[tuple[str, dict]]:
+    """What the feature model asks of the plan, as (action, op): an unlock goal for every lock seen on screen; a
+    first look as soon as the progress passes the lock or the feature is seen open; an experiment for every typed
+    feature whose trigger is a hypothesis or unknown; one experiment per flow-affecting feature with its open
+    outcomes. Goals close when their data is in; a cancelled goal is left alone."""
+    tasks = {t["id"]: t for t in view["tasks"]}
+    progress = (view.get("progress") or {}).get("value")
+    labels = dict(known_outcomes(view))
+    res: list[tuple[str, dict]] = []
+
+    def is_open(tid: str) -> bool:
+        return tid in tasks and tasks[tid].get("status", "open") == "open"
+
+    def task(action: str, **op) -> None:
+        res.append((action, {"op": "task", "requires": "any", "source": "session", **op}))
+
+    def close(tid: str, note: str) -> None:
+        res.append(("closed", {"op": "task_done", "id": tid, "source": "planner", "note": note}))
+
+    def keep(g: dict | None, title: str, **op) -> None:
+        """Create the goal, or retitle it (reopening a done one) when what it asks changed."""
+        if g is None:
+            task("created", title=title, **op)
+        elif g.get("status") != "cancelled" and g.get("title") != title:
+            task("reopened" if g.get("status") == "done" else "updated", id=op["id"], title=title,
+                 plan=op.get("plan"), reopen=True)
+
+    for f in view["features"]:
+        fid, name, lk = f["id"], f.get("name") or f["id"], f.get("locked")
+        unlocks = [t for t in view["tasks"] if t["kind"] == "unlock" and t.get("feature") == fid]
+        if lk and f"unlock-{fid}" not in tasks and not any(t.get("status") != "cancelled" for t in unlocks):
+            task("created", id=f"unlock-{fid}", kind="unlock", feature=fid, title=f"Unlock {name}: {lk['text']}",
+                 target_text=lk["text"], **({"target_value": lk["value"]} if lk.get("value") is not None else {}),
+                 note="the lock seen on screen (feature --locked)")
+        opened = f.get("unlocked_at") or {}
+        if (opened.get("lock") or (lk and lock_reached(f, progress))) and f"first-look-{fid}" not in tasks:
+            why = (f"seen open at {opened.get('text') or 'the current progress'} (locked: {opened['lock']})"
+                   if opened.get("lock") else f"the progress ({(view.get('progress') or {}).get('text')}) passed "
+                                              f"the lock: {lk['text']}")
+            task("created", id=f"first-look-{fid}", kind="study", feature=fid, rank=FIRST_LOOK_RANK,
+                 title=FIRST_LOOK.format(name=name), note=why)
+        if opened.get("lock") and not lk:  # a recorded lock seen open; hand-made unlock goals are the players'
+            for t in unlocks:
+                if t.get("status", "open") == "open":
+                    close(t["id"], f"seen open at {opened.get('text') or 'the current progress'}")
+        ap, gid = f.get("appeared") or {}, f"appeared-{fid}"
+        if ap.get("certainty") == "fact":
+            if is_open(gid):
+                close(gid, f"the trigger is recorded as a fact: {ap.get('text')} [{ap.get('source')}]")
+        elif f.get("type") and not lk:
+            guess = ap.get("text") or "unknown"
+            keep(tasks.get(gid), f"Find why {name} appeared: {guess}", id=gid, kind="experiment", feature=fid,
+                 plan=APPEARED_PLAN.format(name=name, fid=fid, guess=guess if ap else "no hypothesis yet"))
+        if flow_type(f.get("type")):
+            under = [c for c in f.get("cases", []) if c["id"].startswith("under-")]
+            todo = [labels.get(c["id"][6:], c["id"][6:]) for c in under if not c.get("done")]
+            gid = f"outcomes-{fid}"
+            if todo and not lk:
+                keep(tasks.get(gid), f"Run each outcome once under {name}: {', '.join(todo)}", id=gid,
+                     kind="experiment", feature=fid, rank=MATRIX_RANK, plan=MATRIX_PLAN.format(name=name, fid=fid))
+            elif under and not todo and is_open(gid):
+                close(gid, f"every known outcome of the base level was run under {name}")
+    return res
+
+
+def plan_feature_goals(game: str, view: dict | None = None) -> list[dict]:
+    """Write the feature model's goals at once: the planner calls it, and so do the commands that change what it
+    reads (feature, case, progress, a won level, a done unlock goal), so a first look comes the moment the threshold
+    is passed. Idempotent; written as the planner's ops, like plan_goals. Only while the analysis is open."""
+    view = view or research_view(game)
+    if not any(t["kind"] in ("analyze", "update") for t in open_tasks(view)):
+        return []
+    res = []
+    for action, op in feature_goal_ops(view):
+        write_op(game, op)
+        res.append({"id": op["id"], "action": action, **({"title": op["title"]} if op.get("title") else {})})
+    return res
 
 
 def eligible(t: dict, state: str, installed_v: str | None, now: float) -> tuple[bool, str | None]:
@@ -1824,7 +2093,7 @@ def session_tasks(game: str, dev: str, platform: str, now: float) -> dict:
             ok, why = False, f"progress is blocked by {gate['type']} until {gate['until']}"
         if ok:
             item = {k: t.get(k) for k in ("id", "title", "kind", "feature", "note", "target_text", "target_value",
-                                          "plan") if t.get(k) not in (None, "")}
+                                          "plan", "rank") if t.get(k) not in (None, "")}
             if t["kind"] == "unlock" and t.get("target_value") and progress >= float(t["target_value"]):
                 item["hint"] = "the target is reached: check whether the feature has opened"
             if t.get("requires") == "fresh":
@@ -1832,8 +2101,8 @@ def session_tasks(game: str, dev: str, platform: str, now: float) -> dict:
             ready.append(item)
         elif why:
             blocked.append({"id": t["id"], "why": why})
-    # nearest unlock first among unlock goals
-    ready.sort(key=lambda t: (TASK_RANK.get(t["kind"], 9),
+    # nearest unlock first among unlock goals; a goal with its own rank (a first look) first among its equals
+    ready.sort(key=lambda t: (task_rank(t), t.get("rank") is None,
                               float(t.get("target_value") or 0) - progress if t["kind"] == "unlock" else 0, t["id"]))
     cap = P()["session"]["max_goals"]
     return {"ready": ready[:cap], "more": len(ready) - min(len(ready), cap), "blocked": blocked, "state": state,
@@ -1966,7 +2235,7 @@ def op_cur(args) -> dict:
 
 
 def op_source(cur: dict, args) -> str:
-    return getattr(args, "source", None) or f"{cur['id']}#{cur['step']}"
+    return getattr(args, "source", None) or (f"{cur['id']}#{cur['step']}" if cur.get("step") is not None else cur["id"])
 
 
 def summary_of(view: dict) -> dict:
@@ -1976,6 +2245,7 @@ def summary_of(view: dict) -> dict:
     return {"status": status, "why": why, "version": view.get("version"), "play_version": view.get("play_version"),
             "features": len(view["features"]),
             "documented": sum(f.get("status") == "documented" for f in view["features"]),
+            "untyped": sum(not f.get("type") for f in view["features"]),
             "open_features": [f["id"] for f in view["features"] if f.get("status") in OPEN_STATUSES],
             "discovery": view["discovery"], "ftue_verified": view.get("ftue_verified"),
             "mode": research_mode(view, now)[0], "gate": gate_active(view, now), "progress": view.get("progress"),
@@ -2075,7 +2345,7 @@ def cmd_claim(args) -> None:
                     continue
                 st = session_tasks(e["id"], dev, platform, now)
                 if st["ready"]:
-                    rank = min(TASK_RANK.get(t["kind"], 9) for t in st["ready"])
+                    rank = min(task_rank(t) for t in st["ready"])
                     last = last_session(e["id"])
                     if last.get("status") == "handoff" and \
                             now - iso_to_t(last["started"]) - last.get("minutes", 0) * 60 < 1800:
@@ -2750,24 +3020,78 @@ def cmd_clip(args) -> None:
     out({"ok": True, "clips": len(cur["clips"])})
 
 
+UNTYPED_HINT = ("untyped: give it a type from `sw.py types` (feature {fid} --type T); --type unknown when none fits "
+                "(the post-session review starts the type designer)")
+APPEARED_ASK = ("why did it appear? Record the trigger: --appeared \"after winning level 20\" when you saw it, or "
+                "--appeared-guess \"...\" (a hypothesis: the planner makes an experiment to find it)")
+
+
 def cmd_feature(args) -> None:
     cur = op_cur(args)
-    op = {"op": "feature", "id": slug(args.id), "name": args.name}
+    fid = slug(args.id)
+    f = find_feature(research_view(cur["game"]), fid, create=False)
+    if f is None and not args.name:
+        fail(f'a new feature needs its name: feature {fid} "Name" --type T')
+    if args.appeared and args.appeared_guess:
+        fail("--appeared is what you saw, --appeared-guess a hypothesis: give one")
+    if args.locked_value is not None and not args.locked:
+        fail('--locked-value goes with --locked "level 30": the lock as it reads on screen')
+    if args.locked and args.unlocked:
+        fail("--locked records a lock seen on screen, --unlocked the feature seen open: give one")
+    op = {"op": "feature", "id": fid, **({"name": args.name} if args.name else {})}
     if args.status:
         op["status"] = args.status
+    if args.type:
+        ty = slug(args.type)
+        if ty != UNKNOWN_TYPE and ty not in feature_types():
+            fail(f"no feature type {ty}: one of {', '.join(feature_types())}, or {UNKNOWN_TYPE} when none fits "
+                 "(sw.py types lists them with their checklists)")
+        op["type"] = ty
+    src = op_source(cur, args)
+    if args.appeared or args.appeared_guess:
+        op["appeared"] = {"text": args.appeared or args.appeared_guess,
+                          "certainty": "fact" if args.appeared else "hypothesis", "source": src}
+    if args.locked:
+        op["locked"] = {"text": args.locked, "value": args.locked_value}
+    if args.unlocked:
+        op.update(unlocked=True, source=src)
     log_op(cur, op)
-    out({"ok": True, "feature": find_feature(research_view(cur["game"]), slug(args.id), create=False)})
+    planned = plan_feature_goals(cur["game"])
+    f2 = find_feature(research_view(cur["game"]), fid, create=False)
+    warnings = []
+    if not f2.get("type"):
+        warnings.append(UNTYPED_HINT.format(fid=fid))
+    if f is None and not f2.get("appeared"):
+        warnings.append(APPEARED_ASK)
+    left = [c["id"] for c in f2.get("cases", []) if c["id"].startswith("chk-") and not c.get("done")]
+    if args.status == "documented" and left:
+        warnings.append(f"documented with {len(left)} checklist items open: {', '.join(left)}; close each "
+                        "(case ... --done, its text saying what was seen or that it does not apply)")
+    out({"ok": True, "feature": f2, **({"warnings": warnings} if warnings else {}),
+         **({"planned": planned} if planned else {})})
 
 
 def cmd_case(args) -> None:
     cur = op_cur(args)
-    op = {"op": "case", "feature": slug(args.feature), "id": slug(args.id)}
+    fid, cid = slug(args.feature), slug(args.id)
+    op = {"op": "case", "feature": fid, "id": cid}
+    if args.outcome:
+        f = find_feature(research_view(cur["game"]), fid, create=False)
+        if not f or f.get("type") != BASE_TYPE:
+            now_is = "not registered" if not f else f"typed {f['type']}" if f.get("type") else "untyped"
+            fail(f"an outcome is one way the base level ends: it goes on the base level's feature, typed {BASE_TYPE} "
+                 f"(feature <id> --type {BASE_TYPE}); {fid} is {now_is}")
+        if cid.startswith(("chk-", "under-")):
+            fail("an outcome is named by how the level ends (out-of-moves, bomb, timer): not chk- or under-")
+        op["outcome"] = True
     if args.text:
         op["text"] = args.text
     if args.done:
         op.update(done=True, source=op_source(cur, args))
     log_op(cur, op)
-    out({"ok": True, "feature": find_feature(research_view(cur["game"]), slug(args.feature), create=False)})
+    planned = plan_feature_goals(cur["game"])
+    out({"ok": True, "feature": find_feature(research_view(cur["game"]), fid, create=False),
+         **({"planned": planned} if planned else {})})
 
 
 def cmd_task(args) -> None:
@@ -2821,7 +3145,12 @@ def cmd_task(args) -> None:
                      **({"new_entry_names": args.entry_names} if getattr(args, "entry_names", None) else {}),
                      **({"result": args.result} if args.result else {})})
         view = research_view(cur["game"])
-        if t and t.get("kind") == "unlock" and t.get("feature") and not any(
+        lf = find_feature(view, t["feature"], create=False) if t and t.get("kind") == "unlock" and t.get("feature") else None
+        if lf and lf.get("locked"):
+            # a lock recorded as data: the feature is open now, and the planner makes its first look at once
+            log_op(cur, {"op": "feature", "id": lf["id"], "unlocked": True, "source": op_source(cur, args)})
+            created = next((p["id"] for p in plan_feature_goals(cur["game"]) if p["id"].startswith("first-look-")), None)
+        elif t and t.get("kind") == "unlock" and t.get("feature") and not any(
                 x["kind"] == "study" and x.get("feature") == t["feature"] for x in view["tasks"]):
             # the feature is open now: studying it is the next goal
             f = find_feature(view, t["feature"], create=False) or {"name": t["feature"]}
@@ -2837,7 +3166,8 @@ def cmd_task(args) -> None:
 def cmd_progress(args) -> None:
     cur = pick_session(args)
     log_op(cur, {"op": "progress", "text": args.text, "value": args.value})
-    out({"ok": True, "progress": research_view(cur["game"]).get("progress")})
+    planned = plan_feature_goals(cur["game"])  # a lock passed: its first look comes at once
+    out({"ok": True, "progress": research_view(cur["game"]).get("progress"), **({"planned": planned} if planned else {})})
 
 
 def cmd_gate(args) -> None:
@@ -2928,10 +3258,12 @@ def win_problem(cur: dict, lv: dict, op: dict, skipped: bool) -> str | None:
 
 def mechanic_change(cur: dict, mid: str) -> tuple[dict, dict | None]:
     """A mechanic is mastered after two levels in a row within the budget, broken after two in a row lost or
-    over it. A quit (session over) says nothing, nor does the time of a skipped win or a late start."""
+    over it. A quit (session over) says nothing, nor does the time of a skipped win or a late start, nor a loss
+    played on purpose (--deliberate: an outcome run under a condition feature, the feature model's matrix)."""
     m = find_mechanic(research_view(cur["game"]), mid)
     budget = P()["play"]["level_budget_min"] * 60
-    last2 = [r for r in m.get("recent", []) if r["result"] == "lost" or r["result"] == "won" and timed(r)][-2:]
+    last2 = [r for r in m.get("recent", []) if r["result"] == "lost" and not r.get("deliberate")
+             or r["result"] == "won" and timed(r)][-2:]
     fast = len(last2) == 2 and all(r["result"] == "won" and (r["seconds"] or 1e9) <= budget for r in last2)
     slow = len(last2) == 2 and all(r["result"] == "lost" or (r["seconds"] or 0) > budget for r in last2)
     change = None
@@ -2982,14 +3314,18 @@ def level_end(cur: dict, args, lv: dict, now: float) -> None:
         fail("--retry opens the same level again after a loss: level end lost --retry")
     if args.skipped and args.result != "won":
         fail("--skipped marks a win the game gave for a video, not a solve: level end won --skipped")
+    if args.deliberate and args.result != "lost":
+        fail("--deliberate marks a loss played on purpose (an outcome under a feature): level end lost --deliberate")
     op = {**level_op(cur, lv, args.result, args.note, now), "shot": cur.get("last_shot"),
-          **({"skipped": True} if args.skipped else {})}
+          **({"skipped": True} if args.skipped else {}), **({"deliberate": True} if args.deliberate else {})}
     problem = win_problem(cur, lv, op, args.skipped) if args.result == "won" else None
     if problem:
         fail(problem, level=lv["name"], shot_n=cur.get("last_shot"))
     log_op(cur, op)
+    planned = []
     if args.result == "won" and not lv.get("bonus"):  # a bonus board is not a step of the level progress
         log_op(cur, {"op": "progress", "text": lv["name"], "value": lv.get("value")})
+        planned = plan_feature_goals(cur["game"])  # a lock passed: its first look comes at once
     cur["level"] = None
     for k in ("outside", "last_solve", "last_tap", "won_t", "restarts_t"):  # restarts_t: the game moved on
         cur.pop(k, None)
@@ -3004,6 +3340,7 @@ def level_end(cur: dict, args, lv: dict, now: float) -> None:
     out({"ok": True, "level": lv["name"], "result": args.result, "minutes": round(op["seconds"] / 60, 1),
          "mechanic": mechanic_brief(m), **({"mechanic_change": change} if change else {}),
          **({"retry": f"{lv['name']!r} is open again with a new clock"} if args.retry else {}),
+         **({"planned": planned} if planned else {}),
          "next": "update the playbook now (state/<game>/playbook.md): what worked, what to change; the next level "
                  "starts from it"})
 
@@ -3980,6 +4317,149 @@ def cmd_research(args) -> None:
     print(yaml.safe_dump({"summary": summary_of(view), **view}, allow_unicode=True, sort_keys=False))
 
 
+LOCAL_TYPES_HEADER = ("# This machine's feature types (sw.py type-add, the type designer), used at once on this machine.\n"
+                      "# The dream's process improver moves them into schema/feature-types.yaml (runbooks/dream.md, "
+                      "section 7);\n# `sw.py types --prune` drops the ones published since. Every type also has the "
+                      "universal items.\n")
+
+
+def published_type_ids() -> set[str]:
+    return {slug(str(t.get("id"))) for t in read_yaml(types_paths()[0]).get("types") or [] if isinstance(t, dict)}
+
+
+def write_local_types(types: list[dict]) -> Path:
+    p = types_paths()[1]
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with open(p, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(LOCAL_TYPES_HEADER + yaml.safe_dump({"types": types}, allow_unicode=True, sort_keys=False, width=120))
+    return p
+
+
+def cmd_types(args) -> None:
+    """The merged catalog: the published types and this machine's (`local: true`)."""
+    pub, loc = types_paths()
+    pruned = []
+    if args.prune:  # published since: the schema has them now, the local copies would only shadow later edits
+        published, keep = published_type_ids(), []
+        for t in read_yaml(loc).get("types") or []:
+            (pruned if slug(str(t.get("id"))) in published else keep).append(t)
+        if pruned:
+            write_local_types(keep)
+        pruned = [slug(str(t.get("id"))) for t in pruned]
+    c = catalog()
+    out({"published": str(pub), "local": str(loc) if loc.exists() else None, "universal": c["universal"],
+         "types": list(c["types"].values()), **({"pruned": pruned} if args.prune else {})})
+
+
+def parse_type_item(spec: str) -> dict:
+    """ID:TEXT:KIND; the text may hold colons of its own."""
+    iid, sep, rest = spec.partition(":")
+    text, sep2, kind = rest.rpartition(":")
+    if not (sep and sep2 and slug(iid) and text.strip()) or kind.strip() not in TYPE_KINDS:
+        fail(f"--item is ID:TEXT:KIND with KIND one of {', '.join(TYPE_KINDS)}, not: {spec}")
+    return {"id": slug(iid), "text": text.strip(), "kind": kind.strip()}
+
+
+def cmd_type_add(args) -> None:
+    """The type designer's new type, into state/feature-types.local.yaml: used at once on this machine."""
+    tid = slug(args.id)
+    if tid == UNKNOWN_TYPE or tid in published_type_ids():
+        fail(f"{tid} is {'reserved' if tid == UNKNOWN_TYPE else 'a published type'}: a new type gets a new id; a "
+             "change to a published type goes through the dream's process PR")
+    base = slug(args.base) if args.base else None
+    if base and base not in feature_types():
+        fail(f"no type {base} to base it on: one of {', '.join(feature_types())}")
+    items = [parse_type_item(s) for s in args.item or []]
+    ids, uids = [i["id"] for i in items], {u["id"] for u in catalog()["universal"]}
+    if not items:
+        fail("a type needs its own checklist: --item ID:TEXT:KIND, at least one (the universal items come by themselves)")
+    if len(set(ids)) != len(ids) or uids & set(ids):
+        fail(f"checklist item ids are unique and not the universal ones ({', '.join(sorted(uids))}): {', '.join(ids)}")
+    entry = {"id": tid, "name": args.name, "description": " ".join(args.description.split()), "base": base,
+             "affects_level_flow": bool(args.affects_level_flow), "checklist": items}
+    old = read_yaml(types_paths()[1]).get("types") or []
+    replaced = any(slug(str(t.get("id"))) == tid for t in old)
+    p = write_local_types([t for t in old if slug(str(t.get("id"))) != tid] + [entry])
+    out({"ok": True, "type": feature_types()[tid], "written": str(p), **({"replaced": True} if replaced else {}),
+         "next": f"set the feature's type: sw.py feature <id> --type {tid} --game <game>"})
+
+
+def feature_audit(view: dict) -> dict:
+    """The feature model of one game: what is untyped, which triggers are unknown, which checklist items are open,
+    which locks have no unlock goal, and the matrix of the base level's outcomes under each condition feature."""
+    types, labels = feature_types(), dict(known_outcomes(view))
+    game = view["game"]
+
+    def brief(f: dict) -> dict:
+        return {"id": f["id"], "name": f.get("name"), "status": f.get("status")}
+
+    def goal(tid: str) -> dict | None:
+        t = find_task(view, tid)
+        return {"id": tid, "status": t.get("status", "open")} if t else None
+
+    untyped, unknown, foreign, missing, guesses, checklist, locks, matrix = ([] for _ in range(8))
+    for f in view["features"]:
+        fid, ty = f["id"], f.get("type")
+        if not ty:
+            untyped.append(brief(f))
+        elif ty == UNKNOWN_TYPE:
+            unknown.append(brief(f))
+        elif ty not in types:
+            foreign.append({**brief(f), "type": ty})
+        ap = f.get("appeared")
+        if not ap:
+            missing.append(fid)
+        elif ap.get("certainty") != "fact":
+            guesses.append({"feature": fid, "hypothesis": ap.get("text"), "source": ap.get("source"),
+                            "goal": goal(f"appeared-{fid}")})
+        chk = [c for c in f.get("cases", []) if c["id"].startswith("chk-")]
+        left = [{"id": c["id"], "text": c.get("text")} for c in chk if not c.get("done")]
+        if left:
+            checklist.append({"feature": fid, "type": ty, "done": len(chk) - len(left), "total": len(chk), "open": left})
+        if f.get("locked"):
+            ug = [t["id"] for t in view["tasks"] if t["kind"] == "unlock" and t.get("feature") == fid
+                  and t.get("status") != "cancelled"]
+            locks.append({"feature": fid, "locked": f["locked"], "unlock_goal": ug[0] if ug else None})
+        if flow_type(ty):
+            under = [c for c in f.get("cases", []) if c["id"].startswith("under-")]
+            matrix.append({"feature": fid, "name": f.get("name"), "type": ty,
+                           "open": [c["id"][6:] for c in under if not c.get("done")],
+                           "closed": [c["id"][6:] for c in under if c.get("done")], "goal": goal(f"outcomes-{fid}")})
+    base = [f["id"] for f in view["features"] if f.get("type") == BASE_TYPE]
+    no_goal = [x["feature"] for x in locks if not x["unlock_goal"]]
+    hints = []
+    if untyped:
+        hints.append(f"{len(untyped)} untyped: type each (feature ID --type T --game {game}; sw.py types); when none "
+                     "fits, --type unknown and start the type designer")
+    if unknown:
+        hints.append("start the type designer (sleepwalker-typist) for each unknown-type feature")
+    if foreign:
+        hints.append("types this machine's catalog does not have (another machine's local types): sw.py sync, or "
+                     "start the type designer")
+    if matrix and not labels:
+        hints.append(f"features change the level flow but no base outcome is known: type the base level {BASE_TYPE} "
+                     "and register each loss kind (case ID KIND \"...\" --outcome)")
+    if no_goal:
+        hints.append(f"locks without an unlock goal: the planner makes them (sw.py plan {game}, or the next feature "
+                     "or case op)")
+    return {"game": game,
+            "counts": {"features": len(view["features"]), "untyped": len(untyped), "unknown_type": len(unknown),
+                       "appeared_fact": sum((f.get("appeared") or {}).get("certainty") == "fact" for f in view["features"]),
+                       "appeared_hypothesis": len(guesses), "appeared_missing": len(missing),
+                       "checklist_open": sum(len(x["open"]) for x in checklist), "locks": len(locks),
+                       "locks_without_unlock_goal": len(no_goal),
+                       "matrix_open": sum(len(x["open"]) for x in matrix),
+                       "matrix_closed": sum(len(x["closed"]) for x in matrix)},
+            "untyped": untyped, "unknown_type": unknown, "type_not_in_catalog": foreign,
+            "appeared_missing": missing, "appeared_hypothesis": guesses, "checklist_open": checklist,
+            "locks": locks, "locks_without_unlock_goal": no_goal, "base_levels": base,
+            "outcomes": [{"id": k, "label": v} for k, v in labels.items()], "matrix": matrix, "hints": hints}
+
+
+def cmd_audit(args) -> None:
+    out(feature_audit(research_view(find_game(args.game)["id"])))
+
+
 def dreamed_ids() -> set[str]:
     ids: set[str] = set()
     for p in (ROOT / "dreams").glob("*.md"):
@@ -4676,7 +5156,8 @@ def install_agents() -> dict:
             (dest / f"{name}.md").write_text(fm + body, encoding="utf-8")
             done.append(f"{name}.md")
     return {"installed": len(done), "to": str(dest),
-            "roles": {r: models().get(r) for r in ("reviewer", "documenter", "lab", "process", "analyst", "critic")}}
+            "roles": {r: models().get(r) for r in ("reviewer", "documenter", "lab", "typist", "process", "analyst",
+                                                    "critic")}}
 
 
 # --- choosing models: a local benchmark, run by hand -------------------------------------------------
@@ -4977,6 +5458,8 @@ def parser() -> argparse.ArgumentParser:
     q.add_argument("result", choices=["won", "lost", "quit"])
     q.add_argument("--note", required=True, help="what worked, what to change next time")
     q.add_argument("--skipped", action="store_true", help="won: the game skipped the level for a video")
+    q.add_argument("--deliberate", action="store_true",
+                   help="lost on purpose, to run an outcome under a feature: not counted against the mechanic")
     q.add_argument("--retry", action="store_true", help="lost: open the same level again on a new clock")
     p = sub.add_parser("mechanic")
     p.add_argument("id")
@@ -5040,16 +5523,38 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("text")
     p = sub.add_parser("feature")
     p.add_argument("id")
-    p.add_argument("name")
+    p.add_argument("name", nargs="?", help="needed for a new feature")
     p.add_argument("--status", choices=["seen", "in_progress", "documented"])
+    p.add_argument("--type", help="its type from `sw.py types` (its checklist becomes open cases chk-<item>), or unknown")
+    p.add_argument("--appeared", help='why it appeared, as seen: "after winning level 20"')
+    p.add_argument("--appeared-guess", help="why it appeared, a hypothesis: the planner makes an experiment to find it")
+    p.add_argument("--locked", help='a lock seen on screen, as it reads: "level 30" (the planner makes the unlock goal)')
+    p.add_argument("--locked-value", type=float, help="the lock as a number on the progress scale: 30")
+    p.add_argument("--unlocked", action="store_true", help="the feature is seen open (a first look comes at once)")
     p.add_argument("--game", help="outside a session (the post-session review)")
+    p.add_argument("--source", help="session#step that shows it, when recorded outside the session")
     p = sub.add_parser("case")
     p.add_argument("feature")
     p.add_argument("id")
     p.add_argument("text", nargs="?")
     p.add_argument("--done", action="store_true")
+    p.add_argument("--outcome", action="store_true",
+                   help="one way the base level ends (on the core-level feature): every flow-affecting feature gets "
+                        "the case under-<id>")
     p.add_argument("--game", help="outside a session (the post-session review)")
     p.add_argument("--source", help="session#step that shows it, when recorded outside the session")
+    p = sub.add_parser("types")
+    p.add_argument("--prune", action="store_true", help="drop the local types the published catalog has now")
+    p = sub.add_parser("type-add")
+    p.add_argument("id", help="a generic kind of feature, never a game's own name")
+    p.add_argument("--name", required=True)
+    p.add_argument("--description", required=True, help="what makes a feature this type, in words that fit every game")
+    p.add_argument("--base", help="the type it is a variant of")
+    p.add_argument("--affects-level-flow", action="store_true",
+                   help="a level is played, won or lost differently while it is on: the base outcomes run under it")
+    p.add_argument("--item", action="append", help="ID:TEXT:KIND, KIND one of look|outcome|experiment; repeat it")
+    p = sub.add_parser("audit")
+    p.add_argument("game")
     p = sub.add_parser("task")
     ts = p.add_subparsers(dest="task_cmd", required=True)
     q = ts.add_parser("add")
@@ -5192,6 +5697,7 @@ def handlers() -> dict:
         "ask": cmd_ask, "bench": cmd_bench, "plan": cmd_plan, "page-skeleton": cmd_page_skeleton,
         "check-pages": cmd_check_pages, "mark-tag": cmd_mark_tag, "wiki-mirror": cmd_wiki_mirror, "wiki-live": cmd_wiki_live,
         "lab-check": cmd_lab_check, "lab-done": cmd_lab_done, "level-frames": cmd_level_frames,
+        "types": cmd_types, "type-add": cmd_type_add, "audit": cmd_audit,
         "page-footnotes": cmd_page_footnotes, "redact-image": cmd_redact_image, "level-catalog": cmd_level_catalog,
         "tap": lambda a: action(a, "tap", lambda d, k: (d.double_tap if a.double else d.tap)(s(a.x, k), s(a.y, k)),
                                 {"x": a.x, "y": a.y, **({"double": True} if a.double else {})}, ((a.x, a.y),)),

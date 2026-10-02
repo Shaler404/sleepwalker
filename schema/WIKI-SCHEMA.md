@@ -129,6 +129,8 @@ mechanics:                # kinds of levels and how the agent plays them (sectio
 features:
 - id: daily-reward
   name: Daily reward
+  type: daily             # from the type catalog (schema/feature-types.yaml), or unknown
+  appeared: {text: on the first launch after level 5, certainty: fact, source: 20261001-091500-chrono-FYKPJ#12}
   status: documented      # seen | in_progress | documented | recheck (new version)
   found_at: {text: level 5, value: 5}   # progress when the feature first showed up
   page: features/daily-reward.md
@@ -138,6 +140,15 @@ features:
     text: Claim the day 1 reward
     done: true
     source: 20261001-091500-chrono-FYKPJ#14
+  - id: chk-calendar      # an item of the type's checklist
+    text: "The calendar or the task list: every day or task and its reward"
+    done: false
+- id: leagues
+  name: Leagues
+  type: social
+  appeared: {text: the league button shows from level 10, certainty: hypothesis, source: 20261001-091500-chrono-FYKPJ#30}
+  locked: {text: level 20, value: 20}   # a lock seen on screen; once seen open: unlocked_at {text, value, source, lock}
+  status: seen
 tasks:
 - id: analyze
   title: Analyze the game
@@ -183,6 +194,26 @@ tasks:
   source: session
   status: open
 ```
+
+**The feature model.** Every feature has a type, so nothing about it is forgotten (`sw.py audit <game>` shows
+what is left):
+- **Types** — `schema/feature-types.yaml` (published) merged with `state/feature-types.local.yaml` (this machine's
+  new types, from the type designer, used at once; the dream's process PR moves them into the schema). A type is
+  `{id, name, description, base, affects_level_flow, checklist: [{id, text, kind: look|outcome|experiment}]}`;
+  `sw.py types` lists them. The view gives every typed feature an open case `chk-<item>` per checklist item: the
+  universal `chk-appeared` (why it appeared), `chk-entry` (where to find it), `chk-screen` (what it looks like),
+  then the type's own. `unknown` has the universal items only; an untyped feature has none.
+- **Why it appeared** — `appeared` is a fact (it closes `chk-appeared`) or a hypothesis; for every typed feature
+  without a fact the planner keeps the experiment "Find why <feature> appeared: <hypothesis or unknown>".
+- **Outcomes and the matrix** — on the base level's feature (type `core-level`) a case with `outcome: true` is one
+  way a level ends: its checklist's `chk-win`, `chk-restart`, `chk-quit`, `chk-exit-app`, and each loss kind
+  (`case … --outcome`). Every feature whose type has `affects_level_flow` (a level type, an event, a streak) gets
+  `under-<outcome>` for every known outcome of the game ("<outcome> under <feature>: as the base, or what
+  differs"), whichever side appeared first, and one goal "Run each outcome once under <feature>: …" that waits
+  behind the unlock and study goals.
+- **Locks** — a lock seen on screen is data (`locked`); the planner makes `unlock-<feature>`, and the moment the
+  progress passes its value (or the feature is seen open, `unlocked_at`) a first look goes to the top of the
+  game's goals: "First look at <feature>: open it once, record what it is and decide whether it needs a full study".
 
 **Where tasks come from.**
 - **External tasks — set by the planner** (`sw.py claim`):
@@ -302,7 +333,8 @@ skills based on them and shortens the waits of slow ones.
 | The "play" orchestrator | `sw.py claim` responses | nothing (`sw.py claim` writes the planner's tasks to the journal) | does not commit or push |
 | Lab (`sleepwalker-lab`) | recorded level frames, the playbook | `state/<game>/solvers/`, `playbook.md`, `lab-log.md`; the mechanic's method | after a session whose mechanic is slow or unlearned, or whose solver the player works around; never touches the phone |
 | Documenter (`sleepwalker-documenter`) | the finished session's `raw/`, `state/<game>/` | `state/<game>/pages/`, `docs-log.md` | runs right after each session; `check-pages` |
-| Reviewer (`sleepwalker-reviewer`) | the finished session's `raw/`, `state/<game>/` | goals, discovery and case closures through `sw.py … --game`; `state/<game>/reviews.md` | runs right after each session, never touches the phone |
+| Reviewer (`sleepwalker-reviewer`) | the finished session's `raw/`, `state/<game>/` | goals, discovery, types, triggers, locks and case closures through `sw.py … --game`; `state/<game>/reviews.md` | runs right after each session, never touches the phone |
+| Type designer (`sleepwalker-typist`) | the type catalog, one feature's frames and notes | a new type through `sw.py type-add` (`state/feature-types.local.yaml`); the feature's type through `sw.py feature --type --game` | when a feature fits no type; never touches the phone |
 | Analyst (`sleepwalker-analyst`) | its machine's `raw/` and `state/`, the worktree | nothing | tools: Read, Grep, Glob |
 | The dream | everything on its machine | `wiki/`, `skills/`, `solvers/`, `dreams/` in the branch `dream/<machine>/<date>` | `sw.py check-zones` before committing |
 | Critic (`sleepwalker-critic`) | the diff and the worktree | nothing | tools: Read, Grep, Glob |

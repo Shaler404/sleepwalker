@@ -79,6 +79,10 @@ d, rv = (agents / "sleepwalker-documenter.md").read_text(encoding="utf-8"), (age
 check(d.startswith("---\nname: sleepwalker-documenter") and "\nmodel: opus\neffort: medium\n---" in d
       and "runbooks/document.md" in d and "\nmodel: opus\n---" in rv and r["roles"]["documenter"] == "opus:medium",
       "role definitions carry their model and effort from project.yaml")
+ty = (agents / "sleepwalker-typist.md").read_text(encoding="utf-8")
+check(ty.startswith("---\nname: sleepwalker-typist") and "\nmodel: fable\neffort: high\n---" in ty
+      and "The type designer" in ty and r["roles"]["typist"] == "fable:high",
+      "the type designer's definition: models.typist from project.yaml")
 
 # a benchmark: interleaved, rotated slots; haiku takes no effort
 r = sw("bench", "new", G, "--variants", "haiku:low", expect_ok=False, device=False)
