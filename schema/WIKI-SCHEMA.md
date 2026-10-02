@@ -385,5 +385,7 @@ consolidates it.
   model), `consult` answers `sw.py ask`. `claim` picks the role per session; a `play` session that
   meets gameplay to learn ends with `handoff` and the game goes back to the `study` model at once.
   `sw.py stats --by-model` compares models: levels and features per hour, level times, the share of
-  session time the model spends thinking.
+  session time the model spends thinking, the share of actions after which nothing changed
+  (`same_screen_rate`: the hash and the pixels agree) or only a small part of the frame did
+  (`small_change_rate`: a board in play), restarts.
 

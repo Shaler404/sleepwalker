@@ -173,7 +173,8 @@ Need a phone? It is free within a minute:
   machine) that you are taking the phone — [`CLAUDE.md`](CLAUDE.md) tells it to run the command.
   Do not write to the running "play" routine session.
 
-`stop` restores the previous Do Not Disturb mode, finishes the screen recording, closes the game and
+`stop` restores the previous Do Not Disturb mode (and the stay-awake setting, if `local.yaml` turned it
+on), finishes the screen recording, closes the game and
 prints that the phone can be disconnected. The player gets a refusal on its next action and ends the
 session. Cutting clips and uploading to YouTube continue without the phone.
 
@@ -183,7 +184,7 @@ The phone is back at work if:
 - the time set with `sw.py stop --hours N` has run out.
 
 If you unplug the phone without the command, nothing breaks: the session ends at the next step, and
-`sw.py` restores the previous Do Not Disturb mode the next time the phone is connected. Until then
+`sw.py` restores the previous Do Not Disturb mode (and stay-awake setting) the next time the phone is connected. Until then
 the phone stays on "alarms only".
 
 ## Connecting a machine
@@ -200,7 +201,10 @@ the phone stays on "alarms only".
      run hangs on the folder confirmation;
    - "dream" once a day — "run runbooks/dream.md".
 6. Phones: unlocked, charging, screen up. On Samsung, a covered proximity sensor blocks touches. For
-   the duration of a session `sw.py` turns on Do Not Disturb and then restores the previous mode.
+   the duration of a session `sw.py` turns on Do Not Disturb and then restores the previous mode. Other
+   phone settings are only read (`start` reports the screen timeout and whether the screen stays on
+   while charging); with `android.stay_awake: true` in `local.yaml` the screen stays on while charging
+   for the session and the previous setting comes back at the end.
 
 If you have no write access to the repository, the "dream" opens a pull request from a fork.
 

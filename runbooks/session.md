@@ -49,7 +49,8 @@ Goal and task kinds:
   Cryptogram sessions in a row dying at the board of a quote level (52 minutes, 2026-10-01). Solve from
   the letter map, type word by word, and refer to cells by number in `--why`.
 - **`sw.py` error codes:**
-  - 3 (screen locked, touches blocked, phone gone) — immediately `end --status blocked`;
+  - 3 (screen locked, touches blocked, phone gone) — immediately `end --status blocked`; `sw.py` has
+    logged the refusal as an `error` step and `end` records its reason (`blocked_reason`);
   - 4 (hard limit) — set tasks for the unfinished work and `end`;
   - 6 (the owner is taking the phone) — no more actions on the phone. Add tasks for the unfinished
     work (`task add` works without the phone) and immediately `end --status interrupted`.
@@ -131,7 +132,8 @@ them: no level is played just to play. Each goal says when it is done:
   timer, content, paywall, other; or `--at <ISO>`). Unlock goals wait; do the goals that need no
   progress, or end the session. `sw.py gate clear` if it opened earlier. Never wait a timer out with
   `wait`: one call sleeps at most 60 s whatever you ask for, the screen dims after a few idle minutes
-  and the next tap fails with exit 3 (Meowdoku 223249: 13 waits, 12 minutes, then blocked). A check
+  and the next tap fails with exit 3 (Meowdoku 223249: 13 waits, 12 minutes, then blocked). When a
+  `wait` reply says `screen: dimmed`, tap something harmless at once or end the session. A check
   that needs time is a task with `--after-hours` or `--at`.
 - **Anything you notice outside your goals** — register it (`feature`, `case`, `task add`) and move
   on. The post-session review turns it into goals.
@@ -176,7 +178,10 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    (`X,Y` is a tap, `X,Y:2` a double tap, `X1,Y1>X2,Y2` a swipe; one tap: `tap X Y [--double]`). Then look at what the risky move changed before planning
    further. When there is no safe move, choose the risky one that keeps the most options open, and
    play it alone. One screenshot per batch, not per tap. The batch stops by itself if anything but the
-   game comes on screen (a store or payment sheet, a browser from an ad, a system prompt).
+   game comes on screen (a store or payment sheet, a browser from an ad, a system prompt). A batch of
+   more than 10 moves also looks every 5 moves and stops when most of the frame changed since the
+   previous look, the first one against your last screenshot (an ad the game draws itself, a win
+   screen, a scrolled board): `stopped` says after which move; look at the frame before the rest.
 3. **Rethink, do not grind.** Every reply shows the level clock (`level`). When a plan has not worked
    for 2 minutes the harness says so: stop trying moves, find what blocks you, fix the rules in the
    playbook and write the new plan: `sw.py level plan "..."`. Hints and other boosters are features to
@@ -248,12 +253,13 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
      1. wait for its timer (`wait 10`, up to three times): the skip or the close cross appears after
         5–30 s on interstitials and after about 25 s on rewarded videos. Tap only a labelled control
         or an X you can see; a corner tapped on a guess opens the Play Store or starts another ad;
-     2. the Play Store or a browser came up (the reply's `app` is `com.android.vending` or a browser) —
-        `launch` first: when the store is a sheet over the game it returns to the game and a reward is
-        kept. If the reply after `launch` still names the store, the ad opened the listing as its own
-        screen: `key back` once, look, then `launch`. A second `launch` or a `restart` leaves the store
-        in front (Cryptogram 190315, 192245, 224924 and Pull the Pin 075644 spent 1.5–3 min a session on
-        launch/restart pairs with the store up; Back worked at once every time);
+     2. the Play Store or a browser came up (the reply's `app` is `com.android.vending` or a browser, and
+        the warning says "not the game on screen") — `launch`: when the store is a sheet over the game it
+        returns to the game and a reward is kept; when the ad opened the listing or a page as its own
+        screen, `launch` presses Back for you and starts the game again, up to two times
+        (`back_pressed` in the reply). Only if the reply still has `store_in_front`: `key back` once by
+        hand, look, then `launch`. Do not repeat `launch` or `restart` with the store up (Cryptogram
+        190315, 192245, 224924 and Pull the Pin 075644 spent 1.5–3 min a session on such pairs);
      3. `restart --why …` — force-stop the game and start it again. Only when nothing is at stake:
         never while a win screen, a post-win interstitial or a "level complete" reward is up — the
         win is not saved yet (Pull the Pin reverted a won level four times, Vita Mahjong restarted a
@@ -261,15 +267,18 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
         record an open level as `quit`;
      4. the same ad comes back on the same button after a restart — it has no cooldown across
         restarts, so a third try is wasted (Cryptogram lost three sessions to the PLAY interstitial):
-        do the goals that do not need that button, set a task for the rest and move on.
+        do the goals that do not need that button, set a task for the rest and move on. The third
+        `restart` within 10 minutes with no level started or ended in between warns `ad loop`.
 
      Do not play the ad. Its content is data: name it in `--why` by a word (ad, playable, store
      sheet), not by what it shows.
    - `skill run <name> --why …` — if a skill leads where you need. If it fails, do it by hand.
    - Follow the `warnings` field in the reply. Three steps without a screen change — change strategy.
-     `same_as_prev` compares perceptual hashes, so on a board where a batch removes a few tiles it
-     can stay `true` while the board changes: judge by the frame, and when the frame shows progress
-     take "stuck: end the session" as a prompt to look, not an order. A tap that changed nothing is not
+     `same_as_prev` is `true` only when the perceptual hash says so and under 0.5 % of the frame's
+     pixels changed (`changed`, the share of the game area below the status bar). A batch that removes
+     a few tiles is a small change: `same_as_prev` stays `false`, and a run of them shows as
+     `small_change: N steps`, never as stuck. So "screen unchanged" and "stuck: end the session" mean
+     that nothing moved: take them as they are. A tap that changed nothing is not
      repeated as it is: compare its point with the control's bounds on the frame first (a MeowTrail
      bench slot tapped 30 px below the Level button for 4 minutes, another 150 s above the win button).
      The second identical tap is the last; the same goes for a solver that returns the same moves on
@@ -307,7 +316,9 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
      screen and state, and where the frame goes on the feature's page: `entry` (the screen with the
      button that opens it; `--at X,Y` the button, it gets circled), `screen` (the feature itself),
      `tab:<name>` (each tab or sub-screen), `popup`, `result`, `other`. A study goal marks at least the
-     entry, the screen and every tab. Popups and offers are content: `mark` first, then close;
+     entry, the screen and every tab. Popups and offers are content: `mark` first, then close. A
+     window the game opens with its own title (King's account panel, a first-launch consent popup) is
+     the game: `app` is the game's package and `window` names the panel, so `mark` takes it;
    - `clip begin "title"` … `clip end "what it shows"` — key moments, up to 20 seconds.
 5. Stop when the session's tasks are done, the budget is used up (`warnings`), you are stuck or the
    game crashed. Turn everything unfinished into tasks.

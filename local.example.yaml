@@ -8,6 +8,8 @@ android:
   serials: []              # empty = all phones and emulators from `adb devices`
   hours: "0-24"            # hours when sessions may use the phones, e.g. "1-8"
   dnd: true                # "Do Not Disturb: alarms only" during a session, then the previous mode
+  stay_awake: false        # true: the screen stays on while charging during a session, then the previous setting
+                           # (stay_on_while_plugged_in); a phone setting, so off unless turned on here
   max_temp_c: 42           # hotter = pause
   min_battery: 20          # lower and not charging = pause
 

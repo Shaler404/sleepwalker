@@ -292,11 +292,11 @@ for fg, expect in (("com.android.chrome", "com.android.chrome"), ("com.whatsapp"
     got = swm.leave_clean({"device": "fake1", "game": G, "dir": str(lc)})
     check(got == expect and bool(sent) == bool(expect),
           f"session end, {fg} on screen: {'go home' if expect else 'leave it'}")
-imgs = sorted(frames_dir().glob("*.png"))
-check(swm.changed_px(imgs[0], imgs[0]) == 0 and swm.changed_px(imgs[0], imgs[1]) > 0,
-      "frame change detection: same frame 0, different frames > 0")
-
 from PIL import Image  # noqa: E402
+
+imgs = [Image.open(p) for p in sorted(frames_dir().glob("*.png"))[:2]]
+check(swm.changed_share(imgs[0], imgs[0]) == 0 and swm.changed_share(imgs[0], imgs[1]) > 0,
+      "frame change detection: same frame 0, different frames > 0")
 
 
 class Phone:

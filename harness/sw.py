@@ -19,6 +19,7 @@ Session
   start GAME                             start the game and screen recording, first screenshot, session tasks
   device-state fresh|progressed [--note] the game on this phone: fresh install or progressed
   shot [--hi] | wait SEC | launch         screenshot (--hi: full resolution) / wait, then screenshot / bring the game back
+                                         (launch presses Back for an ad's store page or browser left in front)
   restart --why ...                      force-stop the game and start it again: the way out of an ad that will not close
   tap X Y --why ... | swipe X1 Y1 X2 Y2 --why ... | key back --why ... | text "..." --why ...
   taps "X,Y X,Y:2 X1,Y1>X2,Y2 !X,Y" --why ...  safe moves in a row (:2 a double tap), a risky one (!) last
@@ -91,7 +92,8 @@ from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from perception import hash_distance, is_same_screen, prepare_for_model, save_for_wiki, screen_hash  # noqa: E402
+from perception import (changed_share, hash_distance, is_same_screen, prepare_for_model, save_for_wiki,  # noqa: E402
+                        screen_hash)
 
 ROOT = HERE.parent
 OPEN_STATUSES = ("seen", "in_progress", "recheck")
@@ -106,8 +108,16 @@ TASK_RANK = {"followup": 0, "daily": 0, "update": 1, "ftue": 2, "replay": 2, "sc
              "experiment": 5, "unlock": 6, "analyze": 9}
 SHOT_TOKENS = 1500
 HASH_MATCH = 12  # pHash distance at which the screen counts as the same
-# Windows over the game that do not mean the agent has left it
+# A frame is the same as the previous one when the hash says so and under this share of its pixels changed;
+# a batch that changes more than BIG_CHANGE of the frame ran into an ad, a popup or a scrolled board
+SAME_SHARE, BIG_CHANGE = 0.005, 0.4
+# Apps that do not mean the phone is in use (claim). Over the game only the permission prompt and Google Play
+# services are overlays: a Play Store listing in front is not the game (take_shot), its payment sheet is closed
 SYSTEM_OVERLAYS = ("com.google.android.permissioncontroller", "com.android.vending", "com.google.android.gms")
+GAME_OVERLAYS = ("com.google.android.permissioncontroller", "com.google.android.gms")
+# Where an ad sends the player as its own screen: the store listing or a browser page
+AD_DESTINATIONS = ("com.android.vending", "com.android.chrome", "com.chrome.", "com.sec.android.app.sbrowser",
+                   "org.mozilla.", "com.opera.", "com.microsoft.emmx", "com.brave.browser")
 ZEN = {"0": "off", "1": "priority", "2": "none", "3": "alarms"}
 DREAM_ZONES = ("wiki/", "skills/", "solvers/", "dreams/")
 # the dream's process PR: rules and proposals, never code (harness changes are proposed in docs/proposals/)
@@ -135,7 +145,8 @@ PROJECT_DEFAULTS = {
 LOCAL_DEFAULTS = {
     "machine": "",
     "games": [],
-    "android": {"serials": [], "hours": "0-24", "dnd": True, "max_temp_c": 42, "min_battery": 20},
+    # stay_awake: a phone setting, so off unless local.yaml turns it on (the owner, 2026-10-02)
+    "android": {"serials": [], "hours": "0-24", "dnd": True, "stay_awake": False, "max_temp_c": 42, "min_battery": 20},
     "fake_devices": {},
     # games being onboarded on this machine: not in games.yaml yet, never handed out by claim; the line goes
     # to games.yaml with its chosen models once the onboarding is done (runbooks/onboard.md)
@@ -426,15 +437,43 @@ def package_info(serial: str, package: str) -> dict:
     return {"version": v.group(1) if v else None, "install_time": fi.group(1) if fi else None}
 
 
+def parse_focus(txt: str) -> tuple[str | None, str]:
+    """(package, window) of the focused window in `dumpsys window`. The window is package/activity for an
+    activity, or the title an app gave its own window: the King account panel in Candy Crush Saga is "Panel",
+    and taking the title for the app reported ten steps as another app and its frames could not be marked
+    (20261001-232021). The package is then the window's owner (`package=` in the window list), else the app
+    whose activity has the focus (`mFocusedApp`)."""
+    m = re.search(r"mCurrentFocus=Window\{(\S+) \S+ ([^}]*?)(?: EXITING)?\}", txt)
+    if not m:
+        return None, ""
+    key, win = m.groups()
+    if "/" in win:
+        return win.split("/")[0], win
+    mine = False
+    for ln in txt.splitlines():
+        w = re.search(r"Window #\d+ Window\{(\S+) ", ln)
+        if w:
+            mine = w.group(1) == key
+        elif mine and (p := re.search(r"\bpackage=([\w.]+)", ln)):
+            return p.group(1), win
+    if re.fullmatch(r"\w+(\.\w+)+", win):  # a dialog titled with its package
+        return win, win
+    a = re.search(r"mFocusedApp=.*?ActivityRecord\{\S+ \S+ ([\w.]+)/", txt)
+    return (a.group(1) if a else None), win
+
+
+def focus_info(serial: str) -> tuple[str | None, str]:
+    return parse_focus(adb(serial, "shell", "dumpsys window | grep -E 'mCurrentFocus|mFocusedApp|Window #| package='"))
+
+
 def focus(serial: str) -> str | None:
-    m = re.search(r"mCurrentFocus=Window\{\S+ \S+ ([\w.]+)", adb(serial, "shell", "dumpsys window | grep mCurrentFocus"))
-    return m.group(1) if m else None
+    """The package in front."""
+    return focus_info(serial)[0]
 
 
 def focus_window(serial: str) -> str:
-    """package/activity of the focused window."""
-    m = re.search(r"mCurrentFocus=Window\{\S+ \S+ (\S+)\}", adb(serial, "shell", "dumpsys window | grep mCurrentFocus"))
-    return m.group(1) if m else ""
+    """The focused window as Android names it: package/activity, or the window's own title."""
+    return focus_info(serial)[1]
 
 
 # Google Play's purchase flow (the store's billing activities): a tap on a price or "remove ads" button in two
@@ -460,6 +499,53 @@ def touch_blocked(serial: str) -> bool:
         elif "isVisible=true" in line and cur and "TouchProtection" in cur:
             return True
     return False
+
+
+def power_state(serial: str) -> dict:
+    """What the screen is doing, so the dream can tell a covered sensor from a screen that dimmed: the brightness
+    setting, the power manager's wakefulness, and whether it dimmed the screen. Android dims the screen without
+    touching the brightness setting: the dim shows in mUserActivitySummary (0x2 dim without 0x1 bright)."""
+    txt = adb(serial, "shell", "dumpsys power | grep -E 'mWakefulness=|mUserActivitySummary='")
+    w = re.search(r"mWakefulness=(\w+)", txt)
+    u = re.search(r"mUserActivitySummary=0x([0-9a-fA-F]+)", txt)
+    b = adb(serial, "shell", "settings get system screen_brightness").strip()
+    wake = w.group(1) if w else None
+    return {"brightness": int(b) if b.isdigit() else None, "wakefulness": wake,
+            "dimmed": bool(wake and wake != "Awake") or bool(u and int(u.group(1), 16) & 3 == 2)}
+
+
+def screen_settings(cur: dict) -> tuple[dict, list[str]]:
+    """The screen timeout and stay-awake setting, reported by start. With android.stay_awake in local.yaml the
+    screen stays on while charging for the session (stay_on_while_plugged_in with AC and USB) and `end` puts the
+    previous value back, like Do Not Disturb; without it nothing is changed: a phone setting is changed only
+    when local.yaml turns it on (the owner, 2026-10-02). Meowdoku 20261001-223249 dimmed after 6 minutes of
+    waits and the next tap was refused."""
+    dev, warn = cur["device"], []
+    get = lambda ns, key: adb(dev, "shell", f"settings get {ns} {key}").strip()  # noqa: E731
+    timeout, stay = get("system", "screen_off_timeout"), get("global", "stay_on_while_plugged_in")
+    v = int(stay) if stay.isdigit() else 0
+    res = {"timeout_s": int(timeout) // 1000 if timeout.isdigit() else None, "stay_awake": bool(v & 3)}
+    if L()["android"]["stay_awake"] and v & 3 != 3:
+        adb(dev, "shell", f"settings put global stay_on_while_plugged_in {v | 3}")
+        cur["stay_prev"] = stay
+        set_pending(dev, "_stay_restore", stay)
+        res.update(stay_awake=True, set_for_session=f"stay_on_while_plugged_in {v} -> {v | 3}")
+    # Samsung's accidental touch protection swallows taps once the screen dims or the sensor is covered; the
+    # setting's key is not verified on a phone yet: an unknown key reads "null" and warns nothing
+    if "samsung" in adb(dev, "shell", "getprop ro.product.manufacturer").lower() \
+            and get("system", "accidental_touch_protection") == "1":
+        warn.append("Settings > Display > Accidental touch protection is on: the owner should turn it off on this "
+                    "phone (taps are refused while it is active)")
+    return res, warn
+
+
+def refuse_blocked(cur: dict, msg: str, **rec) -> None:
+    """Exit 3 leaves an `error` step and the reason in the session: three sessions ended blocked with nothing in
+    steps.jsonl to say why (Pull the Pin 081207, MeowTrail 175320, Meowdoku 223249, 2026-10-01)."""
+    cur["blocked_reason"] = msg
+    log_step(cur, {"type": "error", "code": 3, "text": msg, **rec})
+    save_session(cur)
+    fail(msg, 3, hint="sw.py end --status blocked --summary ...")
 
 
 def phone_status(serial: str, game_ids: set[str]) -> tuple[bool, str]:
@@ -529,15 +615,39 @@ def restore_dnd(dev: str, prev) -> None:
     adb(dev, "shell", f"cmd notification set_dnd {ZEN.get(str(prev), 'off')}", timeout=15)
 
 
-def set_pending_zen(dev: str, prev) -> None:
-    """The previous Do Not Disturb mode is kept until the session ends: if the phone is unplugged without
-    a command, the mode is restored on the next connection."""
+def restore_stay(dev: str, prev) -> None:
+    adb(dev, "shell", f"settings put global stay_on_while_plugged_in {prev if str(prev).isdigit() else 0}", timeout=15)
+
+
+def set_pending(dev: str, key: str, prev) -> None:
+    """A setting the session changed keeps its previous value in the device profile until the session ends:
+    if the phone is unplugged without a command, it is restored on the next connection."""
     prof = device_profile(dev)
     if prev is None:
-        prof.pop("_zen_restore", None)
+        prof.pop(key, None)
     else:
-        prof["_zen_restore"] = prev
+        prof[key] = prev
     write_json(STATE() / "devices" / f"{devkey(dev)}.json", prof)
+
+
+# The phone settings a session changes: the session's key, the device profile's key, how to put it back
+SESSION_SETTINGS = (("zen_prev", "_zen_restore", restore_dnd), ("stay_prev", "_stay_restore", restore_stay))
+
+
+def restore_session_settings(cur: dict) -> None:
+    for skey, pkey, put_back in SESSION_SETTINGS:
+        if cur.get(skey) is not None:
+            put_back(cur["device"], cur[skey])
+            set_pending(cur["device"], pkey, None)
+
+
+def restore_pending(dev: str) -> None:
+    """What a session that ended without a command left changed on this phone."""
+    prof = device_profile(dev)
+    for _, pkey, put_back in SESSION_SETTINGS:
+        if prof.get(pkey) is not None:
+            put_back(dev, prof[pkey])
+            set_pending(dev, pkey, None)
 
 
 STOP_MSG = "the owner is taking the phone: no more phone actions, end the session now"
@@ -577,11 +687,21 @@ def open_device(cur: dict, prepare: bool = False):
     try:
         return AndroidDevice(cur["device"], prepare=prepare)
     except Exception as ex:
-        fail(f"phone {cur['device']} unavailable: {ex}", 3, hint="sw.py end --status blocked --summary ...")
+        refuse_blocked(cur, f"phone {cur['device']} unavailable: {ex}", unavailable=True)
 
 
 def app_on_screen(cur: dict) -> str | None:
-    return cur["game"] if cur["platform"] == "fake" else focus(cur["device"])
+    """The package in front. A window with its own title (not package/activity) is kept in cur["window"]
+    for the step record."""
+    if cur["platform"] == "fake":
+        return cur["game"]
+    app, win = focus_info(cur["device"])
+    cur["window"] = win if win and "/" not in win and win != app else None
+    return app
+
+
+def ad_destination(app: str | None) -> bool:
+    return bool(app) and app.startswith(AD_DESTINATIONS)
 
 
 def guard(cur: dict) -> None:
@@ -594,9 +714,9 @@ def guard(cur: dict) -> None:
     if cur["platform"] == "fake":
         return
     if locked(cur["device"]):
-        fail("screen locked: the agent does not enter PINs", 3, hint="sw.py end --status blocked --summary ...")
+        refuse_blocked(cur, "screen locked: the agent does not enter PINs", locked=True)
     if touch_blocked(cur["device"]):
-        fail(TOUCH_BLOCKED, 3, hint="sw.py end --status blocked --summary ...")
+        refuse_blocked(cur, TOUCH_BLOCKED, touch_blocked=True, **power_state(cur["device"]))
 
 
 # --- screenshots ----------------------------------------------------------------------
@@ -612,10 +732,16 @@ def take_shot(cur: dict, dev, hi: bool = False) -> dict:
             time.sleep(1.2)
             img, app, closed = dev.screenshot(), app_on_screen(cur), win
             log_step(cur, {"type": "payment_sheet_closed", "window": win})
+    window = cur.pop("window", None)
     cur["shots"] += 1
     k = cur["shots"]
     shots = Path(cur["dir"]) / "shots"
     img.save(shots / f"{k:05d}.jpg", quality=90)
+    prev = shots / f"{cur.get('last_shot') or 0:05d}.jpg"
+    changed = None
+    if cur.get("last_shot") and prev.exists():
+        with Image.open(prev) as p:
+            changed = changed_share(p, img)
     # --hi (or a level started with --hi): full resolution for reading a board of small pieces
     hi = hi or bool((cur.get("level") or {}).get("hi"))
     # The long edge stays within what the image viewer shows unscaled (a 1080x2340 frame was shown 923 wide
@@ -626,8 +752,13 @@ def take_shot(cur: dict, dev, hi: bool = False) -> dict:
     small_path = shots / f"{k:05d}_m.jpg"
     small.save(small_path, quality=85)
     h = screen_hash(img)
-    same = is_same_screen(cur.get("last_hash"), h)
+    # the same screen by both measures: the hash and under SAME_SHARE of the pixels. The hash alone said
+    # "same" on 62 of 107 actions of a Vita Mahjong level being won and told the player it was stuck
+    # (20261001-110957); a hash-same frame whose pixels changed is a small change (a board in play), never stuck
+    hash_same = is_same_screen(cur.get("last_hash"), h)
+    same = hash_same and (changed is None or changed < SAME_SHARE)
     cur["same_streak"] = cur["same_streak"] + 1 if same else 0
+    cur["small_streak"] = cur.get("small_streak", 0) + 1 if hash_same and not same else 0
     frames = cur.get("frames") or {}
     frames[str(k)] = {"size": [small.width, small.height], "scale": scale, "hi": hi}
     cur["frames"] = dict(list(frames.items())[-30:])
@@ -639,8 +770,9 @@ def take_shot(cur: dict, dev, hi: bool = False) -> dict:
     info = {"shot": str(small_path), "shot_n": k, "size": [small.width, small.height],
             "coords": f"tap in pixels of this {small.width}x{small.height} frame"
                       + (" (the frame kind just changed: the next tap needs --frame N)" if cur["switched"] else ""),
-            "app": app,
-            "same_as_prev": same, "same_streak": cur["same_streak"],
+            "app": app, **({"window": window} if window else {}),
+            "same_as_prev": same, "same_streak": cur["same_streak"], "changed": changed,
+            **({"small_change": f"{cur['small_streak']} steps"} if cur["small_streak"] >= 3 else {}),
             "time": f"{elapsed:.1f} / {cur['budget_min']} min", "step": cur["step"],
             "steps": f"{cur['step']} / {cur['max_steps']}"}
     warn = []
@@ -650,8 +782,11 @@ def take_shot(cur: dict, dev, hi: bool = False) -> dict:
                     "purchase buttons; document offers from the screen without tapping their price")
     if app == "com.google.android.permissioncontroller":
         warn.append("system permission prompt: tap \"Don't allow\" (or the same button in the phone's language)")
-    elif app and app != cur["game"] and app not in SYSTEM_OVERLAYS:
-        warn.append(f"not the game on screen ({app}): back or sw.py launch. This screenshot will not go into the wiki")
+    elif app and app != cur["game"] and app not in GAME_OVERLAYS:
+        # a store listing in front gave no warning while the store counted as an overlay (2026-10-02)
+        how = ("an ad's store page or browser: sw.py launch (it presses back for you)" if ad_destination(app)
+               else "back or sw.py launch")
+        warn.append(f"not the game on screen ({app}): {how}. This screenshot will not go into the wiki")
     if cur["same_streak"] >= 3:
         warn.append(f"screen unchanged for {cur['same_streak']} steps in a row: change strategy (back, another area, swipe, wait)")
     if cur["same_streak"] >= 15:
@@ -664,6 +799,14 @@ def take_shot(cur: dict, dev, hi: bool = False) -> dict:
         info["warnings"] = warn
     cur["t_out"] = time.time()
     return info
+
+
+def shot_rec(cur: dict, info: dict) -> dict:
+    """What a step records about the frame after it: both measures of change (`same`, `changed`, `small` when
+    only the pixels changed), the app in front and the title of its window when it has its own."""
+    return {"shot": info["shot_n"], "same": info["same_as_prev"], "changed": info.get("changed"),
+            **({"small": True} if cur.get("small_streak") else {}), "app": info["app"],
+            **({"window": info["window"]} if info.get("window") else {}), "hash": cur["last_hash"]}
 
 
 def level_warnings(cur: dict, info: dict) -> list[str]:
@@ -764,8 +907,7 @@ def action(args, name: str, fn, rec: dict, points: tuple = ()) -> None:
     size = cur.get("model_size")
     info = take_shot(cur, dev, getattr(args, "hi", False))
     log_step(cur, {"type": name, **rec, "why": args.why, "model_size": size, "settle": args.settle,
-                   "shot": info["shot_n"], "same": info["same_as_prev"], "app": info["app"], "hash": cur["last_hash"],
-                   "gap_s": gap})
+                   **shot_rec(cur, info), "gap_s": gap})
     save_session(cur)
     out(info)
 
@@ -805,12 +947,26 @@ def parse_moves(spec: str) -> tuple[list[tuple[float, ...]], list[bool]]:
     return moves, risky
 
 
+def batch_reference(cur: dict, dev) -> Image.Image:
+    """The frame a batch was planned on: the last screenshot (an ad that came up after it is caught too)."""
+    p = Path(cur.get("dir") or ".") / "shots" / f"{cur.get('last_shot') or 0:05d}.jpg"
+    if cur.get("last_shot") and p.exists():
+        with Image.open(p) as im:
+            return im.convert("RGB")
+    return dev.screenshot()
+
+
 def run_moves(cur: dict, dev, moves: list[tuple], k: float, gap: float) -> tuple[int, str | None]:
     """Moves in a row without a screenshot between them. Stops at once if the owner takes the phone, and
     if anything but the game comes on screen (a payment sheet, a store or browser opened by an ad, a
-    system prompt): the next taps would land on it."""
+    system prompt): the next taps would land on it. A batch of more than 10 moves also looks every 5 moves
+    and stops when most of the frame changed since the last look: an interstitial drawn by the game's own ad
+    SDK is the game, so a 30-tap keyboard batch kept typing into a playable ad (Cryptogram 20261001-020937),
+    and a batch kept tapping cells after the board scrolled (20261001-050941). Since the last look, not since
+    the start: a board that changes bit by bit (cells lit across it) is not an ad."""
     s = lambda v: int(round(v * k))  # noqa: E731
     done = 0
+    seen = batch_reference(cur, dev) if len(moves) > 10 else None
     for m in moves:
         if held(cur["device"]) or read_json(session_path(cur["device"])).get("stop_requested"):
             return done, "owner"
@@ -825,6 +981,11 @@ def run_moves(cur: dict, dev, moves: list[tuple], k: float, gap: float) -> tuple
         app = app_on_screen(cur)
         if app and app != cur["game"]:
             return done, f"{app} came on screen after move {done}: the rest of the batch was not played"
+        if seen is not None and done % 5 == 0 and done < len(moves):
+            now = dev.screenshot()
+            if changed_share(seen, now) > BIG_CHANGE:
+                return done, f"the screen changed a lot after move {done}: look before the rest"
+            seen = now
     return done, None
 
 
@@ -853,8 +1014,7 @@ def cmd_taps(args) -> None:
     size = cur.get("model_size")
     info = take_shot(cur, dev, args.hi)
     log_step(cur, {"type": "taps", "moves": [list(m) for m in moves[:done]], "n": done, "risky": risky[-1],
-                   "why": args.why, "model_size": size, "settle": args.settle, "shot": info["shot_n"],
-                   "same": info["same_as_prev"], "app": info["app"], "hash": cur["last_hash"], "gap_s": gap,
+                   "why": args.why, "model_size": size, "settle": args.settle, **shot_rec(cur, info), "gap_s": gap,
                    **({"stopped": stopped} if stopped else {})})
     save_session(cur)
     if stopped == "owner":
@@ -1655,10 +1815,8 @@ def cmd_claim(args) -> None:
             elif h.get("absent"):
                 remove(hp)  # unplugged and plugged back in: the phone is back
         for dev, platform in devs.items():
-            prev = device_profile(dev).get("_zen_restore")
-            if platform == "android" and prev is not None and dev not in active_devs:
-                restore_dnd(dev, prev)  # phone unplugged mid-session: restore the previous mode
-                set_pending_zen(dev, None)
+            if platform == "android" and dev not in active_devs:
+                restore_pending(dev)  # phone unplugged mid-session: restore what the session changed
         haves: dict[str, set[str]] = {}
         for dev, platform in devs.items():
             haves[dev] = installed(dev) if platform == "android" else {e["id"] for e in entries}
@@ -1785,17 +1943,14 @@ def cmd_stop(args) -> None:
             cur["stop_requested"] = time.time()
             save_session(cur)  # the player gets a refusal on the next action
             if cur["platform"] == "android" and dev in connected:
-                if cur.get("zen_prev") is not None:
-                    restore_dnd(dev, cur["zen_prev"])
+                restore_session_settings(cur)
                 adb(dev, "shell", f"am force-stop {cur['game']}", timeout=15)
             stop_recording(cur, wait_s=40)
             cur["phone_released"] = True
             save_session(cur)
             row["session"] = f"{cur['id']} stopped, the player will end it"
-        if connected.get(dev) == "android" and device_profile(dev).get("_zen_restore") is not None:
-            restore_dnd(dev, device_profile(dev)["_zen_restore"])
         if connected.get(dev) == "android":
-            set_pending_zen(dev, None)
+            restore_pending(dev)
         res.append(row)
     out({"ok": True, "seconds": round(time.time() - t0, 1), "devices": res,
          "message": "you can unplug the phone" + ("s" if len(res) > 1 else "")})
@@ -2080,23 +2235,25 @@ def cmd_start(args) -> None:
             # Do Not Disturb "alarms only" for the session: messenger notifications
             # do not pop up over the game or get into screenshots
             cur["zen_prev"] = adb(dev, "shell", "settings get global zen_mode").strip()
-            set_pending_zen(dev, cur["zen_prev"])
+            set_pending(dev, "_zen_restore", cur["zen_prev"])
             adb(dev, "shell", "cmd notification set_dnd alarms")
         info = package_info(dev, args.game)
         state = game_state(dev, args.game, info)
         if state == "fresh" and device_profile(dev).get(args.game, {}).get("progress") != "fresh":
             set_game_state(dev, args.game, "fresh", "game reinstalled: new install time", info)
     devobj = open_device(cur, prepare=True)
+    screen, screen_warn = screen_settings(cur) if platform == "android" else (None, [])
     devobj.launch(args.game)
     time.sleep(8 if platform == "android" else 0)
     cur["version"] = info["version"] or devobj.app_version(args.game)
     cur["device_state"] = state
     start_recording(cur)
     log_step(cur, {"type": "start", "platform": platform, "version": cur["version"], "device_state": state,
-                   "tasks": [t["id"] for t in tasks]})
+                   "tasks": [t["id"] for t in tasks], **({"screen": screen} if screen else {})})
     shot = take_shot(cur, devobj)
-    log_step(cur, {"type": "shot", "shot": shot["shot_n"], "app": shot["app"], "hash": cur["last_hash"]})
+    log_step(cur, {"type": "shot", **shot_rec(cur, shot)})
     save_session(cur)
+    warns = screen_warn + shot.get("warnings", [])
     hint = {"unknown": "this game has not been looked at on this phone yet: judge from the first screens whether it is a "
                        "fresh install or progressed, and record it: sw.py device-state fresh|progressed --note \"...\"",
             "fresh": "fresh install: play FTUE from the start and record how features unlock",
@@ -2113,7 +2270,8 @@ def cmd_start(args) -> None:
          "role_hint": "a benchmark slot: play the levels the brief names; no handoff, no status changes"
          if cur.get("bench") else role_hint[cur["model_role"]], **({"bench": cur["bench"]} if cur.get("bench") else {}),
          "mode": mode, "mode_hint": mode_why, "playbook": str(ensure_playbook(args.game)),
-         "tasks": tasks, "research": summary_of(view), **shot})
+         "tasks": tasks, "research": summary_of(view), **({"screen": screen} if screen else {}), **shot,
+         **({"warnings": warns} if warns else {})})
 
 
 def cmd_device_state(args) -> None:
@@ -2137,21 +2295,71 @@ def cmd_shot(args) -> None:
     cur = pick_session(args)
     check_stop(cur)
     info = take_shot(cur, open_device(cur), args.hi)
-    log_step(cur, {"type": "shot", "shot": info["shot_n"], "app": info["app"], "hash": cur["last_hash"]})
+    log_step(cur, {"type": "shot", **shot_rec(cur, info)})
     save_session(cur)
     out(info)
 
 
+def screen_dimmed(serial: str) -> bool:
+    return power_state(serial)["dimmed"] or touch_blocked(serial)
+
+
 def cmd_wait(args) -> None:
+    """Waits leave the phone without input: Meowdoku 20261001-223249 waited 12 minutes on Home, the screen
+    dimmed about 6 minutes in and the next tap was refused; the reply says so before the tap."""
     cur = pick_session(args)
     check_stop(cur)
     time.sleep(min(args.seconds, 60))
     cur["last_action"] = time.time()
     info = take_shot(cur, open_device(cur), args.hi)
-    log_step(cur, {"type": "wait", "seconds": args.seconds, "shot": info["shot_n"], "same": info["same_as_prev"],
-                   "hash": cur["last_hash"]})
+    dimmed = cur["platform"] == "android" and screen_dimmed(cur["device"])
+    if dimmed:
+        info["screen"] = "dimmed"
+        info.setdefault("warnings", []).append("the screen dimmed: the next tap will fail. Tap something harmless "
+                                               "now, or end and set a task with --after-hours")
+    log_step(cur, {"type": "wait", "seconds": args.seconds, **shot_rec(cur, info),
+                   **({"screen": "dimmed"} if dimmed else {})})
     save_session(cur)
     out(info)
+
+
+def start_game(cur: dict, dev, wait_s: float) -> int:
+    """Start the game and wait for it. An ad that opened its store listing or a web page as its own screen
+    stays in front of a started game: Cryptogram 190315, 192245, 224924 and Pull the Pin 075644 (2026-10-01)
+    spent 1.5–3 min a session on launch/restart pairs with the store up, and Back worked at once every time.
+    So Back and start again, up to two times (a payment sheet is left to take_shot, which closes it).
+    Returns the Back presses."""
+    dev.launch(cur["game"])
+    time.sleep(wait_s if cur["platform"] == "android" else 0)
+    backs = 0
+    while backs < 2 and cur["platform"] == "android":
+        if not ad_destination(app_on_screen(cur)) or PAYMENT_WINDOW.search(focus_window(cur["device"])):
+            break
+        adb(cur["device"], "shell", "input keyevent KEYCODE_BACK")
+        backs += 1
+        time.sleep(1.5)
+        dev.launch(cur["game"])
+        time.sleep(4)
+    return backs
+
+
+def store_left(info: dict, backs: int) -> dict:
+    if not ad_destination(info.get("app")):
+        return {}
+    return {"store_in_front": f"{info['app']} is still in front after {backs} back press(es): key back by hand, "
+                              "look, then launch"}
+
+
+AD_LOOP = ("ad loop: the same button gives the same ad after a restart; do the goals that do not need it, "
+           "set a task for the rest")
+
+
+def ad_loop(cur: dict) -> bool:
+    """The third restart within 10 minutes with no level started or ended in between: the same ad on the same
+    button has no cooldown across restarts (Cryptogram ran the loop 5 and 4 times in 190315 and 224924)."""
+    now = time.time()
+    cur["restarts_t"] = [t for t in cur.get("restarts_t", []) if now - t <= 600] + [now]
+    return len(cur["restarts_t"]) >= 3
 
 
 def cmd_restart(args) -> None:
@@ -2163,28 +2371,30 @@ def cmd_restart(args) -> None:
     dev = open_device(cur)
     dev.stop(cur["game"])
     time.sleep(1.5)
-    dev.launch(cur["game"])
+    backs = start_game(cur, dev, 8)
     cur["step"] += 1
     cur["last_action"] = time.time()
-    time.sleep(8 if cur["platform"] == "android" else 0)
+    loop = ad_loop(cur)
     info = take_shot(cur, dev)
-    log_step(cur, {"type": "restart", "why": args.why, "shot": info["shot_n"], "app": info["app"], "hash": cur["last_hash"]})
+    if loop:
+        info.setdefault("warnings", []).append(AD_LOOP)
+    log_step(cur, {"type": "restart", "why": args.why, "back_pressed": backs, **shot_rec(cur, info),
+                   **({"ad_loop": True} if loop else {})})
     save_session(cur)
-    out({"restarted": cur["game"], **info})
+    out({"restarted": cur["game"], "back_pressed": backs, **store_left(info, backs), **info})
 
 
 def cmd_launch(args) -> None:
     cur = pick_session(args)
     guard(cur)
     dev = open_device(cur)
-    dev.launch(cur["game"])
+    backs = start_game(cur, dev, 4)
     cur["step"] += 1
     cur["last_action"] = time.time()
-    time.sleep(4)
     info = take_shot(cur, dev)
-    log_step(cur, {"type": "launch", "shot": info["shot_n"], "app": info["app"], "hash": cur["last_hash"]})
+    log_step(cur, {"type": "launch", "back_pressed": backs, **shot_rec(cur, info)})
     save_session(cur)
-    out(info)
+    out({"back_pressed": backs, **store_left(info, backs), **info})
 
 
 def cmd_note(args) -> None:
@@ -2380,6 +2590,7 @@ def cmd_level(args) -> None:
         cur["level"] = {"name": args.name, "value": args.value, "mechanic": mid, "t0": now, "plan_t": now,
                         "plan": args.plan, "replans": 0, "step0": cur["step"], "moves0": cur.get("moves", 0),
                         "hi": args.hi}
+        cur.pop("restarts_t", None)  # the game moved on: restarts before this are not an ad loop
         log_step(cur, {"type": "level_start", "name": args.name, "mechanic": mid, "plan": args.plan})
         save_session(cur)
         res = {"ok": True, "level": args.name, "mechanic": mechanic_brief(m), "new_mechanic": new,
@@ -2406,6 +2617,7 @@ def cmd_level(args) -> None:
     if args.result == "won":
         log_op(cur, {"op": "progress", "text": lv["name"], "value": lv.get("value")})
     cur["level"] = None
+    cur.pop("restarts_t", None)
     save_session(cur)
     # a mechanic is mastered after two levels in a row within the budget, broken after two in a row without
     m = find_mechanic(research_view(cur["game"]), lv["mechanic"])
@@ -2698,15 +2910,6 @@ def draw_moves(src: Path, moves: list[tuple], dest: Path) -> Path:
     return dest
 
 
-def changed_px(a: Path, b: Path) -> int:
-    """How many pixels of a small grayscale copy changed noticeably between two frames: 0 means the moves
-    did nothing (unlike pHash, this sees two small tiles disappear)."""
-    from PIL import ImageChops
-
-    ta, tb = (Image.open(p).convert("L").resize((90, 195)) for p in (a, b))
-    return ImageChops.difference(ta, tb).point(lambda v: 255 if v > 25 else 0).histogram()[255]
-
-
 def cmd_solve(args) -> None:
     """Run the mechanic's solver. Without --run the moves are only drawn on a fresh full-resolution frame
     for checking. With --run, rounds of frame -> solver -> moves until the solver has no moves or says the
@@ -2772,8 +2975,7 @@ def cmd_solve(args) -> None:
         info = take_shot(cur, dev, args.hi)
         log_step(cur, {"type": "solve", "mechanic": mech, "round": n, "n": done, "note": res.get("note"),
                        "rescan": bool(res.get("rescan")), "done": bool(res.get("done")), "why": args.why,
-                       "shot": info["shot_n"], "same": info["same_as_prev"], "app": info["app"],
-                       "hash": cur["last_hash"], "gap_s": gap if n == 1 else None,
+                       **shot_rec(cur, info), "gap_s": gap if n == 1 else None,
                        **({"stopped": stopped} if stopped else {})})
         save_session(cur)
         if stopped:
@@ -2782,7 +2984,7 @@ def cmd_solve(args) -> None:
         if res.get("done"):
             stop = "the solver says these moves finish the level"
             break
-        if changed_px(before, frame()) == 0:
+        if info["changed"] == 0:  # not a pixel of the game area changed (pHash would miss two small tiles)
             stop = "the moves changed nothing on screen: the solver misreads the board"
             break
         lv = cur.get("level")
@@ -2880,9 +3082,7 @@ def finish(cur: dict, status: str, summary: str) -> dict:
             cur["version"] = info["version"] or cur.get("version")
             adb(cur["device"], "shell", f"am force-stop {cur['game']}")
             leave_clean(cur)
-            if cur.get("zen_prev") is not None:
-                restore_dnd(cur["device"], cur["zen_prev"])
-                set_pending_zen(cur["device"], None)
+            restore_session_settings(cur)
         except Exception as ex:
             log_step(cur, {"type": "warn", "text": f"stop: {ex}"})
     if cur["step"] and device_profile(cur["device"]).get(cur["game"], {}).get("progress", "fresh") == "fresh":
@@ -2919,6 +3119,8 @@ def finish(cur: dict, status: str, summary: str) -> dict:
             "levels": {"won": sum(o["result"] == "won" for o in levels), "lost": sum(o["result"] == "lost" for o in levels),
                        "won_s_median": median([o["seconds"] for o in levels if o["result"] == "won"])},
             "status": status,
+            # why a blocked session was blocked: the exit-3 refusal sw.py logged (null: sw.py refused nothing)
+            **({"blocked_reason": cur.get("blocked_reason")} if status == "blocked" else {}),
             "summary": summary, "marks": sum(s["type"] == "mark" for s in steps),
             "features_touched": len({o.get("id") if o["op"] == "feature" else o.get("feature") for o in ops
                                      if o["op"] in ("feature", "case")}),
@@ -3135,6 +3337,9 @@ def cmd_stats(args) -> None:
                          "features_touched": s.get("features_touched", 0),
                          "steps_per_case": round(s["steps"] / done, 1) if done else None,
                          "same_screen_rate": round(sum(bool(x.get("same")) for x in acts) / len(acts), 2) if acts else None,
+                         # the hash said same, the pixels changed: a board in play (recorded from 2026-10-02)
+                         "small_change_rate": round(sum(bool(x.get("small")) for x in acts) / len(acts), 2) if acts else None,
+                         "restarts": sum(x["type"] == "restart" for x in steps),
                          "gap_s_median": median(gaps),
                          "model_time_share": round(sum(gaps) / (s["minutes"] * 60), 2) if gaps and s["minutes"] else None,
                          "levels_won": len(won), "levels_lost": sum(o["result"] == "lost" for o in lv),
@@ -3150,8 +3355,8 @@ def cmd_stats(args) -> None:
         view = research_view(game)
         per_game[game] = {"sessions": rows, "mechanics": [mechanic_brief(m) for m in view["mechanics"]],
                           "trend": {k: {"first_half": avg(rows[:half], k), "second_half": avg(rows[half:], k)}
-                                    for k in ("steps_per_case", "same_screen_rate", "gap_s_median",
-                                              "level_min_median")} if half else None}
+                                    for k in ("steps_per_case", "same_screen_rate", "small_change_rate",
+                                              "gap_s_median", "level_min_median")} if half else None}
     if not args.by_model:
         return out({"machine": machine(), "games": per_game})
     by: dict[str, list] = {}
@@ -3168,6 +3373,8 @@ def cmd_stats(args) -> None:
                       "gap_s_median": median([r["gap_s_median"] for r in rs]),
                       "model_time_share": median([r["model_time_share"] for r in rs]),
                       "same_screen_rate": median([r["same_screen_rate"] for r in rs]),
+                      "small_change_rate": median([r["small_change_rate"] for r in rs]),
+                      "restarts": sum(r["restarts"] for r in rs),
                       "stuck_or_handoff": sum(r["status"] in ("stuck", "handoff") for r in rs)}
     out({"machine": machine(), "by_model": res,
          "note": "compare models on the same games and task kinds; one session is not a result"})

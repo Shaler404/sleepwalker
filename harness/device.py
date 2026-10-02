@@ -62,10 +62,9 @@ class AndroidDevice:
 
     # --- internals -------------------------------------------------------
     def _prepare(self) -> None:
-        """The minimum for round-the-clock work. Brightness and auto-rotate are left alone: the phone
-        may be personal, and the game sets the orientation itself."""
-        if self.adb.shell("settings get global stay_on_while_plugged_in").strip() in ("", "0", "null"):
-            self.adb.shell("settings put global stay_on_while_plugged_in 7")  # the screen stays on while charging
+        """Wake the screen. The phone's settings are left alone: it may be personal, and a phone setting is
+        changed only when local.yaml turns it on (the owner, 2026-10-02). Staying awake while charging was
+        set here for good; now sw.py start sets it for a session with android.stay_awake and end restores it."""
         self.adb.shell("input keyevent KEYCODE_WAKEUP")
 
     # --- perception ------------------------------------------------------
