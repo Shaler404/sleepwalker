@@ -106,6 +106,8 @@ check("never pay" in " ".join(i["text"] for i in types["offer"]["checklist"]), "
 c = sw("claim")["assignments"][0]
 check(c["game"] == G, "claim: the game")
 s = sw("start", G)
+check("currency-booster" in s.get("feature_types", {}) and "level-type" in s["feature_types"],
+      "the start reply shows the type catalog, so a feature is typed at once")
 sid = next((T / "raw" / G).glob("*/steps.jsonl")).parent.name
 sw("progress", "level 3", "--value", "3")
 r = sw("feature", "shop", "Shop")
@@ -190,7 +192,11 @@ check({"chk-options", "chk-answers", "chk-links", "chk-appeared", "chk-entry", "
       "a type change adds the new type's missing items; the former type's done items stay, its open ones go")
 check(task(view(), "appeared-shop")["title"] == "Find why Shop appeared: unknown",
       "a typed feature with no trigger: 'Find why Shop appeared: unknown'")
-r = sw("feature", "odd", "Odd thing", "--type", "unknown", "--appeared", "a banner after level 2")
+r = sw("feature", "coins", "Coins", "--type", "unknown", "--appeared", "on the first win", expect_ok=False)
+check("closest" in r and r["closest"][0]["type"] == "currency-booster",
+      f"unknown without a reason is refused, with the closest types: {r}")
+r = sw("feature", "odd", "Odd thing", "--type", "unknown", "--appeared", "a banner after level 2",
+       "--why-unknown", "a banner that is no offer, no event and no ad")
 check(sorted(case_ids(r["feature"])) == ["chk-appeared", "chk-entry", "chk-screen"],
       "--type unknown is allowed: the universal items only")
 

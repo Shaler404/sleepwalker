@@ -2819,7 +2819,8 @@ def cmd_start(args) -> None:
          "role_hint": "a benchmark slot: play the levels the brief names; no handoff, no status changes"
          if cur.get("bench") else role_hint[cur["model_role"]], **({"bench": cur["bench"]} if cur.get("bench") else {}),
          "mode": mode, "mode_hint": mode_why, "playbook": str(ensure_playbook(args.game)),
-         "tasks": tasks, "research": summary_of(view), **({"screen": screen} if screen else {}), **shot,
+         "tasks": tasks, "research": summary_of(view), "feature_types": type_menu(),
+         **({"screen": screen} if screen else {}), **shot,
          **({"warnings": warns} if warns else {})})
 
 
@@ -3052,6 +3053,27 @@ APPEARED_ASK = ("why did it appear? Record the trigger: --appeared \"after winni
                 "--appeared-guess \"...\" (a hypothesis: the planner makes an experiment to find it)")
 
 
+def type_candidates(fid: str, name: str, n: int = 3) -> list[dict]:
+    """The catalog's types closest to a feature by the words of its id and name (and the types' own words)."""
+    words = {w for w in re.split(r"[^a-z0-9]+", f"{fid} {name}".lower()) if len(w) > 2}
+    stem = lambda w: w[:5]  # noqa: E731  coins / coin, settings / setting, levels / level
+    keys = {stem(w) for w in words}
+    scored = []
+    for t in feature_types().values():
+        text = f"{t['id']} {t.get('name', '')} {t.get('description', '')}".lower()
+        tw = {stem(w) for w in re.split(r"[^a-z0-9]+", text) if len(w) > 2}
+        hit = len(keys & tw)
+        if hit:
+            scored.append((hit, t["id"], t.get("name", ""), t.get("description", "")[:140]))
+    scored.sort(key=lambda x: -x[0])
+    return [{"type": i, "name": nm, "description": d} for _, i, nm, d in scored[:n]]
+
+
+def type_menu() -> dict[str, str]:
+    """Every type with a line of its description: shown at the start of a session, so a feature is typed at once."""
+    return {t["id"]: (t.get("description") or t.get("name") or "")[:110] for t in feature_types().values()}
+
+
 def cmd_feature(args) -> None:
     cur = op_cur(args)
     fid = slug(args.id)
@@ -3071,8 +3093,15 @@ def cmd_feature(args) -> None:
         ty = slug(args.type)
         if ty != UNKNOWN_TYPE and ty not in feature_types():
             fail(f"no feature type {ty}: one of {', '.join(feature_types())}, or {UNKNOWN_TYPE} when none fits "
-                 "(sw.py types lists them with their checklists)")
+                 "(sw.py types lists them with their checklists)", closest=type_candidates(fid, args.name or ""))
+        if ty == UNKNOWN_TYPE and not args.why_unknown:
+            # 2026-10-03, the first session after the restart: coins, settings, No Ads and the level map all went
+            # in as unknown although currency-booster, system, offer and hub fit; each would have cost a type designer
+            fail("unknown is for a feature no type fits: check the closest types first; if none fits, say why with "
+                 '--why-unknown "..."', closest=type_candidates(fid, args.name or ""))
         op["type"] = ty
+        if ty == UNKNOWN_TYPE:
+            op["why_unknown"] = args.why_unknown
     src = op_source(cur, args)
     if args.appeared or args.appeared_guess:
         op["appeared"] = {"text": args.appeared or args.appeared_guess,
@@ -5967,6 +5996,7 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("name", nargs="?", help="needed for a new feature")
     p.add_argument("--status", choices=["seen", "in_progress", "documented"])
     p.add_argument("--type", help="its type from `sw.py types` (its checklist becomes open cases chk-<item>), or unknown")
+    p.add_argument("--why-unknown", help="with --type unknown: why none of the catalog's types fits")
     p.add_argument("--appeared", help='why it appeared, as seen: "after winning level 20"')
     p.add_argument("--appeared-guess", help="why it appeared, a hypothesis: the planner makes an experiment to find it")
     p.add_argument("--locked", help='a lock seen on screen, as it reads: "level 30" (the planner makes the unlock goal)')
