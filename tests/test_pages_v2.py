@@ -229,6 +229,13 @@ check(len(p) == 5 and not any("'play'" in x for x in p), f"an old page's row in 
 p, _ = variant("x9", s.replace("<!-- case:under-win -->", ""))
 check(len(p) == 1 and "'under-win' is done" in p[0],
       f"a checklist item is not shown by a sibling's line (under-bomb's text is like under-win's): {p}")
+# the other way round: a Cases row ticked ✅ for a case the map has open (2026-10-04: pages kept their ✅ for cases
+# the dream had reopened and passed the check; the documenters fixed them by hand)
+ticked = re.sub(r"^(\|[^\n]*<!-- case:chk-screen -->[^\n]*\| )not verified( \|)", r"\1✅\2", s, count=1, flags=re.M)
+assert ticked != s, "the fixture's chk-screen row is not 'not verified'"
+p, _ = variant("x10", ticked)
+check(len(p) == 1 and "'chk-screen' is shown done (✅)" in p[0] and "open in the map" in p[0],
+      f"a row ticked ✅ for a case the map has open fails the check: {p}")
 
 # the dream's worktree map (merges, renames, cases it closed) is the one its pages are held against
 wt = T / "wt"

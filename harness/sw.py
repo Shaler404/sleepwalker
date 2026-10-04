@@ -568,7 +568,16 @@ def parse_focus(txt: str) -> tuple[str | None, str]:
         return None, ""
     key, win = m.groups()
     if "/" in win:
-        return win.split("/")[0], win
+        head = win.split("/")[0]
+        # "Panel:com.king.candycrushsaga/…": the window's own title in front of its package. Taken whole, the
+        # title was the app, eight frames of the King account panel read as another app and two marks of it
+        # were refused (Candy Crush Saga, 2026-10-03 [s:20261003-194350-chrono-2FYKPJ#0]
+        # [s:20261003-225003-chrono-2FYKPJ#3]). The package is the dotted name the head ends with; the title
+        # before it is the window.
+        p = re.search(r"([A-Za-z_]\w*(?:\.\w+)+)$", head)
+        if p and p.group(1) != head:
+            return p.group(1), head[:p.start(1)].rstrip(": ") or win
+        return head, win
     mine = False
     for ln in txt.splitlines():
         w = re.search(r"Window #\d+ Window\{(\S+) ", ln)
@@ -802,8 +811,17 @@ class FakeDevice:
 def open_device(cur: dict, prepare: bool = False):
     if cur["platform"] == "fake":
         return FakeDevice(cur)
-    from device import AndroidDevice
+    from device import AndroidDevice, TRANSIENT
 
+    # adb's connection is reset now and then (WinError 10054) and is back a second later: six sessions of one
+    # night met it, three were refused with "phone unavailable" and went on fine after a repeat
+    # [s:20261003-234451-chrono-2FYKPJ#4] [s:20261004-001551-chrono-2FYKPJ#51]. One second, one more try.
+    try:
+        return AndroidDevice(cur["device"], prepare=prepare)
+    except TRANSIENT:
+        time.sleep(1.0)
+    except Exception as ex:
+        refuse_blocked(cur, f"phone {cur['device']} unavailable: {ex}", unavailable=True)
     try:
         return AndroidDevice(cur["device"], prepare=prepare)
     except Exception as ex:
@@ -814,7 +832,7 @@ def app_on_screen(cur: dict) -> str | None:
     """The package in front. A window with its own title (not package/activity) is kept in cur["window"]
     for the step record."""
     if cur["platform"] == "fake":
-        return cur["game"]
+        return cur.get("fake_app") or cur["game"]  # fake_app: a test puts the store or a browser in front
     app, win = focus_info(cur["device"])
     cur["window"] = win if win and "/" not in win and win != app else None
     return app
@@ -1079,6 +1097,42 @@ def refuse_repeat_tap(cur: dict, args, pts: list) -> None:
     fail(msg, 5, shot=str(Path(cur["dir"]) / "shots" / f"{cur['last_shot']:05d}_m.jpg"), shot_n=cur["last_shot"])
 
 
+STORE_TAP_NEAR = 0.04  # of the frame's width and height: the same control on any frame size
+
+
+def store_tap_hit(cur: dict, pts: list, w: float, h: float) -> dict | None:
+    """The earlier tap of this session that opened the store at the same spot, if any."""
+    for st in cur.get("store_taps") or []:
+        if any(abs(x / w - st["fx"]) <= STORE_TAP_NEAR and abs(y / h - st["fy"]) <= STORE_TAP_NEAR for x, y in pts):
+            return st
+    return None
+
+
+def refuse_store_tap(cur: dict, args, pts: list, w: float, h: float) -> None:
+    """A tap on a point that opened the Play Store earlier in this session is not sent again: it is the ad's store
+    link, not its skip. The same corner was tapped twice in one session in two games and eight times in six
+    sessions, 15-90 s lost each time (Pull the Pin [s:20261003-211035-chrono-2FYKPJ#7] [#12], Block Blast!
+    [s:20261003-212548-chrono-2FYKPJ#27] [#43])."""
+    st = store_tap_hit(cur, pts, w, h)
+    if getattr(args, "force", False) or not st:
+        return
+    msg = (f"this point opened the Play Store at step {st['step']}: it is the ad's store link, not its skip. Wait for "
+           "the labelled skip or the X, or sw.py launch; --force sends the tap anyway")
+    log_error(cur, msg, 5, what="tap", points=pts, store_tap=st["step"])
+    fail(msg, 5, shot=str(Path(cur["dir"]) / "shots" / f"{cur['last_shot']:05d}_m.jpg"), shot_n=cur["last_shot"])
+
+
+def note_store_tap(cur: dict, pts: list, w: float, h: float, info: dict) -> None:
+    """A tap that put the store in front is remembered by its place on the frame, for refuse_store_tap."""
+    if not (pts and info.get("app") == "com.android.vending"):
+        return
+    x, y = pts[-1]
+    cur["store_taps"] = (cur.get("store_taps") or [])[-9:] + [{"fx": round(x / w, 3), "fy": round(y / h, 3),
+                                                                 "step": cur["step"]}]
+    add_warnings(info, ["this tap opened the Play Store: the control is the ad's store link. sw.py launch; the "
+                        "same point is refused for the rest of the session"])
+
+
 def note_tap(cur: dict, pts: list, info: dict) -> bool:
     """Remember a tap and whether it changed the screen; True (and a warning) for the second tap on the same
     point with no change. No change means the same hash and no changed pixels: a typed letter or a placed
@@ -1102,6 +1156,7 @@ def action(args, name: str, fn, rec: dict, points: tuple = ()) -> None:
     pts = [list(p) for p in points] if name == "tap" else None
     if pts:
         refuse_repeat_tap(cur, args, pts)
+        refuse_store_tap(cur, args, pts, w, h)
     gap = gap_s(cur)
     dev = open_device(cur)
     t = time.time()
@@ -1113,6 +1168,8 @@ def action(args, name: str, fn, rec: dict, points: tuple = ()) -> None:
     size = cur.get("model_size")
     info = take_shot(cur, dev, getattr(args, "hi", False))
     rep = bool(pts) and note_tap(cur, pts, info)
+    if pts:
+        note_store_tap(cur, pts, w, h, info)
     add_warnings(info, book_moves(cur, name, 1, t))
     log_step(cur, {"type": name, **rec, "why": args.why, "model_size": size, "settle": args.settle,
                    **shot_rec(cur, info), "gap_s": gap, **({"repeated": True} if rep else {})})
@@ -1637,6 +1694,9 @@ def research_view(game: str, until: float | None = None, base: Path | None = Non
 TYPE_KINDS = ("look", "outcome", "experiment")
 UNKNOWN_TYPE = "unknown"  # typed, but no type fits yet: the reviewer starts the type designer
 BASE_TYPE = "core-level"  # the base level of a mechanic: its outcome cases are the outcomes of the matrix
+# a case text that says the case was not seen: not a closure
+NOT_OBSERVED = re.compile(r"\s*(?:not\s+(?:yet\s+)?(?:verified|tested|reached|seen|tried|checked|observed|done)\b"
+                          r"|unverified\b|untested\b|unobserved\b|open\s*[:(—-]|to be (?:verified|tested)\b|tbd\b)", re.I)
 _CATALOG: dict = {}
 
 
@@ -1820,16 +1880,34 @@ def last_session(game: str) -> dict:
     return (read_jsonl(STATE() / game / "sessions.jsonl") or [{}])[-1]
 
 
-def model_role(view: dict, ready: list[dict], last: dict | None = None) -> tuple[str, str]:
+def session_end_t(s: dict) -> float:
+    """When a session (a sessions.jsonl row) ended."""
+    return iso_to_t(s["started"]) + (s.get("minutes") or 0) * 60 if s.get("started") else 0.0
+
+
+def mastered_since(ops: list[dict] | None, mid: str, t: float) -> bool:
+    """Whether a mechanic op set the mechanic mastered after time t (the lab or a later session fixed it)."""
+    return any(o.get("op") == "mechanic" and o.get("id") == mid and o.get("status") == "mastered" and o.get("t", 0) > t
+               for o in ops or [])
+
+
+def model_role(view: dict, ready: list[dict], last: dict | None = None, ops: list[dict] | None = None) -> tuple[str, str]:
     """Which model plays: study (strong) while the game has gameplay to learn and the tasks play levels,
     play (fast) once every known mechanic is mastered and for menu-only work (studies, surveys, dailies).
     The game's last session handed off: the strong model takes the next one, unless the mechanic the
-    handoff named is mastered by now."""
+    handoff named was mastered after the handoff (the lab fixed it). A mechanic that was mastered already when
+    the player gave up is no reason to waive it: the Hard levels of Amaze GO! and the Space theme of Pull the Pin
+    were handed off under a mastered mechanic, both handoffs were waived, and the fast model came back to go
+    stuck (and wipe the level's progress) or hand off a second time (2026-10-04
+    [s:20261003-232357-chrono-2FYKPJ] -> 233756, [s:20261004-003223-chrono-2FYKPJ] -> 004411). `ops`: the
+    game's journal, for when the mechanic's status changed."""
     if (last or {}).get("status") == "handoff":
         mid = last.get("handoff_to")
         m = find_mechanic(view, mid, create=False) if mid else None
-        if not m or m.get("status") != "mastered":
-            return "study", (f"handoff from {last['id']}: {mid} is {m.get('status') if m else 'new'}" if mid else
+        if not m or m.get("status") != "mastered" or not mastered_since(ops, mid, session_end_t(last)):
+            return "study", (f"handoff from {last['id']}: {mid} is {m.get('status') if m else 'new'}"
+                             + (" (it was when the player gave up: the handoff stands)"
+                                if m and m.get("status") == "mastered" else "") if mid else
                              f"handoff from {last['id']}: the fast model met gameplay to learn")
     kinds = {t["kind"] for t in ready}
     todo = [m for m in view["mechanics"] if m.get("status") in ("studying", "broken")]
@@ -2402,7 +2480,7 @@ def cmd_claim(args) -> None:
 
             _, turn, _, _, e, st = min(cands, key=order)
             budget = budget_for(st["ready"])
-            role, role_why = model_role(st["view"], st["ready"], last_session(e["id"]))
+            role, role_why = model_role(st["view"], st["ready"], last_session(e["id"]), journal(e["id"]))
             spec = role_spec(e["id"], role)
             model = spec["model"]
             save_session({"status": "reserved", "device": dev, "platform": platform, "game": e["id"],
@@ -2756,7 +2834,7 @@ def cmd_start(args) -> None:
             st = session_tasks(args.game, dev, platform, now)
             tasks = st["ready"]
             budget = budget_for(tasks) if tasks else 10
-            role = model_role(st["view"], tasks, last_session(args.game))[0]
+            role = model_role(st["view"], tasks, last_session(args.game), journal(args.game))[0]
         budget = args.budget or budget
         if args.bench:
             tasks = []  # a benchmark slot: the brief says what to play
@@ -2870,6 +2948,7 @@ def cmd_wait(args) -> None:
     slept = max(0.0, min(args.seconds, WAIT_CAP_S))
     capped = {"asked": args.seconds, "capped": WAIT_CAP_S} if args.seconds > WAIT_CAP_S else {}
     time.sleep(slept)
+    cur, ran = reload_session(cur)
     cur["last_action"] = time.time()
     info = take_shot(cur, open_device(cur), args.hi)
     cur["looked"] = True
@@ -2879,10 +2958,29 @@ def cmd_wait(args) -> None:
         info["screen"] = "dimmed"
         info.setdefault("warnings", []).append("the screen dimmed: the next tap will fail. Tap something harmless "
                                                "now, or end and set a task with --after-hours")
+    if ran:
+        info["ran_meanwhile"] = ran
+        info.setdefault("warnings", []).append(f"{ran} other commands ran during this wait: one command at a time. "
+                                               "This frame is of now, after them, not of the screen you waited for")
     log_step(cur, {"type": "wait", "seconds": slept, **capped, **shot_rec(cur, info),
-                   **({"screen": "dimmed"} if dimmed else {}), **why_of(args)})
+                   **({"screen": "dimmed"} if dimmed else {}), **({"ran_meanwhile": ran} if ran else {}),
+                   **why_of(args)})
     save_session(cur)
     out({"seconds": slept, **capped, **info})
+
+
+def reload_session(cur: dict) -> tuple[dict, int]:
+    """The session as it is on disk after a sleep, and how many commands ran meanwhile. A `wait 45` run beside
+    eight taps wrote its copy of the session back 45 s stale: the step and frame counters rolled back, nine steps
+    were numbered twice and eleven frames overwritten (Amaze GO!, 2026-10-04 [s:20261004-001551-chrono-2FYKPJ#31]).
+    The copy that moved on is the session; the sleeping command's own copy knows nothing newer."""
+    disk = read_json(session_path(cur["device"]))
+    if not disk or disk.get("id") != cur.get("id"):
+        return cur, 0
+    ran = max(0, (disk.get("step") or 0) - (cur.get("step") or 0))
+    if ran or (disk.get("shots") or 0) > (cur.get("shots") or 0):
+        return disk, ran or 1
+    return cur, 0
 
 
 RESTART_AFTER_WIN_S = 120
@@ -3014,8 +3112,16 @@ def cmd_mark(args) -> None:
     role = args.role
     if role and not (role in MARK_ROLES or (role.startswith("tab:") and len(role) > 4)):
         fail(f"--as is one of {', '.join(MARK_ROLES)} or tab:<name>")
+    warn = []
     if role and not args.feature:
-        fail("--as needs --feature: the page the frame goes to")
+        # refused, the mark was never made again: the intro comic, a title screen, two consent screens of four games
+        # lost their only frame (2026-10-03 [s:20261003-193015-chrono-2FYKPJ#1] [s:20261003-200141-chrono-2FYKPJ#0]
+        # [s:20261003-194350-chrono-2FYKPJ#1] [s:20261004-003223-chrono-2FYKPJ#15]). The mark is kept without
+        # a page; the reply says what is missing.
+        warn.append(f"--as {role} needs --feature: the mark is kept, but it goes on no page. Register the feature "
+                    "the screen belongs to (a first-launch screen is one too: consent, intro, title) and mark again "
+                    "with --feature <id> --frame " + str(n))
+        role = None
     at = None
     if args.at:
         try:
@@ -3030,7 +3136,8 @@ def cmd_mark(args) -> None:
     if at:
         rec["at"] = at
     log_step(cur, rec)
-    out({"ok": True, "marked": str(shot), **({"feature": rec["feature"], "as": rec["role"]} if args.feature else {})})
+    out({"ok": True, "marked": str(shot), **({"feature": rec["feature"], "as": rec["role"]} if args.feature else {}),
+         **({"warnings": warn} if warn else {})})
 
 
 def cmd_clip(args) -> None:
@@ -3141,7 +3248,20 @@ def cmd_case(args) -> None:
         op["outcome"] = True
     if args.text:
         op["text"] = args.text
+    else:
+        f = find_feature(research_view(cur["game"]), fid, create=False)
+        if not f or not any(str(c.get("id")) == cid for c in f.get("cases", [])):
+            # `case core-level list` made an empty case named "list" on two features (Candy Crush Saga, 2026-10-03
+            # [s:20261003-230937-chrono-2FYKPJ#0]): a case the map does not have needs its text
+            fail(f"case {cid!r} is not on {fid} yet: a new case needs its text, case {fid} {cid} \"what to check\". "
+                 f"The feature's cases: sw.py research {cur['game']}")
     if args.done:
+        if NOT_OBSERVED.match(args.text or ""):
+            # six cases in three games were closed with "Not verified…", "Not tested…", "Not reached…" and the dream
+            # reopened them (2026-10-03 [s:20261003-231804-chrono-2FYKPJ#8] [s:20261003-202631-chrono-2FYKPJ#23]
+            # [s:20261003-214021-chrono-2FYKPJ#20])
+            fail("a case is closed with what the frames showed; this text says it was not: leave the case open "
+                 "(no --done) and set a task for it, or write the observation (\"Does not apply: …\" is one)")
         op.update(done=True, source=op_source(cur, args))
     log_op(cur, op)
     planned = plan_feature_goals(cur["game"])
@@ -3374,8 +3494,27 @@ def level_end(cur: dict, args, lv: dict, now: float) -> None:
     op = {**level_op(cur, lv, args.result, args.note, now), "shot": cur.get("last_shot"),
           **({"skipped": True} if args.skipped else {}), **({"deliberate": True} if args.deliberate else {})}
     problem = win_problem(cur, lv, op, args.skipped) if args.result == "won" else None
+    if problem and not cur.get("looked") and cur.get("last_app") in (cur["game"], None):
+        # the refusal used to send the player for a `shot` and back; five refusals in four sessions got no retry
+        # at all, and a tutorial stayed open across a classic game (2026-10-03 [s:20261003-193423-chrono-2FYKPJ#4]
+        # [s:20261003-232357-chrono-2FYKPJ#17] [s:20261003-201915-chrono-2FYKPJ#7]). The frame is taken here:
+        # one look, then `level end won` again
+        info = take_shot(cur, open_device(cur), False)
+        cur["looked"] = True
+        log_step(cur, {"type": "shot", **shot_rec(cur, info), "why": "level end won: the win screen"})
+        save_session(cur)
+        fail(problem + ". The frame was taken now: open it; if it shows the win screen, repeat level end won",
+             level=lv["name"], shot=info["shot"], shot_n=info["shot_n"], app=info.get("app"))
     if problem:
         fail(problem, level=lv["name"], shot_n=cur.get("last_shot"))
+    if args.result == "quit" and op["moves"] == 0 and not lv.get("moves_before"):
+        void_level(cur, lv, f"quit with no move ({args.note})", now)
+        cur["level"] = None
+        for k in ("outside", "last_solve", "last_tap", "won_t", "restarts_t"):
+            cur.pop(k, None)
+        save_session(cur)
+        return out({"ok": True, "level": lv["name"], "result": "void",
+                    "note": "no move was played in this level: it is not a level record (a level_void step, no quit)"})
     log_op(cur, op)
     planned = []
     if args.result == "won" and not lv.get("bonus"):  # a bonus board is not a step of the level progress
@@ -3560,6 +3699,8 @@ def level_spans(game: str, mech: str | None = None) -> list[dict]:
                 since = []
             if cur is not None:
                 tally_level(cur, x)
+            if cur is not None and x.get("type") == "level_void":  # opened, never played: no span
+                cur, since = None, []
             if cur is not None and x.get("type") == "research" and x.get("op") == "level":
                 before = cur.pop("_before", None)  # no frame at all during the level
                 if not cur["frames"] and before and before[0]:
@@ -4028,8 +4169,21 @@ def close_level(cur: dict, status: str, t_end: float) -> None:
     """A level left open: the session ended in the middle of it, which counts as quit."""
     lv = cur.get("level")
     if lv:
-        log_op(cur, level_op(cur, lv, "quit", f"session ended ({status})", t_end))
+        op = level_op(cur, lv, "quit", f"session ended ({status})", t_end)
+        if op["moves"] == 0 and not lv.get("moves_before"):
+            void_level(cur, lv, f"session ended ({status}) with no move in the level", t_end)
+        else:
+            log_op(cur, op)
         cur["level"] = None
+
+
+def void_level(cur: dict, lv: dict, why: str, t_end: float) -> None:
+    """A level opened and never played is no level record. A `level start` on the Home screen followed by a
+    lost phone became "level 130 quit, 8 s" in the mechanic's recent levels (Meowdoku, 2026-10-03
+    [s:20261003-235107-chrono-2FYKPJ#0]); the dream reopened the phantom records of four games. The step
+    says the level was opened; the journal, the mechanic's counters and the level catalog never see it."""
+    log_step(cur, {"type": "level_void", "name": lv["name"], "mechanic": lv["mechanic"],
+                   "seconds": round(t_end - lv["t0"]), "why": why})
 
 
 def upload_original(cur: dict, summary: str) -> str | None:
@@ -4058,8 +4212,11 @@ def record_session(cur: dict, status: str, summary: str, clips: list, youtube, t
     levels = [o for o in ops if o["op"] == "level"]
     gaps = [s["gap_s"] for s in steps if s.get("gap_s") is not None]
     errors, error_min = error_cost(steps)
-    # the next claim names the mechanic in the strong model's brief (a handoff used to carry no target)
-    handoff_to = (to or handoff_mechanic(cur["game"], levels)) if status == "handoff" else None
+    # the next claim names the mechanic in the strong model's brief (a handoff used to carry no target). The levels
+    # in the order the session saw them, a level opened with no move (void, no level op) among them: it is still
+    # the mechanic the player met and gave up on
+    seen = [s for s in steps if s.get("type") == "level_void" or (s.get("type") == "research" and s.get("op") == "level")]
+    handoff_to = (to or handoff_mechanic(cur["game"], seen)) if status == "handoff" else None
     meta = {"id": cur["id"], "machine": machine(), "device": cur["device"], "game": cur["game"],
             "tasks": [t["id"] for t in cur.get("tasks", [])], "device_state": cur.get("device_state"),
             "version": cur.get("version"), "model": cur.get("model"), "effort": cur.get("effort"),
@@ -4116,7 +4273,7 @@ def orphan_cur(d: Path, steps: list[dict]) -> dict:
                             **{k: s[k] for k in ("bonus", "moves_before") if s.get(k)}}  # kept by level_op
         elif s.get("type") == "level_plan" and cur["level"]:
             cur["level"]["replans"] += 1
-        elif s.get("op") == "level":
+        elif s.get("op") == "level" or s.get("type") == "level_void":
             cur["level"] = None
     return cur
 
@@ -5364,6 +5521,17 @@ def map_problems(s: str, section, view_of) -> tuple[list[str], list[str]]:
                          f"a Cases row with <!-- case:{cid} -->, or the case under Not verified ({text[:90]})")
         elif cid.startswith(CHECK_PREFIXES):
             probs.append(f"checklist item '{cid}' is neither on the page nor under Not verified ({text[:90]})")
+    # the other way round: a row shown done (✅) whose case the map has open. The check only held the map against
+    # the page, so a page kept its ✅ for cases the dream had reopened and passed (2026-10-04: Block Blast! classic
+    # chk-quit/chk-exit-app, Meowdoku booster-hint chk-sources/chk-empty/chk-refill; the documenters fixed them by hand)
+    open_ids = {str(c["id"]) for c in cases if not c.get("done")}
+    for ln in ((section("Cases") or "") + "\n" + (section("Outcomes") or "")).splitlines():
+        if ln.lstrip().startswith("|") and "✅" in ln:
+            for cid in CASE_ID.findall(ln):
+                if cid in open_ids:
+                    probs.append(f"case '{cid}' is shown done (✅) on the page but is open in the map: move it under "
+                                 "Not verified (a '⚠️ Previously' block keeps what the page said), or close it in the "
+                                 "map with a source")
     if has_base(f) and section("Outcomes") is None:
         probs.append("no '## Outcomes' section: the feature's type has a base type (a row per under-<outcome> case: "
                      "outcome | as the base or what differs | frame)")
