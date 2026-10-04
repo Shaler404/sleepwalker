@@ -1,0 +1,1820 @@
+# Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
+game: com.block.juggle
+version: 10.8.1
+play_version: 10.8.0
+play_checked: '2026-10-03T19:29:54'
+phone_version: 10.8.1
+discovery: open
+ftue_verified: null
+progress:
+  text: adventure 3
+  value: 3.0
+  at: '2026-10-04T00:05:49'
+  session: 20261003-235233-chrono-2FYKPJ
+gate: null
+synced:
+  chrono: '2026-10-04T01:10:05'
+mechanics:
+- id: classic
+  name: classic
+  status: studying
+  method: solver
+  levels:
+    won: 0
+    lost: 1
+    quit: 2
+  recent:
+  - level: classic game 1
+    result: lost
+    seconds: 205
+    model: opus
+    deliberate: true
+  - level: classic game 3
+    result: quit
+    seconds: 247
+    model: sonnet
+  - level: classic row-7 drop test
+    result: quit
+    seconds: 60
+    model: opus
+  solver: solvers/com.block.juggle/classic.py
+  note: 'solver plays every placement via solve --run (gameover mode default); lab
+    2026-10-04: rightward drags aim 0.1 cell behind (4 of 65 overshot a column with
+    the 0.2 lead), leftward 0.2 ahead; replay of 156 drops: 86/90 on target in session
+    235233; dream 2026-10-04: the ''tutorial'' record (172 s, 15 moves) was removed
+    from classic: it counted Settings and More Games navigation, the tutorial itself
+    is one drag'
+- id: adventure
+  name: adventure
+  status: mastered
+  method: solver
+  levels:
+    won: 3
+    lost: 1
+    quit: 1
+  recent:
+  - level: adventure 1
+    result: won
+    seconds: 131
+    model: opus
+  - level: adventure 2
+    result: lost
+    seconds: 62
+    model: opus
+    deliberate: true
+  - level: adventure 2
+    result: won
+    seconds: 188
+    model: opus
+  - level: adventure 3
+    result: won
+    seconds: 137
+    model: opus
+  - level: adventure 4
+    result: quit
+    seconds: 34
+    model: opus
+  best_s: 131
+  note: played with the classic solver in score mode (pass --board {"mode":"score"}
+    on the first solve --run) [20261003-235233-chrono-2FYKPJ#8]
+  solver: solvers/com.block.juggle/classic.py
+features:
+- id: terms-consent
+  name: Terms of Use consent
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: Welcome window with Terms of Use and Privacy Policy links and one Accept
+      button; no decline
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#0
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#0
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  type: system
+  appeared:
+    text: first launch of a fresh install, before anything else
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#0
+  page: features/terms-consent.md
+- id: tutorial
+  name: First-launch tutorial board
+  status: in_progress
+  cases:
+  - id: chk-steps
+    text: 'One board only: 2x2 into a cross hole clears 2 rows + 2 columns for +120;
+      the score counts up to 124 (the 19 read earlier was a mid count-up frame); a
+      classic game follows at once with the score kept'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#4
+    version: 10.8.1
+  - id: chk-skip
+    text: Skip button bottom right on the tutorial board (not tried)
+    done: false
+  - id: chk-screen
+    text: Pre-built cross board with a 2x2 hole, one 2x2 piece and an animated hand;
+      Skip bottom right
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#1
+  - id: chk-end
+    text: Ends after the one drop (2 rows + 2 columns, score 19); the classic board
+      follows at once with the score kept; the notification prompt pops up during
+      it
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#4
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-replay
+    text: Whether it can be seen again (How to play, a help button)
+    done: false
+  type: tutorial
+  appeared:
+    text: right after accepting the Terms of Use on a fresh install
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#1
+  page: features/tutorial.md
+- id: classic
+  name: Classic mode (endless 8x8)
+  status: documented
+  cases:
+  - id: chk-loss
+    text: No Space Left banner, board fills with colour, interstitial ad, then 'Can
+      you Top that?' with score and Play; no revive on the first game (score 327 =
+      new best)
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#31
+    version: 10.8.1
+  - id: chk-entry
+    text: On first launch the app opens straight on the classic board; Back on the
+      board opens the home menu (Classic, Adventure, More Games); Play on the game-over
+      screen starts a new board
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+    version: 10.8.1
+  - id: chk-restart
+    text: 'Settings gear > Replay: interstitial ad, then new empty board, score 0,
+      best kept (2516)'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#28
+    version: 10.8.1
+    outcome: true
+  - id: no-space-left
+    text: 'No Space Left: no tray piece fits; banner with the piece, board fills with
+      colour, interstitial, then ''Can you Top that?'' with the score and Play (a
+      new board)'
+    done: true
+    outcome: true
+    source: 20261003-193423-chrono-2FYKPJ#31
+  - id: chk-win
+    text: 'Does not apply: classic is endless and scored; a game ends only when no
+      piece fits (No Space Left)'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#31
+    outcome: true
+  - id: chk-screen
+    text: 'Classic board: score on top, crown best top left, gear top right, 8x8 board,
+      tray of three pieces'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#4
+  - id: chk-hud
+    text: 'HUD: crown with the best score (not a button), current score, gear (Settings)
+      with a red vibration badge; tray of 3 pieces; no boosters, no level number,
+      no timer'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#16
+  - id: chk-retry
+    text: Replay mid-game restarts without a revive offer; best score kept
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#28
+    version: 10.8.1
+  - id: chk-quit
+    text: 'Back key mid-game opens the home menu with no confirmation; whether the
+      game in progress is kept is NOT verified: Back was pressed on an empty board
+      (score 0) right after Replay. Retest with score > 0 (task classic-quit-kept)'
+    done: false
+    version: 10.8.1
+    outcome: true
+  - id: chk-rules
+    text: 'No in-game how-to beyond the one-board tutorial (drag pieces onto 8x8 board,
+      full rows or columns clear, lose when no tray piece fits). Row 7 is reachable:
+      the stuck board at 2516 was the old drag model, a hand drag with the 2.4-lift
+      model lands 1-row pieces on row 7'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#4
+    version: 10.8.1
+  - id: chk-exit-app
+    text: 'Leaving the app mid-game: not verified for classic. The kept game-over
+      screen after launch (212548#44) was Block Slide''s; in classic the return after
+      a Replay ad was a fresh board (212548#28)'
+    done: false
+    version: 10.8.1
+    outcome: true
+  - id: chk-elements
+    text: 'Does not apply: only plain coloured pieces, no obstacles or specials; a
+      cyan diamond badge behind the score appears at high scores (seen at 1106, gone
+      at 2516)'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#13
+    version: 10.8.1
+  - id: row7-drop
+    text: A 1-row piece lands on row 7 with finger ~25-45 px above its tray touch
+      point (2.0-2.5 cells under the board edge)
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#4
+    version: 10.8.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#1
+  type: core-level
+  appeared:
+    text: the default board on launch, after the tutorial
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#1
+  version_seen: 10.8.1
+  page: features/classic.md
+- id: settings
+  name: Settings
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Gear at top right of the classic board (660,135)
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#5
+  - id: chk-screen
+    text: 'Settings popup: Sound, BGM (off), Vibration slider; More Games, More Settings,
+      Replay, Default Skin (grey); build 1.5.7.0.0; inside a level the popup shows
+      More Settings / Home / Replay instead, build label 1.5.12.0.0 (235233#63)'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#5
+  - id: adventure-popup
+    text: In an Adventure level the gear opens Settings with Sound, BGM, Vibration
+      slider, More Settings, Home, Replay (shot 80)
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#64
+    version: 10.8.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#5
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  type: system
+  appeared:
+    text: 'always on the classic board: gear top right'
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#5
+  page: features/settings.md
+- id: skins
+  name: Skins (Default Skin button)
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#5
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-progress
+    text: 'The progress: the bar, the album or the counter, what fills it and where
+      it is now'
+    done: false
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  type: meta-progress
+  appeared:
+    text: 'in Settings from the first launch: a grey Default Skin button under Replay'
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#5
+  page: features/skins.md
+- id: more-games
+  name: More Games (mini-game list)
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Settings gear > More Games, and the More Games button on the home menu
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#32
+  - id: chk-screen
+    text: Scrolling popup list of 8 mini-games over the classic board
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#11
+  - id: chk-entries
+    text: '8 entries, all open, each its own mode feature: One Line, Tic Tac Toe,
+      Fruit Merge, Water Sort, Onet, Mahjong, Sudoku, Block Slide; no locks'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#11
+  - id: chk-badges
+    text: No badges, timers or counters on the list (all 8 green buttons, both from
+      Settings and from the home menu)
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#32
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#12
+  - id: chk-changes
+    text: What changes on it with progress (new buttons, a moving map, a theme)
+    done: false
+  type: hub
+  appeared:
+    text: in Settings from the first launch, with a red dot badge
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#12
+  page: features/more-games.md
+- id: mg-one-line
+  name: 'Mini-game: One Line'
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Settings > More Games list entry (open, no lock)
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#11
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#12
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  type: mode
+  appeared:
+    text: listed in Settings > More Games from the first launch
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#12
+  page: features/mg-one-line.md
+- id: mg-tic-tac-toe
+  name: 'Mini-game: Tic Tac Toe'
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Settings > More Games list entry (open, no lock)
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#11
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#12
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  type: mode
+  appeared:
+    text: listed in Settings > More Games from the first launch
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#12
+  page: features/mg-tic-tac-toe.md
+- id: mg-fruit-merge
+  name: 'Mini-game: Fruit Merge'
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Settings > More Games list entry (open, no lock)
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#11
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#12
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  type: mode
+  appeared:
+    text: listed in Settings > More Games from the first launch
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#12
+  page: features/mg-fruit-merge.md
+- id: mg-water-sort
+  name: 'Mini-game: Water Sort'
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Settings > More Games list entry (open, no lock)
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#11
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#12
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  type: mode
+  appeared:
+    text: listed in Settings > More Games from the first launch
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#12
+  page: features/mg-water-sort.md
+- id: mg-onet
+  name: 'Mini-game: Onet'
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Settings > More Games list entry (open, no lock)
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#11
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#12
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  type: mode
+  appeared:
+    text: listed in Settings > More Games from the first launch
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#12
+  page: features/mg-onet.md
+- id: mg-mahjong
+  name: 'Mini-game: Mahjong'
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Settings > More Games list entry (open, no lock)
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#11
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#12
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  type: mode
+  appeared:
+    text: listed in Settings > More Games from the first launch
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#12
+  page: features/mg-mahjong.md
+- id: mg-sudoku
+  name: 'Mini-game: Sudoku'
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Settings > More Games list entry (open, no lock)
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#11
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#12
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  type: mode
+  appeared:
+    text: listed in Settings > More Games from the first launch
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#12
+  page: features/mg-sudoku.md
+- id: mg-block-slide
+  name: 'Mini-game: Block Slide'
+  status: documented
+  cases:
+  - id: chk-entry
+    text: Settings > More Games list entry (open, no lock)
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#11
+  - id: chk-screen
+    text: 8x10 board, horizontal bars at the bottom, a preview row of next bars, trophy
+      best and score, own gear (Sound, BGM, Vibration, Exit, Replay)
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#12
+  - id: chk-rules
+    text: Drag a bar sideways; unsupported blocks fall; a full 8-cell row clears;
+      every non-clearing move raises a new row from below (preview bar under board)
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#44
+    version: 10.8.1
+  - id: chk-win
+    text: 'Does not apply: endless score mode; a row clear gives +30 (score and trophy
+      best)'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#44
+    version: 10.8.1
+  - id: chk-loss
+    text: 'Stack reaches the top: interstitial ad (Royal Match, icon opens store),
+      then Game Over with Score 60, exit button and Play; no revive offered'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#44
+    version: 10.8.1
+  - id: chk-progression
+    text: Score only; trophy at top left is best score (0 at start, mirrors score
+      live)
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#44
+    version: 10.8.1
+  - id: chk-limits
+    text: 'No limits seen: no energy or timer (one game, ad after game over)'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#44
+    version: 10.8.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#12
+  type: mode
+  appeared:
+    text: listed in Settings > More Games from the first launch
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#12
+  version_seen: 10.8.1
+  page: features/mg-block-slide.md
+- id: ad-interstitial-classic
+  name: Interstitial ad during classic play
+  status: documented
+  cases:
+  - id: chk-close
+    text: 'Two creatives seen: (1) Gossip Harbor video, skip >> top right (680,70)
+      after ~10 s, then an end card whose X comes ~8 s later [193423#30]; (2) Royal
+      Match video with a store header whose top-left >| icon opens Google Play (tapped
+      in 212548#27, #43 and 235233#44); launch returns to the game. A close control
+      for layout (2) is not known yet'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#30
+    version: 10.8.1
+  - id: chk-screen
+    text: Black loading frame, then a full-screen video with skip >> top right after
+      ~10 s and PLAY NOW; an end card with an X ~8 s later
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#29
+  - id: chk-kind
+    text: Full-screen video interstitial, not rewarded; shown at classic game over
+      between No Space Left and the end screen
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#29
+  - id: chk-reward
+    text: 'Does not apply: an interstitial with no offer screen and no reward'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#29
+  - id: chk-entry
+    text: Shown after tapping Replay in the classic Settings popup (video ad, skip
+      icon top-left after ~10 s; skip tap landed on a Google Play listing, launch
+      returned to a fresh board)
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#28
+    version: 10.8.1
+  - id: chk-frequency
+    text: Seen after classic game over (193423#29), after Settings > Replay (212548#26),
+      after a Block Slide game over (212548#42) and after an Adventure retry win (235233#43).
+      Not after every Adventure result; exact cadence is task ad-cadence
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#28
+    version: 10.8.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193423-chrono-2FYKPJ#29
+  type: ad-placement
+  appeared:
+    text: 'at game over of the first classic game on a fresh install (score 327, ~2
+      min): after the No Space Left banner and before the ''Can you Top that?'' screen'
+    certainty: fact
+    source: 20261003-193423-chrono-2FYKPJ#29
+  version_seen: 10.8.1
+  page: features/ad-interstitial-classic.md
+- id: home-menu
+  name: Home menu
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Back key in a classic game (no game over needed) opens it; the Classic button
+      returns to a board
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-screen
+    text: Logo 'Block Blast Adventure Master', Medal top right, Consecutive Daily
+      Victories panel (x0), buttons Adventure (red dot), Classic, More Games; GOGO!
+      Blast and Rotate Rings promo icons at the bottom
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-entries
+    text: Adventure (open, adventure), Classic (open, classic), More Games (open,
+      more-games), Medal (open, medal), Consecutive Daily Victories panel (daily-victories),
+      GOGO! Blast and Rotate Rings (cross-promo-home); no locks seen
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-badges
+    text: Badges, timers and counters on it and what each points to
+    done: false
+  - id: chk-changes
+    text: What changes on it with progress (new buttons, a moving map, a theme)
+    done: false
+  found_at:
+    text: classic best 2516
+    value: 327.0
+  type: hub
+  appeared:
+    text: pressing Back in a classic game (mid-game, not game over) opens it; Classic
+      board is the launch default
+    certainty: fact
+    source: 20261003-212548-chrono-2FYKPJ#29
+  page: features/home-menu.md
+- id: adventure
+  name: Adventure mode
+  status: documented
+  cases:
+  - id: chk-entry
+    text: Adventure button on the home menu (orange, red dot); not opened yet
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-progression
+    text: '96 levels laid out as a trophy-shaped grid; the current level cell is yellow
+      with a marker; completing them wins the trophy (dark silhouette at the top).
+      Progress here: level 1'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#6
+    version: 10.8.1
+  - id: chk-win
+    text: 'Win when the score bar reaches the target (L1: 368): the board dims, a
+      ''Consecutive Victories x1'' panel drops in, the trophy grid shows the won cell
+      lit, Next Level button. No coins or other currency paid'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#21
+    version: 10.8.1
+  - id: chk-screen
+    text: 'Adventure map: back arrow, title, trophy silhouette with ''Take part in
+      the Adventure and win the trophy'', 96-cell trophy-shaped level grid, green
+      ''Level N'' button (shot 8)'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#22
+    version: 10.8.1
+  - id: chk-limits
+    text: No energy, lives, timer or attempt counter on the map or the level; future
+      level cells do nothing when tapped, only the 'Level N' button plays the current
+      level
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#24
+    version: 10.8.1
+  - id: chk-rules
+    text: 'Same 8x8 board, tray and drag as classic, but each level has a goal and
+      a pre-built board: L1 a target score (bar 0 -> 368), L2 collect 60 diamonds
+      (diamond tiles on board and tray pieces). No boosters'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#25
+    version: 10.8.1
+  - id: chk-loss
+    text: 'No Space Left before the goal: board dims, the goal left (56 diamonds),
+      ''You Can Do It!'', green Retry, back arrow; the ''Consecutive Victories'' panel
+      drops in at x0 (reset from x1). No revive, no lives or currency spent'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#29
+    version: 10.8.1
+  - id: quit
+    text: Gear > Home in a level goes to the home menu at once with no confirmation
+      and no cost; the level stays the current one (L4). The back arrow on a result
+      screen also goes to the home menu
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#64
+    version: 10.8.1
+  - id: retry
+    text: 'After a loss, back arrow then Adventure > Level N restarts the same level
+      with the same pre-built board and goals (L2 retry: same 60-diamond tree layout);
+      the Retry button on the loss screen not tapped'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#64
+    version: 10.8.1
+  - id: goals
+    text: 'Goals vary per level: L1 score 368, L2 60 diamonds, L3 56 red + 54 orange
+      gems, L4 22 blue diamonds + 20 orange + 20 yellow stars; gems are collected
+      by clearing the lines that hold gem tiles'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#64
+    version: 10.8.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  found_at:
+    text: classic best 2516
+    value: 327.0
+  type: mode
+  appeared:
+    text: visible on the home menu with a red dot, opened by Back from classic
+    certainty: fact
+    source: 20261003-212548-chrono-2FYKPJ#29
+  version_seen: 10.8.1
+  page: features/adventure.md
+- id: medal
+  name: Medal
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Medal icon top right of the home menu, red badge
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-progress
+    text: 'The progress: the bar, the album or the counter, what fills it and where
+      it is now'
+    done: false
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  found_at:
+    text: classic best 2516
+    value: 327.0
+  type: meta-progress
+  appeared:
+    text: on the home menu (top right, with a red badge) the first time it was opened
+      by Back from classic
+    certainty: fact
+    source: 20261003-212548-chrono-2FYKPJ#29
+  page: features/medal.md
+- id: daily-victories
+  name: Consecutive Daily Victories
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Panel at the top of the home menu
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-screen
+    text: 'Panel ''Consecutive Daily Victories'': crown WIN badge, counter x0, grey
+      check mark bottom right'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-counter
+    text: 'Counts calendar days in a row with at least one Adventure win: x0 -> x1
+      on the L1 win (Oct 3, 23:56), x2 on the L2 win just after midnight (Oct 4),
+      still x2 after the L3 win the same day; green check = today''s win done'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#60
+    version: 10.8.1
+  - id: chk-in-level
+    text: Nothing during the Adventure level; the 'Consecutive Victories xN' panel
+      drops in on the win screen
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#22
+    version: 10.8.1
+  - id: chk-break
+    text: 'A same-day Adventure loss does not break it: after L2 lost (in-level ''Consecutive
+      Victories'' x0) the home panel still shows x1 with the green check. A missed
+      day not tested yet (task daily-victories-missed-day)'
+    done: false
+  - id: chk-rewards
+    text: 'No reward seen at x1 or x2: no popup, no currency on the home menu or the
+      win screen'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#60
+    version: 10.8.1
+  - id: under-win
+    text: 'Adventure win: x0 -> x1 (L1, Oct 3), x2 on the first win of Oct 4, still
+      x2 after a second same-day win'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#60
+  - id: under-no-space-left
+    text: An Adventure No Space Left loss leaves it at x1 with the green check
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#30
+  - id: under-quit
+    text: Quitting Adventure L4 by gear > Home leaves it at x2 with the green check
+      (shot 81)
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#64
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-save
+    text: Offers to keep it after a break and their price (a video, coins)
+    done: false
+  - id: under-restart
+    text: 'Settings gear > Replay under Consecutive Daily Victories: as the base,
+      or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Leaving to the Play Store from an ad and launch under Consecutive Daily
+      Victories: as the base, or what differs'
+    done: false
+  found_at:
+    text: classic best 2516
+    value: 327.0
+  type: streak
+  appeared:
+    text: panel on the home menu showing x0
+    certainty: fact
+    source: 20261003-212548-chrono-2FYKPJ#29
+  page: features/daily-victories.md
+- id: cross-promo-home
+  name: Cross-promo icons on the home menu (GOGO! Blast, Rotate Rings)
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Two round icons at the bottom of the home menu: GOGO! Blast and Rotate
+      Rings (not tapped)'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-screen
+    text: Round app icons with name labels under the More Games button
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-212548-chrono-2FYKPJ#29
+  - id: chk-kind
+    text: 'The kind: banner, interstitial, rewarded video or cross-promo, and where
+      it shows'
+    done: false
+  - id: chk-frequency
+    text: 'How often it shows: after which action, every Nth level, a cooldown'
+    done: false
+  - id: chk-reward
+    text: 'Rewarded: the offer screen before it and what watching gives'
+    done: false
+  - id: chk-close
+    text: 'How it closes: the timer before the close cross, where the cross is, what
+      comes after'
+    done: false
+  found_at:
+    text: classic best 2516
+    value: 327.0
+  type: ad-placement
+  appeared:
+    text: on the home menu the first time it was opened (Back key from classic)
+    certainty: fact
+    source: 20261003-212548-chrono-2FYKPJ#29
+  page: features/cross-promo-home.md
+- id: adv-diamonds
+  name: Adventure diamond-collection levels
+  status: in_progress
+  cases:
+  - id: under-no-space-left
+    text: 'L2 (60 diamonds) lost on No Space Left after 16 moves: board dims, goal
+      left 56, ''You Can Do It!'', green Retry; no revive, no cost; win streak panel
+      x0'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#29
+  - id: under-win
+    text: 'L2 retry won when all 60 diamonds were collected: counter turns into a
+      green check, board clears, then an interstitial, then the win screen (Consecutive
+      Victories x1, Next Level); no currency paid. L3 (two gem goals) the same without
+      the ad'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#45
+  - id: under-quit
+    text: 'L4 (22 blue diamonds, 20 orange, 20 stars): gear > Home goes to the home
+      menu at once, no confirmation, no cost; L4 stays the current level; daily counter
+      unchanged x2'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#64
+  - id: chk-entry
+    text: 'Home menu > Adventure (365,855) > green ''Level N'' (365,1505): the gem
+      goal is per level (L2, L3, L4 so far); no separate entry'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#25
+  - id: chk-screen
+    text: 'Level screen: back arrow, gear, a diamond icon with the count left (60)
+      in place of the score bar; diamond tiles on board cells and on tray piece cells
+      (shot 30-31)'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#25
+  - id: chk-announce
+    text: 'No announcement: the map cell looks like any other and Level N opens the
+      board straight away; the goal is only the header (shot 30)'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#25
+  - id: chk-differs
+    text: Same 8x8 board, tray and drag; the goal is to collect gem tiles (clear the
+      lines holding them) instead of a target score; the levels have a pre-built layout;
+      several gem kinds per level from L3 (red/orange) and L4 (blue/orange/yellow
+      stars); no move limit or timer
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#48
+  - id: chk-win
+    text: 'Goal counter turns into a green check, the board clears; win screen as
+      the score level: Consecutive Victories panel, trophy cell lit, Next Level; no
+      reward currency'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#45
+  - id: chk-loss
+    text: 'No Space Left: board dims, diamonds left shown, ''You Can Do It!'', Retry;
+      costs only the win streak (x1 -> x0); daily counter kept'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#29
+  - id: chk-retry
+    text: No continue or revive offer, no price. Back then Adventure > Level N restarts
+      the same pre-built board and goal (L2 retry). The loss screen's Retry button
+      was not tapped
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#32
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#25
+  - id: chk-frequency
+    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
+      from which level'
+    done: false
+  - id: under-restart
+    text: 'Settings gear > Replay under Adventure diamond-collection levels: as the
+      base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Leaving to the Play Store from an ad and launch under Adventure diamond-collection
+      levels: as the base, or what differs'
+    done: false
+  found_at:
+    text: adventure 1
+    value: 1.0
+  type: level-type
+  appeared:
+    text: 'Adventure level 2 (after winning level 1): the header shows a diamond with
+      a count (60) instead of a score bar; diamond tiles on the board and in tray
+      pieces'
+    certainty: fact
+    source: 20261003-235233-chrono-2FYKPJ#25
+  page: features/adv-diamonds.md
+- id: adv-win-streak
+  name: Adventure Consecutive Victories (win streak)
+  status: documented
+  cases:
+  - id: chk-break
+    text: 'A loss resets it to 0 (L2 No Space Left: x1 -> x0); separate from the home
+      menu''s daily counter, which stayed x1'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#30
+    version: 10.8.1
+  - id: chk-counter
+    text: Counts Adventure level wins in a row; shown only on the result panel (x1
+      after L1 win, x0 after L2 loss)
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#30
+    version: 10.8.1
+  - id: chk-screen
+    text: Panel 'Consecutive Victories' with crown WIN badge and xN hanging over the
+      Adventure win or loss screen (shots 25, 36)
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#30
+    version: 10.8.1
+  - id: chk-in-level
+    text: Nothing shows during the level; only the result screen panel
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#30
+    version: 10.8.1
+  - id: chk-entry
+    text: 'No entry: it appears by itself on the Adventure result screen'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#30
+    version: 10.8.1
+  - id: chk-rewards
+    text: No reward seen at x1 or x2 (L1, L2 retry, L3 wins); the panel only counts
+      up
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#60
+    version: 10.8.1
+  - id: under-win
+    text: 'Each Adventure win adds one: x1 after L1, x1 after the L2 retry (from 0),
+      x2 after L3'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#59
+  - id: under-no-space-left
+    text: 'A No Space Left loss resets it: x1 -> x0 on the L2 loss screen'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#29
+  - id: chk-save
+    text: 'No save offered: the L2 loss screen shows x0 with only Retry and the back
+      arrow, no revive or paid keep'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#29
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-235233-chrono-2FYKPJ#30
+  - id: under-restart
+    text: 'Settings gear > Replay under Adventure Consecutive Victories (win streak):
+      as the base, or what differs'
+    done: false
+  - id: under-quit
+    text: 'Back key mid-game goes to the home menu with no confirmation and no cost;
+      Classic button starts/returns to a fresh board (here a new board with score
+      0 appeared, best kept) under Adventure Consecutive Victories (win streak): as
+      the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Leaving to the Play Store from an ad and launch under Adventure Consecutive
+      Victories (win streak): as the base, or what differs'
+    done: false
+  found_at:
+    text: adventure 1
+    value: 1.0
+  type: streak
+  appeared:
+    text: 'panel ''Consecutive Victories xN'' dropping onto the Adventure result screen:
+      x1 after the L1 win, x0 after the L2 loss'
+    certainty: fact
+    source: 20261003-235233-chrono-2FYKPJ#30
+  version_seen: 10.8.1
+  page: features/adv-win-streak.md
+tasks:
+- id: analyze
+  title: Analyze the game
+  kind: analyze
+  requires: any
+  status: open
+  created: '2026-10-03T19:29:55'
+  source: external
+  note: find all features and work through all user cases on the version on the phone
+- id: scout-1
+  title: 'Map the game: play until the main menu and every entry point is visible;
+    list each entry point as open (a study goal), locked with its unlock condition
+    (an unlock goal) or unclear (an experiment)'
+  kind: scout
+  requires: any
+  status: done
+  created: '2026-10-03T19:29:55'
+  source: external
+  note: 'Fresh install v10.8.1: consent -> one tutorial board -> classic board directly;
+    no home/mode menu even after game over (Play restarts classic). HUD: crown best
+    (not a button), gear. Settings: Sound/BGM/Vibration, More Games (8 built-in mini-games,
+    each registered as a mode, open), More Settings (external links), Replay, Default
+    Skin (grey, unclear -> experiment). Game over: No Space Left -> interstitial ->
+    ''Can you Top that?'' + Play, no revive. No locked entries seen; experiments added:
+    home-menu-appears, gear-badge, green-dots-ring, revive-check, ad-cadence, skins-unlock.'
+  closed: '2026-10-03T19:41:55'
+  closed_by: 20261003-193423-chrono-2FYKPJ#32
+  new_entries: 16
+  at_progress: classic best 327
+  new_entry_names:
+  - Terms consent
+  - Tutorial
+  - Classic
+  - Settings
+  - More Settings
+  - More Games
+  - One Line
+  - Tic Tac Toe
+  - Fruit Merge
+  - Water Sort
+  - Onet
+  - Mahjong
+  - Sudoku
+  - Block Slide
+  - Default Skin
+  - Game-over interstitial
+- id: appeared-skins
+  title: 'Find why Skins (Default Skin button) appeared: grey Default Skin button
+    in Settings from the first launch; a tap does nothing, other skins probably come
+    with progress or events'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T19:36:29'
+  feature: skins
+  source: session
+  plan: 'find the moment Skins (Default Skin button) shows up and what comes just
+    before it (grey Default Skin button in Settings from the first launch; a tap does
+    nothing, other skins probably come with progress or events); confirmed when a
+    frame shows the trigger. Record it with feature skins --appeared "...": the goal
+    closes by itself'
+  closed: '2026-10-03T19:44:34'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: in Settings from the first launch: a grey
+    Default Skin button under Replay [20261003-193423-chrono-2FYKPJ#5]'
+- id: skins-unlock
+  title: What makes the grey Default Skin button in Settings active (other skins)?
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:36:29'
+  feature: skins
+  source: session
+  plan: after each game over / longer play, open Settings and tap Default Skin; note
+    when it turns green or opens a skin list
+- id: home-menu-appears
+  title: Does a home screen or another mode (e.g. Adventure) appear after more classic
+    games or days?
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T19:41:47'
+  feature: classic
+  source: session
+  plan: after each game over note the screen after Play; relaunch the app on later
+    days; confirmed if a menu with modes appears
+  closed: '2026-10-03T21:41:16'
+  closed_by: 20261003-212548-chrono-2FYKPJ#29
+  note: 'a home menu exists: Back in a classic game opens it (Adventure, Classic,
+    More Games, Medal, Consecutive Daily Victories, cross-promo icons); no extra games
+    or days needed'
+  result: confirmed
+- id: gear-badge
+  title: What the red vibration badge on the gear means and when it clears
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:41:47'
+  feature: settings
+  source: session
+  plan: open Settings, touch the Vibration slider; check whether the badge on the
+    gear and the red dot on Vibration go away
+- id: green-dots-ring
+  title: What the green dot ring around the classic board means (seen from score ~319
+    of the first game)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:41:48'
+  feature: classic
+  source: session
+  plan: 'watch when the ring appears in the next game: at beating the best score,
+    or at a score threshold'
+  note: 'dream: frames show the ring absent at 187 (193423 shot 24) and present at
+    223 (shot 25) while the best was already 124, so ''ring = new best'' is unlikely;
+    test a threshold near 200'
+- id: revive-check
+  title: Is a revive / second chance offered at game over in later games?
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:41:48'
+  feature: classic
+  source: session
+  plan: reach game over in 2-3 more classic games (gameover mode) and look for a continue
+    offer before 'Can you Top that?'
+- id: ad-cadence
+  title: How often the game-over interstitial plays
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:41:48'
+  feature: ad-interstitial-classic
+  source: session
+  plan: end several classic games; count interstitials per game over and whether any
+    plays mid-game
+- id: study-terms-consent
+  title: 'Study Terms of Use consent: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: terms-consent
+  source: external
+- id: study-tutorial
+  title: 'Study First-launch tutorial board: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: tutorial
+  source: external
+- id: study-classic
+  title: 'Study Classic mode (endless 8x8): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T19:43:31'
+  feature: classic
+  source: external
+  closed: '2026-10-03T21:37:26'
+  closed_by: 20261003-212548-chrono-2FYKPJ#45
+  note: Settings popup, Replay, back to home menu, 2516 stuck-board bug, cases done
+- id: study-settings
+  title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: settings
+  source: external
+- id: study-skins
+  title: 'Study Skins (Default Skin button): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: skins
+  source: external
+- id: study-more-games
+  title: 'Study More Games (mini-game list): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: more-games
+  source: external
+- id: study-mg-one-line
+  title: 'Study Mini-game: One Line: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: mg-one-line
+  source: external
+- id: study-mg-tic-tac-toe
+  title: 'Study Mini-game: Tic Tac Toe: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: mg-tic-tac-toe
+  source: external
+- id: study-mg-fruit-merge
+  title: 'Study Mini-game: Fruit Merge: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: mg-fruit-merge
+  source: external
+- id: study-mg-water-sort
+  title: 'Study Mini-game: Water Sort: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: mg-water-sort
+  source: external
+- id: study-mg-onet
+  title: 'Study Mini-game: Onet: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: mg-onet
+  source: external
+- id: study-mg-mahjong
+  title: 'Study Mini-game: Mahjong: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: mg-mahjong
+  source: external
+- id: study-mg-sudoku
+  title: 'Study Mini-game: Sudoku: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:43:31'
+  feature: mg-sudoku
+  source: external
+- id: study-mg-block-slide
+  title: 'Study Mini-game: Block Slide: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T19:43:31'
+  feature: mg-block-slide
+  source: external
+  closed: '2026-10-03T21:37:27'
+  closed_by: 20261003-212548-chrono-2FYKPJ#45
+  note: rules, clear score 30, game over after stack hits top, ad then Game Over screen
+- id: study-ad-interstitial-classic
+  title: 'Study Interstitial ad during classic play: open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T19:43:31'
+  feature: ad-interstitial-classic
+  source: external
+  closed: '2026-10-03T21:37:26'
+  closed_by: 20261003-212548-chrono-2FYKPJ#45
+  note: Seen after No Space Left and after Replay (settings); skip icon opens store;
+    end card at ~45 s
+- id: score-jump
+  title: Find why the classic score jumped from 19 to 124 with no move right after
+    the tutorial board
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T19:45:06'
+  feature: classic
+  source: session
+  plan: on the next fresh install (or a Replay) watch the score from the tutorial's
+    last drop to the first classic move, frame by frame; confirmed when a frame shows
+    what adds the points (a bonus popup, a pre-filled clear, a count-up)
+  closed: '2026-10-04T01:10:05'
+  closed_by: dream
+  note: 'Answered: a count-up. The 2x2 clear gives +120 and the score counts 4 ->
+    124; the 19 was a mid count-up frame [20261003-193423-chrono-2FYKPJ#4] (documenter
+    clip tutorial-2x2-clear)'
+- id: tutorial-skip
+  title: Tap Skip on the first-launch tutorial board and record what follows
+  kind: experiment
+  requires: fresh
+  status: open
+  created: '2026-10-03T19:45:06'
+  feature: tutorial
+  source: session
+  plan: on a fresh install, after consent, tap Skip bottom right before dragging;
+    done when the next screen is marked and the score start is noted (0 or 19)
+- id: look-retention
+  title: Look for daily rewards, a daily challenge or a timed event after day 1
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:45:07'
+  not_before: '2026-10-04T15:45:07'
+  source: session
+  plan: relaunch on a later day and play one classic game; check the classic board,
+    Settings and the game-over screen for new buttons, badges or popups; done when
+    a frame shows one (a new feature) or the same screens with nothing new
+- id: look-shop
+  title: Look for a shop, a no-ads purchase or any offer popup
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:45:07'
+  source: session
+  plan: over 3 classic game overs and in Settings / More Settings, mark any price
+    button, Remove Ads or offer popup; done when one is found (a new offer feature)
+    or 3 game overs show none
+- id: appeared-medal
+  title: 'Find why Medal appeared: Medal icon with badge on the home menu top right'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T21:32:08'
+  feature: medal
+  source: session
+  plan: 'find the moment Medal shows up and what comes just before it (Medal icon
+    with badge on the home menu top right); confirmed when a frame shows the trigger.
+    Record it with feature medal --appeared "...": the goal closes by itself'
+  closed: '2026-10-03T21:41:25'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: on the home menu (top right, with a red
+    badge) the first time it was opened by Back from classic [20261003-212548-chrono-2FYKPJ#29]'
+- id: outcomes-daily-victories
+  title: 'Run each outcome once under Consecutive Daily Victories: Settings gear >
+    Replay, Leaving to the Play Store from an ad and launch'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T21:32:09'
+  feature: daily-victories
+  source: session
+  plan: 'while Consecutive Daily Victories is on, reach each listed outcome of the
+    base level once, one at a time (a deliberate loss is allowed unless it spends
+    premium currency); mark the outcome screen (mark --feature daily-victories --as
+    result) and close its cell: case daily-victories under-<outcome> "as the base"
+    or "what differs" --done'
+  rank: 7
+- id: study-home-menu
+  title: Study the home menu (Adventure, Medal, daily victories, cross-promo icons)
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T21:37:28'
+  feature: home-menu
+  source: session
+- id: classic-row7
+  title: 'Experiment: classic board where only row 7 is empty and tray has 1-row lines:
+    is it a real stuck state?'
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-03T21:37:28'
+  feature: classic
+  source: session
+  plan: reproduce a board with only the bottom row empty; check whether a drag can
+    reach row 7 and whether the game declares over
+  closed: '2026-10-03T21:41:09'
+  closed_by: review-20261003
+  note: 'not a game state: on the frame (shot 32) row 7 is empty and all three tray
+    lines (5,3,4) fit it, so the game rightly declared no game over; the drag cannot
+    reach row 7 (harness low-drop cutoff). Replaced by classic-bottom-row-drop'
+- id: study-adventure
+  title: 'Study Adventure mode: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T21:39:48'
+  feature: adventure
+  source: external
+  closed: '2026-10-04T00:07:04'
+  closed_by: 20261003-235233-chrono-2FYKPJ#64
+  note: 'Adventure: 96-level trophy-shaped map (shot 8), Level N button, no energy/lives/timer.
+    Levels are the classic 8x8 board with a pre-built layout and a goal: L1 score
+    368, L2 60 diamonds, L3 two gem colours, L4 three. Win: Consecutive Victories
+    panel + lit trophy cell + Next Level, no currency; interstitial seen once (after
+    L2 retry win). Loss: No Space Left -> ''You Can Do It!'' + Retry, win streak resets,
+    no revive. Gear: Settings with Home/Replay. Played L1 won, L2 lost (deliberate)
+    then won, L3 won, L4 quit; the classic solver in score mode wins them in ~2-3
+    min. New features: adv-diamonds (gem-goal levels), adv-win-streak.'
+- id: study-medal
+  title: 'Study Medal: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T21:39:48'
+  feature: medal
+  source: external
+- id: study-daily-victories
+  title: 'Study Consecutive Daily Victories: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T21:39:48'
+  feature: daily-victories
+  source: external
+- id: classic-bottom-row-drop
+  title: Land a tray piece on classic row 7 (the bottom row) by drag and record the
+    finger end point that works
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-03T21:41:09'
+  feature: classic
+  source: game
+  note: 'Row 7 is reachable by drag: 1-row horizontal 2-line touched at its left block
+    (347,1210) and released at finger (415,1186) landed on row 7 cols 4-5 (shot 6).
+    Finger end = 24 px ABOVE the touch point = 166 px (2.05 cells) under the board''s
+    bottom edge (1020). The plan''s 0.5/1/1.5-cell offsets come from the old 2.84
+    model and would land the piece 1-2 rows higher; the v10.8.1 formula finger_y =
+    y0 + (Y - y0 + 195)/1.46 is right: also 2x2 rows 6-7 (finger 1142 and 1153 from
+    touch y 1192) and vertical 2-line rows 6-7 (finger 1164 from touch 1228) all landed
+    first try (shots 4-5).'
+  closed: '2026-10-03T23:54:02'
+  closed_by: 20261003-235233-chrono-2FYKPJ#4
+- id: daily-victory-counter
+  title: Find what raises the Consecutive Daily Victories counter (x0) on the home
+    menu
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-03T21:41:38'
+  feature: daily-victories
+  source: game
+  note: One Adventure level win (L1, target 368) raised the home-menu counter from
+    x0 to x1 and turned the check mark green (shot 27); the win screen itself shows
+    a 'Consecutive Victories x1' panel. The Adventure button's red dot disappeared
+    too. Whether a second win the same day adds more, and whether a missed day resets
+    it, is open
+  closed: '2026-10-03T23:57:20'
+  closed_by: 20261003-235233-chrono-2FYKPJ#22
+  result: confirmed
+- id: study-cross-promo-home
+  title: 'Study Cross-promo icons on the home menu (GOGO! Blast, Rotate Rings): open
+    it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T21:41:49'
+  feature: cross-promo-home
+  source: external
+- id: daily-victories-day2
+  title: Win an Adventure level on the next day and check whether the counter goes
+    x1 -> x2 (and whether a second win the same day changes it)
+  kind: daily
+  requires: any
+  status: cancelled
+  created: '2026-10-03T23:57:21'
+  feature: daily-victories
+  not_before: '2026-10-04T10:00:00'
+  source: game
+  closed: '2026-10-04T00:06:09'
+  closed_by: 20261003-235233-chrono-2FYKPJ#60
+  note: 'answered this session: the session crossed midnight; a win on the next day
+    made x1 -> x2 and a second same-day win kept x2'
+- id: outcomes-adv-diamonds
+  title: 'Run each outcome once under Adventure diamond-collection levels: Settings
+    gear > Replay, Leaving to the Play Store from an ad and launch'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:58:13'
+  feature: adv-diamonds
+  source: session
+  plan: 'while Adventure diamond-collection levels is on, reach each listed outcome
+    of the base level once, one at a time (a deliberate loss is allowed unless it
+    spends premium currency); mark the outcome screen (mark --feature adv-diamonds
+    --as result) and close its cell: case adv-diamonds under-<outcome> "as the base"
+    or "what differs" --done'
+  rank: 7
+- id: outcomes-adv-win-streak
+  title: 'Run each outcome once under Adventure Consecutive Victories (win streak):
+    Settings gear > Replay, Back key mid-game goes to the home menu with no confirmation
+    and no cost; Classic button starts/returns to a fresh board (here a new board
+    with score 0 appeared, best kept), Leaving to the Play Store from an ad and launch'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:59:21'
+  feature: adv-win-streak
+  source: session
+  plan: 'while Adventure Consecutive Victories (win streak) is on, reach each listed
+    outcome of the base level once, one at a time (a deliberate loss is allowed unless
+    it spends premium currency); mark the outcome screen (mark --feature adv-win-streak
+    --as result) and close its cell: case adv-win-streak under-<outcome> "as the base"
+    or "what differs" --done'
+  rank: 7
+- id: adv-win-streak-rewards
+  title: 'Win 2-3 Adventure levels in a row and watch the Consecutive Victories panel:
+    does anything pay at x2, x3?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:59:21'
+  feature: adv-win-streak
+  source: session
+  plan: win Adventure levels with the classic solver (score/diamond goals), read the
+    panel and any reward after each win
+- id: daily-victories-missed-day
+  title: 'After a day with no Adventure win, read the Consecutive Daily Victories
+    counter: does a missed day reset it to x0 (and is a save offered)?'
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-04T00:06:09'
+  feature: daily-victories
+  not_before: '2026-10-06T10:00:00'
+  source: game
+- id: adv-ad-cadence
+  title: 'How often an interstitial follows an Adventure result: seen after the L2
+    retry win (not after L1, the L2 loss or L3)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T00:06:09'
+  feature: adventure
+  source: session
+  plan: play 4-5 Adventure levels and note after which results an interstitial appears
+- id: study-adv-diamonds
+  title: 'Study Adventure diamond-collection levels: open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-04T00:09:27'
+  feature: adv-diamonds
+  source: external
+- id: study-adv-win-streak
+  title: 'Study Adventure Consecutive Victories (win streak): open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-04T00:09:27'
+  feature: adv-win-streak
+  source: external
+  closed: '2026-10-04T00:11:41'
+  closed_by: 20261003-235233-chrono-2FYKPJ#60
+  note: 'All checklist items closed this session: counter on the Adventure result
+    panel (x1 L1 win, x0 after L2 loss, x2 after L3), reset by a loss, no save, no
+    reward at x1-x2, no entry (shows by itself). Outcome runs left to outcomes-adv-win-streak;
+    rewards past x2 to adv-win-streak-rewards'
+- id: classic-quit-kept
+  title: 'Classic: press Back with score > 0, then Classic: is the game in progress
+    kept? Also leave the app mid-game and launch'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: classic
+  source: session
+  plan: play a few placements, note the score and board, Back, Classic; then home
+    key, launch; confirmed by the frames before and after
+- id: ad-store-header-close
+  title: Find how to close the Royal Match interstitial with a store header without
+    opening Google Play
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: ad-interstitial-classic
+  source: session
+  plan: when it plays, wait without tapping and shot every 10 s until it ends or shows
+    an X; never tap the top-left >| icon (it opens the store)
+- id: adventure-retry-next
+  title: 'Adventure: tap Retry on the loss panel and Next Level on the win panel;
+    gear > Replay inside a level'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: adventure
+  source: session

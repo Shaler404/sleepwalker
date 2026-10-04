@@ -1,0 +1,1615 @@
+# Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
+game: com.vitastudio.mahjong
+version: 3.40.1
+play_version: 3.40.1
+play_checked: '2026-10-03T19:29:54'
+phone_version: 3.40.1
+discovery: open
+ftue_verified: null
+progress:
+  text: level 19 (restored from the cloud save on a fresh install)
+  value: 19.0
+  at: '2026-10-03T19:52:45'
+  session: 20261003-195050-chrono-2FYKPJ
+gate: null
+synced:
+  chrono: '2026-10-04T01:10:05'
+mechanics:
+- id: core-match
+  name: core-match
+  status: broken
+  method: solver
+  levels:
+    won: 0
+    lost: 0
+    quit: 1
+  recent:
+  - level: level 19
+    result: quit
+    seconds: 38
+    model: sonnet
+  note: 'solver reads the cream, purple and red tile sets (3.40.1 L19 shows purple
+    or red depending on the launch); red set checked on 231301/00022 and 231804/00008-00012
+    incl. Hint, tray twin, Shuffle; dream 2026-10-04: the local solver (solvers/com.vitastudio.mahjong/core-match.py)
+    is not published yet'
+features:
+- id: consent
+  name: Terms consent
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Welcome window: Terms of Service and Privacy Policy links, one Accept button,
+      no decline'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#0
+  - id: chk-entry
+    text: 'No entry: shown by itself on the first launch of a fresh install'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#0
+  - id: chk-options
+    text: 'One Accept button only: no decline, no toggles; the Terms and Privacy links
+      are the only other targets (consent-links)'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#0
+  - id: chk-answers
+    text: Accept leads to the loading screen; the window did not come back on later
+      launches, even when the game reopened on Level 1 with the age popup (logo >
+      loading > home, no consent)
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#0
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#0
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  type: system
+  appeared:
+    text: first launch of a fresh install, before anything else
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#0
+  page: features/consent.md
+- id: loading
+  name: Loading screen
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: Loading bar, tagline, counters for games today and players now
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#2
+  - id: chk-entry
+    text: 'No entry: shown on every launch'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#2
+  - id: chk-options
+    text: 'No options: a loading bar only'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#2
+  - id: chk-answers
+    text: Not a prompt
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#2
+  - id: chk-links
+    text: No links on the loading screen
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#2
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#2
+  type: system
+  appeared:
+    text: every launch, after the consent
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#2
+  page: features/loading.md
+- id: age-select
+  name: Age selection
+  status: documented
+  cases:
+  - id: chk-screen
+    text: 'Popup: Please select your age, brackets 0-35, 35-55, 55+, close X'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#2
+  - id: chk-entry
+    text: 'No entry: shown by itself when home loads at Level 1 (fresh install and,
+      so far, every relaunch)'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#2
+  - id: close-x
+    text: Close X dismisses age popup without choosing; next popup is the saved-game
+      sync offer
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#2
+    version: 3.40.1
+  - id: chk-options
+    text: Three brackets 0-35, 35-55, 55+ and close X; X or a bracket (0-35 tried)
+      leads to the saved-game offer; no visible difference from the bracket
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#1
+    version: 3.40.1
+  - id: chk-answers
+    text: '35-55 on the fresh install [20261003-195050-chrono-2FYKPJ#3], X [20261003-231301-chrono-2FYKPJ#2],
+      0-35 [20261003-231804-chrono-2FYKPJ#1]: each leads to the saved-game offer;
+      55+ not tried'
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#1
+    version: 3.40.1
+  - id: chk-links
+    text: 'No links on the popup: n/a'
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#21
+    version: 3.40.1
+  - id: returns-on-relaunch
+    text: 'The popup came back on a relaunch of the progressed phone: home showed
+      Level 1, empty avatar, then age popup, then the saved-game offer; so the earlier
+      note that it does not return on a progressed game is wrong'
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#1
+  - id: bracket-0-35
+    text: 'Bracket 0-35 tapped: the saved-game offer followed as after X; the home
+      after the restore and the L19 board showed nothing different (55+ still to test)'
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#2
+  type: system
+  appeared:
+    text: on the first home arrival of a fresh install, and again on every relaunch
+      so far that showed Level 1 on home (20261003-231301, 20261003-231804)
+    certainty: fact
+    source: 20261003-231301-chrono-2FYKPJ#1
+  version_seen: 3.40.1
+  page: features/age-select.md
+- id: cloud-sync
+  name: Saved game sync
+  status: in_progress
+  cases:
+  - id: start-over
+    text: Start Over asks 'Are you sure you want to start over?' No / Yes; No cancelled
+      the reset and the game went to home with Level 19 and avatar (progress kept)
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#3
+    version: 3.40.1
+  - id: sync-data
+    text: 'Sync Data restored the earlier save: the home button went from Level 1
+      to Level 19 a few seconds later, avatar restored'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#5
+    version: 3.40.1
+  - id: chk-screen
+    text: 'Popup: A saved game was found, Start Over / Sync Data'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#3
+  - id: chk-entry
+    text: 'Shown by itself on a fresh install after the age prompt; manual entry:
+      Settings > Save your progress (sign-in)'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#12
+  - id: start-over-no
+    text: 'Start Over asks ''Are you sure you want to start over? No / Yes''; No closes
+      it and the saved game is restored (home went from Level 1 to Level 19, avatar
+      back). Yes not tapped: it would discard the L19 progress'
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#4
+  - id: chk-answers
+    text: Start Over -> confirm; No -> keeps cloud save (Level 19). Yes not tapped
+      (would not restore; irreversible?)
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#3
+    version: 3.40.1
+  - id: chk-options
+    text: Two buttons Start Over / Sync Data plus a confirm No/Yes; no close X
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#3
+    version: 3.40.1
+  - id: chk-links
+    text: No links in the prompt
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#3
+    version: 3.40.1
+  - id: relaunch-2
+    text: 'Second relaunch in a row (after 231301) opened on Level 1: logo, loading,
+      home Level 1 with an empty avatar, age popup, saved-game offer; Start Over >
+      No brought Level 19 and the avatar back'
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#3
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#3
+  type: system
+  appeared:
+    text: 'fresh install on a device whose earlier install had progress: after the
+      age selection the game offers to sync the saved game (likely keyed by device/Play
+      account); it also came on each relaunch that showed Level 1 (Start Over > No
+      restored L19, 20261003-231301-chrono-2FYKPJ#3-4)'
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#3
+  page: features/cloud-sync.md
+- id: home
+  name: Home screen
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Home: avatar, theme palette, settings gear, logo, shoji doors, Level N
+      button'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#10
+  - id: chk-entry
+    text: 'The hub: the game opens on it after loading; the level back arrow returns
+      to it'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#22
+  - id: badge-theme
+    text: After the restore the theme palette and the avatar have red dots (the palette
+      had none on the Level 1 home)
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#3
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#4
+  - id: chk-entries
+    text: 'Every entry point on it: open (a feature), locked (feature --locked with
+      its condition) or unclear (an experiment)'
+    done: false
+  - id: chk-badges
+    text: Badges, timers and counters on it and what each points to
+    done: false
+  - id: chk-changes
+    text: What changes on it with progress (new buttons, a moving map, a theme)
+    done: false
+  type: hub
+  appeared:
+    text: first launch, after consent, age and sync prompts
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#4
+  page: features/home.md
+- id: profile
+  name: Profile
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Avatar button, home top left
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#5
+  - id: chk-screen
+    text: 'Profile popup: Avatar and Frame tabs, player ID, rename, Facebook Connect,
+      country, photo'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#6
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#5
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: system
+  appeared:
+    text: open from the start; avatar button on the home screen, red dot on first
+      visit
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#5
+  page: features/profile.md
+- id: level-frames
+  name: Level avatar frames
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-progress
+    text: 'The progress: the bar, the album or the counter, what fills it and where
+      it is now'
+    done: false
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: meta-progress
+  appeared:
+    text: 'earned at level milestones: a frame badged 10 is owned at level 19, so
+      likely one frame per 10 levels'
+    certainty: hypothesis
+    source: 20261003-195050-chrono-2FYKPJ#6
+  page: features/level-frames.md
+- id: theme
+  name: Theme (tiles and background)
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Palette button, home top right next to the gear
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#7
+  - id: chk-screen
+    text: 'Theme popup: Tiles tab (6 sets, all free) and Background tab (5, all free),
+      Confirm'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#9
+  - id: board-set-changed
+    text: On L19 this session the board had cream faces with RED backs, zodiac and
+      picture tiles; the session before saw purple backs. No theme change was made
+      in between (only the Level 1 reset and the restore)
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#4
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#7
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: system
+  appeared:
+    text: open from the start; palette button on the home screen, red dot shown after
+      the save sync
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#7
+  page: features/theme.md
+- id: settings
+  name: Settings
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Gear button, home top right
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#11
+  - id: chk-screen
+    text: 'Settings: music, sound, voice, vibration toggles; Feedback, Facebook Group,
+      About, Save your progress, Share; social links'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#11
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#11
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: system
+  appeared:
+    text: open from the start; gear button on the home screen
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#11
+  page: features/settings.md
+- id: core-level
+  name: Tray mahjong level
+  status: in_progress
+  cases:
+  - id: chk-rules
+    text: 'How to Play (Options): match identical tiles via the 4-slot tray; top tiles
+      unlock covered ones; row ends unlock inner tiles'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#20
+    version: 3.40.1
+  - id: chk-quit
+    text: Back arrow in the level goes straight to the home screen, no confirmation,
+      no cost seen (board kept, per earlier sessions)
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#22
+    version: 3.40.1
+    outcome: true
+  - id: chk-entry
+    text: Level N button on the home screen
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#17
+  - id: chk-screen
+    text: Board with a 4-slot tray above it
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#17
+  - id: chk-hud
+    text: Back arrow, IQ score, menu; 4-slot tray; Shuffle 3, Hint 5, Undo 10 at level
+      19
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#17
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#17
+  - id: chk-win
+    text: 'Win: the win screen, its rewards and what comes next'
+    done: false
+    outcome: true
+  - id: chk-loss
+    text: 'Each loss: lose the level every way it can be lost; register each kind
+      as an outcome (case <feature> <kind> "..." --outcome) with its screen and what
+      the loss costs'
+    done: false
+  - id: chk-retry
+    text: 'After a loss: the retry and continue offers (extra moves, a revive) and
+      their price (a video, coins, a life)'
+    done: false
+  - id: chk-restart
+    text: 'Restart: restart the level from inside it: the confirmation and what it
+      costs'
+    done: false
+    outcome: true
+  - id: chk-exit-app
+    text: 'Exit the app: leave the app in the middle of the level and come back: is
+      the level kept, restarted or lost'
+    done: false
+    outcome: true
+  - id: chk-elements
+    text: 'Level elements: each obstacle or special piece the levels introduce is
+      its own feature (type level-element), with the level it first shows on'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: core-level
+  appeared:
+    text: Level N button on the home screen, from the first launch
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#17
+  page: features/core-level.md
+- id: boosters
+  name: 'Boosters: Shuffle, Hint, Undo'
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Bottom bar of the level screen: Shuffle (180,1475), Hint (365,1475), Undo
+      (550,1475)'
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#8
+    version: 3.40.1
+  - id: chk-screen
+    text: Three round buttons with count badges, marked
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#8
+    version: 3.40.1
+  - id: chk-effect
+    text: 'Hint: lights one pair in cyan, cost 1. Shuffle: rearranges all tiles (faces
+      changed, red backs moved), cost 1. Undo: 10 to 9 in one use (returns last tray
+      tile)'
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#8
+    version: 3.40.1
+  - id: chk-balance
+    text: 'Badges on each button; at level 19 start: Shuffle 3, Hint 5, Undo 10'
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#8
+    version: 3.40.1
+  - id: chk-sources
+    text: 'Open: where boosters come from was not seen (no shop, reward or refill
+      offer yet); booster-refill'
+    done: false
+    version: 3.40.1
+  - id: chk-sinks
+    text: One unit per use, no price; Hint 5-4, Undo 10-9, Shuffle 3-2 observed
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#8
+    version: 3.40.1
+  - id: chk-empty
+    text: 'Open: a booster at 0 not reached yet; booster-refill'
+    done: false
+    version: 3.40.1
+  - id: chk-refill
+    text: 'Open: no timer or refill seen, not tested; booster-refill'
+    done: false
+    version: 3.40.1
+  - id: shuffle-reveals
+    text: Shuffle reshuffled the faces and fewer tiles were face-down after it (about
+      13 red backs before, about 7 after; picture tiles came up), so Shuffle may also
+      turn face-down tiles up
+    done: false
+  - id: hint-tint
+    text: Hint tints one free pair cyan; the tapped tile goes to the tray in cyan;
+      Undo returned it to the board
+    done: true
+    source: 20261003-231804-chrono-2FYKPJ#7
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#17
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: currency-booster
+  appeared:
+    text: 'on the level screen; counts at level 19: Shuffle 3, Hint 5, Undo 10'
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#17
+  version_seen: 3.40.1
+  page: features/boosters.md
+- id: iq-score
+  name: IQ score
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#17
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-progress
+    text: 'The progress: the bar, the album or the counter, what fills it and where
+      it is now'
+    done: false
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: meta-progress
+  appeared:
+    text: 'level HUD top centre ''IQ: 40'' at level 19; earlier sessions saw IQ+N
+      tiles'
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#17
+  page: features/iq-score.md
+- id: face-down-tiles
+  name: Face-down tiles
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#17
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-first-level
+    text: The first level it shows on and how the game introduces it
+    done: false
+  - id: chk-rules
+    text: What it does and how it is used
+    done: false
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: level-element
+  appeared:
+    text: levels from 11 (earlier sessions); on 3.40.1 the L19 backs were purple (195050),
+      then red with a lotus (231301) and red with another emblem on a different layout
+      (231804); the Theme screen shows Simple = green back, Classic = blue, Vintage
+      = red
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#7
+  page: features/face-down-tiles.md
+- id: level-options
+  name: In-level Options
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Options: sound toggles, Auto Complete, Colorful Effects, Theme, How to
+      Play, No Ads, Restart'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#18
+  - id: chk-entry
+    text: Menu button (three lines), level screen top right
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#18
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#18
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: system
+  appeared:
+    text: menu button top right of the level screen
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#18
+  page: features/level-options.md
+- id: no-ads
+  name: No Ads purchase
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: No Ads row (crown) in the in-level Options
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#18
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#18
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-contents
+    text: Contents and price of every pack or tier
+    done: false
+  - id: chk-frequency
+    text: How often it comes up by itself (after a level, a loss, a session start)
+      and whether it comes back
+    done: false
+  - id: chk-timer
+    text: Its timer or limit, if any
+    done: false
+  - id: chk-buy-path
+    text: 'The way to buy: the game''s own screens up to the price button; do not
+      tap the price (it opens the payment sheet), never pay'
+    done: false
+  - id: chk-close
+    text: 'Closing it: the close button and what comes up after'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: offer
+  appeared:
+    text: 'row in the in-level Options menu (crown icon); not opened: likely a real-money
+      purchase'
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#18
+  page: features/no-ads.md
+- id: auto-complete
+  name: Auto Complete
+  status: documented
+  cases:
+  - id: chk-entry
+    text: Level Options menu (top-right list button in a level), row Auto Complete
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#20
+    version: 3.40.1
+  - id: chk-screen
+    text: Single ON/OFF toggle row between sound toggles and Colorful Effects; default
+      ON
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#20
+    version: 3.40.1
+  - id: chk-options
+    text: Toggled OFF then ON, state persists after closing and reopening Options;
+      effect at level end not verified (task auto-complete-check)
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#20
+    version: 3.40.1
+  - id: chk-answers
+    text: 'Not a prompt: n/a'
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#20
+    version: 3.40.1
+  - id: chk-links
+    text: 'No links: n/a'
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#20
+    version: 3.40.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#18
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: system
+  appeared:
+    text: toggle in the in-level Options, ON by default
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#18
+  version_seen: 3.40.1
+  page: features/auto-complete.md
+- id: how-to-play
+  name: How to Play
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Level Options > How to Play
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#19
+  - id: chk-screen
+    text: 'Two pages: matching via the tray; top and row-end tiles unlock others;
+      Get it'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#20
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#19
+  - id: chk-steps
+    text: Each step and what it teaches, with a frame (an animated hand is a clip)
+    done: false
+  - id: chk-skip
+    text: Whether it can be skipped, and what happens when the app is left in the
+      middle of it
+    done: false
+  - id: chk-end
+    text: Where it ends and what opens after it
+    done: false
+  - id: chk-replay
+    text: Whether it can be seen again (How to play, a help button)
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: tutorial
+  appeared:
+    text: row in the in-level Options menu
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#19
+  page: features/how-to-play.md
+- id: rate-us
+  name: Rate us button
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Not a feature: this button is the Achievements entry (see achievements)'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#23
+  - id: chk-screen
+    text: 'Not a feature: the button opens the Achievements screen'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#23
+  - id: chk-options
+    text: 'Not applicable: registered by mistake, duplicate of achievements'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#23
+  - id: chk-answers
+    text: 'Not applicable: no rate-us prompt was seen; the button opens Achievements'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#23
+  - id: chk-links
+    text: 'Not applicable: duplicate of achievements'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#23
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#22
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: system
+  appeared:
+    text: a thumbs-up-with-star button appeared on the home screen (left of the palette)
+      after leaving level 19 with the back arrow; it was not there on arrival
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#22
+- id: achievements
+  name: Achievements
+  status: documented
+  cases:
+  - id: chk-entry
+    text: Thumbs-up/star button on home (522,110), left of the palette
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#23
+  - id: chk-screen
+    text: 'Achievement Points bar and shelves: 1st-place finishes, League Reached,
+      Levels Cleared, Active Days, First-Try Wins'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#24
+  - id: chk-progress
+    text: 'Achievement Points bar empty, next color at 8 points; each medal gives
+      +1 point; counters: Levels Cleared 18, Active Days 2, First-Try Wins 18, others
+      0'
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#14
+    version: 3.40.1
+  - id: chk-items
+    text: 'Shelves: Cumulative 1st-Place 1/5/15/30/60/100, League Reached x6 (0/1),
+      Levels Cleared 50/200/500/1000/2000/5000, Active Days 7/30/90/180/270/365, First-Try
+      Wins 30/100/300/600/1000/2000; all grey/unearned; 5 name colors via info'
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#14
+    version: 3.40.1
+  - id: chk-earn
+    text: 'Medals earned by thresholds: 1st-place finishes (leagues), league reached,
+      levels cleared, active days, first-try wins; tap a medal shows requirement and
+      +1 point'
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#14
+    version: 3.40.1
+  - id: chk-use
+    text: Tap medal = detail popup; info button = Name Colors list (colors unlock
+      by points). Nothing to equip; colors unlock needs 8 points, not tested
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#14
+    version: 3.40.1
+  - id: chk-complete
+    text: 'Not verifiable now: no medal earned (nearest First-Try 18/30); reward is
+      +1 point and name color tiers'
+    done: true
+    source: 20261003-231301-chrono-2FYKPJ#14
+    version: 3.40.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#23
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: meta-progress
+  appeared:
+    text: 'the thumbs-up/star button on home: first noticed after leaving level 19
+      (195050), but present on the first home frame of the next session'
+    certainty: fact
+    source: 20261003-231301-chrono-2FYKPJ#1
+  version_seen: 3.40.1
+  page: features/achievements.md
+- id: leagues
+  name: Leagues
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-board
+    text: 'The board: ranks, the player''s place, the number of players'
+    done: false
+  - id: chk-points
+    text: What earns points (a level win, a score) and how many
+    done: false
+  - id: chk-period
+    text: 'The period and its timer: when it resets'
+    done: false
+  - id: chk-rewards
+    text: Rewards per rank, promotion and relegation
+    done: false
+  - id: chk-end
+    text: 'The end of a period: the results screen and the reward (a follow-up)'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: social
+  appeared:
+    text: not seen on the home screen at level 19; the Achievements screen lists League
+      Reached and 1st-place finishes, so leagues open later, probably at a level threshold
+    certainty: hypothesis
+    source: 20261003-195050-chrono-2FYKPJ#23
+  locked:
+    text: not read on screen
+    value: null
+  page: features/leagues.md
+- id: name-colors
+  name: Name colors
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#26
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-progress
+    text: 'The progress: the bar, the album or the counter, what fills it and where
+      it is now'
+    done: false
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: meta-progress
+  appeared:
+    text: Achievements info button; color 1 owned from the start
+    certainty: fact
+    source: 20261003-195050-chrono-2FYKPJ#26
+  locked:
+    text: 8 achievement points for color 2
+    value: null
+  page: features/name-colors.md
+- id: hard-level
+  name: Hard level
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-195050-chrono-2FYKPJ#28
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-announce
+    text: 'How it is announced: the map node, the badge or the popup before it, and
+      what it says'
+    done: false
+  - id: chk-differs
+    text: 'What differs in play from the base level: the board, the rules, the limits,
+      stages, a timer'
+    done: false
+  - id: chk-win
+    text: 'Its win: the win screen and the reward, against the base level''s'
+    done: false
+  - id: chk-loss
+    text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
+      progress)'
+    done: false
+  - id: chk-retry
+    text: Retry and continue offers after a loss and their price (a video, coins);
+      where a retry sends you (the start, the same stage)
+    done: false
+  - id: chk-frequency
+    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
+      from which level'
+    done: false
+  - id: under-quit
+    text: 'Back arrow in the level goes straight to the home screen, no confirmation,
+      no cost seen (board kept, per earlier sessions) under Hard level: as the base,
+      or what differs'
+    done: false
+  - id: under-win
+    text: 'Win under Hard level: as the base, or what differs'
+    done: false
+  - id: under-restart
+    text: 'Restart under Hard level: as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Exit the app under Hard level: as the base, or what differs'
+    done: false
+  found_at:
+    text: level 19 (restored by Sync Data)
+    value: 19.0
+  type: level-type
+  appeared:
+    text: level 10 was marked Hard in earlier sessions on 3.39.1; not reseen on 3.40.1
+    certainty: hypothesis
+    source: 20261003-195050-chrono-2FYKPJ#28
+  page: features/hard-level.md
+tasks:
+- id: analyze
+  title: Analyze the game
+  kind: analyze
+  requires: any
+  status: open
+  created: '2026-10-03T19:29:56'
+  source: external
+  note: find all features and work through all user cases on the version on the phone
+- id: scout-1
+  title: 'Map the game: play until the main menu and every entry point is visible;
+    list each entry point as open (a study goal), locked with its unlock condition
+    (an unlock goal) or unclear (an experiment)'
+  kind: scout
+  requires: any
+  status: done
+  created: '2026-10-03T19:29:56'
+  source: external
+  note: 'Fresh reinstall; Sync Data restored level 19 with no account. Home at L19:
+    avatar/Profile (Avatar, Frame tabs), Achievements (appears after leaving a level),
+    Theme (6 tile sets, 5 backgrounds, all free), Settings (Save progress sign-in,
+    About 3.40.1), Level 19. In level: IQ score, 4-slot tray, Shuffle 3/Hint 5/Undo
+    10, Options (Auto Complete, Colorful Effects, How to Play 2 pages, No Ads, Restart).
+    Locked: Name colors (8 achievement points), Leagues (guess, not shown). No shop/daily/events
+    at L19.'
+  closed: '2026-10-03T19:59:36'
+  closed_by: 20261003-195050-chrono-2FYKPJ#28
+  new_entries: 11
+  at_progress: level 19 (restored by Sync Data)
+  new_entry_names:
+  - Consent
+  - Age selection
+  - Saved game sync
+  - Profile
+  - Theme
+  - Settings
+  - Achievements
+  - Level (Options
+  - How to Play
+  - No Ads
+  - Auto Complete)
+- id: age-select-effect
+  title: Does the chosen age bracket change anything (tile size, difficulty, ads)?
+  kind: experiment
+  requires: fresh
+  status: cancelled
+  created: '2026-10-03T19:52:03'
+  feature: age-select
+  source: session
+  plan: on a fresh install pick a different bracket and compare home and level 1 to
+    the 35-55 run
+  closed: '2026-10-03T23:19:16'
+  closed_by: 20261003-231301-chrono-2FYKPJ#1
+  note: 'superseded by age-bracket-effect: the age popup returns on relaunch of the
+    progressed phone, so the test does not need a fresh install'
+- id: appeared-level-frames
+  title: 'Find why Level avatar frames appeared: earned at level milestones: a frame
+    badged 10 is owned at level 19, so likely one frame per 10 levels'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:53:00'
+  feature: level-frames
+  source: session
+  plan: 'find the moment Level avatar frames shows up and what comes just before it
+    (earned at level milestones: a frame badged 10 is owned at level 19, so likely
+    one frame per 10 levels); confirmed when a frame shows the trigger. Record it
+    with feature level-frames --appeared "...": the goal closes by itself'
+- id: level-frames-next
+  title: A new avatar frame at level 20 or 30?
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-03T19:53:01'
+  feature: level-frames
+  source: session
+  plan: after passing level 20 and 30, open Profile > Frame and look for a new Level
+    frame
+  closed: '2026-10-03T20:02:44'
+  closed_by: review-20261003
+  note: 'duplicate of appeared-level-frames (same hypothesis: a level frame per 10
+    levels, check after L20/L30)'
+- id: auto-complete-check
+  title: What Auto Complete does at the end of a level
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:56:22'
+  feature: auto-complete
+  source: session
+  plan: near the end of a level with no covered tiles left, watch whether the game
+    clears the rest itself
+- id: appeared-leagues
+  title: 'Find why Leagues appeared: not seen on the home screen at level 19; the
+    Achievements screen lists League Reached and 1st-place finishes, so leagues open
+    later, probably at a level threshold'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:58:15'
+  feature: leagues
+  source: session
+  plan: 'find the moment Leagues shows up and what comes just before it (not seen
+    on the home screen at level 19; the Achievements screen lists League Reached and
+    1st-place finishes, so leagues open later, probably at a level threshold); confirmed
+    when a frame shows the trigger. Record it with feature leagues --appeared "...":
+    the goal closes by itself'
+- id: unlock-name-colors
+  title: 'Unlock Name colors: 8 achievement points for color 2'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T19:59:05'
+  feature: name-colors
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: 8 achievement points for color 2
+- id: achievement-points
+  title: How many achievement points one achievement gives
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T19:59:05'
+  feature: achievements
+  source: session
+  plan: 'first achievement due: First-Try Wins 30 or Levels Cleared 50 (18 now); after
+    it, read the points bar and the Name Colors progress'
+  closed: '2026-10-03T23:19:06'
+  closed_by: 20261003-231301-chrono-2FYKPJ#11
+  note: Medal detail reads '+1 Achievement Points' (First-Try Wins 30); the bar is
+    empty, next name color at 8 points, so color 2 needs 8 medals. The bar's fill
+    after a first medal is left to unlock-name-colors
+  result: confirmed
+- id: unlock-leagues
+  title: 'Unlock Leagues: not shown; guess about level 30'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T19:59:32'
+  feature: leagues
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: not shown; guess about level 30
+  target_value: 30.0
+- id: leagues-unlock-guess
+  title: Leagues open at some level after 19 (Achievements list League Reached)?
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-03T19:59:33'
+  feature: leagues
+  source: session
+  plan: after each won level from 20, check the home screen for a league/ranking button;
+    record the level it appears
+  closed: '2026-10-03T20:02:44'
+  closed_by: review-20261003
+  note: 'duplicate of appeared-leagues and unlock-leagues (same question: the level
+    where Leagues opens)'
+- id: outcomes-hard-level
+  title: 'Run each outcome once under Hard level: Back arrow in the level goes straight
+    to the home screen, no confirmation, no cost seen (board kept, per earlier sessions),
+    Win, Restart, Exit the app'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:59:33'
+  feature: hard-level
+  source: session
+  plan: 'while Hard level is on, reach each listed outcome of the base level once,
+    one at a time (a deliberate loss is allowed unless it spends premium currency);
+    mark the outcome screen (mark --feature hard-level --as result) and close its
+    cell: case hard-level under-<outcome> "as the base" or "what differs" --done'
+  rank: 7
+- id: home-growth
+  title: Which home buttons appear as levels go up (shop, daily, events)?
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:59:33'
+  feature: home
+  source: session
+  plan: the home at level 19 has only profile, achievements, theme, settings; after
+    each won level compare the home screen buttons
+- id: study-consent
+  title: 'Study Terms consent: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:01:26'
+  feature: consent
+  source: external
+  closed: '2026-10-03T23:20:26'
+  closed_by: 20261003-231804-chrono-2FYKPJ#8
+  note: Consent not shown this launch (only on first launch); cannot reverify now,
+    needs a fresh install
+- id: study-loading
+  title: 'Study Loading screen: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: loading
+  source: external
+- id: study-age-select
+  title: 'Study Age selection: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:01:26'
+  feature: age-select
+  source: external
+  closed: '2026-10-03T23:17:29'
+  closed_by: 20261003-231301-chrono-2FYKPJ#21
+  note: Popup appeared again on a relaunch of the progressed phone (home showed Level
+    1) before the sync offer; close X verified; bracket choice effect left to age-select-effect
+    (fresh)
+- id: study-cloud-sync
+  title: 'Study Saved game sync: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:01:26'
+  feature: cloud-sync
+  source: external
+  closed: '2026-10-03T23:20:26'
+  closed_by: 20261003-231804-chrono-2FYKPJ#8
+  note: Prompt reappeared on a reset install; Start Over shows confirm, No kept level
+    19 (restored)
+- id: study-home
+  title: 'Study Home screen: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: home
+  source: external
+- id: study-profile
+  title: 'Study Profile: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: profile
+  source: external
+- id: study-level-frames
+  title: 'Study Level avatar frames: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: level-frames
+  source: external
+- id: study-theme
+  title: 'Study Theme (tiles and background): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: theme
+  source: external
+- id: study-settings
+  title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: settings
+  source: external
+- id: study-core-level
+  title: 'Study Tray mahjong level: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: core-level
+  source: external
+- id: study-boosters
+  title: 'Study Boosters: Shuffle, Hint, Undo: open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:01:26'
+  feature: boosters
+  source: external
+  closed: '2026-10-03T23:20:25'
+  closed_by: 20261003-231804-chrono-2FYKPJ#8
+  note: Hint/Undo/Shuffle each used once, counts drop by 1; empty/refill left to booster-refill
+- id: study-iq-score
+  title: 'Study IQ score: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: iq-score
+  source: external
+- id: study-face-down-tiles
+  title: 'Study Face-down tiles: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: face-down-tiles
+  source: external
+- id: study-level-options
+  title: 'Study In-level Options: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: level-options
+  source: external
+- id: study-no-ads
+  title: 'Study No Ads purchase: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: no-ads
+  source: external
+- id: study-auto-complete
+  title: 'Study Auto Complete: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:01:26'
+  feature: auto-complete
+  source: external
+  closed: '2026-10-03T23:17:11'
+  closed_by: 20261003-231301-chrono-2FYKPJ#20
+  note: Toggle verified ON/OFF/ON; actual auto-clear behavior left to auto-complete-check
+- id: study-how-to-play
+  title: 'Study How to Play: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: how-to-play
+  source: external
+- id: study-rate-us
+  title: 'Study Rate us button: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-03T20:01:26'
+  feature: rate-us
+  source: external
+  closed: '2026-10-03T20:02:43'
+  closed_by: review-20261003
+  note: 'rate-us was registered by mistake: the thumbs-up/star button opens Achievements
+    (feature achievements, entry marked at 20261003-195050-chrono-2FYKPJ#23); duplicate
+    to merge'
+- id: study-achievements
+  title: 'Study Achievements: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:01:26'
+  feature: achievements
+  source: external
+  closed: '2026-10-03T23:16:07'
+  closed_by: 20261003-231301-chrono-2FYKPJ#14
+  note: Walked the screen, both scroll pages, info (Name Colors) popup, medal detail;
+    marked all
+- id: study-hard-level
+  title: 'Study Hard level: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:01:26'
+  feature: hard-level
+  source: external
+- id: tileset-board
+  title: 'Tile set vs board: find whether the chosen tile set or the level decides
+    the board''s faces and face-down color'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:03:22'
+  feature: theme
+  source: session
+  plan: Theme shows Simple selected with a GREEN back, but the L19 board has PURPLE
+    face-down tiles and zodiac faces (shots 11, 22). Open L19 and mark the board;
+    switch Theme to Classic in level Options, mark the board again; set back to Simple.
+    Confirmed if the backs/faces change with the set (then pick the set the solver
+    reads); refuted if the board stays purple (a per-level skin)
+- id: lose-flow
+  title: Reach a level loss on purpose and record the lose screen (tray full), its
+    continue offer and retry cost
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:03:22'
+  feature: core-level
+  source: session
+  plan: 'On a level, fill the 4-slot tray with unmatched tiles (level end lost --deliberate).
+    Mark the lose popup: continue options (ad, coins, booster), retry, what is lost.
+    Done when chk-loss and chk-retry of core-level are closed and the loss is an outcome
+    case'
+- id: booster-refill
+  title: 'Look for the booster refill: what Shuffle, Hint or Undo offer when a count
+    is 0 (rewarded ad, coins, shop)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:03:23'
+  feature: boosters
+  source: session
+  plan: 'Counts at L19: Shuffle 3, Hint 5, Undo 10. Use Shuffle in levels until 0,
+    then tap it and mark the popup without paying. Confirms whether the game has a
+    rewarded-ad placement or a currency sink'
+- id: look-daily
+  title: 'Look for daily rewards or a daily challenge: open the game on a new day
+    and check the home and launch popups'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:03:23'
+  feature: home
+  not_before: '2026-10-04T16:03:23'
+  source: session
+  plan: Achievements track Active Days (2 so far) but home at L19 has no daily button.
+    On the next calendar day, launch, mark every popup and the home screen. Confirmed
+    if a daily reward/challenge entry appears; else note none
+- id: relaunch-reset
+  title: Find whether every relaunch starts the game at Level 1 with the age and saved-game
+    prompts, and whether Sync always restores the current level
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:19:15'
+  feature: cloud-sync
+  source: session
+  plan: At the start of the next two sessions mark the first home frame and each prompt
+    before answering. Confirmed if both show Level 1 + age popup + saved-game offer
+    and Sync/No returns the last level reached (then each session must budget this
+    route and the solver can rely on the cloud save); refuted if the game opens straight
+    on the current level
+- id: age-bracket-effect
+  title: 'Find what an age bracket changes: pick 55+ on the age popup when it shows
+    on a relaunch and compare the home and the next level to the X-closed runs'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:19:15'
+  feature: age-select
+  source: session
+  plan: When the age popup shows at launch, tap 55+ (not X), then Sync; mark the home
+    and the first level board (tile size, layout, any ad or prompt). Confirmed if
+    anything differs from the X-closed run in 231301 (shots 8, 22); refuted if nothing
+    differs. Note whether the popup comes back on the following launch after a bracket
+    was picked
+- id: consent-links
+  title: Check Terms/Privacy links on the consent window
+  kind: replay
+  requires: fresh
+  status: open
+  created: '2026-10-03T23:20:26'
+  feature: consent
+  source: session
+- id: shuffle-faces
+  title: Find whether Shuffle turns face-down tiles face up (count the backs before
+    and after one Shuffle)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:22:39'
+  feature: boosters
+  source: session
+  plan: 'On a level with face-down tiles, mark the board and count the face-down tiles;
+    use Shuffle once and mark again. Confirmed if the count drops (231804 shots 8
+    vs 12: about 13 red backs before, about 7 after); refuted if the count stays the
+    same and only positions change. Do it on a level being played to a win, not as
+    a lone test'
+- id: tileset-drift
+  title: 'Find what set the board''s tiles on L19: purple backs in 195050, cream faces
+    with red backs in 231804, no theme change in between'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:22:39'
+  feature: theme
+  source: session
+  plan: At the start of the next session, after the restore, open Theme and mark the
+    selected tile set, then open the level and mark the board. Confirmed that the
+    restore or the Level 1 reset changes the set if Theme shows a set other than Simple,
+    or the board does not match the selected set; the solver must then check the backs
+    each level
+- id: ftue-replay-340
+  title: Replay the 3.40.1 FTUE on a fresh install with the cloud restore declined
+    (levels 1-18 were skipped by Sync Data)
+  kind: replay
+  requires: fresh
+  status: open
+  created: '2026-10-04T01:10:05'
+  source: session
+  note: 'decide first how to decline: Start Over > Yes may delete the cloud save (owner
+    decision)'
+- id: exp-board-regenerated
+  title: Does a relaunch or restore regenerate the L19 board (layout and back art
+    changed between 231301 shot 22 and 231804 shot 8)?
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: core-level
+  source: session

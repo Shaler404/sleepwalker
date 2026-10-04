@@ -1,10 +1,13 @@
 """Meowdoku (Queens-like): one cat per color region, row and column; no two cats touch (8-neighbourhood).
-Reads the board from the screenshot, solves it by backtracking, returns double taps ([x, y, 2]) for at
-most MAX_CELLS cats per round with rescan. It returns no moves when the read is not plausible: a grid
+Reads the board from the screenshot, solves it by backtracking, returns double taps ([x, y, 2]) for every
+missing cat in ONE round with rescan (the next round re-reads, refills a lost tap and says done). It returns no moves when the read is not plausible: a grid
 outside 4-12, a colour region that is not connected, more cats than rows, no solution or more than one."""
 import numpy as np
 
-MAX_CELLS = 3  # cells per round: some double-taps in long batches are lost, the next round re-reads and retries
+# cells per round. It was 3 (fear of lost double taps in long batches), so `solve --run` needed 4-5 rounds
+# and players placed the cats by hand in one batch instead (L84-L128: 9-10 double taps per batch never lost
+# a cat). All cats in one round; the rescan round re-taps any cat that did not land and reports done.
+MAX_CELLS = 12
 
 
 def _runs(profile, thr):

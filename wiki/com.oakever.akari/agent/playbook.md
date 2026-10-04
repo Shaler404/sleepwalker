@@ -31,16 +31,23 @@ the dream merges it here. Level times: `sw.py playbook`.
   board (walls), cats already placed, red and grey X marks, and the counter "k/N". It solves Light Up
   exactly and double-taps every missing cat. Nothing to type.
   - Run: `sw.py solve akari --run --rounds 3`. Round 1 sends all double taps; round 2 reads the board
-    again: "all cats are placed: the level is done" (stopped: solved) or the win screen (refused as
-    "dimmed"). A cat lost in round 1 is placed in round 2: one of 13-25 double taps was dropped on
+    again: "all cats are placed: the level is done" or the win screen ("the win screen: the counter reads
+    N/N under the veil"); both end the run as "solved" (from 2026-10-03; before, the win screen was a
+    refusal and every won run was logged as given up). A cat lost in round 1 is placed in round 2: one of 13-25 double taps was dropped on
     levels 89, 96, 102 and 109, and round 2 placed it in about 3 s [s:20261001-172422-chrono-2FYKPJ#8]
     [s:20261001-173851-chrono-2FYKPJ#6] [s:20261001-174614-chrono-2FYKPJ#11] [s:20261001-221517-chrono-2FYKPJ#7].
   - Verified on the phone: levels 83-120 (7x7 to 12x12, Hard 19-cat boards, 25-cat 12x12) won with one
     `solve` call each, by haiku, sonnet and opus alike [s:20261001-171804-chrono-2FYKPJ#2]
     [s:20261001-174614-chrono-2FYKPJ#11] [s:20261001-221517-chrono-2FYKPJ#41].
+  - Tutorial (fresh install, two scripted boards under a grey veil): `sw.py solve akari --run --rounds 5`
+    double-taps the cell(s) the game leaves bright (3x3: (2,2), then (1,1), then (3,3); 4x4: the four
+    cells around the "4" at once, then (4,4)) and stops as "solved" on the finished board with "Got it!".
+    Tap "Got it!" (364,1425), run it again on the second board, tap "Got it!" (364,1430): level 1 opens.
+    It taps only bright cells, never a dimmed one; with no bright cell (a hint still coming) it refuses.
   - It refuses with a note when the frame is not a settled board: an ad, a popup, the home screen, the
-    win screen, the "Hard" banner, the board still appearing (cells growing, boxes dropping), a reading
-    with 0 or 2+ solutions, or a counter that disagrees. Fix what the note says (wait, close the popup,
+    fail screen, the "Hard" banner, the board still appearing (cells growing, boxes dropping), the bulb
+    booster's hint (veiled page with an orange "Apply": the note says to tap Apply (364,1348) and run it
+    again), a reading with 0 or 2+ solutions, or a counter that disagrees. Fix what the note says (wait, close the popup,
     skip the ad) and run it again.
   - Fallback when it refuses a settled, clean board twice: write the board as JSON and run
     `sw.py solve akari --board FILE --run`. Rows: '.' empty, '0'-'4' numbered wall, '#' box or cell
@@ -59,10 +66,18 @@ the dream merges it here. Level times: `sw.py playbook`.
   N/N, `level end won`, then the next level button. On any other stop, read the note, fix it and run
   `solve` again. Every won level needs its own `level end won` before the next `level start`.
 - Pitfalls:
+  - The win screen's counter is read under its dark veil: "done" needs N/N there. A dimmed screen with
+    k/N, k < N (a popup, the fail screen) is a refusal that names the counter
+    [s:20261003-200925-chrono-2FYKPJ#10].
   - Run the solver only on a settled board: right after "Level N" or an ad the cells grow in and boxes
     drop [s:20261001-024647-chrono-2FYKPJ#2] [s:20261001-035425-chrono-2FYKPJ#20]
     [s:20261001-024647-chrono-2FYKPJ#86]; the solver then refuses ("none of floor/wall/box", "lit
     cells do not match"): wait 2 s and run it again.
+  - A rejected cat plays an animation for about a second (an angry cat, the number next to it flashes
+    red, the cell lit without its cat): the solver refuses ("lit cells do not match", "none of
+    floor/wall/box"); look again and run it once more [s:20261003-232850-chrono-2FYKPJ#11].
+  - Boosters are not needed with the solver: after the cat booster or the bulb's Apply the solver reads
+    the placed cats and places the rest (level 3: 8/9 read, 1 placed) [s:20261003-232850-chrono-2FYKPJ#9].
   - Grey X marks (the bulb's Apply, or a single tap) and red X (a rejected cat) sit on dark cells; the
     solver leaves them alone and lists them in its note [s:20261001-100940-chrono-2FYKPJ#13]
     [s:20261001-091349-chrono-2FYKPJ#13].
@@ -116,3 +131,19 @@ Solving is no longer the bottleneck: from level 83 the frame-reading solver take
 Ads take most of the wall time: about 40% of session 2, about half of the bench slots 2-3 and about 45%
 of the 108-120 session [s:20261001-024647-chrono-2FYKPJ#109] [s:20261001-172422-chrono-2FYKPJ#11]
 [s:20261001-221517-chrono-2FYKPJ#41].
+
+## Boosters and fail (session 20261003-232850)
+- Cat booster places one correct cat; bulb shows a hint then Apply (364,1348) places cats; counts 5 each, persist across levels; at 0 badge = AD, rewarded video gives +1.
+- 3 wrong double taps: "Almost!" with Revive (video) and Restart (364,1285, free, same board, hearts reset). Back arrow quits with no confirmation; force-stop mid-level returns to Home, progress in level lost.
+
+## Dream 2026-10-04: the fresh install (1.0.2)
+
+- Fresh launch: consent Accept, the Android notification dialog, a 2-board tutorial, then level 1 with no Home in between; Home only by the back arrow [s:20261003-200925-chrono-2FYKPJ#0-12]. The solver gives up on the dimmed tutorial boards: place the cats where the hand points [s:20261003-200925-chrono-2FYKPJ#6-8].
+- Boosters: the bulb is charged when the hint opens; Apply places up to 3 sure cats. At 0 a booster shows AD; the video takes about 64-77 s and may end on the Play Store (`launch`) [s:20261003-232850-chrono-2FYKPJ#4-8].
+- Loss: "Almost!" with Revive (AD) and a free Restart (same board, 3 hearts) at (364,1285) [s:20261003-232850-chrono-2FYKPJ#18-19]. In an exit-app test reopen the level before recording anything [s:20261003-232850-chrono-2FYKPJ#23].
+
+| Level | Result | Seconds | Source |
+|---|---|---|---|
+| 1 | won (solve) | 30 | [s:20261003-200925-chrono-2FYKPJ#10] |
+| 2 | won (solve) | 29 | [s:20261003-200925-chrono-2FYKPJ#16] |
+| 3 | won (boosters, then solve) | 133 | [s:20261003-232850-chrono-2FYKPJ#9] |
