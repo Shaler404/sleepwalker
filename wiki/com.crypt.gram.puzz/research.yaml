@@ -1,0 +1,998 @@
+# Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
+game: com.crypt.gram.puzz
+version: 3.6.1
+play_version: 3.6.1
+play_checked: '2026-10-03T19:29:54'
+phone_version: 3.6.1
+discovery: open
+ftue_verified: null
+progress:
+  text: level 2 reached, 1 won
+  value: 1.0
+  at: '2026-10-03T23:50:10'
+  session: 20261003-234451-chrono-2FYKPJ
+gate: null
+synced:
+  chrono: '2026-10-04T01:10:05'
+mechanics:
+- id: cryptogram
+  name: Number-coded quote
+  status: studying
+  method: solver
+  levels:
+    won: 1
+    lost: 0
+    quit: 1
+  recent:
+  - level: level 1
+    result: won
+    seconds: 113
+    model: sonnet
+  - level: level 2
+    result: quit
+    seconds: 48
+    model: sonnet
+  note: 'carried over from the study before the 2026-10-02 restart (playbook and solver
+    kept); dream 2026-10-04: back to studying on the fresh install: the level-1 win
+    needed two letters typed by hand after the solver stalled on ''no settled letter
+    to type'' (20261003-234451-chrono-2FYKPJ#13-15); the lab''s word-list fix is not
+    yet checked on the phone; dream 2026-10-04: the local solver (solvers/com.crypt.gram.puzz/cryptogram.py)
+    is not published yet'
+  best_s: 113
+- id: card-cryptogram
+  name: card-cryptogram
+  status: studying
+  method: manual
+  levels:
+    won: 0
+    lost: 0
+    quit: 0
+  recent: []
+  note: 'lab 2026-10-04: still no recorded event board; the shared word list got 12
+    300 missing common words (fixes the cryptogram level-1 stall); dry-run protocol
+    in the playbook'
+features:
+- id: home
+  name: Home screen
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Fresh-install home: lives widget top left, gear top right, Daily Challenge
+      card, Daily Tasks card, START LEVEL N button (tutorial hand on level 1)'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: The first screen after launch and the loader; levels and popups return to
+      it
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  - id: chk-entries
+    text: 'At level 1: lives widget (lives), gear (settings), Daily Challenge card
+      (locked, 15 levels), Daily Tasks card (locked, 3 levels), START LEVEL 1 (cryptogram-level).
+      No shop, currency or event entry on a fresh install'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#8
+  - id: chk-badges
+    text: Lives badge 5 FULL; tapping it, and the locked Daily cards, does nothing
+      while the tutorial hand is up; locked cards show 'Complete 15 more levels' /
+      'Complete 3 levels'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#2
+    version: 3.6.1
+  - id: chk-changes
+    text: 'After level 1: unlock counters drop (14 more / 2 levels), a banner ad appears
+      at the bottom'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#16
+    version: 3.6.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  type: hub
+  appeared:
+    text: first launch, after the loading screen
+    certainty: fact
+    source: 20261003-201504-chrono-2FYKPJ#1
+  page: features/home.md
+- id: cryptogram-level
+  name: Cryptogram level
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Home > START LEVEL N green button at the bottom (tutorial hand on level
+      1)
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#8
+  - id: chk-screen
+    text: 'Level board: home, info, gear, Mistakes counter, quote cells with numbers,
+      hint bulb, keyboard, banner ad'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#19
+    version: 3.6.1
+  - id: chk-rules
+    text: Number-coded letters; tutorial on level 1 (cell choose, keyboard, green
+      key); 3 mistakes lose
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#19
+    version: 3.6.1
+  - id: chk-hud
+    text: Home icon, info (i), gear, Mistakes 3 circles (from level 2), hint bulb
+      with count, keyboard with edge arrows, banner ad
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#19
+    version: 3.6.1
+  - id: chk-win
+    text: 'Win card: level number, quote+author, share arrow, Level Time, NEXT; then
+      home with next level'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#19
+    version: 3.6.1
+    outcome: true
+  - id: chk-quit
+    text: 'Home icon in level: no confirmation, no life lost, START becomes CONTINUE'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#19
+    version: 3.6.1
+    outcome: true
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  - id: chk-loss
+    text: 'Each loss: lose the level every way it can be lost; register each kind
+      as an outcome (case <feature> <kind> "..." --outcome) with its screen and what
+      the loss costs'
+    done: false
+  - id: chk-retry
+    text: 'After a loss: the retry and continue offers (extra moves, a revive) and
+      their price (a video, coins, a life)'
+    done: false
+  - id: chk-restart
+    text: 'Restart: restart the level from inside it: the confirmation and what it
+      costs'
+    done: false
+    outcome: true
+  - id: chk-exit-app
+    text: 'Exit the app: leave the app in the middle of the level and come back: is
+      the level kept, restarted or lost'
+    done: false
+    outcome: true
+  - id: chk-elements
+    text: 'Level elements: each obstacle or special piece the levels introduce is
+      its own feature (type level-element), with the level it first shows on'
+    done: false
+  type: core-level
+  appeared:
+    text: 'first launch: START LEVEL 1 on the home screen with a tutorial hand'
+    certainty: fact
+    source: 20261003-201504-chrono-2FYKPJ#1
+  page: features/cryptogram-level.md
+- id: daily-challenge
+  name: Daily Challenge
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Home > Daily Challenge card at the top; locked at level 1: ''Complete 15
+      more levels to unlock''; tapping it does nothing while locked'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#8
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-today
+    text: 'Today''s claim, task list or challenge: what it gives'
+    done: false
+  - id: chk-calendar
+    text: 'The calendar or the task list: every day or task and its reward'
+    done: false
+  - id: chk-next-day
+    text: 'The next day: what renews and when (a daily follow-up)'
+    done: false
+  - id: chk-missed
+    text: 'A missed day: what is lost or reset'
+    done: false
+  - id: chk-play
+    text: 'If it is a board: play it once, its win and its loss'
+    done: false
+  type: daily
+  appeared:
+    text: home screen card from the first launch, locked
+    certainty: fact
+    source: 20261003-201504-chrono-2FYKPJ#1
+  locked:
+    text: 'complete 15 levels (shown at level 1: ''Complete 15 more levels to unlock'')'
+    value: 15.0
+  page: features/daily-challenge.md
+- id: daily-tasks
+  name: Daily Tasks
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Home > Daily Tasks card below Daily Challenge; locked at level 1: ''Complete
+      3 levels to unlock''; tapping it does nothing while locked'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#8
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-today
+    text: 'Today''s claim, task list or challenge: what it gives'
+    done: false
+  - id: chk-calendar
+    text: 'The calendar or the task list: every day or task and its reward'
+    done: false
+  - id: chk-next-day
+    text: 'The next day: what renews and when (a daily follow-up)'
+    done: false
+  - id: chk-missed
+    text: 'A missed day: what is lost or reset'
+    done: false
+  - id: chk-play
+    text: 'If it is a board: play it once, its win and its loss'
+    done: false
+  type: daily
+  appeared:
+    text: home screen card from the first launch, locked
+    certainty: fact
+    source: 20261003-201504-chrono-2FYKPJ#1
+  locked:
+    text: 'complete 3 levels (shown: ''Complete 3 levels to unlock'')'
+    value: 3.0
+  page: features/daily-tasks.md
+- id: lives
+  name: Lives (hearts)
+  status: in_progress
+  cases:
+  - id: tap-full
+    text: 'Tap the lives widget with 5/5 FULL: nothing happens'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#8
+    version: 3.6.1
+  - id: chk-entry
+    text: 'Home top left: heart with the count and FULL; tapping it at 5/5 does nothing'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#8
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  type: currency-booster
+  appeared:
+    text: 'home screen top left from the first launch: 5 FULL'
+    certainty: fact
+    source: 20261003-201504-chrono-2FYKPJ#1
+  page: features/lives.md
+- id: settings
+  name: Settings
+  status: in_progress
+  cases:
+  - id: rows
+    text: 'Rows: Notifications ON toggle, Vibration ON toggle, Restore Purchases,
+      Support (mail), Promo Code, How to play, Privacy Policy, Terms of Use'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#8
+    version: 3.6.1
+  - id: chk-entry
+    text: Home > gear at the top right
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#2
+  - id: chk-screen
+    text: 'Settings popup: Notifications and Vibration toggles (ON), Restore Purchases,
+      Support, Promo Code, How to play, Privacy Policy, Terms of Use, X'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#2
+  - id: chk-answers
+    text: 'Not a prompt: Settings is a menu opened by the player'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#2
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#2
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  type: system
+  appeared:
+    text: gear on the home screen top right from the first launch
+    certainty: fact
+    source: 20261003-201504-chrono-2FYKPJ#2
+  page: features/settings.md
+- id: promo-code
+  name: Promo Code
+  status: in_progress
+  cases:
+  - id: open-close
+    text: Promo Code opens 'Enter your promo code' with PASTE CODE and APPLY; the
+      system keyboard pushes the dialog up; X closes back to Settings (a stray tap
+      typed '0' into the field, not applied)
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#12
+    version: 3.6.1
+  - id: chk-entry
+    text: Settings > Promo Code row
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#10
+  - id: chk-screen
+    text: '''Enter your promo code'' dialog: text field, PASTE CODE, APPLY, X; the
+      system keyboard pushes it up'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#10
+  - id: chk-answers
+    text: 'Not a prompt: opened by the player from Settings'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#10
+  - id: chk-links
+    text: No links out on the dialog
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#10
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#2
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  type: system
+  appeared:
+    text: Settings row from the first launch
+    certainty: fact
+    source: 20261003-201504-chrono-2FYKPJ#2
+  page: features/promo-code.md
+- id: how-to-play
+  name: How to play
+  status: documented
+  cases:
+  - id: chk-entry
+    text: Settings (gear top right of home) > How to play; 3 pages, NEXT, NEXT, OK
+      returns to home (settings closes too)
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#6
+    version: 3.6.1
+  - id: chk-screen
+    text: 'HOW TO PLAY popup over home: a sample number-coded quote, rule text, 3
+      page dots, NEXT, X'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#3
+  - id: chk-steps
+    text: 'Page 1: a digit refers to a letter (9 is E); page 2: a green keyboard letter
+      means more of that letter remain; page 3: fill letters whose cipher is known
+      first'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#5
+  - id: chk-end
+    text: OK on page 3 closes How to play and Settings, back to home
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#6
+  - id: chk-replay
+    text: Can be seen again at any time from Settings > How to play
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#6
+  - id: chk-skip
+    text: X (top right) closes How to play and Settings at once from any page, back
+      to home; leaving mid-way not tested
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#7
+    version: 3.6.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#2
+  type: tutorial
+  appeared:
+    text: Settings row from the first launch
+    certainty: fact
+    source: 20261003-201504-chrono-2FYKPJ#2
+  version_seen: 3.6.1
+  page: features/how-to-play.md
+- id: support
+  name: Support
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Settings > Support row (mail icon)
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#2
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#2
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  type: system
+  appeared:
+    text: Settings row from the first launch
+    certainty: fact
+    source: 20261003-201504-chrono-2FYKPJ#2
+  page: features/support.md
+- id: notification-prompt
+  name: Notification permission prompt
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: Android system dialog asking to allow notifications, shown over the app
+      at first launch
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'No entry: shown by itself on the first launch; Settings > Notifications
+      toggle is the in-game switch'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  - id: chk-links
+    text: No links out on a system permission dialog
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  - id: chk-options
+    text: 'Two answers: Allow and Don''t allow (Don''t allow tapped on this install)'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201504-chrono-2FYKPJ#1
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  found_at:
+    text: level 1 (fresh install, no level played)
+    value: 0.0
+  type: system
+  appeared:
+    text: first launch, before the 'Welcome to Cryptogram' loader (Android system
+      dialog)
+    certainty: fact
+    source: 20261003-201504-chrono-2FYKPJ#1
+- id: hints
+  name: Hints (bulb)
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Level board, blue bulb at the bottom right above the keyboard, from level
+      2 (not on level 1)
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#18
+  - id: chk-balance
+    text: 'Count badge on the bulb: 1 at the start of level 2 (first time); no hint
+      balance on home'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#18
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#17
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 2 reached, 1 won
+    value: 1.0
+  type: currency-booster
+  appeared:
+    text: 'start of level 2: blue bulb with count 1 at the bottom right of the board
+      (absent on level 1)'
+    certainty: fact
+    source: 20261003-234451-chrono-2FYKPJ#17
+- id: mistakes-counter
+  name: Mistakes counter
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Level HUD top centre: ''Mistakes'' with 3 circles, from level 2'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#18
+  - id: chk-screen
+    text: 3 empty circles under 'Mistakes' at the top of the board
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#18
+  - id: chk-first-level
+    text: Level 2, introduced by a dimmed tutorial popup 'This is a mistake counter.
+      You will lose if you make 3 mistakes using wrong letters. Tap to continue'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#17
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#17
+  - id: chk-rules
+    text: What it does and how it is used
+    done: false
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 2 reached, 1 won
+    value: 1.0
+  type: level-element
+  appeared:
+    text: 'start of level 2: 3 empty circles at the top with a tutorial popup ''You
+      will lose if you make 3 mistakes using wrong letters'' (absent on level 1)'
+    certainty: fact
+    source: 20261003-234451-chrono-2FYKPJ#17
+- id: banner-ad
+  name: Banner ad
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Bottom of the home screen after the level-1 win, and the bottom of the level
+      board under the keyboard from level 2
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#16
+  - id: chk-screen
+    text: Full-width banner with an install/play-now button and AdChoices (i) (Royal
+      Match, Gossip Harbor, Solitaire seen)
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#18
+  - id: chk-kind
+    text: Banner on home and in the level, from level 2 / after the first win; no
+      interstitial seen after the level-1 win
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#18
+  - id: chk-reward
+    text: 'Not rewarded: a passive banner, no offer screen'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#18
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#16
+  - id: chk-frequency
+    text: 'How often it shows: after which action, every Nth level, a cooldown'
+    done: false
+  - id: chk-close
+    text: 'How it closes: the timer before the close cross, where the cross is, what
+      comes after'
+    done: false
+  found_at:
+    text: level 2 reached, 1 won
+    value: 1.0
+  type: ad-placement
+  appeared:
+    text: 'after winning level 1: banner at the bottom of home, then in level 2'
+    certainty: fact
+    source: 20261003-234451-chrono-2FYKPJ#16
+- id: level-info
+  name: Level info button (i)
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Level HUD: (i) icon top right, left of the gear, from level 1'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#18
+  - id: chk-answers
+    text: 'Not a prompt: a button the player taps'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#18
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#8
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 2 reached, 1 won
+    value: 1.0
+  type: system
+  appeared:
+    text: level 1 HUD, top right next to the gear, from the first level
+    certainty: fact
+    source: 20261003-234451-chrono-2FYKPJ#8
+- id: quote-share
+  name: Quote share (win card)
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Win card: share arrow right of the quote author (Level 1 card)'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#15
+  - id: chk-answers
+    text: 'Not a prompt: a button the player taps'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#15
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-234451-chrono-2FYKPJ#15
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 2 reached, 1 won
+    value: 1.0
+  type: system
+  appeared:
+    text: 'win card of level 1: share arrow next to the quote author'
+    certainty: fact
+    source: 20261003-234451-chrono-2FYKPJ#15
+tasks:
+- id: analyze
+  title: Analyze the game
+  kind: analyze
+  requires: any
+  status: open
+  created: '2026-10-03T19:29:59'
+  source: external
+  note: find all features and work through all user cases on the version on the phone
+- id: scout-1
+  title: 'Map the game: play until the main menu and every entry point is visible;
+    list each entry point as open (a study goal), locked with its unlock condition
+    (an unlock goal) or unclear (an experiment)'
+  kind: scout
+  requires: any
+  status: done
+  created: '2026-10-03T19:29:59'
+  source: external
+  note: 'Fresh install (level 1). Home: lives 5 FULL (tap does nothing), gear > Settings
+    (Notifications, Vibration, Restore Purchases, Support, Promo Code, How to play
+    3 pages, Privacy Policy, Terms of Use), Daily Challenge locked ''complete 15 more
+    levels'', Daily Tasks locked ''complete 3 levels'', START LEVEL 1 with tutorial
+    hand. No shop/currency/event entry on a fresh install; experiment home-after-levels
+    set for entries that appear with progress.'
+  closed: '2026-10-03T20:18:35'
+  closed_by: 20261003-201504-chrono-2FYKPJ#13
+  new_entries: 9
+  at_progress: level 1 (fresh install, no level played)
+  new_entry_names:
+  - Home
+  - Cryptogram level
+  - Daily Challenge
+  - Daily Tasks
+  - Lives
+  - Settings
+  - How to play
+  - Promo Code
+  - Support
+- id: unlock-daily-challenge
+  title: 'Unlock Daily Challenge: complete 15 levels (shown at level 1: ''Complete
+    15 more levels to unlock'')'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T20:16:23'
+  feature: daily-challenge
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: 'complete 15 levels (shown at level 1: ''Complete 15 more levels to
+    unlock'')'
+  target_value: 15.0
+- id: unlock-daily-tasks
+  title: 'Unlock Daily Tasks: complete 3 levels (shown: ''Complete 3 levels to unlock'')'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T20:16:24'
+  feature: daily-tasks
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: 'complete 3 levels (shown: ''Complete 3 levels to unlock'')'
+  target_value: 3.0
+- id: home-after-levels
+  title: Which home entry points appear after the first levels (earlier installs showed
+    Chest Hunt keys, a secret level, a card event, hints)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:18:27'
+  feature: home
+  source: session
+  plan: play levels 1-5, after each win compare the home screen with the fresh-install
+    home (shot 5); confirmed if new icons/cards appear, note the level of each
+- id: study-home
+  title: 'Study Home screen: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:19:00'
+  feature: home
+  source: external
+  closed: '2026-10-03T23:50:09'
+  closed_by: 20261003-234451-chrono-2FYKPJ#19
+  note: home on fresh, after level 1 (counters, banner ad), settings entry; lives
+    popup not reachable, locked cards inert
+- id: study-cryptogram-level
+  title: 'Study Cryptogram level: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:19:00'
+  feature: cryptogram-level
+  source: external
+  closed: '2026-10-03T23:50:09'
+  closed_by: 20261003-234451-chrono-2FYKPJ#19
+  note: walked L1 tutorial, win card, L2 HUD, quit via home; loss, restart, exit-app,
+    elements left open (lives/mistakes cost needs deliberate loss)
+- id: study-lives
+  title: 'Study Lives (hearts): open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:19:00'
+  feature: lives
+  source: external
+- id: study-settings
+  title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:19:00'
+  feature: settings
+  source: external
+- id: study-promo-code
+  title: 'Study Promo Code: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:19:00'
+  feature: promo-code
+  source: external
+- id: study-how-to-play
+  title: 'Study How to play: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:19:00'
+  feature: how-to-play
+  source: external
+  closed: '2026-10-03T23:47:06'
+  closed_by: 20261003-234451-chrono-2FYKPJ#7
+  note: 3 pages walked and marked, X closes all
+- id: study-support
+  title: 'Study Support: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:19:00'
+  feature: support
+  source: external
+- id: notification-prompt-returns
+  title: Find whether the notification prompt returns after 'Don't allow' (and what
+    the Settings Notifications toggle does then)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:20:30'
+  feature: notification-prompt
+  source: session
+  plan: On this install (notifications denied at step 1) relaunch the app and play
+    past a few levels; watch for the system prompt or an in-game ask; then toggle
+    Settings > Notifications OFF and ON once. Confirmed if the prompt shows again
+    (note when) or the toggle opens the system prompt; refuted if neither happens
+- id: study-notification-prompt
+  title: 'Study Notification permission prompt: open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:26:17'
+  feature: notification-prompt
+  source: external
+- id: loss-restart-l2
+  title: 'Cryptogram level: lose via 3 mistakes, restart, exit app mid-level, hint
+    bulb'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T23:50:09'
+  feature: cryptogram-level
+  source: session
+- id: study-hints
+  title: 'Study Hints (bulb): open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T23:52:01'
+  feature: hints
+  source: external
+- id: study-mistakes-counter
+  title: 'Study Mistakes counter: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T23:52:01'
+  feature: mistakes-counter
+  source: external
+- id: study-banner-ad
+  title: 'Study Banner ad: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T23:52:01'
+  feature: banner-ad
+  source: external
+- id: study-level-info
+  title: 'Study Level info button (i): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T23:52:01'
+  feature: level-info
+  source: external
+- id: study-quote-share
+  title: 'Study Quote share (win card): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T23:52:01'
+  feature: quote-share
+  source: external
+- id: hint-use-and-refill
+  title: Use the hint bulb once and find how hints are refilled (what the bulb offers
+    at 0)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:52:13'
+  feature: hints
+  source: session
+  plan: 'On a level from 2 on, tap the bulb with count 1: note what it reveals (one
+    letter, one number for all cells) and the count after; then tap it at 0 and mark
+    the offer (rewarded video, coins, shop) without paying. Confirmed when the effect
+    and the refill source are both marked'
+- id: look-for-interstitials
+  title: 'Look for interstitial and rewarded-video ads: after which level wins and
+    after a loss'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:52:13'
+  feature: banner-ad
+  source: session
+  plan: Over levels 2-6 note after each win and after the first loss whether a full-screen
+    ad shows (mark it, its close timer) and whether any retry or hint offer asks for
+    a video. Confirmed if an interstitial or rewarded offer is marked with its level;
+    refuted if none by level 6
+- id: look-for-shop
+  title: 'Look for a shop, a no-ads purchase or a hint pack (genre checklist: monetization)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:52:13'
+  feature: home
+  source: session
+  plan: Watch home, the hint-at-0 offer, the loss screen and Settings over levels
+    2-6 for a shop, no-ads or IAP entry (Restore Purchases in Settings implies one);
+    mark it up to the price button, never pay. Confirmed if an IAP entry is marked;
+    otherwise note where it was not found
+- id: settings-links-out
+  title: 'Settings: tap Support, Privacy Policy, Terms of Use and Restore Purchases
+    once each, return at once, record where each leads'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: settings
+  source: session
+- id: promo-code-apply
+  title: 'Promo Code: APPLY with an empty and an invalid code; record the message'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: promo-code
+  source: session
+- id: solver-l1-recheck
+  title: 'Run the cryptogram solver on the recorded level-1 board after the word-list
+    fix: does the stall at one ambiguous number go away?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  source: session
+  note: stall at 20261003-234451-chrono-2FYKPJ#13

@@ -49,7 +49,10 @@ by its number and to letters by counts.
   and cells are left. The solver's note holds counts only; quote it. The solver was checked on 25
   recorded boards of levels 9-14 (about 340 cells, 0 wrong) but has not won a level on the phone yet,
   so it lives only in `state/com.crypt.gram.puzz/solvers/` on chrono and is not published (task
-  cryptogram-solver-phone) [lab 2026-10-01].
+  cryptogram-solver-phone) [lab 2026-10-01]. Level 1 of the 2026-10-03 install stalled with "no settled
+  letter to type" and 2 cells of one number left (one letter typed by hand): the word list lacked about 12 000
+  common words (its source drops every word that is also a common password). The lab added them; the same
+  frames now type every cell, 0 wrong, the last number one cell per round ("single") [lab 2026-10-04].
 - Method (manual, proven on levels 9-15, the Daily Challenge and the secret level, 9 wins out of 10
   tries): decode the whole quote from one sharp shot (given letters, one-letter words, double letters,
   word shapes), keep the number→letter map to yourself, then type in cursor order: single locks in
@@ -69,6 +72,9 @@ by its number and to letters by counts.
   - A one-dot lock treated as two-dot: level 13 lost 3 mistakes in one 29-tap batch [s:20261001-050941-chrono-2FYKPJ#72].
   - A quote longer than the screen (scroll bar on the right): the cursor scrolls the board; read the new
     lines after each batch (Daily Challenge Oct 1: 11 lines, 7 batches) [s:20261001-071926-chrono-2FYKPJ#36].
+  - The solver stops with "no settled letter to type" on a finished board too (0 numbered cells): the level
+    is won, look for the win card. Run it only after the "Tap to continue" tutorial boxes of levels 1-2 are
+    gone: it does not see them and would type under the box [lab 2026-10-04].
   - The "+20" hint pack at the bottom left ($2.49 / RSD 399) opens a real purchase sheet: never tap there
     [s:20261001-020937-chrono-2FYKPJ#9].
   - Interstitials appear on PLAY/CONTINUE, after CLAIM and NEXT on win screens, on Secret Level PLAY and
@@ -106,15 +112,45 @@ Typical 1.4 min, best 0.5 min: within the budget (`sw.py playbook`).
   and 10 of chapter 1 [s:20261001-092740-chrono-2FYKPJ#1].
 - Entry: the first visit is a forced tutorial — Home and Back do nothing until START LEVEL 1
   [s:20261001-050941-chrono-2FYKPJ#6].
-- Pitfalls: the board auto-scrolls when the cursor jumps to a low or hidden cell, so the later taps of a
-  batch land on the wrong cells. Event level 1 was lost with 3 mistakes after 551 s and about 170 moves
-  [s:20261001-050941-chrono-2FYKPJ#14] [s:20261001-050941-chrono-2FYKPJ#44] [s:20261001-050941-chrono-2FYKPJ#46].
-  Rule until a solver exists: one cell+card pair per call when the target or the next empty cell is
-  below y~800, and a fresh shot after it. The solver refuses this board (6 big keys).
-- Method: manual; over the budget (task card-cryptogram-fast). The lab's solver draft for it crashed
-  mid-edit on 2026-10-01 and is not verified.
+- Availability: the event was seen only on the 2026-10-01 install; a fresh install (2026-10-03, level 1)
+  shows no event icon on home [s:20261003-201504-chrono-2FYKPJ#8]. Play it only when its entry appears.
+- Pitfalls:
+  - The board auto-scrolls when the cursor jumps to a low or hidden cell, so the later taps of a batch
+    land on the wrong cells. Event level 1 was lost with 3 mistakes after 551 s and about 170 moves
+    [s:20261001-050941-chrono-2FYKPJ#14] [s:20261001-050941-chrono-2FYKPJ#44] [s:20261001-050941-chrono-2FYKPJ#46].
+    Keep one cell+card pair per call when the target or the next empty cell is below y~800 (730 px
+    frame), and take a fresh shot after it.
+  - The keyboard solver (`cryptogram`) refuses this board (no keyboard): use `card-cryptogram`, never
+    `cryptogram`, here.
+  - The frames of the only event level (session 20261001-050941) are no longer on disk: the
+    `card-cryptogram` solver has never been checked on a real event board.
+- Method: manual until the solver is checked; over the budget (task card-cryptogram-fast).
+  `solvers/card-cryptogram.py` is a complete draft (same word list as `cryptogram`, with the 12 000 added
+  words of lab 2026-10-04; reads word cards, thin digits, the 5-card hand and
+  the draw pile; types at most one hand, 5 pairs, per round; deals a new hand at most 2 times in a row
+  when no card has a settled letter; refuses any frame without the card panel: 12 of 12 menu frames of
+  20261003-201504 refused). On the first event board of a session:
+  1. dismiss tutorials, take a normal shot, then `sw.py solve card-cryptogram` WITHOUT `--run`: it only
+     draws the moves. Check on the drawn frame that every cell tap is on an empty box and every card tap
+     is on a card of the hand; mark the frame (counts only, never the letters).
+  2. If the drawing is right: `sw.py solve card-cryptogram --run --rounds 6`, and again while it says
+     `rescan`; note in `level end --note` how many pairs it placed and how many mistakes.
+  3. If the drawing is wrong or it returns no moves: say which in the level note (the lab needs it) and
+     play by hand with the pitfall rule above; the lab fixes the reading from those frames.
 
 ### Level times
 | Level | Result | Time | Model | Note |
 |---|---|---|---|---|
 | event level 1 | lost | 551 s | opus | auto-scroll shifted cells, 3 mistakes [s:20261001-050941-chrono-2FYKPJ#46] |
+
+## Dream 2026-10-04: corrections on the fresh install (3.6.1)
+
+- The fresh install has no shop, currency or event entry at levels 1-2; the Chest Hunt, +20 hint pack and card event notes above come from the earlier install and are not verified here [s:20261003-201504-chrono-2FYKPJ#8].
+- Level 1 is a tutorial with no Mistakes counter and no hint bulb; both arrive on level 2 (3 mistakes, bulb with 1) [s:20261003-234451-chrono-2FYKPJ#10] [s:20261003-234451-chrono-2FYKPJ#17]. So "use a hint when the solver stalls" does not apply on level 1.
+- No interstitial after NEXT on the level-1 win card and none on START of level 2 [s:20261003-234451-chrono-2FYKPJ#16-17]. The in-level home icon quits for free [s:20261003-234451-chrono-2FYKPJ#19].
+- Level 1: the solver stopped with "no settled letter to type" on one ambiguous number; two letters were then typed by hand [s:20261003-234451-chrono-2FYKPJ#13-15]. The lab's word-list fix is to be checked (task solver-l1-recheck).
+- After opening a text field (Promo Code), take a fresh shot: the keyboard moves the dialog [s:20261003-201504-chrono-2FYKPJ#11].
+
+| Level | Result | Seconds (win card) | Source |
+|---|---|---|---|
+| 1 | won (two letters by hand) | 113 (01:30) | [s:20261003-234451-chrono-2FYKPJ#15] |

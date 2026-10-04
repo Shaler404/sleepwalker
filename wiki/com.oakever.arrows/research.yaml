@@ -1,0 +1,1578 @@
+# Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
+game: com.oakever.arrows
+version: 1.33.0
+play_version: 1.32.0
+play_checked: '2026-10-03T19:29:54'
+phone_version: 1.33.0
+discovery: open
+ftue_verified: null
+progress:
+  text: level 5 hard
+  value: 5.0
+  at: '2026-10-04T00:30:33'
+  session: 20261004-001551-chrono-2FYKPJ
+gate: null
+synced:
+  chrono: '2026-10-04T01:10:05'
+mechanics:
+- id: arrows-escape
+  name: arrows-escape
+  status: studying
+  method: manual
+  levels:
+    won: 3
+    lost: 0
+    quit: 3
+  recent:
+  - level: level 3 guideline look
+    result: quit
+    seconds: 29
+    model: sonnet
+  - level: level 3
+    result: won
+    seconds: 35
+    model: sonnet
+  - level: level 4
+    result: won
+    seconds: 105
+    model: sonnet
+  - level: level 5
+    result: quit
+    seconds: 30
+    model: sonnet
+  - level: level 5 hard
+    result: quit
+    seconds: 356
+    model: sonnet
+  - level: level 5 hard
+    result: won
+    seconds: 863
+    model: sonnet
+  note: 'dream 2026-10-04: back to studying: Hard levels (board ~3 screens wide) are
+    not played by hand; Hard L5 was won only with the free hint loop (bulb, wait ~2
+    s, tap the green arrow) in 863 s (20261004-001551-chrono-2FYKPJ#2-110). Normal
+    L3-L4 manual in 35-105 s'
+  best_s: 35
+features:
+- id: consent
+  name: Consent screen
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  type: system
+  appeared:
+    text: first launch
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#1
+  page: features/consent.md
+- id: home
+  name: Home screen
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Home: carousel of mode cards on top, Amaze GO! title, Play Level N button,
+      settings gear top right'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#2
+  - id: chk-entries
+    text: 'Carousel: Bronze League (Lv.11), Shark Run (Lv.70), Daily Challenge (Lv.20),
+      Countryside Capers (Lv.16), all locked; Play -> level; gear -> settings'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#4
+  - id: chk-entry
+    text: Launch screen of the app; the level back arrow and Settings back arrow return
+      to it
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#21
+  - id: chk-badges
+    text: Drop badge with the Daily Streak count left of the gear (appears after the
+      first daily win); locked cards show 'Unlock Lv.N', a tap shows a tooltip 'Unlock
+      <mode> at Level N'; Daily Challenge card shows today's date (Oct 3)
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#21
+  - id: chk-changes
+    text: 'After L4: a level path (next 5 levels, Hard ones purple) appears above
+      Play, Play turns purple ''Hard'' before a Hard level, and the streak badge appears'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#21
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#2
+  type: hub
+  appeared:
+    text: after consent and cloud restore at launch
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#2
+  page: features/home.md
+- id: bronze-league
+  name: Bronze League
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-board
+    text: 'The board: ranks, the player''s place, the number of players'
+    done: false
+  - id: chk-points
+    text: What earns points (a level win, a score) and how many
+    done: false
+  - id: chk-period
+    text: 'The period and its timer: when it resets'
+    done: false
+  - id: chk-rewards
+    text: Rewards per rank, promotion and relegation
+    done: false
+  - id: chk-end
+    text: 'The end of a period: the results screen and the reward (a follow-up)'
+    done: false
+  type: social
+  locked:
+    text: level 11
+    value: 11.0
+  appeared:
+    text: on the home carousel from first launch, locked (Unlock Lv.11)
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#1
+  page: features/bronze-league.md
+- id: shark-run
+  name: Shark Run
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: what earns points or items and what the goal is'
+    done: false
+  - id: chk-timer
+    text: 'Its timer and schedule: how long it runs and when it comes back'
+    done: false
+  - id: chk-in-level
+    text: What shows during a level while it runs (a bar, a counter, collectibles)
+    done: false
+  - id: chk-progress
+    text: 'Progress per level: the points or items after a win, and after a loss'
+    done: false
+  - id: chk-rewards
+    text: The rewards per rank or milestone
+    done: false
+  - id: chk-end
+    text: 'The end: the results screen and the reward paid (a follow-up at the timer''s
+      end)'
+    done: false
+  - id: under-quit
+    text: 'Back arrow top left leaves the level for home at once, no confirmation;
+      drops were full, no cost seen; Play still shows the same level under Shark Run:
+      as the base, or what differs'
+    done: false
+  - id: under-win
+    text: 'Win screen under Shark Run: as the base, or what differs'
+    done: false
+  - id: under-out-of-lives
+    text: 'Out of lives under Shark Run: as the base, or what differs'
+    done: false
+  - id: under-restart
+    text: 'Restart from Out of Lives popup resets the board immediately, no confirmation,
+      no life cost under Shark Run: as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Force-stop and relaunch mid-level under Shark Run: as the base, or what
+      differs'
+    done: false
+  type: event
+  locked:
+    text: level 70
+    value: 70.0
+  appeared:
+    text: on the home carousel from first launch, locked (Unlock Lv.70)
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#1
+  page: features/shark-run.md
+- id: daily-challenge
+  name: Daily Challenge
+  status: in_progress
+  cases:
+  - id: card-date
+    text: Locked card shows today's date (Oct 3) and 'Unlock Lv.20'; tap gives tooltip
+      'Unlock Daily Challenge at Level 20'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#4
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#3
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-today
+    text: 'Today''s claim, task list or challenge: what it gives'
+    done: false
+  - id: chk-calendar
+    text: 'The calendar or the task list: every day or task and its reward'
+    done: false
+  - id: chk-next-day
+    text: 'The next day: what renews and when (a daily follow-up)'
+    done: false
+  - id: chk-missed
+    text: 'A missed day: what is lost or reset'
+    done: false
+  - id: chk-play
+    text: 'If it is a board: play it once, its win and its loss'
+    done: false
+  type: daily
+  locked:
+    text: level 20
+    value: 20.0
+  appeared:
+    text: on the home carousel from first launch, locked (Unlock Lv.20)
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#3
+  page: features/daily-challenge.md
+- id: countryside-capers
+  name: Event Countryside Capers
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#4
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: what earns points or items and what the goal is'
+    done: false
+  - id: chk-timer
+    text: 'Its timer and schedule: how long it runs and when it comes back'
+    done: false
+  - id: chk-in-level
+    text: What shows during a level while it runs (a bar, a counter, collectibles)
+    done: false
+  - id: chk-progress
+    text: 'Progress per level: the points or items after a win, and after a loss'
+    done: false
+  - id: chk-rewards
+    text: The rewards per rank or milestone
+    done: false
+  - id: chk-end
+    text: 'The end: the results screen and the reward paid (a follow-up at the timer''s
+      end)'
+    done: false
+  - id: under-quit
+    text: 'Back arrow top left leaves the level for home at once, no confirmation;
+      drops were full, no cost seen; Play still shows the same level under Event Countryside
+      Capers: as the base, or what differs'
+    done: false
+  - id: under-win
+    text: 'Win screen under Event Countryside Capers: as the base, or what differs'
+    done: false
+  - id: under-out-of-lives
+    text: 'Out of lives under Event Countryside Capers: as the base, or what differs'
+    done: false
+  - id: under-restart
+    text: 'Restart from Out of Lives popup resets the board immediately, no confirmation,
+      no life cost under Event Countryside Capers: as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Force-stop and relaunch mid-level under Event Countryside Capers: as the
+      base, or what differs'
+    done: false
+  type: event
+  locked:
+    text: level 16
+    value: 16.0
+  appeared:
+    text: on the home carousel from first launch, locked (Unlock Lv.16)
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#4
+  page: features/countryside-capers.md
+- id: settings
+  name: Settings
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Settings: Sound, Vibration, Music (on), Guideline, Zen Mode (off), Save
+      Your Progress, Rate Us, Feedback, Privacy Policy, Terms of Service'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#5
+  - id: chk-entry
+    text: 'Home: gear icon top right (656,105)'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#5
+  - id: in-level-popup
+    text: 'Gear in a level opens a short settings popup: Sound, Vibration, Music,
+      Zen Mode toggles and a Restart button; no Guideline, no Save Progress'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#9
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#5
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  type: system
+  appeared:
+    text: gear icon top right of home, open from start
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#5
+  page: features/settings.md
+- id: zen-mode
+  name: Zen Mode toggle
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#5
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  type: mode
+  appeared:
+    text: present in Settings on the first visit after a fresh install (progress cloud-restored
+      to level 3)
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#5
+  page: features/zen-mode.md
+- id: guideline
+  name: Guideline toggle
+  status: in_progress
+  cases:
+  - id: toggle-persist
+    text: Toggle on in home settings persists after reopening; in-level settings popup
+      has no Guideline row
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#13
+    version: 1.33.0
+  - id: visual-effect
+    text: 'Visible effect on level 3 at idle with Guideline on: none seen'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#13
+    version: 1.33.0
+  - id: chk-entry
+    text: 'Home gear > Settings: Guideline toggle at (620,568); not in the in-level
+      settings popup'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#5
+  - id: chk-screen
+    text: A toggle row in home Settings (grid icon), off by default, orange when on
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#6
+  - id: chk-answers
+    text: 'Does not apply: a toggle, not a prompt'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#6
+  - id: chk-links
+    text: 'Does not apply: no links out'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#6
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#5
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  type: system
+  appeared:
+    text: present in Settings on the first visit after a fresh install (progress cloud-restored
+      to level 3)
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#5
+  version_seen: 1.33.0
+  page: features/guideline.md
+- id: level
+  name: Level (arrows-escape board)
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Home: Play Level N button (365,1265)'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#8
+  - id: chk-screen
+    text: Board of arrows on a beige field, centered; level 3 has four bent arrows
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#8
+  - id: chk-hud
+    text: 'HUD: back arrow top left, Level N title, palette icon (theme-picker), gear
+      (in-level settings popup: Sound, Vibration, Music, Zen Mode, Restart); 3 blue
+      drops top left (drops)'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#9
+  - id: chk-quit
+    text: Back arrow top left leaves the level for home at once, no confirmation;
+      drops were full, no cost seen; Play still shows the same level
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#11
+    outcome: true
+  - id: chk-win
+    text: 'Win screen: 3 stars, a title by mistakes (Flawless! with 0, Perfect! with
+      1 mistake at 87%), Difficulty, Time, Score, Today''s Levels, accuracy/mistakes/hints
+      used, Next Level; from the 2nd win a level path (next 5 levels) shows under
+      it; the first win of the day is preceded by the Daily Streak screen'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#17
+    outcome: true
+  - id: out-of-lives
+    text: 'Out of lives: 3 blocked taps empty the drops; popup offers free Continue
+      (+3 lives) or Restart'
+    done: true
+    outcome: true
+    source: 20261003-233756-chrono-2FYKPJ#4
+    version: 1.33.0
+  - id: chk-retry
+    text: 'Out of Lives popup: Continue is Free (no ad seen), gives 3 more lives and
+      keeps progress; red tinted arrows stay as blocked marks; repeated 3 times in
+      a row, never limited. Restart resets board and drops, no cost seen'
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#23
+    version: 1.33.0
+  - id: chk-restart
+    text: Restart from Out of Lives popup resets the board immediately, no confirmation,
+      no life cost
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#23
+    version: 1.33.0
+    outcome: true
+  - id: chk-exit-app
+    text: 'Force-stop and relaunch mid-level: game opens on home, Play shows same
+      Hard Level 5; board progress not kept (restart from initial board)'
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#24
+    version: 1.33.0
+    outcome: true
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#2
+  - id: chk-rules
+    text: 'Rules: the goal, the controls, what blocks a move and how the level is
+      lost (the game''s own tutorial or How to play)'
+    done: false
+  - id: chk-loss
+    text: 'Each loss: lose the level every way it can be lost; register each kind
+      as an outcome (case <feature> <kind> "..." --outcome) with its screen and what
+      the loss costs'
+    done: false
+  - id: chk-elements
+    text: 'Level elements: each obstacle or special piece the levels introduce is
+      its own feature (type level-element), with the level it first shows on'
+    done: false
+  type: core-level
+  appeared:
+    text: Play button on home from first launch (Play Level 1, Level 3 after cloud
+      restore)
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#2
+  page: features/level.md
+- id: cloud-save
+  name: Save Your Progress (cloud save)
+  status: documented
+  cases:
+  - id: chk-screen
+    text: 'Restore popup ''Progress updated!'': We found your saved progress, Restore
+      to Level 3, Update'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#1
+  - id: popup-cases
+    text: 'Popup: Facebook, Google sign-in, Delete Account link, X closes; not signed
+      in, Delete not tapped'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#13
+    version: 1.33.0
+  - id: chk-entry
+    text: Home gear > Settings > Save Your Progress row (365,845)
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#2
+  - id: chk-options
+    text: 'Save Progress popup: Sign in with Facebook, Sign in with Google, Delete
+      Account link, X closes back to Settings; sign-in and Delete Account not exercised
+      by policy (no account, nothing destructive)'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#3
+  - id: chk-answers
+    text: 'Does not apply: not a prompt; the popup opens only from Settings'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#3
+  - id: chk-links
+    text: Delete Account link not followed by policy (destructive); no other links
+      out
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#3
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#1
+  type: system
+  appeared:
+    text: 'first launch, right after consent: ''Progress updated!'' popup restored
+      the cloud save to level 3'
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#1
+  version_seen: 1.33.0
+  page: features/cloud-save.md
+- id: rate-us
+  name: Rate Us
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Home gear > Settings > Rate Us row (400,1002)
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#5
+  - id: chk-screen
+    text: 'Popup ''Rate Us'': 5 empty stars, ''Do you like Amaze GO?'', Rate button,
+      X top right'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#5
+  - id: chk-options
+    text: X closes back to Settings with nothing changed; stars and Rate not tapped
+      by policy (never submit a rating)
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#6
+  - id: chk-answers
+    text: 'Only dismiss (X) exercised: returns to Settings; rating answers not exercised
+      by policy; no unprompted Rate Us seen in 2 wins'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#6
+  - id: chk-links
+    text: Rate likely leads out to the store; not followed by policy (never submit
+      a rating)
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#6
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200141-chrono-2FYKPJ#5
+  type: system
+  appeared:
+    text: entry in Settings on the first visit
+    certainty: fact
+    source: 20261003-200141-chrono-2FYKPJ#5
+  page: features/rate-us.md
+- id: theme-picker
+  name: Theme picker (palette icon in the level HUD)
+  status: documented
+  cases:
+  - id: chk-entry
+    text: 'Level HUD: palette icon with an ''A'', top right left of the gear (about
+      583,97 in 730x1583); not tapped yet'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#8
+  - id: chk-screen
+    text: 'Popup under the palette icon: three swatches (default cream, Eye Comfort
+      green, Dark blue), the current one checked; tip ''Eye Comfort Mode and Dark
+      Mode available.''; stays open until a tap elsewhere'
+    done: true
+    source: 20261003-233532-chrono-2FYKPJ#2
+  - id: chk-options
+    text: 'Three themes, none locked or priced: Eye Comfort (green) and Dark (blue-grey,
+      drops turn dark blue) apply at once to board, HUD and drops; set back to default
+      cream. Persistence across levels and restarts not yet checked'
+    done: true
+    source: 20261003-233532-chrono-2FYKPJ#5
+  - id: chk-answers
+    text: 'Does not apply: not a prompt, a picker opened by the player'
+    done: true
+    source: 20261003-233532-chrono-2FYKPJ#2
+  - id: chk-links
+    text: 'Does not apply: the popup has no links out'
+    done: true
+    source: 20261003-233532-chrono-2FYKPJ#2
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#8
+  type: system
+  appeared:
+    text: in the level HUD (palette icon with an 'A', top right next to the gear)
+      on level 3, the first level opened on this install
+    certainty: fact
+    source: 20261003-232108-chrono-2FYKPJ#8
+  version_seen: 1.33.0
+  page: features/theme-picker.md
+- id: drops
+  name: Drops (mistake allowance in the level HUD)
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Does not apply as a button: shown at the top left of every level HUD'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#8
+  - id: blocked-tap
+    text: A tap on a blocked arrow costs one drop and the arrow flashes red; counted
+      as a mistake on the win screen (x1, accuracy 87%), title drops from Flawless
+      to Perfect
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#17
+  - id: chk-screen
+    text: Three blue drops at the top left of the level HUD; colour follows the theme.
+      Tapping them was tried only while the theme popup was open, so whether they
+      are tappable is open
+    done: true
+    source: 20261003-233532-chrono-2FYKPJ#9
+  - id: chk-first-level
+    text: 'Level 3, the first level opened on this install: shown with no introduction
+      (no tutorial popup seen)'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#8
+  - id: chk-rules
+    text: 'A mistake allowance: each tap on a blocked arrow costs one drop; counted
+      as a mistake on the win screen'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#17
+  - id: chk-loss
+    text: 'Adds the loss Out of Lives: 3 blocked taps empty the drops (registered
+      as level outcome out-of-lives)'
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#4
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#8
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  type: level-element
+  appeared:
+    text: three blue drops at the top left of the level HUD on level 3, the first
+      level opened on this install
+    certainty: fact
+    source: 20261003-232108-chrono-2FYKPJ#8
+  version_seen: 1.33.0
+  page: features/drops.md
+- id: daily-streak
+  name: Daily Streak
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Full screen: drop medal, streak number, ''Daily Streak'', week row SAT..FRI
+      with today checked, ''You are ready for a great week!'', Continue; shown after
+      the first win of the day, before the win screen'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#16
+  - id: chk-counter
+    text: 'Home top right next to the gear: a drop badge with the streak count (1)
+      after the first daily win; counts consecutive days with a win'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#21
+  - id: under-quit
+    text: 'Quit of L5 after the streak reached 1: home badge stays 1, no confirmation
+      or warning: as the base'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#21
+  - id: chk-entry
+    text: 'Home top right, the drop badge with the streak count left of the gear (535,105
+      in 730x1583) opens the Daily Streak popup: ''tracks your consecutive winning
+      days'', Current Record 1, Best Record 1, OK'
+    done: true
+    source: 20261003-233532-chrono-2FYKPJ#8
+  - id: chk-in-level
+    text: 'Nothing: the level HUD (Hard L5) shows no streak counter or badge, only
+      back, title, palette, gear, drops and hint'
+    done: true
+    source: 20261003-233532-chrono-2FYKPJ#1
+  - id: under-win
+    text: 'As the base, with the streak screen first: the first win of the day (Hard
+      L5) shows Daily Streak 2 before the win screen; the win screen itself has no
+      streak row'
+    done: true
+    source: 20261004-001551-chrono-2FYKPJ#109
+  - id: day-2
+    text: 'Day 2: streak screen 2, SAT and SUN checked, ''Well done! Your consistency
+      is impressive.'', Continue; no reward'
+    done: true
+    source: 20261004-001551-chrono-2FYKPJ#109
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#16
+  - id: chk-rewards
+    text: The reward for each step of the streak
+    done: false
+  - id: chk-break
+    text: What breaks it (a loss, a quit, a missed day) and what the break costs
+    done: false
+  - id: chk-save
+    text: Offers to keep it after a break and their price (a video, coins)
+    done: false
+  - id: under-out-of-lives
+    text: 'Out of lives under Daily Streak: as the base, or what differs'
+    done: false
+  - id: under-restart
+    text: 'Restart from Out of Lives popup resets the board immediately, no confirmation,
+      no life cost under Daily Streak: as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Force-stop and relaunch mid-level under Daily Streak: as the base, or what
+      differs'
+    done: false
+  found_at:
+    text: level 4
+    value: 4.0
+  type: streak
+  appeared:
+    text: screen after winning level 4, the second win of day 1 (it did not show after
+      the level 3 win the same day); day 2 after the first win of the day
+    certainty: fact
+    source: 20261003-232357-chrono-2FYKPJ#16
+  version_seen: 1.33.0
+  page: features/daily-streak.md
+- id: hard-level
+  name: Hard level (purple, larger zoomable board)
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Home: the Play button turns purple and reads ''Hard / Level N'' when the
+      next level is Hard (365,1265)'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#21
+  - id: chk-screen
+    text: Level N with a purple 'Hard' subtitle; a board larger than the screen, 'Pinch
+      to zoom' tooltip on first open, hint bulb at the top right under the gear; 3
+      drops as usual
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#18
+  - id: chk-announce
+    text: 'Purple nodes on the level path (win screen after L4 and home): 5 and 8;
+      the home Play button turns purple ''Hard''; no popup before it'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#21
+  - id: under-quit
+    text: 'Back arrow quits Hard L5 at once, no confirmation, no drop lost; home shows
+      Hard Level 5 again: as the base'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#21
+  - id: under-out-of-lives
+    text: 'As the base: 3 blocked taps on Hard L5 bring the same Out of Lives popup
+      (Continue Free +3 lives, Restart); seen 3 times, Continue never limited'
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#4
+  - id: under-restart
+    text: 'As the base: Restart on the Out of Lives popup resets the whole Hard board,
+      3 drops, view reset; the Pinch to zoom tooltip does not come back'
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#23
+  - id: under-exit-app
+    text: 'As the base: force-stop mid Hard L5, relaunch opens home with Hard Level
+      5 on Play; board progress not kept'
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#24
+  - id: chk-retry
+    text: 'After a loss: Out of Lives popup, Continue is Free (green badge, no ad
+      seen) and keeps the board with 3 new drops; Restart resets to the start; same
+      as Normal'
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#4
+  - id: chk-loss
+    text: 'Only loss seen: Out of Lives (drops at 0); costs nothing (free Continue),
+      no life/streak lost; failed taps leave arrows tinted red'
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#4
+  - id: under-win
+    text: 'Differs from the base: purple background, title ''Great Start!'' with 2
+      of 3 stars after 1 mistake and ~55 hints (Normal: ''Perfect!'' 3 stars with
+      1 mistake), Time 13:15, Score 1194, Today''s Levels 1, level path 5-10 with
+      8 purple; no accuracy/mistakes/hints rows in the frame'
+    done: true
+    source: 20261004-001551-chrono-2FYKPJ#110
+  - id: chk-win
+    text: 'Win screen on a purple background: ''Great Start!'', 2 of 3 stars (1 mistake,
+      hints used), Time 13:15, Score 1194 (a frame 1 s after Continue showed 895 while
+      counting up), Today''s Levels 1, level path 6-10 with 8 and 10 purple; no reward
+      item'
+    done: true
+    source: 20261004-001551-chrono-2FYKPJ#110
+  - id: chk-differs
+    text: Board about 3 screens wide, opened zoomed in; pan by swipe; the dot grid
+      shows only where arrows were removed; the hint bulb shows (not on levels 3-4);
+      same 3 drops, same blocked-tap cost and Out of Lives
+    done: true
+    source: 20261004-001551-chrono-2FYKPJ#110
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-232357-chrono-2FYKPJ#17
+  - id: chk-frequency
+    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
+      from which level'
+    done: false
+  found_at:
+    text: level 4
+    value: 4.0
+  type: level-type
+  appeared:
+    text: 'on the level path shown on the win screen after winning level 4: nodes
+      5 and 8 are purple; level 5 opens labelled Hard'
+    certainty: fact
+    source: 20261003-232357-chrono-2FYKPJ#17
+  page: features/hard-level.md
+- id: hint
+  name: Hint (bulb button in the level HUD)
+  status: in_progress
+  cases:
+  - id: chk-appeared
+    text: Bulb button in the HUD top right on Hard level 5 (also seen on Normal? not
+      verified)
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#24
+    version: 1.33.0
+  - id: chk-entry
+    text: Bulb button at the top right of the level HUD under the gear (665,212 in
+      730-wide model)
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#2
+  - id: chk-screen
+    text: 'No own screen: the view pans to a free arrow and draws it green'
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#6
+  - id: chk-effect
+    text: One use pans/zooms the board to one free arrow and highlights it green;
+      tapping it removes it with no mistake
+    done: true
+    source: 20261003-233756-chrono-2FYKPJ#10
+  - id: chk-balance
+    text: 'No balance shown: the bulb has no counter or price badge; about 55 uses
+      on Hard L5 (20261004-001551) and 11 in 20261003-233756, all free'
+    done: true
+    source: 20261004-001551-chrono-2FYKPJ#109
+  - id: chk-sinks
+    text: 'No sink: about 55 uses on Hard L5 in one level, no counter, price, ad or
+      popup'
+    done: true
+    source: 20261004-001551-chrono-2FYKPJ#109
+  - id: off-screen
+    text: 'The bulb does not always pan to the green arrow: sometimes it is off-screen
+      (a green edge pixel) and the board must be swiped to reach it'
+    done: true
+    source: 20261004-001551-chrono-2FYKPJ#86
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 5
+    value: 5.0
+  type: currency-booster
+  appeared:
+    text: bulb button at the top right of the HUD on level 5, the first Hard level;
+      not shown on levels 3-4 (the win screen counts hints used from level 3)
+    certainty: fact
+    source: 20261003-232357-chrono-2FYKPJ#18
+  page: features/hint.md
+- id: notification-prompt
+  name: Notification permission prompt
+  type: system
+  appeared:
+    text: Android dialog "Allow Amaze GO! to send you notifications?" at the second
+      launch, not the first; answered Don't allow
+    certainty: fact
+    source: 20261003-232108-chrono-2FYKPJ#0
+  status: seen
+  found_at:
+    text: level 3
+    value: 3.0
+  cases:
+  - id: second-launch
+    text: Shown over Home on the second launch of the install (not on the first),
+      answered Don't allow
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#1
+tasks:
+- id: analyze
+  title: Analyze the game
+  kind: analyze
+  requires: any
+  status: open
+  created: '2026-10-03T19:29:57'
+  source: external
+  note: find all features and work through all user cases on the version on the phone
+- id: scout-1
+  title: 'Map the game: play until the main menu and every entry point is visible;
+    list each entry point as open (a study goal), locked with its unlock condition
+    (an unlock goal) or unclear (an experiment)'
+  kind: scout
+  requires: any
+  status: done
+  created: '2026-10-03T19:29:57'
+  source: external
+  note: 'Home: carousel of 4 locked cards (Bronze League 11, Countryside Capers 16,
+    Daily Challenge 20, Shark Run 70), Play Level 3 (cloud restored to L3), settings
+    gear. Fresh install with cloud restore.'
+  closed: '2026-10-03T20:03:42'
+  closed_by: 20261003-200141-chrono-2FYKPJ#6
+  new_entries: 8
+  at_progress: null
+  new_entry_names:
+  - Bronze League
+  - Shark Run
+  - Daily Challenge
+  - Countryside Capers
+  - Settings
+  - Zen Mode
+  - Guideline
+  - Save Your Progress
+- id: unlock-bronze-league
+  title: 'Unlock Bronze League: level 11'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T20:02:59'
+  feature: bronze-league
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 11
+  target_value: 11.0
+- id: unlock-shark-run
+  title: 'Unlock Shark Run: level 70'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T20:03:00'
+  feature: shark-run
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 70
+  target_value: 70.0
+- id: unlock-daily-challenge
+  title: 'Unlock Daily Challenge: level 20'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T20:03:09'
+  feature: daily-challenge
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 20
+  target_value: 20.0
+- id: unlock-countryside-capers
+  title: 'Unlock Event Countryside Capers: level 16'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T20:03:22'
+  feature: countryside-capers
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 16
+  target_value: 16.0
+- id: appeared-zen-mode
+  title: 'Find why Zen Mode toggle appeared: setting toggle, off by default; effect
+    unknown'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T20:03:36'
+  feature: zen-mode
+  source: session
+  plan: 'find the moment Zen Mode toggle shows up and what comes just before it (setting
+    toggle, off by default; effect unknown); confirmed when a frame shows the trigger.
+    Record it with feature zen-mode --appeared "...": the goal closes by itself'
+  closed: '2026-10-03T20:05:16'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: present in Settings on the first visit
+    after a fresh install (progress cloud-restored to level 3) [20261003-200141-chrono-2FYKPJ#5]'
+- id: appeared-guideline
+  title: 'Find why Guideline toggle appeared: setting toggle, off by default; probably
+    grid guide on board'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T20:03:36'
+  feature: guideline
+  source: session
+  plan: 'find the moment Guideline toggle shows up and what comes just before it (setting
+    toggle, off by default; probably grid guide on board); confirmed when a frame
+    shows the trigger. Record it with feature guideline --appeared "...": the goal
+    closes by itself'
+  closed: '2026-10-03T20:05:16'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: present in Settings on the first visit
+    after a fresh install (progress cloud-restored to level 3) [20261003-200141-chrono-2FYKPJ#5]'
+- id: exp-zen
+  title: 'Zen Mode: what does the toggle change in a level?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:03:36'
+  feature: zen-mode
+  source: session
+  plan: enable Zen Mode in settings, play a level, compare with normal (mistakes,
+    timer, stars)
+- id: exp-guideline
+  title: 'Guideline: what does the toggle show?'
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-03T20:03:37'
+  feature: guideline
+  source: session
+  plan: enable Guideline, open a level, note the visual change
+  closed: '2026-10-03T23:25:23'
+  closed_by: review-20261003
+  note: duplicate of exp-guideline-effect (same question, with a sharper plan after
+    nothing showed on idle level 3 [20261003-232108-chrono-2FYKPJ#13])
+- id: study-save-progress
+  title: Study Save Your Progress (account link; look only, never sign in)
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:03:37'
+  feature: settings
+  source: session
+  closed: '2026-10-03T23:25:23'
+  closed_by: 20261003-232108-chrono-2FYKPJ#3
+  note: 'duplicate of study-cloud-save, done in this session: Settings > Save Your
+    Progress popup (Facebook/Google sign-in, Delete Account, X); looked only'
+- id: study-consent
+  title: 'Study Consent screen: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:04:16'
+  feature: consent
+  source: external
+  closed: '2026-10-03T23:23:20'
+  closed_by: 20261003-232108-chrono-2FYKPJ#13
+  note: Cannot reopen on progressed phone; fresh-install task added
+- id: study-home
+  title: 'Study Home screen: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:04:16'
+  feature: home
+  source: external
+  closed: '2026-10-03T23:25:18'
+  closed_by: 20261003-232357-chrono-2FYKPJ#7
+  note: 'Home: carousel Bronze L11, Shark Run L70, Daily Challenge L20, Countryside
+    L16; locked tap shows tooltip; Play button; settings gear.'
+- id: study-zen-mode
+  title: 'Study Zen Mode toggle: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:04:16'
+  feature: zen-mode
+  source: external
+- id: study-guideline
+  title: 'Study Guideline toggle: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:04:16'
+  feature: guideline
+  source: external
+  closed: '2026-10-03T23:23:20'
+  closed_by: 20261003-232108-chrono-2FYKPJ#13
+  note: Toggle in home settings only, persists; no visible effect on idle level 3;
+    experiment added
+- id: study-level
+  title: 'Study the core level: rules, HUD, win screen, every loss kind as an outcome,
+    retry, restart, quit, exit-app (play levels 3-10)'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:05:42'
+  feature: level
+  source: session
+- id: study-settings
+  title: 'Study Settings: each option once (Sound, Vibration, Music, Feedback, Privacy,
+    Terms links), set back after'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:05:43'
+  feature: settings
+  source: session
+- id: study-rate-us
+  title: 'Study Rate Us: open it from Settings, record the prompt and what each answer
+    does (never submit a rating)'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:05:43'
+  feature: rate-us
+  source: session
+  closed: '2026-10-03T23:25:18'
+  closed_by: 20261003-232357-chrono-2FYKPJ#7
+  note: 'Settings > Rate Us opens popup: 5 empty stars, ''Do you like Amaze GO?'',
+    Rate button, X. Closed via X, no rating submitted; per-star behaviour not tested
+    to avoid submission.'
+- id: ftue-level1
+  title: 'Verify the first-time experience from level 1: on a fresh install try to
+    dismiss the cloud-restore popup (back key) and play levels 1-2 with their tutorial'
+  kind: ftue
+  requires: fresh
+  status: open
+  created: '2026-10-03T20:05:43'
+  feature: level
+  source: session
+  note: this session's fresh install was cloud-restored to level 3 (popup has only
+    Update), so levels 1-2 and any tutorial were skipped
+- id: look-economy
+  title: 'Look for economy and monetization: lives or energy, coins, boosters or hints,
+    shop, no-ads, ads after levels'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:05:44'
+  source: session
+  plan: play levels 3-11 and note every HUD element, popup and screen after a win
+    or a loss; confirmed found when a frame shows a currency, booster, shop or ad,
+    absent if none by level 11
+- id: study-cloud-save
+  title: 'Study Save Your Progress (cloud save): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:09:04'
+  feature: cloud-save
+  source: external
+  closed: '2026-10-03T23:23:20'
+  closed_by: 20261003-232108-chrono-2FYKPJ#13
+  note: Settings > Save Your Progress opens popup with Facebook/Google sign-in, Delete
+    Account, X; observed only
+- id: exp-guideline-effect
+  title: 'Guideline on: find what it draws on a board (nothing visible on idle level
+    3; try tapping a blocked/free arrow, larger levels)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:23:17'
+  feature: guideline
+  source: session
+  plan: enable Guideline, play a level, tap arrows, compare with off
+- id: study-consent-fresh
+  title: 'Study consent screen on a fresh install: buttons, links, answers'
+  kind: replay
+  requires: fresh
+  status: open
+  created: '2026-10-03T23:23:19'
+  feature: consent
+  source: session
+- id: study-theme-picker
+  title: 'Study the theme picker: tap the palette icon in the level HUD, record every
+    theme, which are locked and their condition, equip one and set it back'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-03T23:25:23'
+  feature: theme-picker
+  source: game
+  closed: '2026-10-03T23:36:35'
+  closed_by: 20261003-233532-chrono-2FYKPJ#5
+  note: '3 themes: default cream, Eye Comfort green, Dark; none locked; applies instantly
+    to board/HUD; equipped each, restored default; persists across levels unknown'
+- id: exp-drops
+  title: 'Drops: find what a blocked-arrow tap costs and what happens at zero drops'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T23:25:28'
+  feature: drops
+  source: session
+  plan: in a level, tap an arrow that is blocked once; confirmed when a frame shows
+    3 drops become 2; keep tapping blocked arrows to 0 and mark the screen that follows,
+    register it as a loss outcome of level (case level out-of-drops --outcome)
+  closed: '2026-10-03T23:45:50'
+  closed_by: 20261003-233756-chrono-2FYKPJ#4
+  note: 'Each blocked tap costs one drop; at 0 the Out of Lives popup: Continue Free
+    (+3 lives, keeps board) or Restart; registered as level outcome out-of-lives'
+  result: confirmed
+- id: outcomes-daily-streak
+  title: 'Run each outcome once under Daily Streak: Out of lives, Restart from Out
+    of Lives popup resets the board immediately, no confirmation, no life cost, Force-stop
+    and relaunch mid-level'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:27:20'
+  feature: daily-streak
+  source: session
+  plan: 'while Daily Streak is on, reach each listed outcome of the base level once,
+    one at a time (a deliberate loss is allowed unless it spends premium currency);
+    mark the outcome screen (mark --feature daily-streak --as result) and close its
+    cell: case daily-streak under-<outcome> "as the base" or "what differs" --done'
+  rank: 7
+- id: study-daily-streak
+  title: Study Daily Streak screen
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T23:27:20'
+  feature: daily-streak
+  source: session
+  closed: '2026-10-03T23:37:18'
+  closed_by: 20261003-233532-chrono-2FYKPJ#10
+  note: 'Popup via home badge: description, Current/Best Record, OK. No rewards/milestones
+    visible at streak 1; next-day increment is in exp-streak-next-day'
+- id: exp-purple-levels
+  title: 'Purple level nodes 5 and 8 on win path: what are they?'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T23:27:30'
+  feature: level
+  source: session
+  plan: play to level 5 and see
+  closed: '2026-10-03T23:30:27'
+  closed_by: 20261003-232357-chrono-2FYKPJ#21
+  note: 'Purple nodes are Hard levels: level 5 opens labelled ''Hard'' with a larger
+    zoomable board and a hint bulb; home Play turns purple ''Hard Level 5''. Recorded
+    as feature hard-level.'
+  result: confirmed
+- id: study-drops
+  title: 'Study Drops (mistake allowance in the level HUD): open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T23:28:36'
+  feature: drops
+  source: external
+  closed: '2026-10-03T23:37:18'
+  closed_by: 20261003-233532-chrono-2FYKPJ#10
+  note: 3 drops in level HUD, not tappable (no popup, verified). Blocked tap costs
+    1 drop (earlier session L3/L4, arrow flashes red). Drops follow the theme colour.
+    Loss at 0 drops left to exp-drops.
+- id: outcomes-hard-level
+  title: 'Run each outcome once under Hard level (purple, larger zoomable board):
+    Win screen'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T23:29:58'
+  feature: hard-level
+  source: session
+  plan: 'while Hard level (purple, larger zoomable board) is on, reach each listed
+    outcome of the base level once, one at a time (a deliberate loss is allowed unless
+    it spends premium currency); mark the outcome screen (mark --feature hard-level
+    --as result) and close its cell: case hard-level under-<outcome> "as the base"
+    or "what differs" --done'
+  rank: 7
+  closed: '2026-10-04T00:33:35'
+  closed_by: planner
+  note: every known outcome of the base level was run under Hard level (purple, larger
+    zoomable board)
+- id: study-hard-level
+  title: Win Hard level 5 with pinch-zoom and record how Hard differs from Normal
+    (board, drops, score, win screen), and which levels are Hard (5, 8, ...)
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T23:30:33'
+  feature: hard-level
+  source: session
+  closed: '2026-10-04T00:30:49'
+  closed_by: 20261004-001551-chrono-2FYKPJ#110
+  note: 'Won L5 with hint+pan (no pinch). Hard: purple label, huge board, 3 drops,
+    Great Start result, 895 score, levels 5 and 8 are Hard.'
+- id: exp-hint
+  title: 'Hint bulb: tap it once on a Hard level and record what it shows, its count
+    or price, and what it offers at zero'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T23:30:34'
+  feature: hint
+  source: session
+  plan: on level 5 tap the bulb at the top right; confirmed when a frame shows its
+    effect (an arrow highlighted) and its balance or price (free, video, coins); never
+    pay
+  closed: '2026-10-03T23:45:50'
+  closed_by: 20261003-233756-chrono-2FYKPJ#10
+  note: Bulb pans the view to one free arrow drawn green; tapping it removes it, no
+    mistake; no counter or price over 8 uses
+  result: confirmed
+- id: exp-streak-next-day
+  title: 'Daily Streak day 2: win one level tomorrow and record the streak screen,
+    the counter and any reward'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T23:30:34'
+  feature: daily-streak
+  not_before: '2026-10-04T09:00:00'
+  source: session
+  plan: on the next calendar day win the first level; confirmed when the streak screen
+    shows 2 with SUN checked; note any reward
+  closed: '2026-10-04T00:33:24'
+  closed_by: 20261004-001551-chrono-2FYKPJ#109
+  note: 'Day 2 (Sun 4 Oct, first win of the day = Hard L5): streak screen before the
+    win screen shows 2, SAT and SUN checked, text ''Well done! Your consistency is
+    impressive.'', Continue; no reward shown'
+  result: confirmed
+- id: study-hint
+  title: 'Study Hint (bulb button in the level HUD): open it, walk its screens and
+    tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T23:35:16'
+  feature: hint
+  source: external
+  closed: '2026-10-04T00:30:49'
+  closed_by: 20261004-001551-chrono-2FYKPJ#110
+  note: 'Hint bulb: free, unlimited in 40+ uses, no popup; highlights a free arrow
+    green, auto-pans; sometimes off-screen so pan by swipe.'
+- id: exp-theme-persist
+  title: 'Theme picker: find whether the chosen theme stays after leaving the level
+    and after an app restart'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:39:00'
+  feature: theme-picker
+  source: session
+  plan: equip Dark in a level, go back home, open the next level, then force-stop
+    and relaunch the app; confirmed if home and the level stay Dark both times (mark
+    each frame); set back to default after
+- id: exp-streak-break
+  title: 'Daily Streak: find what a missed day does to the streak (reset, a save offer
+    and its price)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:39:01'
+  feature: daily-streak
+  not_before: '2026-10-06T09:00:00'
+  source: session
+  plan: skip a whole calendar day with no win, then open the game and the home streak
+    badge; confirmed when a frame shows the Current Record after the gap (reset to
+    0/1 or kept) and any offer to keep it with its price; never pay
+- id: solver-hard-arrows
+  title: Write an arrows solver (read dot grid, head directions, free-ray test) and
+    win Hard level 5 via pan-capture; hint can supply free arrows
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-03T23:44:16'
+  feature: hard-level
+  source: game
+  closed: '2026-10-04T00:30:48'
+  closed_by: 20261004-001551-chrono-2FYKPJ#110
+  note: No pixel solver; hint-loop script (tap bulb, find green pixels, tap them)
+    won Hard L5 in ~13 min (2 steps per arrow). A true solver still not written.
+- id: exp-hint-limit
+  title: Does Hint run out (count or ad) after N uses? Used 8 on Hard L5 with no limit
+    seen; check on Normal level and on win screen hints-used counter
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T23:44:17'
+  feature: hint
+  source: session
+  plan: use hint repeatedly on a level; note counter or ad prompt
+  closed: '2026-10-04T00:33:24'
+  closed_by: 20261004-001551-chrono-2FYKPJ#109
+  note: 'About 55 hint uses on Hard L5 in one level: no counter, price, ad or popup
+    ever; the bulb does not run out on Hard. Normal levels stay with exp-hint-on-normal'
+  result: refuted
+- id: study-level-6-10
+  title: Win Normal levels 6-10 (needs L5 Hard won first)
+  kind: followup
+  requires: any
+  status: cancelled
+  created: '2026-10-03T23:44:17'
+  feature: level
+  source: game
+  closed: '2026-10-03T23:45:50'
+  closed_by: 20261003-233756-chrono-2FYKPJ#24
+  note: duplicate of study-level (play levels 3-10); progress is gated by study-hard-level
+    / solver-hard-arrows
+- id: exp-continue-win-cost
+  title: Find whether a free Continue after Out of Lives lowers the win result (stars,
+    title, score, accuracy) against a clean win
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:46:01'
+  feature: level
+  source: session
+  plan: win one level after taking at least one free Continue and one level without;
+    compare the win screens (stars, title, mistakes, accuracy, score); confirmed if
+    the Continue win shows fewer stars or a lower title beyond the mistake count
+- id: exp-hint-on-normal
+  title: Find whether the hint bulb appears on Normal levels after Hard level 5 (level
+    6) and whether a used hint changes the win screen
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:46:02'
+  feature: hint
+  source: session
+  plan: after Hard L5 open level 6; mark the HUD top right; if the bulb is there use
+    it once and win; confirmed if the bulb shows on Normal and the win screen counts
+    the hint used
+- id: solver-arrows-escape
+  title: Write the arrows-escape solver (read arrows and heads from panned frames,
+    free-ray test, ordered removal) and win Hard level 8 with it using no hints
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-04T00:33:24'
+  feature: hard-level
+  source: game
+  note: 'solver-hard-arrows was closed without a solver: Hard L5 was won by a hint-bulb
+    loop (tap bulb, tap green pixels), 2 steps per arrow, 109 steps and 13 min, nearly
+    a whole session budget. Hard levels recur (5, 8, ...); the hint loop stays the
+    fallback'
+- id: exp-hint-stars
+  title: Find whether using hints lowers the win result (stars, title, score) against
+    a win without hints
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T00:33:25'
+  feature: hint
+  source: session
+  plan: 'Win one Normal level with no hint and no mistake, then the next with 3+ hints
+    and no mistake; compare stars, title and score. Confirmed if the hint win shows
+    fewer stars or a lower title. Context: Hard L5 with 1 mistake and ~55 hints gave
+    2 stars ''Great Start!'', while Normal L4 with 1 mistake gave 3 stars ''Perfect!'''
+- id: exp-hard-frequency
+  title: Find which level numbers are Hard up to level 20 (purple nodes on the level
+    path) and whether the pattern is fixed
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T00:33:25'
+  feature: hard-level
+  source: session
+  plan: On each win screen and on home, mark the level path; list purple nodes. Confirmed
+    when the Hard numbers from 5 to 20 are known (so far 5 and 8) and a rule (every
+    Nth, fixed list) fits them
+- id: exp-red-arrow-tap
+  title: 'Hard levels: does a tap on a red (already blocked) arrow cost a drop or
+    do nothing?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: drops
+  source: session
+  note: 20261003-233756-chrono-2FYKPJ#20 changed nothing
+- id: make-hard-fast
+  title: 'Make Hard arrows levels fast: tap every visibly free arrow in each hint
+    frame, one batched command per hint pair; measure on Hard L8 (L5 took 863 s)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: hard-level
+  source: session

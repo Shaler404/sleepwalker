@@ -1,0 +1,1372 @@
+# Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
+game: com.oakever.meowdoku
+version: 1.19.1
+play_version: 1.18.0
+play_checked: '2026-10-03T19:29:54'
+phone_version: 1.19.1
+discovery: open
+ftue_verified: null
+progress:
+  text: level 129
+  value: 129.0
+  at: '2026-10-03T20:29:02'
+  session: 20261003-202631-chrono-2FYKPJ
+gate: null
+synced:
+  chrono: '2026-10-04T01:10:05'
+mechanics:
+- id: queens
+  name: Cat placement on color regions (Queens-like)
+  status: mastered
+  method: solver
+  levels:
+    won: 3
+    lost: 1
+    quit: 1
+  recent:
+  - level: level 127
+    result: won
+    seconds: 121
+    model: sonnet
+  - level: level 128
+    result: won
+    seconds: 194
+    model: sonnet
+  - level: level 129
+    result: won
+    seconds: 111
+    model: sonnet
+  - level: level 130
+    result: lost
+    seconds: 221
+    model: sonnet
+    deliberate: true
+  - level: level 130
+    result: quit
+    seconds: 68
+    model: sonnet
+  solver: solvers/com.oakever.meowdoku/queens.py
+  note: 'the published solver (queens.py, MAX_CELLS 12) returns every missing cat
+    in one round with rescan; on 2026-10-03 L129 was played with the earlier 3-per-round
+    version in 4 rounds (20261003-202631-chrono-2FYKPJ#2-5); play with solve queens
+    --run; dream 2026-10-04: removed a fake ''level 130 quit 8 s'' (level_start logged
+    before the device was lost, 20261003-235107-chrono-2FYKPJ#0)'
+  best_s: 111
+features:
+- id: consent
+  name: Terms consent popup
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Welcome popup: accept Terms of Service and Privacy Policy, one Accept button'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#0
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#0
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  type: system
+  appeared:
+    text: first launch, Welcome popup with Accept
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#0
+  page: features/consent.md
+- id: fish-event
+  name: Fish rank event (New Session)
+  status: in_progress
+  cases:
+  - id: chk-rules
+    text: 'Info: clear main levels to earn fish, top the leaderboard, win exclusive
+      frames and rewards'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#13
+  - id: chk-in-level
+    text: 3 fish on the level HUD, top right; each wrong cat greys one fish (orange
+      X on the cell); boosters do not cost fish
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#12
+  - id: under-win
+    text: Win adds the fish kept on the HUD to the leaderboard (3 clean, 2 with one
+      mistake) and shows the Leaderboard overlay before the rating screen
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#17
+  - id: under-out-of-fishes
+    text: 'As the base: Out of Fishes screen, no leaderboard or streak popup after
+      the loss; whether the event fish total dropped was not checked'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#17
+  - id: under-restart
+    text: 'As the base: gear > Restart cleared the board, no popup from the event
+      or the streak'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#15
+  - id: under-quit
+    text: 'As the base: back arrow went straight Home, no event or streak popup'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#21
+  - id: under-exit-app
+    text: 'As the base: Android Back on Home opened the Quit popup, X cancelled'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#22
+  - id: end-time
+    text: 'Home leaderboard icon read 20:14:07 at about 23:51:33 local: the event
+      ends about 20:05:40 on 2026-10-04, matching 24 h from the first launch at 20:05:50
+      (23:59:50 then); the fish-event-end follow-up should fall after that'
+    done: true
+    source: 20261003-235107-chrono-2FYKPJ#0
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#2
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-timer
+    text: 'Its timer and schedule: how long it runs and when it comes back'
+    done: false
+  - id: chk-progress
+    text: 'Progress per level: the points or items after a win, and after a loss'
+    done: false
+  - id: chk-rewards
+    text: The rewards per rank or milestone
+    done: false
+  - id: chk-end
+    text: 'The end: the results screen and the reward paid (a follow-up at the timer''s
+      end)'
+    done: false
+  type: event
+  appeared:
+    text: popup on Home after launch, 23:59:50 timer, collect fish and rank up
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#2
+  page: features/fish-event.md
+- id: home
+  name: Home screen
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Home: avatar top-left, yarn streak counter top-center, settings gear with
+      red dot top-right, event podium with 24h timer on the left, Level 127 button,
+      Daily Challenge button with reset timer, players-joined-today counter'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#4
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#4
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-entries
+    text: 'Every entry point on it: open (a feature), locked (feature --locked with
+      its condition) or unclear (an experiment)'
+    done: false
+  - id: chk-badges
+    text: Badges, timers and counters on it and what each points to
+    done: false
+  - id: chk-changes
+    text: What changes on it with progress (new buttons, a moving map, a theme)
+    done: false
+  type: hub
+  appeared:
+    text: after consent on first launch
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#4
+  page: features/home.md
+- id: settings
+  name: Settings
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Settings popup: music/sound/voice/vibration toggles, Save your progress,
+      Language, Feedback, Terms of Service, Privacy Policy, version 1.19.1'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#5
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#5
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  type: system
+  appeared:
+    text: gear icon on Home, top right, red dot
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#5
+  page: features/settings.md
+- id: profile
+  name: Profile (name, avatar, frame, skins)
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Profile popup: editable name (8W2G1Y), avatar, tabs Skins / Avatar / Frame,
+      Confirm'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#7
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#7
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-progress
+    text: 'The progress: the bar, the album or the counter, what fills it and where
+      it is now'
+    done: false
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  type: meta-progress
+  appeared:
+    text: avatar button top-left of Home
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#7
+  page: features/profile.md
+- id: daily-challenge
+  name: Daily Challenge
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: Dated board (10/03), 10x10, stopwatch from 00:00, 3 fish, same three rules
+      and boosters as the main level
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#16
+  - id: reset-time
+    text: Countdown read 00:08:28 at about 23:51:33 local, so it runs out at local
+      midnight (with the 03:53:49 at 20:06:17 reading); what renews at that time is
+      still chk-next-day
+    done: true
+    source: 20261003-235107-chrono-2FYKPJ#0
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#16
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-today
+    text: 'Today''s claim, task list or challenge: what it gives'
+    done: false
+  - id: chk-calendar
+    text: 'The calendar or the task list: every day or task and its reward'
+    done: false
+  - id: chk-next-day
+    text: 'The next day: what renews and when (a daily follow-up)'
+    done: false
+  - id: chk-missed
+    text: 'A missed day: what is lost or reset'
+    done: false
+  - id: chk-play
+    text: 'If it is a board: play it once, its win and its loss'
+    done: false
+  type: daily
+  appeared:
+    text: button under Level on Home, timer 03:5x until reset; opens a dated 10x10
+      board with timer
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#16
+  page: features/daily-challenge.md
+- id: daily-streak
+  name: Daily Streak
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Daily Streak screen: current streak 0, best streak 2, a Wed-Tue week row
+      with a gift on the 7th day; on 2026-10-03 after a missed day the row read SAT-FRI,
+      so the row seems to start on day 1 of the current streak (20261003-201915-chrono-2FYKPJ#6)'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#19
+  - id: chk-counter
+    text: Yarn counter at the top of Home (0) opens it; it counts consecutive days
+      (current 0, best 2)
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#19
+  - id: chk-break
+    text: 'A missed day breaks it: after the first win of the day ''2 days of Daily
+      Streak interrupted'', 2 -> 0'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#4
+  - id: chk-save
+    text: Restore by a rewarded video, or Give up (streak resets; today's win then
+      counts as day 1, best stays 2)
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#4
+  - id: under-win
+    text: 'The first win of the day lights the day: after the leaderboard overlay
+      comes the streak popup (here the break/restore popup), then the rating screen'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#4
+  - id: under-out-of-fishes
+    text: 'As the base: Out of Fishes screen, no leaderboard or streak popup after
+      the loss; whether the event fish total dropped was not checked'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#17
+  - id: under-restart
+    text: 'As the base: gear > Restart cleared the board, no popup from the event
+      or the streak'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#15
+  - id: under-quit
+    text: 'As the base: back arrow went straight Home, no event or streak popup'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#21
+  - id: under-exit-app
+    text: 'As the base: Android Back on Home opened the Quit popup, X cancelled'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#22
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#19
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-rewards
+    text: The reward for each step of the streak
+    done: false
+  - id: chk-in-level
+    text: What shows during a level while the streak runs
+    done: false
+  type: streak
+  appeared:
+    text: yarn counter at top of Home opens it; current 0, best 2, 7-day row with
+      gift on day 7
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#19
+  page: features/daily-streak.md
+- id: fish-leaderboard
+  name: Fish leaderboard
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Leaderboard: 24h timer, podium top 3 with gift boxes, list of players with
+      fish counts, the player''s row at the bottom (0 fish, unranked), info button,
+      Go to Collect'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#12
+  - id: chk-points
+    text: Fish are earned by clearing main levels (event info); how many per level
+      is not yet seen
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#13
+  - id: chk-board
+    text: 'Board: top-3 podium with fish and hearts, rows with rank, avatar, name,
+      Online/Playing now or last seen, fish, hearts; player at rank 21 with 3 fish,
+      then 22 with 5; other players send cheers (hearts: 0 -> 2)'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#17
+  - id: hearts
+    text: 'Each leaderboard row has a heart counter (own row 2, others 0): what gives
+      hearts and whether tapping a heart likes a player'
+    done: false
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#12
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-period
+    text: 'The period and its timer: when it resets'
+    done: false
+  - id: chk-rewards
+    text: Rewards per rank, promotion and relegation
+    done: false
+  - id: chk-end
+    text: 'The end of a period: the results screen and the reward (a follow-up)'
+    done: false
+  type: social
+  appeared:
+    text: event podium icon with 24h timer on Home opens it; first opened
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#12
+  page: features/fish-leaderboard.md
+- id: level
+  name: Main level (cat placement board)
+  status: documented
+  cases:
+  - id: chk-screen
+    text: 'Level 127: level number, score, 9 color-region cat icons, 3 fish, rules
+      strip (1 cat per color; 1 cat per column and row; cats cannot touch), 9x9 board,
+      boosters cat 1 / hint 4 / mouse 1, back and settings'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#3
+  - id: chk-rules
+    text: 'Rules strip: 1 cat per color region, 1 cat per row and column, cats cannot
+      touch; how a level is lost is not yet seen'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#3
+  - id: chk-win
+    text: 'Win: leaderboard (rank up, Tap to Continue 365,1413), on the first win
+      of a day the Daily Streak popup and screen, then the praise screen with the
+      next Level button (365,1245). Praise seen: ''Perfect'' with 3 fish (L127, score
+      8640), ''Brilliant'' with 2 fish (L128, score 10080), ''Immaculate'' with 3
+      fish (L129); Rate Us may come after the Level tap; the next level start shows
+      an interstitial'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#7
+    version: 1.19.1
+    outcome: true
+  - id: chk-hud
+    text: Back arrow, Level, Score, (Hard flame tag), settings gear, color-cat progress
+      bar, 3 fish, 3 rule cards, boosters cat/hint/mouse, banner ad
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: out-of-fishes
+    text: 'Out of fishes: the third wrong cat ends the level; Out of Fishes screen
+      with Remaining N, Get 3 Fishes (rewarded ad) and Restart'
+    done: true
+    outcome: true
+    source: 20261003-202631-chrono-2FYKPJ#17
+  - id: chk-entry
+    text: 'Home: Level N button (365,1185); L130 labelled Hard with red tag'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-loss
+    text: 'Lost by 3 wrong cats: Out of Fishes screen (Get 3 Fishes ad / Restart)'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-retry
+    text: Out of Fishes > Restart (365,1398) first plays an interstitial video ad
+      (shot 38), then reopens the same board with 3 fish and score 0
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#18
+    version: 1.19.1
+  - id: chk-restart
+    text: Settings gear > Restart restarts the SAME board (same layout, cat bar order
+      shuffled), cats cleared, score 0, hint count kept, no confirm
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+    outcome: true
+  - id: chk-quit
+    text: Back arrow in level goes straight Home, no confirm, may trigger interstitial
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+    outcome: true
+  - id: chk-exit-app
+    text: Android Back on Home opens Quit popup; X cancels
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+    outcome: true
+  - id: chk-elements
+    text: 'Settings: music, sound, voice, vibration toggles, Pattern Mode, Feedback,
+      Restart'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#3
+  found_at:
+    text: level 127 home
+    value: 127.0
+  type: core-level
+  appeared:
+    text: Level button on Home (Level 127); the event popup's Got it also opened the
+      level
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#3
+  version_seen: 1.19.1
+  page: features/level.md
+- id: booster-cat
+  name: Cat booster
+  status: documented
+  cases:
+  - id: chk-effect
+    text: Places one correct cat instantly, no confirm; score +672 on L130 (576->1248);
+      no fish cost
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-balance
+    text: Start charge 1; badge shows count, at 0 a green video icon
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-empty
+    text: 'At 0: tap starts rewarded ad (about 60 s)'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-entry
+    text: 'Bottom row of the level screen: cat (180,1357), hint (367,1357)'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-screen
+    text: 'No own screen: one tap places a correct cat at once'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-sources
+    text: 'Rewarded ad at 0 charges: playable/video, ''launch'' leaves it and 1 charge
+      is granted'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-sinks
+    text: Spent only by use in a level
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-refill
+    text: Via ad only (1 charge); no timer seen
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#3
+  found_at:
+    text: level 127 home
+    value: 127.0
+  type: currency-booster
+  appeared:
+    text: on the level HUD at level 127, count 1
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#3
+  version_seen: 1.19.1
+  page: features/booster-cat.md
+- id: booster-hint
+  name: Hint booster (bulb)
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: Tap dims the board, highlights one cell with a reasoning text (e.g. teal
+      has one cell left) and an Apply button (378,1290)
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-effect
+    text: 'Two hint kinds: a single-cell tip whose Apply places the cat (count 3->2,
+      +576 score, no fish cost) [20261003-202631-chrono-2FYKPJ#10], and an exclusion
+      tip whose Apply turns the crosses around a cat solid (count 4->3, no score)
+      [20261003-201915-chrono-2FYKPJ#15]'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-balance
+    text: 'Carried between levels, not refilled per level: 4 at L127, 3 after one
+      use, still 3 at L129 and L130, 2 after the L130 Apply and still 2 after Restart
+      (shots 19, 27, 42)'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#13
+    version: 1.19.1
+  - id: chk-entry
+    text: 'Bottom row of the level screen: cat (180,1357), hint (367,1357)'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-sources
+    text: 'Not seen: hint never reached 0; expected a rewarded video like the cat
+      and mouse boosters, not verified'
+    done: false
+    version: 1.19.1
+  - id: chk-sinks
+    text: Spent per Apply
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#23
+    version: 1.19.1
+  - id: chk-empty
+    text: 'Not seen: hint never reached 0 (2 left at session end)'
+    done: false
+    version: 1.19.1
+  - id: chk-refill
+    text: 'No refill seen: the count only goes down with use and stays across levels
+      and restarts; what restores it at 0 is not seen yet'
+    done: false
+    version: 1.19.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#3
+  found_at:
+    text: level 127 home
+    value: 127.0
+  type: currency-booster
+  appeared:
+    text: on the level HUD at level 127, count 4
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#3
+  version_seen: 1.19.1
+  page: features/booster-hint.md
+- id: booster-mouse
+  name: Mouse booster
+  status: in_progress
+  cases:
+  - id: chk-effect
+    text: One use adds X marks on cells that cannot hold a cat (frame shows new X
+      at r2c9, r6c8, r8c1); no score or fish change
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#16
+  - id: chk-balance
+    text: Count badge on the mouse button in the level HUD; 1 at start
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#16
+  - id: chk-empty
+    text: At 0 the badge becomes a green video icon
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#16
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#3
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 127 home
+    value: 127.0
+  type: currency-booster
+  appeared:
+    text: on the level HUD at level 127, count 1
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#3
+  page: features/booster-mouse.md
+- id: cat-skins
+  name: Cat skins (7 locked)
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200440-chrono-2FYKPJ#8
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-progress
+    text: 'The progress: the bar, the album or the counter, what fills it and where
+      it is now'
+    done: false
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  found_at:
+    text: level 127 home
+    value: 127.0
+  type: meta-progress
+  appeared:
+    text: 'Skins tab of Profile: 1 owned cat skin, 7 locked silhouettes'
+    certainty: fact
+    source: 20261003-200440-chrono-2FYKPJ#8
+  locked:
+    text: 'unknown: 7 locked silhouettes, tap shows no hint; Daily Challenge says
+      a 3-fish clear unlocks a trial skin'
+    value: null
+  page: features/cat-skins.md
+- id: rate-us
+  name: Rate Us popup
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: '''Are you enjoying Meowdoku?'' with 5 stars, Rate Us button, X top right'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#8
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#8
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 129 home
+    value: 129.0
+  type: system
+  appeared:
+    text: after winning level 127 (on the way to level 128)
+    certainty: fact
+    source: 20261003-201915-chrono-2FYKPJ#8
+  page: features/rate-us.md
+- id: ad-interstitial
+  name: Interstitial ad at level start
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: Full-screen video ad, then a playable ad; 9s countdown before the X top
+      right
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#10
+  - id: chk-kind
+    text: Interstitial (video, then a playable end card) shown when the next level
+      starts
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#10
+  - id: chk-close
+    text: 9s countdown then X top right; the playable part did not close cleanly,
+      the player relaunched the app to get out; the Mintegral playable has a '>' at
+      the top right (about 673,117) that was not tried
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#11
+  - id: chk-reward
+    text: 'Not a rewarded placement: gives nothing'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#10
+  - id: after-retry
+    text: An interstitial video also plays after Out of Fishes > Restart (L130, shot
+      38); a tap at the top-left (where the level's back arrow is) hit the ad and
+      opened a Play Store sheet
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#19
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#10
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-frequency
+    text: 'How often it shows: after which action, every Nth level, a cooldown'
+    done: false
+  found_at:
+    text: level 129 home
+    value: 129.0
+  type: ad-placement
+  appeared:
+    text: 'tapping Level 128 after the L127 win: full-screen video/playable ad, 9s
+      countdown then X'
+    certainty: fact
+    source: 20261003-201915-chrono-2FYKPJ#10
+  page: features/ad-interstitial.md
+- id: ad-banner
+  name: Banner ad under the level board
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: Banner (an app install card with INSTALL button) under the boosters at the
+      bottom of the level screen
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#15
+  - id: chk-kind
+    text: Banner at the bottom of the level screen
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#15
+  - id: chk-reward
+    text: 'Not a rewarded placement: gives nothing'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#15
+  - id: chk-close
+    text: No close cross; it stays while the level is open
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#15
+  - id: home-none
+    text: Home screen carries no banner ad (Level 130 Hard, Daily Challenge, leaderboard
+      icon; nothing at the bottom); the banner is a level-screen placement
+    done: true
+    source: 20261003-235107-chrono-2FYKPJ#0
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-frequency
+    text: 'How often it shows: after which action, every Nth level, a cooldown'
+    done: false
+  found_at:
+    text: level 129 home
+    value: 129.0
+  type: ad-placement
+  appeared:
+    text: shown on every level from some level on; first seen on level 128 (not checked
+      on level 127)
+    certainty: hypothesis
+    source: 20261003-201915-chrono-2FYKPJ#15
+  page: features/ad-banner.md
+- id: ad-rewarded
+  name: Rewarded video (streak restore, booster refill)
+  status: in_progress
+  cases:
+  - id: chk-kind
+    text: 'Rewarded video: the Restore button on the Daily Streak interrupted popup;
+      the green video icon on a booster at 0'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#4
+  - id: chk-screen
+    text: 'Daily Streak popup: 2 -> 0, ''Watch a video to restore them'', Restore
+      (video icon) and Give up'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#4
+  - id: chk-reward
+    text: 'Offers seen: cat/mouse booster at 0 (green video badge, no offer screen:
+      the tap starts the ad at once) gives 1 charge; Out of Fishes ''Get 3 Fishes''
+      (AD tag) offers 3 fish to continue (not watched); Daily Streak Restore'
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#13
+  - id: chk-close
+    text: The cat booster's playable ad (video then a START/BACK end card) showed
+      no close cross in 60 s; the player left it with launch and the charge was still
+      granted
+    done: true
+    source: 20261003-202631-chrono-2FYKPJ#12
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-201915-chrono-2FYKPJ#4
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-frequency
+    text: 'How often it shows: after which action, every Nth level, a cooldown'
+    done: false
+  found_at:
+    text: level 129 home
+    value: 129.0
+  type: ad-placement
+  appeared:
+    text: Restore button on the Daily Streak interrupted popup after the first win
+      of the day; booster badges turn into a video icon at 0
+    certainty: fact
+    source: 20261003-201915-chrono-2FYKPJ#4
+  page: features/ad-rewarded.md
+tasks:
+- id: analyze
+  title: Analyze the game
+  kind: analyze
+  requires: any
+  status: open
+  created: '2026-10-03T19:29:58'
+  source: external
+  note: find all features and work through all user cases on the version on the phone
+- id: scout-1
+  title: 'Map the game: play until the main menu and every entry point is visible;
+    list each entry point as open (a study goal), locked with its unlock condition
+    (an unlock goal) or unclear (an experiment)'
+  kind: scout
+  requires: any
+  status: done
+  created: '2026-10-03T19:29:58'
+  source: external
+  note: Home mapped; install already at level 127 (progress present on first launch).
+    No locked entries seen; skins 7 locked silhouettes with unknown unlock; Save your
+    progress in settings left unexplored
+  closed: '2026-10-03T20:08:29'
+  closed_by: 20261003-200440-chrono-2FYKPJ#20
+  new_entries: 6
+  at_progress: level 127 home
+  new_entry_names:
+  - Settings
+  - Profile
+  - Fish event leaderboard
+  - Daily Streak
+  - Daily Challenge
+  - Level
+- id: study-profile
+  title: 'Study profile: skins, avatars, frames and how locked skins unlock'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:08:28'
+  feature: profile
+  source: session
+- id: study-fish-event
+  title: Study fish event rewards and rank
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:08:28'
+  feature: fish-event
+  source: session
+- id: study-daily-streak
+  title: Study daily streak rewards and break rule
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:08:28'
+  feature: daily-streak
+  source: session
+- id: study-daily-challenge
+  title: Study Daily Challenge incl. trial skin on 3-fish clear
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:08:29'
+  feature: daily-challenge
+  source: session
+- id: exp-save-progress
+  title: 'Save your progress in Settings: what it offers (do not sign in)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:08:29'
+  feature: settings
+  source: session
+  plan: open it, mark, back out without signing in
+- id: study-consent
+  title: 'Study Terms consent popup: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:09:04'
+  feature: consent
+  source: external
+- id: study-home
+  title: 'Study Home screen: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:09:04'
+  feature: home
+  source: external
+- id: study-settings
+  title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:09:04'
+  feature: settings
+  source: external
+- id: study-fish-leaderboard
+  title: 'Study Fish leaderboard: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:09:04'
+  feature: fish-leaderboard
+  source: external
+- id: outcomes-fish-event
+  title: 'Run each outcome once under Fish rank event (New Session): Android Back
+    on Home opens Quit popup; X cancels'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T20:09:46'
+  feature: fish-event
+  source: session
+  plan: 'while Fish rank event (New Session) is on, reach each listed outcome of the
+    base level once, one at a time (a deliberate loss is allowed unless it spends
+    premium currency); mark the outcome screen (mark --feature fish-event --as result)
+    and close its cell: case fish-event under-<outcome> "as the base" or "what differs"
+    --done'
+  rank: 7
+  closed: '2026-10-03T20:38:07'
+  closed_by: planner
+  note: every known outcome of the base level was run under Fish rank event (New Session)
+- id: outcomes-daily-streak
+  title: 'Run each outcome once under Daily Streak: Android Back on Home opens Quit
+    popup; X cancels'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T20:09:46'
+  feature: daily-streak
+  source: session
+  plan: 'while Daily Streak is on, reach each listed outcome of the base level once,
+    one at a time (a deliberate loss is allowed unless it spends premium currency);
+    mark the outcome screen (mark --feature daily-streak --as result) and close its
+    cell: case daily-streak under-<outcome> "as the base" or "what differs" --done'
+  rank: 7
+  closed: '2026-10-03T20:38:09'
+  closed_by: planner
+  note: every known outcome of the base level was run under Daily Streak
+- id: unlock-cat-skins
+  title: 'Unlock Cat skins (7 locked): unknown: 7 locked silhouettes, tap shows no
+    hint; Daily Challenge says a 3-fish clear unlocks a trial skin'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T20:10:17'
+  feature: cat-skins
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: 'unknown: 7 locked silhouettes, tap shows no hint; Daily Challenge
+    says a 3-fish clear unlocks a trial skin'
+- id: study-level
+  title: 'Study the main level: play levels 127+ with the solver, mark the win screen
+    and its rewards (fish, score), restart, quit and exit-app; find whether and how
+    a level can be lost'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-03T20:10:24'
+  feature: level
+  source: game
+  closed: '2026-10-03T20:34:31'
+  closed_by: 20261003-202631-chrono-2FYKPJ#23
+  note: L129 won via solve --run (3 fish Immaculate), win flow marked, loss = Out
+    of Fishes after 3 wrong cats, restart same board, quit via back arrow, exit via
+    Back on Home
+- id: exp-fish-rating
+  title: 'Find what makes the 3 fish on the level HUD drop (time, wrong cats, boosters):
+    play one level fast and clean, one with a deliberate wrong placement; confirmed
+    when the fish count at the win differs and the leaderboard fish rise by it'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-03T20:10:24'
+  feature: fish-event
+  source: game
+  closed: '2026-10-03T20:25:42'
+  closed_by: 20261003-201915-chrono-2FYKPJ#18
+  note: 'L127 clean: 3 fish, Perfect screen, leaderboard fish 3 (rank 21). L128 one
+    wrong cat (orange X, fish 3->2, other boosters did not cost fish): 2 fish, Brilliant,
+    Beat 91.3%, leaderboard 3->5 (+2). Time not tested separately but both fast.'
+  result: confirmed
+- id: study-boosters
+  title: 'Study the three level boosters (cat, hint, mouse): use each once on a level,
+    mark the effect, then note the balance and where more come from'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-03T20:10:25'
+  feature: booster-hint
+  source: game
+  closed: '2026-10-03T20:25:42'
+  closed_by: 20261003-201915-chrono-2FYKPJ#18
+  note: 'Start: cat 1, hint 4, mouse 1. Cat: places one correct cat (+576 score on
+    L128; a 109 on an earlier frame was the counter mid-animation), count to 0 then
+    a video icon. Hint: two kinds (single-cell Apply places a cat; exclusion Apply
+    makes the crosses solid), 4->3. Mouse: adds three crosses, 1->0, video icon. More
+    come via rewarded video (icon at 0).'
+- id: ftue
+  title: Play the first-time experience on a fresh install (tutorial, first levels,
+    first popups); the current install keeps progress from earlier sessions (level
+    127 after the update to 1.19.1)
+  kind: ftue
+  requires: fresh
+  status: open
+  created: '2026-10-03T20:10:25'
+  source: session
+- id: look-shop-ads
+  title: 'Look for the shop, offers, no-ads, rewarded videos and interstitials: none
+    seen on Home; check after level wins and at zero boosters'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-03T20:10:25'
+  source: game
+  closed: '2026-10-03T20:25:42'
+  closed_by: 20261003-201915-chrono-2FYKPJ#18
+  note: 'No shop/offers/no-ads seen on Home or after wins. Ads: banner at level bottom,
+    interstitial (video/playable, 9s countdown, X) on level start, rewarded video:
+    Restore daily streak popup after win leaderboard (Give up declined), booster badge
+    turns into green video icon at 0. Rate Us popup after L127 win. Nothing bought.'
+- id: fish-event-end
+  title: 'Open the fish leaderboard after its 24h timer ends (started 2026-10-03 ~20:05):
+    mark the results screen, the rank and the reward paid, and whether a new period
+    starts'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-03T20:10:31'
+  feature: fish-leaderboard
+  not_before: '2026-10-04T20:10:31'
+  source: game
+- id: study-booster-cat
+  title: 'Study Cat booster: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:14:35'
+  feature: booster-cat
+  source: external
+  closed: '2026-10-03T20:34:30'
+  closed_by: 20261003-202631-chrono-2FYKPJ#23
+  note: 'cat booster: instant correct cat, ad refill at 0'
+- id: study-booster-hint
+  title: 'Study Hint booster (bulb): open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:14:35'
+  feature: booster-hint
+  source: external
+  closed: '2026-10-03T20:34:30'
+  closed_by: 20261003-202631-chrono-2FYKPJ#23
+  note: 'hint: explained cell + Apply places cat'
+- id: study-booster-mouse
+  title: 'Study Mouse booster: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:14:35'
+  feature: booster-mouse
+  source: external
+- id: appeared-ad-banner
+  title: 'Find why Banner ad under the level board appeared: shown on every level
+    from some level on; first seen on level 128 (not checked on level 127)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:28:50'
+  feature: ad-banner
+  source: session
+  plan: 'find the moment Banner ad under the level board shows up and what comes just
+    before it (shown on every level from some level on; first seen on level 128 (not
+    checked on level 127)); confirmed when a frame shows the trigger. Record it with
+    feature ad-banner --appeared "...": the goal closes by itself'
+- id: exp-level-loss
+  title: 'Find whether a main level can be lost: place wrong cats until all 3 fish
+    are grey and one more; confirmed when a fail screen (or the absence of one at
+    0 fish) is marked'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T20:29:20'
+  feature: level
+  source: session
+  plan: On a level, place deliberately wrong cats one by one, shot after each; at
+    0 fish place one more. A fail/retry screen confirms a loss outcome (register it
+    with case level <kind> --outcome); finishing with 0 fish and a win screen refutes
+    it. Mark the win screen and leaderboard fish at 0 fish.
+  closed: '2026-10-03T20:37:54'
+  closed_by: 20261003-202631-chrono-2FYKPJ#17
+  note: 'L130: wrong cats grey one fish each; the third wrong cat ends the level with
+    an Out of Fishes screen (Remaining 10, Get 3 Fishes AD, Restart)'
+  result: confirmed
+- id: exp-booster-video
+  title: 'Watch the rewarded video on the cat booster at 0 once: how many cats it
+    gives, and whether the badge returns to a count'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T20:29:20'
+  feature: booster-cat
+  source: session
+  plan: On a level with the cat booster at 0 (green video icon), tap it, watch the
+    video to the end, close; mark the badge before and after. Confirmed when the count
+    after the video is marked (expected 1).
+  closed: '2026-10-03T20:37:54'
+  closed_by: 20261003-202631-chrono-2FYKPJ#13
+  note: Cat booster at 0 (green video badge) started a rewarded playable ad (Gossip
+    Harbor); after leaving it via launch the badge showed 1 (shot 27), the next tap
+    placed a correct cat and the badge went back to the video icon
+  result: confirmed
+- id: exp-ad-frequency
+  title: 'Find how often the interstitial and banner show: play three levels in a
+    row and mark which level starts show an interstitial and whether the banner is
+    on every level'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:29:20'
+  feature: ad-interstitial
+  source: session
+  plan: Play three levels back to back with the solver; after each Level N button
+    shot the next screen 2-3 s later; note interstitial yes/no per level and banner
+    yes/no. Confirmed when a rule (every level, every Nth, a cooldown) fits all three.
+- id: study-rate-us
+  title: 'Study the Rate Us popup: what X and Rate Us do (Rate Us leads to the store:
+    back at once, no rating) and after which win it comes back'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:29:33'
+  feature: rate-us
+  source: session
+- id: study-ad-rewarded
+  title: 'Study rewarded videos: every place that offers one (streak restore, booster
+    at 0, others) and what each gives after a full watch'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:29:33'
+  feature: ad-rewarded
+  source: session
+- id: study-ad-interstitial
+  title: 'Study Interstitial ad at level start: open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:36:42'
+  feature: ad-interstitial
+  source: external
+- id: study-ad-banner
+  title: 'Study Banner ad under the level board: open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:36:42'
+  feature: ad-banner
+  source: external
+- id: exp-get-3-fishes
+  title: 'Watch the Get 3 Fishes ad on Out of Fishes once: confirmed when the level
+    continues with the placed cats kept and 3 fish back'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:38:33'
+  feature: ad-rewarded
+  source: session
+  plan: On a level, place 3 wrong cats to reach Out of Fishes, mark it, tap Get 3
+    Fishes, sit through the ad (launch out if no cross after 60 s), mark the board
+    after. Confirmed when the board keeps its cats and the fish are 3; refuted if
+    the level restarts or nothing is given
+- id: exp-hint-empty
+  title: 'Use the hint booster down to 0 and see what refills it: confirmed when the
+    badge at 0 and its refill (video, timer, level win) are marked'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:38:33'
+  feature: booster-hint
+  source: session
+  plan: Hints are at 2 and carry over between levels. On a level use Apply twice,
+    mark the badge at 0; tap it once and mark what comes (video, offer); after the
+    next win check whether the count changed. Confirmed when the source at 0 is marked
+- id: exp-pattern-mode
+  title: 'Toggle Pattern Mode in the in-level settings once: confirmed when the board
+    with Pattern Mode on is marked and the toggle is set back'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:38:34'
+  feature: level
+  source: session
+  plan: In a level open the gear (671,110), turn Pattern Mode on, close, mark the
+    board (expected patterns on the color regions), then turn it off again. Confirmed
+    when the board's look with it on is marked
+- id: exp-score-per-cat
+  title: What decides the score a placed cat gives (+576 on L128, +672 on L130)?
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: level
+  source: session
+- id: exp-streak-restore
+  title: 'Daily Streak interrupted: try Restore (video) once and record the day-7
+    gift'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: daily-streak
+  source: session

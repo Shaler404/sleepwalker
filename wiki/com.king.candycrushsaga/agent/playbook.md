@@ -68,3 +68,17 @@ Status mastered, method manual, 6 won / 0 lost; typical 4.3 min, best 2.6 min (b
 
 What made levels fast: an early colour bomb on the order colour (levels 1, 2, 6). What made them slow:
 many plain matches on meringue (level 3) and repeated moves on stale frames (level 4).
+
+## Dream 2026-10-04: corrections (1.337.0.2)
+
+- The HUD "N/♥M" shows the level and the LIVES ("1/♥5", "4/♥4"), not unlimited lives; quitting and force-stopping each cost a life [s:20261003-194350-chrono-2FYKPJ#3] [s:20261003-225003-chrono-2FYKPJ#50] [s:20261003-230937-chrono-2FYKPJ#12].
+- There IS a win screen ("Level completed", crown, stars): after the winning move `shot` every 1-2 s; a `wait 15` misses it [s:20261003-225003-chrono-2FYKPJ#43].
+- No Restart inside a level: Quit level (costs a life and the starting boosters) and replay from the map [s:20261003-230937-chrono-2FYKPJ#10] [s:20261003-225003-chrono-2FYKPJ#48].
+- Colour bomb: make a 5-line of the order colour, then swap the bomb with that colour (L1 in 3 moves; L4 65 -> 24 meringue in one move) [s:20261003-194350-chrono-2FYKPJ#6] [s:20261003-225003-chrono-2FYKPJ#46].
+- Test top-bar icons from the Map tab, not from the Shop tab [s:20261003-194350-chrono-2FYKPJ#23]. Bottom bar at y about 1500: Map 73, Events 218, Social 365, Pins 510, Shop 655 (x=437 is a boundary) [s:20261003-230937-chrono-2FYKPJ#2].
+
+| Level | Result | Seconds | Source |
+|---|---|---|---|
+| 1 | won (3 moves) | 92 | [s:20261003-194350-chrono-2FYKPJ#6] |
+| 2 | won | 294 | [s:20261003-225003-chrono-2FYKPJ#25] |
+| 3 | won (one `ask`) | 500 | [s:20261003-225003-chrono-2FYKPJ#43] |

@@ -2,7 +2,7 @@
 game: _common
 title: Common agent lessons
 type: agent
-verified_at: 2026-10-02
+verified_at: 2026-10-04
 ---
 
 # Common agent lessons
@@ -23,8 +23,9 @@ confirmed on two versions in a row is deleted.
   session with the status `blocked`; `sw.py` reports this itself. Long idle waits let the screen dim and
   sleep, after which taps fail the same way: wait for timers with a follow-up task, not inside a session.
   *Confirmed: manual check 2026-09-30, Samsung SM-A276B; 20261001-081207-chrono-2FYKPJ, Pull the Pin 241.5.1;
-  20261001-175320-chrono-2FYKPJ, MeowTrail 1.0.2; idle wait: 20261001-223249-chrono-2FYKPJ, Meowdoku 1.18.0.*
-  [s:20261001-081207-chrono-2FYKPJ#18] [s:20261001-175320-chrono-2FYKPJ#4] [s:20261001-223249-chrono-2FYKPJ#8]
+  20261001-175320-chrono-2FYKPJ, MeowTrail 1.0.2; idle wait: 20261001-223249-chrono-2FYKPJ, Meowdoku 1.18.0;
+  a 3-min rewarded ad, screen awake and not dimmed: 20261004-001002-chrono-2FYKPJ, Pull the Pin 241.5.1.*
+  [s:20261001-081207-chrono-2FYKPJ#18] [s:20261001-175320-chrono-2FYKPJ#4] [s:20261001-223249-chrono-2FYKPJ#8] [s:20261004-001002-chrono-2FYKPJ#2]
 - A playable ad with no close button ignores taps and Back. Do not play it or wait: `sw.py launch`
   returns to the game (a rewarded ad still pays). If `launch` does not, `sw.py restart --why ...` gets out
   (verified in Cryptogram and Pull the Pin). A restart can cost progress: in Pull the Pin it reverts the
@@ -69,3 +70,25 @@ confirmed on two versions in a row is deleted.
 - After `launch` from a Helpshift help center or an ad, the game may still show the popup that was open
   before: look at the frame before the next tap.
   *Confirmed: 20261001-022624-chrono-2FYKPJ, Meowdoku 1.18.0; MeowTrail 1.0.2 (session 20261001-035425-chrono-2FYKPJ).* [s:20261001-022624-chrono-2FYKPJ#30] [s:20261001-035425-chrono-2FYKPJ#19]
+- On an interstitial or its end card, a top-left skip or store icon and a "Google Play >>" label open
+  the Google Play listing, not the next screen. Do not tap them: wait for an X (usually top right).
+  If the store is already in front, use the store sheet's own Close (top left), or Back and then
+  `launch` as in the lesson above (in Pull the Pin and Block Blast! `launch` alone returned to the game:
+  20261004-004411-chrono-2FYKPJ#22, 20261004-005453-chrono-2FYKPJ#6).
+  *Confirmed: 20261003-212548-chrono-2FYKPJ, 20261003-235233-chrono-2FYKPJ, Block Blast! 10.8.1; 20261003-214021-chrono-2FYKPJ,
+  20261004-004411-chrono-2FYKPJ, 20261004-005453-chrono-2FYKPJ, Pull the Pin 241.5.1.* [s:20261003-212548-chrono-2FYKPJ#27]
+  [s:20261003-235233-chrono-2FYKPJ#44] [s:20261003-214021-chrono-2FYKPJ#28] [s:20261004-004411-chrono-2FYKPJ#21] [s:20261004-005453-chrono-2FYKPJ#4]
+- Read a score or a counter only after its count-up has ended (the buttons under it are drawn): an
+  early frame records a wrong number.
+  *Confirmed: 20261003-193423-chrono-2FYKPJ, Block Blast! 10.8.1 (19 vs 124); 20261004-001551-chrono-2FYKPJ, Amaze GO! 1.33.0
+  (895 vs 1194); 20261003-201915-chrono-2FYKPJ, Meowdoku 1.19.1 (109 vs 576).* [s:20261003-193423-chrono-2FYKPJ#4]
+  [s:20261004-001551-chrono-2FYKPJ#110] [s:20261003-201915-chrono-2FYKPJ#13]
+- Run destructive outcome cases (Restart, force-stop, a restart out of a stuck ad) after the win or on
+  a board you can afford to lose, never on the only attempt at the level that gates progress: they
+  wipe the board or revert the win.
+  *Confirmed: 20261003-233756-chrono-2FYKPJ, Amaze GO! 1.33.0; 20261003-211035-chrono-2FYKPJ, Pull the Pin 241.5.1.*
+  [s:20261003-233756-chrono-2FYKPJ#23] [s:20261003-211035-chrono-2FYKPJ#23]
+- Test quit and exit-app on a board with progress (score > 0, a piece placed), and after the relaunch
+  reopen the level and look before recording what was kept.
+  *Confirmed: 20261003-212548-chrono-2FYKPJ, Block Blast! 10.8.1; 20261003-232850-chrono-2FYKPJ, MeowTrail 1.0.2.*
+  [s:20261003-212548-chrono-2FYKPJ#29] [s:20261003-232850-chrono-2FYKPJ#23]

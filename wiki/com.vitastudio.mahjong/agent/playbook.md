@@ -36,6 +36,12 @@ the dream merges it here. Level times: `sw.py playbook`.
 - Special tiles are ordinary pairs: the blank card (white face, green frame, red inner border — NOT a
   face-down green) [s:20261001-211823-chrono-2FYKPJ#6], gold 福 tiles, framed pictures (roses, gazebo,
   graffiti), IQ+N tiles [s:20260930-225122-chrono-2FYKPJ#76].
+- Tile set (3.40.1, session 20261003-195050): the board shows lavender faces with purple side bands and PURPLE
+  face-down backs with a flower circle (the "greens" below), although the Theme screen shows "Simple" (green back)
+  selected; L19 also has zodiac tiles (Pisces, Gemini, Aries, Capricorn, ...), ordinary pairs. Sessions 231301 and
+  231804 (same day, same L19) showed a THIRD set: pink-cream faces, pink and dark red side bands, RED face-down backs
+  with a lotus or a lattice medallion; the L19 layout changed between launches. Do NOT switch the theme to get the
+  old look: the solver reads all three sets (its note starts "cream", "purple" or "red tile set").
 - Face-down greens (from L11) — the rule is settled [s:20261001-110957-chrono-2FYKPJ#32]:
   - a tap on a FREE unseen green flips it face up in place and takes NO tray slot [s:20261001-110957-chrono-2FYKPJ#12];
   - only one green is face up at a time: flipping another turns the earlier one face down again [s:20261001-083725-chrono-2FYKPJ#43];
@@ -49,7 +55,9 @@ the dream merges it here. Level times: `sw.py playbook`.
   - lit by the Hint, greens show teal: tap both (or the one whose twin sits in the tray) [s:20261001-063226-chrono-2FYKPJ#54] [s:20261001-063226-chrono-2FYKPJ#58].
 - Shuffle keeps the slots but moves every tile between them, greens included, and every green is unseen
   again; the tray stays [s:20261001-063226-chrono-2FYKPJ#59] [s:20261001-205148-chrono-2FYKPJ#41].
-- Method: manual (the local solver is not published, see below). Per frame:
+- Method: solver first: `sw.py solve core-match --run --rounds 40 --settle 2` from the level's first frame; it keeps
+  its memory (greens seen, last board) between rounds. When it stops, read its note, do what it says (Hint lit pair,
+  Shuffle, a video hint) and run it again. The manual loop below is the fallback, per frame:
   1. list ALL certain pairs (both tiles free) and the tray twins, and send them in one batch in peel order
      (4–13 taps); a pair whose first tile is uncertain: tap the UNCERTAIN tile first — a locked tap does
      nothing, so the sure tile only follows into the tray if the first one went [s:20261001-083725-chrono-2FYKPJ#46] [s:20261001-063226-chrono-2FYKPJ#56];
@@ -76,10 +84,23 @@ the dream merges it here. Level times: `sw.py playbook`.
   throws away the lost attempt and restores the last saved board (L18) [s:20261001-205148-chrono-2FYKPJ#1].
 - Ads: a playable with no close button — `sw.py launch` at once; the reward is still granted [s:20261001-031723-chrono-2FYKPJ#82].
   Never tap the video's top-left skip arrow: it opened the Play Store (~20 s + relaunch) [s:20261001-063226-chrono-2FYKPJ#51].
-- Solver (local draft `state/com.vitastudio.mahjong/solvers/core-match.py`, not published): the lab
-  rewrote it on 2026-10-01 to read the screenshot and remember greens between rounds. It stalled on the
-  L18 resume frame ("no certain pair", tray tile read as "?") [s:20261001-205148-chrono-2FYKPJ#1] and on L19
-  after 3 rounds; it missed a free blank-card pair [s:20261001-211823-chrono-2FYKPJ#3]. Task `core-match-fast`.
+- Solver (`state/com.vitastudio.mahjong/solvers/core-match.py`): reads the screenshot, remembers greens between
+  rounds, flips one free green per round, taps Hint when nothing is certain. Lab 2026-10-03: it saw NO tile on the
+  purple L19 board (all checks were on cream frames); it now maps the purple set onto the cream colours before
+  reading. On 195050/00022 it reads 9 open tiles (2 backs) and plays Gemini pair, Capricorn pair, then flips the
+  top-left purple back. Lab 2026-10-03 (2nd): on the red set it read the faces as cream but merged them (5 of 9 open
+  tiles, no backs); it now maps the red set too: 231301/00022 9 of 9 open tiles (Scorpio, Capricorn, Pudding pairs),
+  231804/00008 14 open tiles with the 4 free red backs, the Hint-lit pair (00009), the lit twin of a tray tile
+  (00010) and a Shuffle (00012) read right. Red glyphs (Capricorn, yin-yang) are never taken for backs. In the red
+  set a tile beside a picture tile (teapot) may read "side unknown" and wait: harmless, it is free only when it
+  pairs anyway. Pitfalls in the purple and red sets, not yet seen on any frame (check them on the phone):
+  - the Hint tint on lavender faces and on purple and red backs (on red-set faces it reads): if the round after a
+    Hint tap says "no lit pair read after the Hint", tap the lit pair by hand from the frame and run again;
+  - a flipped red back (its face shown in place) and the tray match in the red set: not on any frame yet;
+  - the grey of a tile tapped while locked ("Locked by left and right") may not read as locked;
+  - tray tiles: a tray face that reads "?" is only a single the solver will not pair: look at the tray.
+  Earlier: stalled on the L18 resume frame [s:20261001-205148-chrono-2FYKPJ#1]; missed a blank-card pair on the
+  cream L19 [s:20261001-211823-chrono-2FYKPJ#3]. Task `core-match-fast`.
 
 ### Level times
 | Level | Result | Minutes | Model | What decided it | Source |
@@ -112,3 +133,10 @@ rest is greens opening as the board clears, about one reveal per frame and ~25 s
 [s:20261001-083725-chrono-2FYKPJ#73]. Make it fast (task `core-match-fast`): a solver that reads every face
 (blank cards, gold, framed) and the tray, flips one green per round with a rescan, and certain pairs sent
 as one call.
+
+## Dream 2026-10-04: corrections (3.40.1)
+
+- Face-down tile backs are not always green: on 3.40.1 L19 showed purple, then red backs (and a different layout after a relaunch) [s:20261003-195050-chrono-2FYKPJ#17] [s:20261003-231301-chrono-2FYKPJ#15] [s:20261003-231804-chrono-2FYKPJ#4]. Re-read the board after every relaunch.
+- Every relaunch so far showed Level 1, the age popup and the saved-game offer: Start Over leads to a No/Yes confirm, and Yes may delete the cloud save. Take Sync Data; never tap Start Over [s:20261003-231301-chrono-2FYKPJ#1-4].
+- Android Back does nothing in a level and on the medal detail: use the on-screen back arrow (50,110) or tap outside [s:20261003-231301-chrono-2FYKPJ#12-13] [s:20261003-231301-chrono-2FYKPJ#21].
+- Boosters at L19: Shuffle 3, Hint 5 (lights a pair in cyan), Undo 10 (returns the tray tile); Shuffle seems to reveal backs [s:20261003-231804-chrono-2FYKPJ#4-8].
