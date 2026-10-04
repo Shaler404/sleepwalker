@@ -88,8 +88,19 @@ check(swm.model_role(view("mastered"), tasks("unlock"))[0] == "play", "mastered 
 last = {"id": "s1", "status": "handoff", "handoff_to": "m0"}
 role, why = swm.model_role(view("broken"), tasks("daily"), last)
 check(role == "study" and why == "handoff from s1: m0 is broken", f"after a handoff the brief names the mechanic: {why}")
-check(swm.model_role(view("mastered"), tasks("daily"), last)[0] == "play",
-      "a handoff whose mechanic is mastered by now: the usual rule")
+# the mechanic was mastered already when the player gave up (Amaze GO! Hard L5 under a mastered arrows-escape,
+# 20261003-232357 -> 233756 stuck; Pull the Pin Space theme under a mastered pin-pull, 20261004-003223 -> 004411
+# handed off again): the handoff stands. Mastered after the handoff (the lab fixed it): the usual rule
+last_t = {**last, "started": "2026-10-04T00:00:00", "minutes": 10}
+role, why = swm.model_role(view("mastered"), tasks("daily"), last_t)
+check(role == "study" and "m0 is mastered" in why and "the handoff stands" in why,
+      f"a handoff whose mechanic was mastered already: the strong model takes the next session: {why}")
+fixed = [{"op": "mechanic", "id": "m0", "status": "mastered", "t": swm.session_end_t(last_t) + 60}]
+check(swm.model_role(view("mastered"), tasks("daily"), last_t, fixed)[0] == "play",
+      "a handoff whose mechanic was mastered after it (the lab fixed it): the usual rule")
+stale = [{"op": "mechanic", "id": "m0", "status": "mastered", "t": swm.session_end_t(last_t) - 3600}]
+check(swm.model_role(view("mastered"), tasks("daily"), last_t, stale)[0] == "study",
+      "mastered an hour before the handoff: the handoff stands")
 role, why = swm.model_role(view("mastered"), tasks("daily"), {"id": "s0", "status": "handoff"})
 check(role == "study" and "met gameplay to learn" in why, f"a handoff with no mechanic named -> the strong model: {why}")
 check(swm.model_role(view("broken"), tasks("daily"), {"id": "s2", "status": "ok"})[0] == "play",

@@ -142,8 +142,10 @@ check(r["mechanic"]["status"] == "mastered" and r.get("mechanic_change", {}).get
       f"two fast levels -> mastered: {r.get('mechanic_change')}")
 check(r["mechanic"]["levels"]["won"] == 3 and r["mechanic"]["typical_min"] is not None, "level stats kept")
 
-# a level left open when the session ends counts as quit
+# a level left open when the session ends counts as quit (once a move was played: with none it is void, see
+# test_procfix_1004.py)
 sw("level", "start", "level 4", "--mechanic", "pull-pins", "--plan", "x")
+sw("taps", "50,50", "--why", "one pin")
 sw("end", "--status", "ok", "--summary", "learned pull-pins")
 v = yaml.safe_load(sw("research", G))
 m = next(x for x in v["mechanics"] if x["id"] == "pull-pins")

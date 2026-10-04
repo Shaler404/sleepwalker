@@ -39,6 +39,40 @@ class Device(Protocol):
     def healthy(self) -> bool: ...
 
 
+# Errors of a connection adb drops and brings back by itself: on Windows a "[WinError 10054] An existing
+# connection was forcibly closed by the remote host" (ConnectionResetError) in the middle of a tap, a wait or a
+# solver run. Six sessions of 2026-10-03/04 met it; the three that reached the command crashed it (a `solve --run`
+# [s:20261003-235233-chrono-2FYKPJ#35], a `wait 15` that lost the only frame of a win screen
+# [s:20261003-194350-chrono-2FYKPJ#6], a tap [s:20261003-195050-chrono-2FYKPJ#6]); the next command worked.
+TRANSIENT = (ConnectionResetError, ConnectionAbortedError, BrokenPipeError)
+
+
+class Retrying:
+    """adbutils' device behind one retry: a call that dies of a transient error is made once more a second later
+    on a fresh connection. Anything else (the device gone, an adb error) comes through as it is."""
+
+    def __init__(self, make, sleep_s: float = 1.0):
+        self._make, self._sleep = make, sleep_s
+        self._dev = make()
+        self.reconnects = 0
+
+    def __getattr__(self, name):
+        attr = getattr(self._dev, name)
+        if not callable(attr):
+            return attr
+
+        def call(*a, **k):
+            try:
+                return attr(*a, **k)
+            except TRANSIENT:
+                time.sleep(self._sleep)
+                self._dev = self._make()
+                self.reconnects += 1
+                return getattr(self._dev, name)(*a, **k)
+
+        return call
+
+
 class AndroidDevice:
     """A phone/tablet over USB or Wi-Fi ADB, or an emulator with ADB."""
 
@@ -54,7 +88,7 @@ class AndroidDevice:
         import adbutils
 
         self.name = serial
-        self.adb = adbutils.adb.device(serial=serial)
+        self.adb = Retrying(lambda: adbutils.adb.device(serial=serial))
         size = self.adb.window_size()
         self.width, self.height = size.width, size.height
         if prepare:
