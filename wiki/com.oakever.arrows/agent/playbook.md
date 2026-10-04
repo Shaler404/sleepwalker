@@ -43,3 +43,24 @@ Positions are in the 730x1583 frame.
 | 3 | won, Flawless | 44 s (includes the lives experiment) | 00:25 | opus | [s:20261001-204000-chrono-2FYKPJ#22] |
 
 Median 0.4 min against a 5 min budget. Boards of levels 1-3: [levels.md](../levels.md).
+
+## Notes 20261003-232357
+- L3-L4 normal boards: free arrows first; blocked tap costs 1 drop (3 total) and arrow flashes red; L4 won Perfect with 1 mistake. Win screen: Flawless (0 mistakes)/Perfect.
+- L5 is "Hard" (purple, also L8): board larger than screen, "Pinch to zoom" tip, hint bulb button. Not played: needs strong model (zoom/pan handling, solver).
+- In-level gear = Sound/Vibration/Music/Zen + Restart. Back arrow quits instantly (no confirm).
+- 20261004: Hard L5 won via hint loop (hint=free green free-arrow, tap it). Write real solver later.
+
+## Dream 2026-10-04: Hard levels (1.33.0)
+
+- A blocked tap costs one drop and the arrow turns red; at 0 drops "Out of Lives" offers a free Continue (board kept) or Restart (board reset) [s:20261003-233756-chrono-2FYKPJ#4-5] [s:20261003-233756-chrono-2FYKPJ#23].
+- Hard levels (L5, L8, L10; board about 3 screens wide): play the hint loop: bulb (665,212), wait about 2 s for the pan, tap the green arrow. The hint is free (about 55 uses on L5). Never batch blind taps on a Hard board: that gave 4 Out of Lives in one session [s:20261003-233756-chrono-2FYKPJ#6-22] [s:20261004-001551-chrono-2FYKPJ#2-108].
+- If a bulb tap leaves the frame unchanged, the green arrow is off-screen: find the green edge pixel and swipe toward it [s:20261004-001551-chrono-2FYKPJ#84-92]. Do not `shot` after a tap that already returns a frame [s:20261004-001551-chrono-2FYKPJ#13].
+- To speed up (untested): in each hint frame also tap the other arrows that are visibly free (task make-hard-fast) [s:20261004-001551-chrono-2FYKPJ#61].
+- After a win the Daily Streak screen can come before the win card; shoot the card only once Next Level and Home are visible (the score counts up: 895 -> 1194) [s:20261004-001551-chrono-2FYKPJ#110].
+- Run destructive outcome cases (Restart, force-stop) after the win or on an early board, never mid-attempt on the progress gate [s:20261003-233756-chrono-2FYKPJ#23-24].
+
+| Level | Result | Seconds | Source |
+|---|---|---|---|
+| 3 | won, Flawless | 35 | [s:20261003-232357-chrono-2FYKPJ#11] |
+| 4 | won, Perfect (1 mistake) | 105 | [s:20261003-232357-chrono-2FYKPJ#17] |
+| 5 Hard | won by the hint loop, Great Start! 1194 | 863 (13:15) | [s:20261004-001551-chrono-2FYKPJ#110] |

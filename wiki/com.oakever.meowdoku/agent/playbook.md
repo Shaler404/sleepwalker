@@ -19,14 +19,18 @@ the dream merges it here. Level times: `sw.py playbook`.
   only). Boosters: cat (180,1357), hint (367,1357) → Apply, mouse (553,1357) [s:20261001-013526-chrono-2FYKPJ#77] [s:20261001-013526-chrono-2FYKPJ#80].
 - Rules: a wrong cat costs 1 of 3 fish (orange X); at 0 fish "Out of Fishes" [s:20261001-013526-chrono-2FYKPJ#81] [s:20261001-022624-chrono-2FYKPJ#40].
 - Method: solver [`solvers/com.oakever.meowdoku/queens.py`](../../../solvers/com.oakever.meowdoku/queens.py): reads the board from the
-  screenshot (saturation bands, colours clustered by hue down to N groups), backtracks, returns at most
-  3 double taps ([x, y, 2]) per round with `rescan`. It returns no moves (see its note) when the grid
-  size, the regions or the cat count look wrong or the board has several solutions.
-- **Fast method (from L84 on, every model): `solve queens` once to draw and read the solution, check it
-  on the drawn frame, then place every cat in ONE `taps` batch of double taps** from the grid formula
-  [s:20261001-115413-chrono-2FYKPJ#62] [s:20261001-115413-chrono-2FYKPJ#66] [s:20261001-182810-chrono-2FYKPJ#2]
-  [s:20261001-223249-chrono-2FYKPJ#2]. Cell centres in the 730x1583 frame (normal levels; c = column,
-  r = row, from 0):
+  screenshot (saturation bands, colours clustered by hue down to N groups), backtracks, and since the lab of
+  2026-10-03 returns a double tap ([x, y, 2]) for EVERY missing cat in one round, with `rescan`. It
+  skips cats already on the board (hint/cat booster cats too). It returns no moves (see its note) when
+  the grid size, the regions or the cat count look wrong or the board has several solutions.
+- **Play every level with `solve queens --run --rounds 3`** (after `launch` has closed the interstitial):
+  round 1 places all cats, round 2 sees the full board and stops with "solved" (if a double tap was lost,
+  round 2 places the missing cat and round 3 confirms). Do NOT copy the solution into a hand `taps` batch:
+  that was the old work-around for the 3-cats-per-round limit (`solve --run` needed 4-5 rounds, L129 111 s)
+  and the lab counts it as a bypassed solver. Lab check 2026-10-03: L127 9x9, L128/L129/L130 10x10 and the
+  Daily 10/03 board each get all 9-10 cats in one round, the same cells as the winning hand batches.
+- Fallback only when `solve` refuses a frame that IS a board: cell centres in the 730x1583 frame
+  (normal levels; c = column, r = row, from 0) for a hand `taps` batch:
 
   | Board | x | y | Source |
   |---|---|---|---|
@@ -35,8 +39,8 @@ the dream merges it here. Level times: `sw.py playbook`.
   | 8x8 | 65 + 86c | 525 + 86r | [s:20261001-182810-chrono-2FYKPJ#10] |
   | 7x7 | 84 + 93.7c | 547 + 94r | [s:20261001-082114-chrono-2FYKPJ#30] |
 
-  Skip the cell of a cat that is already on the board (a double tap there may remove it). `solve queens
-  --run --rounds 8` also works (bench L97-99, L104-108) but needs 3-4 rounds [s:20261001-182015-chrono-2FYKPJ#4].
+  Skip the cell of a cat that is already on the board (a double tap there may remove it). Write in the
+  level note why the solver refused (its note), so the lab can fix the reading.
 - When the solver reads the board wrong (it merged two similar colours on L84, left 1-5 cats out on
   L49-55, read nothing on L56), read the grid by hand into one letter per region and solve it with a
   short row-by-row search (one cat per row, column and region, no touching); each board has one
@@ -46,8 +50,8 @@ the dream merges it here. Level times: `sw.py playbook`.
   ![Solver overlay on level 3: the cells the solver will fill are marked on the board](../img/20261001-solver-overlay-fac1853e.webp)
 
 - Level plan: on Home tap "Level N" at **(365,1185)**; on the win screen the next-level button is at
-  (365,1245). An interstitial follows almost every level start: `launch`, wait 3-4 s, `solve queens`,
-  one `taps` batch, wait about 6 s, win screen [s:20261001-185238-chrono-2FYKPJ#10] [s:20261001-182810-chrono-2FYKPJ#9].
+  (365,1245). An interstitial follows almost every level start: `launch`, wait 3-4 s, `solve queens
+  --run --rounds 3`, wait about 6 s, win screen [s:20261001-185238-chrono-2FYKPJ#10] [s:20261001-182810-chrono-2FYKPJ#9].
 
   > ⚠️ Previously (v1.18.0, 2026-10-01): "Level plan: tap Level N (365,1245)". That holds on the win
   > screen only; on Home (365,1245) does nothing [s:20261001-183504-chrono-2FYKPJ#1].
@@ -68,6 +72,9 @@ the dream merges it here. Level times: `sw.py playbook`.
   [s:20261001-022624-chrono-2FYKPJ#42]. A booster at 0 offers a rewarded ad (2 ads, about 40 s) for
   1 charge [s:20261001-115413-chrono-2FYKPJ#57].
 - Pitfalls:
+  - The solver refuses frames that are not a clean board: the fade-in of a Daily board (squares still
+    growing), the hint popup (reads "35 cats"), Home, ads ("1x1"/"2x2"/"3x3" or "list index out of
+    range"). Wait 1-2 s and run `solve` again before reading the board by hand (lab 2026-10-03).
   - Never press Android Back on Home: it opens a Quit popup; close it with the X (621,535)
     [s:20261001-185238-chrono-2FYKPJ#7] [s:20261001-185238-chrono-2FYKPJ#9].
   - A "1x1" solver read means a popup, an ad or Home is on screen, not a board: look at the frame and
@@ -107,3 +114,28 @@ levels: four early records in 20261001-013526-chrono-2FYKPJ double-count levels,
 20261001-180616 to 185238 golden boards were recorded as levels, two wins were fake (185238: the frame was
 the previous win screen) and one slot logged `level start` after the solve, so its 23–26 s are too low.
 The times above come from the transcripts. Every level is far under the 5-minute budget.
+
+## Session 20261003 notes (v1.19.1)
+- Fish: wrong cat = 1 fish lost (orange X); win with 3 fish = "Perfect", 2 = "Brilliant, Beat 91.3%"; leaderboard fish rise by the fish earned. Boosters do not cost fish.
+- Boosters at start: cat 1, hint 4, mouse 1; at 0 the badge becomes a green video icon (rewarded ad). Cat = one correct cat (+109 score), hint = Apply puts X on row/col/neighbours, mouse = mouse on a cell + X.
+- After a win: leaderboard -> (Daily Streak Restore/Give up popup, yarn ball screen, Continue) -> win screen; a Rate Us popup may follow (X at 621,555). Level start: playable/video interstitial, `launch` leaves it.
+- Solver mislabelled regions on L127 but cat positions were right.
+
+## Session 20261003-202631 (L129-130)
+- L129: solve queens --run --rounds 8 solved in one call (10x10). Win: leaderboard -> Tap to Continue (365,1413) -> praise screen (Immaculate = 3 fish) with next Level button (365,1245).
+- Hint Apply places the cat on the explained cell (not an X). Cat booster places a correct cat at once. Ad at 0 charges: launch leaves it, charge granted.
+- In-level gear > Restart keeps the SAME board; Out of Fishes Restart too. Back arrow = Home, no confirm. Android Back on Home = Quit popup.
+
+## Dream 2026-10-04: corrections (1.19.1)
+
+- Out of Fishes > Restart plays an interstitial and then deals the SAME board with 3 fish and score 0 [s:20261003-202631-chrono-2FYKPJ#18-20] (the "NEW board" above was seen on 1.18.0).
+- The solver may return the missing cats over several rounds (L129: 4 rounds of up to 3): use `solve queens --run` [s:20261003-202631-chrono-2FYKPJ#2-5].
+- Win flow: leaderboard (Tap to Continue), on the day's first win the Daily Streak popup (Give up at 365,1117 unless Restore is the goal) and screen, the praise screen, then Rate Us after the Level tap (X at 621,555) [s:20261003-201915-chrono-2FYKPJ#3-9]. Shoot the win screen before `level end won` (refused twice) [s:20261003-201915-chrono-2FYKPJ#7] [s:20261003-202631-chrono-2FYKPJ#6].
+- After a level start or Restart take a shot before tapping the top-left back arrow: an ad under it opened the Play Store [s:20261003-202631-chrono-2FYKPJ#19-20].
+- The cat booster at 0 shows a video icon; leaving the ad with `launch` after 60-100 s still granted the charge [s:20261003-202631-chrono-2FYKPJ#11-12].
+
+| Level | Result | Seconds | Source |
+|---|---|---|---|
+| 127 | won, 3 fish | 121 | [s:20261003-201915-chrono-2FYKPJ#3] |
+| 128 | won, 2 fish (booster study, includes about 80 s of popups and ad) | 194 | [s:20261003-201915-chrono-2FYKPJ#17] |
+| 129 | won, Immaculate (solve about 36 s) | 111 | [s:20261003-202631-chrono-2FYKPJ#5] |

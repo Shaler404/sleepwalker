@@ -1,0 +1,1552 @@
+# Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
+game: com.king.candycrushsaga
+version: 1.337.0.2
+play_version: 1.337.0.2
+play_checked: '2026-10-03T19:29:54'
+phone_version: 1.337.0.2
+discovery: open
+ftue_verified: null
+progress:
+  text: level 4 reached, on map
+  value: 4.0
+  at: '2026-10-03T23:09:04'
+  session: 20261003-225003-chrono-2FYKPJ
+gate: null
+synced:
+  chrono: '2026-10-04T01:10:05'
+mechanics:
+- id: core-match
+  name: core-match
+  status: mastered
+  method: manual
+  levels:
+    won: 3
+    lost: 0
+    quit: 2
+  recent:
+  - level: level 1
+    result: won
+    seconds: 92
+    model: sonnet
+  - level: level 2
+    result: won
+    seconds: 294
+    model: sonnet
+  - level: level 3
+    result: won
+    seconds: 500
+    model: sonnet
+  - level: level 4
+    result: quit
+    seconds: 92
+    model: sonnet
+  - level: level 4
+    result: quit
+    seconds: 66
+    model: sonnet
+  note: carried over from the study before the 2026-10-02 restart (playbook and solver
+    kept)
+  best_s: 92
+features:
+- id: events-tab
+  name: Events tab
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Bottom bar, second icon (calendar, x=218,y=1500 on 730-wide model), always
+      on the map
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#1
+  - id: chk-screen
+    text: Curtain stage with banner 'Sweet events coming soon!'; no events and no
+      tabs at level 4
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#6
+  - id: chk-rules
+    text: 'Rules: what earns points or items and what the goal is'
+    done: false
+  - id: chk-timer
+    text: 'Its timer and schedule: how long it runs and when it comes back'
+    done: false
+  - id: chk-in-level
+    text: What shows during a level while it runs (a bar, a counter, collectibles)
+    done: false
+  - id: chk-progress
+    text: 'Progress per level: the points or items after a win, and after a loss'
+    done: false
+  - id: chk-rewards
+    text: The rewards per rank or milestone
+    done: false
+  - id: chk-end
+    text: 'The end: the results screen and the reward paid (a follow-up at the timer''s
+      end)'
+    done: false
+  - id: under-win
+    text: 'Order done under Events tab: as the base, or what differs'
+    done: false
+  - id: under-quit
+    text: 'Gear > Settings > Quit level > confirm ''Play on'' / ''Quit -1 heart'';
+      shows Level failed with Score and Retry, X goes to map; life 5->4 under Events
+      tab: as the base, or what differs'
+    done: false
+  - id: under-out-of-moves
+    text: 'Out of moves under Events tab: as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Force-stop mid level under Events tab: as the base, or what differs'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: event
+  appeared:
+    text: Always on the bottom bar from the first map
+    certainty: fact
+    source: 20261003-230937-chrono-2FYKPJ#6
+  version_seen: 1.337.0.2
+  page: features/events-tab.md
+- id: candy-teams
+  name: Candy Teams
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Social tab (bottom bar third icon) > Team sub-tab; locked notice until level
+      20
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#3
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#9
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-board
+    text: 'The board: ranks, the player''s place, the number of players'
+    done: false
+  - id: chk-points
+    text: What earns points (a level win, a score) and how many
+    done: false
+  - id: chk-period
+    text: 'The period and its timer: when it resets'
+    done: false
+  - id: chk-rewards
+    text: Rewards per rank, promotion and relegation
+    done: false
+  - id: chk-end
+    text: 'The end of a period: the results screen and the reward (a follow-up)'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: social
+  locked:
+    text: level 20
+    value: 20.0
+  appeared:
+    text: Social tab of the map after winning level 1; Team sub-tab says Candy Teams
+      unlock at level 20
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#9
+  page: features/candy-teams.md
+- id: friends
+  name: Friends list
+  status: documented
+  cases:
+  - id: invites-subtab
+    text: 'Social tab Invites sub-tab: No invites yet, team and friend invites show
+      up here'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#10
+  - id: chk-entry
+    text: Bottom bar, third icon (Social, x=365,y=1500); Friends tab at the top right
+      of Social, sub-tabs List and Add
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#5
+  - id: chk-screen
+    text: 'Friends List: empty with Find friends; Add: Invite and Facebook buttons
+      plus suggested real players with Add'
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#6
+  - id: chk-board
+    text: 'No ranks or places: the friends list is empty; Add shows ''Players who
+      send lives'', each row with a portrait, a name and a number next to a candy
+      icon (probably their level)'
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#5
+  - id: chk-points
+    text: 'Does not apply: the friends list has no points, periods or rewards (a plain
+      list of friends and suggestions)'
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#6
+  - id: chk-period
+    text: 'Does not apply: the friends list has no points, periods or rewards (a plain
+      list of friends and suggestions)'
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#6
+  - id: chk-rewards
+    text: 'Does not apply: the friends list has no points, periods or rewards (a plain
+      list of friends and suggestions)'
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#6
+  - id: chk-end
+    text: 'Does not apply: the friends list has no points, periods or rewards (a plain
+      list of friends and suggestions)'
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#6
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#11
+  found_at:
+    text: level 1
+    value: 1.0
+  type: social
+  appeared:
+    text: Social tab on the map after level 1; Friends sub-tab with Invite, Facebook,
+      suggested players
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#11
+  version_seen: 1.337.0.2
+  page: features/friends.md
+- id: pins
+  name: Pins collection
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Bottom bar, fourth icon (Pins, x about 510, y 1500); x=437 is the Social/Pins
+      boundary
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#2
+  - id: chk-screen
+    text: 'Collection and Awards tabs; empty Collection: ''Keep passing levels to
+      unlock pins'' at level 4'
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#2
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#12
+  - id: chk-progress
+    text: 'The progress: the bar, the album or the counter, what fills it and where
+      it is now'
+    done: false
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: meta-progress
+  appeared:
+    text: Pins tab on the map after level 1; says keep passing levels to unlock pins
+      (empty collection, Collection and Awards sub-tabs)
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#12
+  page: features/pins.md
+- id: shop
+  name: Shop
+  status: in_progress
+  cases:
+  - id: deals-seen
+    text: 'Shop at level 1: Weekly Deal 10 gold bars RSD 149 (-50%), Daily Deal (Popular)
+      10 gold bars + 1 lollipop + 30m unlimited lives RSD 549 with a 06h12m timer,
+      packs 10 bars RSD 299 and 50 bars RSD 1299, More Offers; badge 1 on the tab'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#14
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#14
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-contents
+    text: Contents and price of every pack or tier
+    done: false
+  - id: chk-frequency
+    text: How often it comes up by itself (after a level, a loss, a session start)
+      and whether it comes back
+    done: false
+  - id: chk-timer
+    text: Its timer or limit, if any
+    done: false
+  - id: chk-buy-path
+    text: 'The way to buy: the game''s own screens up to the price button; do not
+      tap the price (it opens the payment sheet), never pay'
+    done: false
+  - id: chk-close
+    text: 'Closing it: the close button and what comes up after'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: offer
+  appeared:
+    text: Shop tab on the map after level 1; badge 1 on tab; weekly deal, daily deal
+      with 6h timer, gold bar packs, More Offers (real money, do not buy)
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#14
+  page: features/shop.md
+- id: lives
+  name: Lives
+  status: in_progress
+  cases:
+  - id: chk-balance
+    text: 'Map top bar: heart with count and ''Full'' at 5 (max seen 5); after a lost
+      life the count drops and a regen timer replaces ''Full'' (4, 27:42). Also in
+      the level HUD as level/heart count'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#50
+  - id: sink-exit-app
+    text: 'Force-stop mid level (no moves made) costs one life: 4 -> 3, regen timer
+      24:05 on the map'
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#12
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#16
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: currency-booster
+  appeared:
+    text: Lives heart in the top bar of the map from the first map view; 5 lives Full,
+      1 life lost per failed level; popup offers 6h unlimited lives for 69 gold bars,
+      Ask friends, paid offer
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#16
+  page: features/lives.md
+- id: profile
+  name: Profile and inventory
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#18
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-entries
+    text: 'Every entry point on it: open (a feature), locked (feature --locked with
+      its condition) or unclear (an experiment)'
+    done: false
+  - id: chk-badges
+    text: Badges, timers and counters on it and what each points to
+    done: false
+  - id: chk-changes
+    text: What changes on it with progress (new buttons, a moving map, a theme)
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: hub
+  appeared:
+    text: Avatar in the top bar of the map; shows name, level 2, inventory of boosters
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#18
+  page: features/profile.md
+- id: boosters
+  name: Boosters (hand, lollipop hammer etc.)
+  status: in_progress
+  cases:
+  - id: pre-level-select
+    text: 'The Level 2 start popup shows Select boosters with 3 slots (colour bomb,
+      striped+wrapped, a third with a tick) and no lock icons, while the profile inventory
+      shows them locked at 0: find what the slots do at 0 balance and whether they
+      are free or for gold bars'
+    done: false
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#3
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: currency-booster
+  locked:
+    text: not shown on screen; slots still locked at level 4
+    value: null
+  appeared:
+    text: 'first launch: the in-level bottom bar of level 1 shows 5 boosters (hand,
+      UFO, lollipop, striped+wrapped, party popper), all with lock icons; later the
+      profile inventory lists 10 locked boosters'
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#3
+  page: features/boosters.md
+- id: settings
+  name: Settings
+  status: in_progress
+  cases:
+  - id: entries-seen
+    text: 'General tab: Music and Sound effects toggles with sliders, More Audio,
+      Features, Account and Help; Accessibility tab; each sub-page still to open'
+    done: false
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#20
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: system
+  appeared:
+    text: Gear in the top bar of the map and on the title screen; General (music,
+      sound, More Audio, Features, Account and Help) and Accessibility tabs
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#20
+  page: features/settings.md
+- id: mailbox
+  name: Mailbox icon
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-entries
+    text: 'Every entry point on it: open (a feature), locked (feature --locked with
+      its condition) or unclear (an experiment)'
+    done: false
+  - id: chk-badges
+    text: Badges, timers and counters on it and what each points to
+    done: false
+  - id: chk-changes
+    text: What changes on it with progress (new buttons, a moving map, a theme)
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: hub
+  appeared:
+    text: envelope icon in the top bar of the map from the start; tap did nothing
+      (inbox empty or needs account)
+    certainty: hypothesis
+    source: 20261003-194350-chrono-2FYKPJ#23
+  page: features/mailbox.md
+- id: map
+  name: Level map
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#23
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-entries
+    text: 'Every entry point on it: open (a feature), locked (feature --locked with
+      its condition) or unclear (an experiment)'
+    done: false
+  - id: chk-badges
+    text: Badges, timers and counters on it and what each points to
+    done: false
+  - id: chk-changes
+    text: What changes on it with progress (new buttons, a moving map, a theme)
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: hub
+  appeared:
+    text: after winning level 1 the level map appears (no map before)
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#23
+  page: features/map.md
+- id: core-level
+  name: Level (core match-3)
+  status: in_progress
+  cases:
+  - id: chk-hud
+    text: 'HUD seen on level 1: level number and lives (1 / heart 5), moves left (28),
+      the order (40 blue), a 3-star score bar, a character portrait, bottom bar with
+      settings gear and 5 locked boosters'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#3
+  - id: chk-entry
+    text: 'Entry: the map node opens the Level N start popup (order ''Collect all
+      orders!'', Select boosters with 3 slots, Play, close X)'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#6
+  - id: win-screen-unseen
+    text: 'Corrected by review: a win screen exists (''Level completed'', shot 81
+      of 20261003-225003-chrono-2FYKPJ); the session''s note ''no win screen'' was
+      wrong, it fell between sparse shots'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#43
+    version: 1.337.0.2
+  - id: chk-screen
+    text: 'Board with HUD: level/lives, moves, order panel, star bar, portrait, gear
+      + 5 locked boosters; level 4 meringue 24 green 32 after bomb'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#50
+    version: 1.337.0.2
+  - id: chk-rules
+    text: Swap adjacent candies to make 3+ line; 4 = striped, 5 = colour bomb, L/T
+      = wrapped, 2x2 = fish; striped+wrapped swap = 3-column blast; meringue loses
+      layers by adjacent matches/blasts; dispensers feed bombs
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#50
+    version: 1.337.0.2
+  - id: chk-win
+    text: 'Order done: goal ticked, then a ''Level completed'' screen (crown, level
+      badge, three star slots filling, character celebrating), then the map with a
+      ''Sweet!'' tag and crown on the won node, then the next Level N popup opens
+      by itself. L3 ended with 10 moves left. Seen on L3 (shot 81); missed on L2 because
+      shots were 8 s apart'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#43
+    version: 1.337.0.2
+    outcome: true
+  - id: chk-quit
+    text: Gear > Settings > Quit level > confirm 'Play on' / 'Quit -1 heart'; shows
+      Level failed with Score and Retry, X goes to map; life 5->4
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#50
+    version: 1.337.0.2
+    outcome: true
+  - id: out-of-moves
+    text: 'Out of moves: the board locks with no move left (not reached this session)'
+    done: false
+    outcome: true
+  - id: chk-elements
+    text: 'Seen: meringue (white/pink 2-layer), striped, wrapped, fish, colour bomb,
+      bomb dispenser, jelly in earlier session'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#50
+    version: 1.337.0.2
+  - id: chk-exit-app
+    text: 'Force-stop mid level: reopens on map, one life lost (4->3), no resume'
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#12
+    version: 1.337.0.2
+    outcome: true
+  - id: chk-restart
+    text: No Restart button in the in-level settings (sound, Audio, Save progress,
+      Quit level); restart only by quit and replay from map popup
+    done: true
+    source: 20261003-230937-chrono-2FYKPJ#12
+    version: 1.337.0.2
+    outcome: true
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#3
+  - id: chk-loss
+    text: 'Each loss: lose the level every way it can be lost; register each kind
+      as an outcome (case <feature> <kind> "..." --outcome) with its screen and what
+      the loss costs'
+    done: false
+  - id: chk-retry
+    text: 'After a loss: the retry and continue offers (extra moves, a revive) and
+      their price (a video, coins, a life)'
+    done: false
+  found_at:
+    text: level 1 won, on map before level 2
+    value: 2.0
+  type: core-level
+  appeared:
+    text: 'first launch: after Terms of Use, the title screen Play and the notification
+      prompt, level 1 opens directly with no map; later levels open from the map node
+      and the level start popup'
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#3
+  page: features/core-level.md
+- id: gold-bars
+  name: Gold bars
+  status: in_progress
+  cases:
+  - id: sinks-seen
+    text: 'Sinks seen: 69 gold bars for 6h unlimited lives in the lives popup'
+    done: false
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#23
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 1 won, on map before level 2
+    value: 2.0
+  type: currency-booster
+  appeared:
+    text: top bar of the map from the first map view after winning level 1, balance
+      0; sold in the Shop for real money. Tapping the counter was tried only while
+      the Shop tab was open, so 'does nothing' is not proven
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#23
+- id: color-bomb
+  name: Colour bomb
+  status: documented
+  cases:
+  - id: chk-entry
+    text: 'Made by a 5-in-a-row match (level 1: 5 candies in line; level 4: 5 blues
+      on top row), and on level 4 dispensed by a bomb dispenser on the top row'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#46
+    version: 1.337.0.2
+  - id: chk-screen
+    text: Chocolate ball with colourful sprinkles; sits on the board like a candy,
+      dispenser dome on top (level 4)
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#46
+    version: 1.337.0.2
+  - id: chk-first-level
+    text: 'Level 1: first 5-line (no tutorial seen); level 4: dispenser spawns them;
+      the Level 2 loading screen tip shows Wrapped Candy, not bomb'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#46
+    version: 1.337.0.2
+  - id: chk-rules
+    text: 'Swap with a candy of one colour: removes all candies of that colour on
+      the board; also hits meringue next to cleared candies (level 4: 41 meringue
+      layers and 18 greens in one move). Costs one move'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#46
+    version: 1.337.0.2
+  - id: chk-interactions
+    text: 'With meringue: cleared colour tiles hit adjacent meringue. With striped/wrapped:
+      not tested here (bomb+special combos open). A swap of bomb with plain candy
+      always works (no match needed)'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#46
+    version: 1.337.0.2
+  - id: chk-loss
+    text: No extra way to lose seen; the bomb is helpful only. Not an outcome
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#46
+    version: 1.337.0.2
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#5
+  found_at:
+    text: level 1 won, on map before level 2
+    value: 2.0
+  type: level-element
+  appeared:
+    text: made by matching 5 in a line on level 1; swapped with a blue candy it cleared
+      the blues and won the level
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#5
+  version_seen: 1.337.0.2
+  page: features/color-bomb.md
+- id: striped-candy
+  name: Striped candy
+  status: in_progress
+  cases:
+  - id: chk-rules
+    text: Made by a 4-in-a-line match; matching it with two of its colour fires a
+      line that clears a full row or column (L2 steps 19, 24; L3 vertical beam in
+      shot 80)
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#24
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#5
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-first-level
+    text: The first level it shows on and how the game introduces it
+    done: false
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 1 won, on map before level 2
+    value: 2.0
+  type: level-element
+  appeared:
+    text: seen on the level 1 board right after the 5-line move, next to the new colour
+      bomb (from the cascade)
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#5
+- id: terms-consent
+  name: Terms of Use consent
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 1 won, on map before level 2
+    value: 2.0
+  type: system
+  appeared:
+    text: 'first launch, before the title screen: Terms of Use popup with Accept (frame
+      was a system panel, not the game)'
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#1
+- id: notifications-prompt
+  name: Notification permission prompt
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#3
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 1 won, on map before level 2
+    value: 2.0
+  type: system
+  appeared:
+    text: 'first launch: Android notification permission dialog right after Play on
+      the title screen; answered Don''t allow'
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#3
+- id: account
+  name: Account and Retrieve My Progress
+  status: documented
+  cases:
+  - id: chk-entry
+    text: Map > gear (top right) > Settings General > Account & Help > My Account
+      (blue button, panel); also title screen Retrieve My Progress
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#9
+    version: 1.337.0.2
+  - id: chk-screen
+    text: 'Account & Help: user id + copy, Help center, Help deleting account, Forum,
+      My Account. My Account = King panel ''Don''t lose your progress'' 3-slide carousel,
+      Sign up with email, Continue with Facebook, Log in with email, Terms of Use,
+      Privacy and security. Marks refused for Panel frames (harness gap)'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#9
+    version: 1.337.0.2
+  - id: chk-options
+    text: 'Log in with email: email+password form, forgot password, eye toggle, Sign
+      up link; Sign up: create account form. Not submitted (no credentials). Facebook
+      not tapped'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#9
+    version: 1.337.0.2
+  - id: chk-answers
+    text: Not a prompt; panel closes with X, no repeat
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#9
+    version: 1.337.0.2
+  - id: chk-links
+    text: 'Help center, Forum, delete-account help, Terms and Privacy: seen as links
+      on Account & Help and the King panel, none opened yet'
+    done: false
+    version: 1.337.0.2
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-194350-chrono-2FYKPJ#1
+  found_at:
+    text: level 1 won, on map before level 2
+    value: 2.0
+  type: system
+  appeared:
+    text: 'title screen on first launch: Retrieve My Progress button (account login)
+      under Play; also Account and Help in Settings'
+    certainty: fact
+    source: 20261003-194350-chrono-2FYKPJ#1
+  version_seen: 1.337.0.2
+  page: features/account.md
+- id: wrapped-candy
+  name: Wrapped candy
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#14
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-first-level
+    text: The first level it shows on and how the game introduces it
+    done: false
+  - id: chk-rules
+    text: What it does and how it is used
+    done: false
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 4 reached, on map
+    value: 4.0
+  type: level-element
+  appeared:
+    text: level 2 loading screen tip (T/L match of 5 makes a wrapped candy); first
+      made on level 3
+    certainty: fact
+    source: 20261003-225003-chrono-2FYKPJ#14
+- id: fish
+  name: Fish candy
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-first-level
+    text: The first level it shows on and how the game introduces it
+    done: false
+  - id: chk-rules
+    text: What it does and how it is used
+    done: false
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 4 reached, on map
+    value: 4.0
+  type: level-element
+  appeared:
+    text: made by a 2x2 square match; first seen on level 3 board (shot 80)
+    certainty: hypothesis
+    source: review-20261003
+- id: meringue
+  name: Meringue blocker
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#13
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-first-level
+    text: The first level it shows on and how the game introduces it
+    done: false
+  - id: chk-rules
+    text: What it does and how it is used
+    done: false
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 4 reached, on map
+    value: 4.0
+  type: level-element
+  appeared:
+    text: 'level 2 start popup: meringue is the order, first blocker on the board'
+    certainty: fact
+    source: 20261003-225003-chrono-2FYKPJ#13
+- id: bomb-dispenser
+  name: Candy dispenser
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-225003-chrono-2FYKPJ#25
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-first-level
+    text: The first level it shows on and how the game introduces it
+    done: false
+  - id: chk-rules
+    text: What it does and how it is used
+    done: false
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 4 reached, on map
+    value: 4.0
+  type: level-element
+  appeared:
+    text: 'level 2: domes above the board''s top row (striped candy icon, shot 42);
+      on level 4 they drop colour bombs'
+    certainty: fact
+    source: 20261003-225003-chrono-2FYKPJ#25
+tasks:
+- id: analyze
+  title: Analyze the game
+  kind: analyze
+  requires: any
+  status: open
+  created: '2026-10-03T19:29:56'
+  source: external
+  note: find all features and work through all user cases on the version on the phone
+- id: scout-1
+  title: 'Map the game: play until the main menu and every entry point is visible;
+    list each entry point as open (a study goal), locked with its unlock condition
+    (an unlock goal) or unclear (an experiment)'
+  kind: scout
+  requires: any
+  status: done
+  created: '2026-10-03T19:29:56'
+  source: external
+  note: 'Map appears after level 1 (win then level 2 popup). 5 tabs: map, events (coming
+    soon), social (Candy Teams locked to 20), pins (collection empty, awards coming
+    soon), shop (paid). Top bar: mail (inert), lives popup, profile inventory (boosters
+    locked), gold bars (inert on shop), settings.'
+  closed: '2026-10-03T19:49:18'
+  closed_by: 20261003-194350-chrono-2FYKPJ#23
+  new_entries: 11
+  at_progress: level 1 won, on map before level 2
+  new_entry_names:
+  - Events tab
+  - Social tab
+  - Candy Teams
+  - Friends
+  - Pins
+  - Shop
+  - Lives
+  - Profile
+  - Settings
+  - Mailbox
+  - Boosters
+- id: unlock-candy-teams
+  title: 'Unlock Candy Teams: level 20'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T19:47:13'
+  feature: candy-teams
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 20
+  target_value: 20.0
+- id: unlock-boosters
+  title: 'Unlock Boosters (hand, lollipop hammer etc.): not shown, about level 3-10'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T19:48:37'
+  feature: boosters
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: not shown, about level 3-10
+  target_value: 5.0
+- id: boosters-lock-exp
+  title: 'Find what unlocks boosters: locks seen in level bottom bar and profile inventory,
+    level not shown'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:48:37'
+  feature: boosters
+  source: session
+  plan: play levels, watch when lock icons disappear in the level bottom bar
+- id: appeared-mailbox
+  title: 'Find why Mailbox icon appeared: envelope icon in the top bar of the map
+    from the start; tap did nothing (inbox empty or needs account)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:49:16'
+  feature: mailbox
+  source: session
+  plan: 'find the moment Mailbox icon shows up and what comes just before it (envelope
+    icon in the top bar of the map from the start; tap did nothing (inbox empty or
+    needs account)); confirmed when a frame shows the trigger. Record it with feature
+    mailbox --appeared "...": the goal closes by itself'
+- id: mailbox-exp
+  title: 'Mailbox envelope tap does nothing: test again after a few levels or when
+    it shows a badge'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:49:17'
+  feature: mailbox
+  source: session
+  plan: tap the envelope after more levels and see if a message list opens
+- id: study-events-tab
+  title: 'Study Events tab: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T19:50:27'
+  feature: events-tab
+  source: external
+  closed: '2026-10-03T23:11:02'
+  closed_by: 20261003-230937-chrono-2FYKPJ#6
+  note: Events tab shows only 'Sweet events coming soon!' on a curtain stage; no tabs
+    or events at level 4
+- id: study-friends
+  title: 'Study Friends list: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T19:50:27'
+  feature: friends
+  source: external
+  closed: '2026-10-03T23:11:02'
+  closed_by: 20261003-230937-chrono-2FYKPJ#6
+  note: 'Social tab: Team (locked, level 20), Invites (empty), Friends with List (empty,
+    Find friends) and Add (Invite, Facebook, suggested players with Add). Add/Invite/Facebook
+    not pressed (social)'
+- id: study-pins
+  title: 'Study Pins collection: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:50:27'
+  feature: pins
+  source: external
+- id: study-shop
+  title: 'Study Shop: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:50:27'
+  feature: shop
+  source: external
+- id: study-lives
+  title: 'Study Lives: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:50:27'
+  feature: lives
+  source: external
+- id: study-profile
+  title: 'Study Profile and inventory: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:50:27'
+  feature: profile
+  source: external
+- id: study-settings
+  title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:50:27'
+  feature: settings
+  source: external
+- id: study-mailbox
+  title: 'Study Mailbox icon: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:50:27'
+  feature: mailbox
+  source: external
+- id: study-map
+  title: 'Study Level map: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:50:27'
+  feature: map
+  source: external
+- id: outcomes-events-tab
+  title: 'Run each outcome once under Events tab: Order done, Gear > Settings > Quit
+    level > confirm ''Play on'' / ''Quit -1 heart''; shows Level failed with Score
+    and Retry, X goes to map; life 5->4, Out of moves, Force-stop mid level, No Restart
+    button in the in-level settings (sound, Audio, Save progress, Quit level); restart
+    only by quit and replay from map popup'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:51:22'
+  feature: events-tab
+  source: session
+  plan: 'while Events tab is on, reach each listed outcome of the base level once,
+    one at a time (a deliberate loss is allowed unless it spends premium currency);
+    mark the outcome screen (mark --feature events-tab --as result) and close its
+    cell: case events-tab under-<outcome> "as the base" or "what differs" --done'
+  rank: 7
+- id: study-core-level
+  title: 'Study Level (core match-3): open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T19:52:00'
+  feature: core-level
+  source: external
+  closed: '2026-10-03T23:09:04'
+  closed_by: 20261003-225003-chrono-2FYKPJ#50
+  note: 'Played levels 2-3 won, 4 quit via gear. The win flow does have a ''Level
+    completed'' screen (20261003-225003-chrono-2FYKPJ#43, shot 81): it falls between
+    frames 8 s apart; quit costs a life. Left: out-of-moves loss, Retry, exit-app'
+- id: study-gold-bars
+  title: 'Study Gold bars: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:52:00'
+  feature: gold-bars
+  source: external
+- id: study-color-bomb
+  title: 'Study Colour bomb: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T19:52:00'
+  feature: color-bomb
+  source: external
+  closed: '2026-10-03T23:07:49'
+  closed_by: 20261003-225003-chrono-2FYKPJ#46
+  note: Made a 5-line (L4 top row), bomb swapped with green cleared all greens plus
+    adjacent meringue in one move; bomb+striped/wrapped combos not tested
+- id: study-striped-candy
+  title: 'Study Striped candy: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:52:00'
+  feature: striped-candy
+  source: external
+- id: study-terms-consent
+  title: 'Study Terms of Use consent: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:52:00'
+  feature: terms-consent
+  source: external
+- id: study-notifications-prompt
+  title: 'Study Notification permission prompt: open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:52:00'
+  feature: notifications-prompt
+  source: external
+- id: study-account
+  title: 'Study Account and Retrieve My Progress: open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T19:52:00'
+  feature: account
+  source: external
+  closed: '2026-10-03T22:51:49'
+  closed_by: 20261003-225003-chrono-2FYKPJ#9
+  note: Walked Account & Help and King My Account panel, login and signup forms observed
+    without credentials. Panel frames cannot be marked.
+- id: win-screen-exp
+  title: 'Capture the level win screen: score, stars, rewards and what follows it
+    (level 1 went straight from Sugar Crush to the level 2 popup)'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T19:52:19'
+  feature: core-level
+  source: session
+  plan: win level 2 and take a shot every 2-3 s after the last move (no long waits);
+    confirmed when a frame shows the win/score screen or proves there is none before
+    the next level popup
+  closed: '2026-10-03T23:13:14'
+  closed_by: 20261003-225003-chrono-2FYKPJ#43
+  note: 'Shot 81: ''Level completed'' with crown, level badge and three stars (one
+    filling), then map with ''Sweet!'' tag (shot 82), then Level 4 popup (shot 83).
+    Score, Sugar Crush and rewards not captured'
+  result: confirmed
+- id: pre-boosters-exp
+  title: Find what the 3 Select boosters slots in the level start popup do at 0 balance
+    (free trial, gold bars, or locked)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:52:19'
+  feature: boosters
+  source: session
+  plan: on the level 2 popup tap each slot once and shot; never confirm a gold-bar
+    or real-money purchase; confirmed by the popup that answers (tutorial, price,
+    lock text)
+- id: look-genre-features
+  title: 'Look for typical features not seen yet: daily reward or login calendar,
+    starter or limited-time offer popups, rewarded ads, piggy bank, season pass, language
+    option'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T19:52:20'
+  source: session
+  plan: while playing levels 2-20 note every popup after a win, a loss and a session
+    start, and check Settings > Features and Account and Help; each one found becomes
+    a feature, each absent one gets a note
+- id: colorbomb-combos
+  title: Colour bomb combined with striped, wrapped and another colour bomb
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:07:49'
+  feature: color-bomb
+  source: session
+  plan: get a bomb next to a striped / wrapped / bomb candy and swap them; note the
+    effect
+- id: loss-oom
+  title: Lose a level by running out of moves and record the fail screen, retry and
+    life cost
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:08:50'
+  feature: core-level
+  source: session
+  plan: play a level and spend all moves without finishing the order; mark the fail
+    screen; confirmed when it shows
+- id: core-restart-exit
+  title: 'Core level: Retry button flow, restart and exit-app mid level'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T23:08:50'
+  feature: core-level
+  source: session
+  closed: '2026-10-03T23:12:26'
+  closed_by: 20261003-230937-chrono-2FYKPJ#12
+  note: 'Restart: none in-level; exit-app costs a life; Retry flow needs a loss, set
+    as retry-flow task'
+- id: retry-flow
+  title: Lose a level on purpose and walk the Retry/out-of-moves flow
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-03T23:12:26'
+  feature: core-level
+  source: session
+  plan: play level 3 or 5 without matching until moves run out; mark the fail popup
+    and Retry
+  closed: '2026-10-03T23:14:03'
+  closed_by: review-20261003
+  note: Duplicate of loss-oom (lose by running out of moves, fail screen, Retry and
+    life cost)
+- id: win-sequence-exp
+  title: 'Record the full win sequence: Sugar Crush with moves left, final stars,
+    score and any reward on Level completed'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:13:30'
+  feature: core-level
+  source: session
+  plan: win a level with several moves left; take a shot every 2 s from the last move
+    until the map shows; confirmed when frames show whether Sugar Crush runs, the
+    final star count, the score and any reward on the Level completed screen
+- id: appeared-fish
+  title: 'Find why Fish candy appeared: made by a 2x2 square match; first seen on
+    level 3 board (shot 80)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:13:31'
+  feature: fish
+  source: session
+  plan: 'find the moment Fish candy shows up and what comes just before it (made by
+    a 2x2 square match; first seen on level 3 board (shot 80)); confirmed when a frame
+    shows the trigger. Record it with feature fish --appeared "...": the goal closes
+    by itself'
+- id: study-wrapped-candy
+  title: 'Study Wrapped candy: make or meet it in a level, mark it, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T23:13:44'
+  feature: wrapped-candy
+  source: session
+- id: study-fish
+  title: 'Study Fish candy: make or meet it in a level, mark it, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T23:13:44'
+  feature: fish
+  source: session
+- id: study-meringue
+  title: 'Study Meringue blocker: make or meet it in a level, mark it, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T23:13:45'
+  feature: meringue
+  source: session
+- id: study-bomb-dispenser
+  title: 'Study Candy dispenser: make or meet it in a level, mark it, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T23:13:45'
+  feature: bomb-dispenser
+  source: session
+- id: topbar-retap-map
+  title: Tap the mail and gold-bar icons from the Map tab (not the Shop tab) and record
+    what opens
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: gold-bars
+  source: session
+- id: lives-refill-cycle
+  title: 'Watch the map heart from 3 lives to Full: time per life and the cap (timer
+    read 26:10 -> 24:05 across a life loss)'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: lives
+  source: game
+  note: timer kept running through a life loss (20261003-230937-chrono-2FYKPJ#12)
+- id: shop-deal-rotation
+  title: 'Shop: after the Daily Deal timer (06h12m at 2026-10-03 19:50) runs out,
+    does the deal rotate? What does the Shop tab badge 1 count?'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: shop
+  source: game
+  not_before: '2026-10-04T02:10:00'

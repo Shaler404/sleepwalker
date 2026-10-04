@@ -1,0 +1,710 @@
+# Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
+game: com.oakever.akari
+version: 1.0.2
+play_version: 1.0.2
+play_checked: '2026-10-03T19:29:54'
+phone_version: 1.0.2
+discovery: open
+ftue_verified: null
+progress:
+  text: level 3
+  value: 3.0
+  at: '2026-10-03T23:31:58'
+  session: 20261003-232850-chrono-2FYKPJ
+gate: null
+synced:
+  chrono: '2026-10-04T01:10:05'
+mechanics:
+- id: akari
+  name: Cat placement (Light Up rules)
+  status: mastered
+  method: solver
+  levels:
+    won: 3
+    lost: 1
+    quit: 1
+  recent:
+  - level: level 1
+    result: won
+    seconds: 30
+    model: sonnet
+  - level: level 2
+    result: won
+    seconds: 29
+    model: sonnet
+  - level: level 3
+    result: won
+    seconds: 133
+    model: sonnet
+  - level: level 4
+    result: lost
+    seconds: 64
+    model: sonnet
+    deliberate: true
+  - level: level 4
+    result: quit
+    seconds: 99
+    model: sonnet
+  solver: solvers/com.oakever.akari/akari.py
+  note: 'Solver reads the board itself; refuses the bulb hint popup (tap Apply) and
+    transient rejected-cat animations. The 20261003-232850 bypass signs were deliberate
+    booster/loss/exit study taps, not solver faults.; dream 2026-10-04: the scripted
+    tutorial was removed from the level records (logged as quit, it was completed:
+    20261003-200925-chrono-2FYKPJ#8)'
+  best_s: 29
+features:
+- id: consent
+  name: Terms consent
+  status: documented
+  cases:
+  - id: chk-screen
+    text: 'Welcome screen: Terms of Service and Privacy Policy, Accept button'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#0
+  - id: chk-entry
+    text: Consent appears only on first launch of a fresh install, not reproducible
+      now; Terms of Service is reachable from Settings and opens in Chrome (oakevergames.com),
+      launch returns to game
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#26
+    version: 1.0.2
+  - id: chk-options
+    text: One Accept button seen on first launch [20261003-200925-chrono-2FYKPJ#0];
+      a decline path and what Back does are not verified (fresh install only)
+    done: false
+    version: 1.0.2
+  - id: chk-answers
+    text: Consent shows only on the first launch of a fresh install; not seen again
+      on this install (task fresh-consent)
+    done: false
+    version: 1.0.2
+  - id: chk-links
+    text: Terms of Service (from Settings) opens oakevergames.com in Chrome and launch
+      returns to the game; Privacy Policy not opened
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#26
+    version: 1.0.2
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#0
+  type: system
+  appeared:
+    text: first launch
+    certainty: fact
+    source: 20261003-200925-chrono-2FYKPJ#0
+  version_seen: 1.0.2
+  page: features/consent.md
+- id: tutorial
+  name: Tutorial
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: Scripted board with a hand hint and 'Double tap to place the cat'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#2
+  - id: chk-steps
+    text: 'Two scripted boards: 3x3 teaches double tap to place a cat; 4x4 with clues
+      4 and 1 teaches that numbers count adjacent cats and that cats must cover the
+      whole grid; ends with ''You''ve mastered the game rules'''
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#8
+  - id: chk-end
+    text: Ends on 'You've mastered the game rules' + Got it; Got it opens Level 1
+      directly (no home first)
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#9
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#2
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-skip
+    text: Whether it can be skipped, and what happens when the app is left in the
+      middle of it
+    done: false
+  - id: chk-replay
+    text: Whether it can be seen again (How to play, a help button)
+    done: false
+  type: tutorial
+  appeared:
+    text: right after consent and notification prompt on first launch
+    certainty: fact
+    source: 20261003-200925-chrono-2FYKPJ#2
+  page: features/tutorial.md
+- id: core-level
+  name: Akari level
+  status: documented
+  cases:
+  - id: chk-entry
+    text: 'Home: the orange ''Level N'' button (364,1340); also the ''Level N+1''
+      button on the win screen'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#15
+  - id: chk-screen
+    text: 'Level screen: title, two rule cards, hearts and cat counter bar, the grid,
+      two boosters below'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#9
+  - id: chk-hud
+    text: Back arrow (to Home), 'Level N', settings gear; rule cards (occupy the whole
+      grid; numbers = adjacent cats); 3 hearts; cat counter 0/N; cat booster and bulb
+      booster with count 5
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#9
+  - id: chk-win
+    text: 'Win: dimmed board, praise title (BRILLIANT on level 1, PERFECT on level
+      2), cats in a box, ''Level N+1'' button; no rewards shown'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#10
+    outcome: true
+  - id: out-of-hearts
+    text: 'Out of hearts: 3 wrong cats show Almost! with Revive (video) and Restart'
+    done: true
+    outcome: true
+    source: 20261003-232850-chrono-2FYKPJ#18
+    version: 1.0.2
+  - id: chk-loss
+    text: Loss = 3 wrong double taps; red X on wrong cells; counter kept
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#18
+    version: 1.0.2
+  - id: chk-retry
+    text: Almost! offers Revive (rewarded video) and Restart (free, same board, hearts
+      back to 3)
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#19
+    version: 1.0.2
+  - id: chk-restart
+    text: No in-level restart button; only Restart on the Almost! screen (free). Back
+      arrow quits without confirmation
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#23
+    version: 1.0.2
+    outcome: true
+  - id: chk-rules
+    text: 'Light Up rules: wrong cat costs a heart, 3 hearts lost = Almost! fail;
+      see playbook'
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#26
+    version: 1.0.2
+  - id: chk-elements
+    text: Numbered walls from L1; other elements (boxes, from L11 on an earlier install)
+      not met yet on this install
+    done: false
+    version: 1.0.2
+  - id: chk-quit
+    text: 'Back arrow leaves for Home at once: no confirmation, no heart or booster
+      cost; Home shows Level 4 again and reopening gives a fresh board with 3 hearts;
+      only tried right after a Restart on a fresh board, so a quit after losing hearts
+      is not tested'
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#20
+    outcome: true
+  - id: chk-exit-app
+    text: Force-stop and relaunch mid-level (1 cat placed) lands on Home with the
+      same Level N button, no penalty seen; whether the board keeps the placed cat
+      was not checked (exp-exit-app-board)
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#23
+    outcome: true
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#10
+  type: core-level
+  appeared:
+    text: first launch, after tutorial
+    certainty: fact
+    source: 20261003-200925-chrono-2FYKPJ#10
+  version_seen: 1.0.2
+  page: features/core-level.md
+- id: home
+  name: Home screen
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: MeowTrail logo, 'Level N' button, settings gear; nothing else through level
+      2
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#12
+  - id: chk-entry
+    text: Back arrow (66,127) on the level screen; not shown at launch after the tutorial
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#12
+  - id: chk-entries
+    text: 'Two entry points, both mapped: Level N button (core-level), gear (settings);
+      later entries are the experiment exp-late-entries'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#12
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#12
+  - id: chk-badges
+    text: Badges, timers and counters on it and what each points to
+    done: false
+  - id: chk-changes
+    text: What changes on it with progress (new buttons, a moving map, a theme)
+    done: false
+  found_at:
+    text: level 1
+    value: null
+  type: hub
+  appeared:
+    text: back arrow from level 1/2; no map
+    certainty: fact
+    source: 20261003-200925-chrono-2FYKPJ#12
+  page: features/home.md
+- id: settings
+  name: Settings
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Gear (665,127) on Home and on the level screen
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#13
+  - id: chk-screen
+    text: 'Bottom sheet: sound and vibration toggles, Help Center, Privacy Policy,
+      Terms of Service, version 1.0.2 (Build 190), user id, close X'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#13
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#12
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 1
+    value: null
+  type: system
+  appeared:
+    text: gear on home and level screens
+    certainty: fact
+    source: 20261003-200925-chrono-2FYKPJ#12
+  page: features/settings.md
+- id: help-center
+  name: Help Center
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Settings: the orange Help Center button'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#13
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#13
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 1
+    value: null
+  type: system
+  appeared:
+    text: Settings button
+    certainty: fact
+    source: 20261003-200925-chrono-2FYKPJ#13
+  page: features/help-center.md
+- id: boosters
+  name: Cat and bulb boosters
+  status: documented
+  cases:
+  - id: chk-balance
+    text: 'Level screen below the grid: cat booster and bulb booster, a green badge
+      with 5 each at the start'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#9
+  - id: chk-entry
+    text: 'Level screen below grid: cat (247,1305), bulb (482,1305)'
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#26
+    version: 1.0.2
+  - id: chk-screen
+    text: Two round buttons with green count badge
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#26
+    version: 1.0.2
+  - id: chk-effect
+    text: 'Cat: places one correct cat at once. Bulb: shows a deduction text with
+      highlighted cells, Apply places them (3 cats on L3)'
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#26
+    version: 1.0.2
+  - id: chk-sources
+    text: 'Start 5 each; counts persist across levels; at 0 the badge shows AD: rewarded
+      video gives +1 (cat). Win gives nothing seen'
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#26
+    version: 1.0.2
+  - id: chk-sinks
+    text: 1 unit per use, bulb charged on opening the hint; free otherwise
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#26
+    version: 1.0.2
+  - id: chk-empty
+    text: At 0 badge becomes AD; tap plays a rewarded video (about 64-77 s from tap
+      to relaunch; it ended on the Play Store and launch returned with the booster
+      at 1), refills 1
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#26
+    version: 1.0.2
+  - id: chk-refill
+    text: Refill by video seen; whether a timer or daily refill exists is not verified
+      (one look only); bulb at 0 not tested
+    done: false
+    version: 1.0.2
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#13
+  found_at:
+    text: level 1
+    value: null
+  type: currency-booster
+  appeared:
+    text: level 1 shows two boosters with count 5 each
+    certainty: fact
+    source: 20261003-200925-chrono-2FYKPJ#13
+  version_seen: 1.0.2
+  page: features/boosters.md
+- id: hearts
+  name: Hearts (3 per level)
+  status: in_progress
+  cases:
+  - id: chk-first-level
+    text: Shown from level 1 on the HUD (3 hearts), not mentioned by the tutorial
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#9
+  - id: chk-screen
+    text: 'Hearts bar above the grid: 3 red hearts, left of the cat counter'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#9
+  - id: chk-entry
+    text: 'Not a screen: the hearts bar on the level HUD, left of the cat counter;
+      no button opens it'
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#11
+  - id: chk-rules
+    text: Each wrong cat (double tap on a cell that is not in the solution) costs
+      one heart and leaves a red X; correct cats cost nothing; 3 hearts per level,
+      refilled on Restart and on a new level
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#18
+  - id: chk-loss
+    text: 'Yes: losing the 3rd heart ends the level with Almost! (broken heart, Revive
+      with an ad, Restart): the core-level outcome out-of-hearts'
+    done: true
+    source: 20261003-232850-chrono-2FYKPJ#18
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#13
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  found_at:
+    text: level 1
+    value: null
+  type: level-element
+  appeared:
+    text: level 1 HUD shows 3 hearts
+    certainty: fact
+    source: 20261003-200925-chrono-2FYKPJ#13
+  page: features/hearts.md
+- id: notifications
+  name: Notification permission prompt
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: Android dialog 'Allow MeowTrail to send you notifications?' Allow / Don't
+      allow, over the loading tip screen
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-200925-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: first launch, before level 1
+    value: 0.0
+  type: system
+  appeared:
+    text: first launch, right after accepting the Terms consent (Android permission
+      dialog over a loading tip)
+    certainty: fact
+    source: 20261003-200925-chrono-2FYKPJ#1
+  page: features/notifications.md
+tasks:
+- id: analyze
+  title: Analyze the game
+  kind: analyze
+  requires: any
+  status: open
+  created: '2026-10-03T19:29:58'
+  source: external
+  note: find all features and work through all user cases on the version on the phone
+- id: scout-1
+  title: 'Map the game: play until the main menu and every entry point is visible;
+    list each entry point as open (a study goal), locked with its unlock condition
+    (an unlock goal) or unclear (an experiment)'
+  kind: scout
+  requires: any
+  status: done
+  created: '2026-10-03T19:29:58'
+  source: external
+  note: 'Fresh install: consent, notification prompt, 2-board tutorial, level 1 straight
+    away. Home has only the Level N button and settings gear; settings has sound,
+    vibration, Help Center, policy links. No map, shop or daily seen through level
+    2; boosters and hearts on the level HUD. Remaining entries are open: study-settings,
+    study-boosters, exp-late-entries.'
+  closed: '2026-10-03T20:14:10'
+  closed_by: 20261003-200925-chrono-2FYKPJ#16
+  new_entries: 4
+  at_progress: level 2
+  new_entry_names:
+  - Settings
+  - Help Center
+  - Level button
+  - Boosters
+- id: study-settings
+  title: Study Settings (toggles, help center, links)
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:13:23'
+  feature: settings
+  source: session
+- id: study-boosters
+  title: Study cat and bulb boosters (count 5 each, refill)
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:13:23'
+  feature: boosters
+  source: session
+  closed: '2026-10-03T23:34:46'
+  closed_by: 20261003-232850-chrono-2FYKPJ#26
+  note: Studied; see cases
+- id: exp-late-entries
+  title: 'Experiment: home shows only Level button and gear; do shop/daily/map entries
+    appear at later levels?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:13:24'
+  feature: home
+  source: session
+  plan: play levels from 2 up, look at home after each win for new buttons
+- id: study-consent
+  title: 'Study Terms consent: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:14:35'
+  feature: consent
+  source: external
+  closed: '2026-10-03T23:34:46'
+  closed_by: 20261003-232850-chrono-2FYKPJ#26
+  note: Studied; see cases
+- id: study-tutorial
+  title: 'Study Tutorial: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:14:35'
+  feature: tutorial
+  source: external
+- id: study-core-level
+  title: 'Study Akari level: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:14:35'
+  feature: core-level
+  source: external
+  closed: '2026-10-03T23:34:46'
+  closed_by: 20261003-232850-chrono-2FYKPJ#26
+  note: Studied; see cases
+- id: study-home
+  title: 'Study Home screen: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:14:35'
+  feature: home
+  source: external
+- id: study-help-center
+  title: 'Study Help Center: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:14:35'
+  feature: help-center
+  source: external
+- id: study-hearts
+  title: 'Study Hearts (3 per level): open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:14:35'
+  feature: hearts
+  source: external
+- id: exp-hearts-loss
+  title: 'Experiment: find what costs a heart and what happens at zero hearts (a loss
+    outcome, its screen, retry offer and price)'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T20:16:13'
+  feature: hearts
+  source: session
+  plan: 'In a level, double tap a cat onto a cell that breaks a rule (next to a satisfied
+    number, or lit by another cat); see if a heart drops. Repeat until 0 hearts. Confirmed
+    if hearts drop per mistake and 0 hearts ends the level: mark the loss screen,
+    record it as an outcome of core-level, note retry/continue offers and their price
+    (never pay)'
+  closed: '2026-10-03T23:36:31'
+  closed_by: 20261003-232850-chrono-2FYKPJ#18
+  note: Each wrong cat costs a heart (red X); at 0 hearts Almost! shows Revive (rewarded
+    ad) and Restart (free, same board, 3 hearts). No lives meter between levels.
+  result: confirmed
+- id: exp-win-praise
+  title: 'Experiment: find what sets the win title (BRILLIANT on level 1, PERFECT
+    on level 2)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:16:13'
+  feature: core-level
+  source: session
+  plan: Win one level with 3 hearts and no booster, one after losing a heart, one
+    with a booster; compare the title. Confirmed if the title follows hearts kept
+    or boosters used; otherwise it is random praise
+- id: study-notifications
+  title: 'Study the notification prompt: whether it comes back after Don''t allow,
+    and any in-game toggle for it'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:16:21'
+  feature: notifications
+  source: session
+- id: exp-bulb-zero
+  title: 'Bulb booster at zero: is the refill also a rewarded video, how many units'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:34:46'
+  feature: boosters
+  source: session
+  plan: use bulb 5 times, tap the AD badge, note units gained
+- id: fresh-consent
+  title: Replay first-launch Terms consent screen on a fresh install
+  kind: replay
+  requires: fresh
+  status: open
+  created: '2026-10-03T23:34:47'
+  feature: consent
+  source: session
+- id: exp-exit-app-board
+  title: 'Experiment: after leaving the app mid-level, is the board kept (placed cats,
+    lost hearts) or reset'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:36:41'
+  feature: core-level
+  source: session
+  plan: In a level place 2 correct cats and lose 1 heart, then restart the app (and
+    once just background it for 30 s); reopen the level. Kept if cats and hearts are
+    as left; reset if the board is empty with 3 hearts. Also check the back-arrow
+    quit the same way.
+- id: exp-revive
+  title: 'Experiment: what Revive on the Almost! screen gives (hearts back, board
+    kept) after its rewarded ad'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T23:36:41'
+  feature: hearts
+  source: session
+  plan: Lose a level to 0 hearts on purpose, tap Revive (rewarded ad only, never pay),
+    wait out the ad, launch back if it ends in the Play Store. Confirmed if the same
+    board continues with placed cats kept; record hearts restored (1 or 3) and whether
+    a 2nd Revive is offered on the next loss.
+- id: exp-bulb-cancel
+  title: 'Open the bulb hint and close it without Apply: is the unit refunded?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: boosters
+  source: session
+- id: exp-first-ad
+  title: Find the first level that shows an interstitial (none through level 4) and
+    register the ad feature
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  source: session

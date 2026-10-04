@@ -19,6 +19,13 @@ wrong cat with a red X), and, when the counter is readable, N is the number of c
 k the number already placed. The moves are the solution cells that are still unlit, as double taps.
 The next round reads the board again: no unlit solution cell left means the level is done.
 
+Screens that are not a level board (2026-10-03):
+- the win screen (the page under a dark veil): the counter is read with the veil taken off; N/N -> done
+  (no moves), so `solve --run` ends as "solved"; any other dimmed screen is refused with its counter;
+- the tutorial (page veiled to (150,149,147), the cell(s) to tap left bright): double taps on exactly the
+  bright floor cells (at most 4, never two that see each other); the finished tutorial board on the light
+  page (250,249,245) with every cell lit and the orange "Got it!" button -> done.
+
 Fallback: --board FILE with {"rows": ["..3..", ...], "x": [col centres], "y": [row centres], "count": N,
 "frame_scale": k} in frame pixels ('.' empty, '#' wall or outside cell, '0'-'4' numbered wall, 'C' cat).
 """
@@ -28,6 +35,8 @@ import numpy as np
 
 BG = np.array([247, 242, 238])
 UNLIT = np.array([232, 224, 213])
+TUT_BG = np.array([150, 149, 147])  # the tutorial's veil over the page; the cells to tap stay bright
+TUT_DONE_BG = np.array([250, 249, 245])  # a finished tutorial board with "Got it!" (also the home screen)
 BOX_TOP = np.array([229, 193, 140])
 BOX_TAPE = np.array([234, 210, 114])
 # digit -> hue window (degrees) of the digit's colour
@@ -110,6 +119,32 @@ def _classify(cell, bg):
     return "?"
 
 
+def _classify_tutorial(cell, bg):
+    """A cell under the tutorial's veil: 'H' the cell the game points at (left bright: unlit floor colour),
+    '.' veiled floor, 'n' veiled number, 'N' bright number, 'L' lit floor or a cat, '?' else (the hand)."""
+    h, w, _ = cell.shape
+    reg = cell[int(0.05 * h):int(0.55 * h), int(0.1 * w):int(0.9 * w)].reshape(-1, 3)
+    full = cell[int(0.1 * h):int(0.9 * h), int(0.1 * w):int(0.9 * w)].reshape(-1, 3)
+    k = bg / BG
+    bright_floor = (np.abs(full - UNLIT).sum(axis=1) <= 30).mean()
+    bright = (full.min(axis=1) >= 200).mean()
+    veiled = (np.abs(reg - UNLIT * k).sum(axis=1) <= 20).mean()
+    white = (reg.min(axis=1) >= 245).mean()
+    vwhite = (np.abs(reg - 255 * k).sum(axis=1) <= 20).mean()
+    sat = ((reg.max(axis=1) - reg.min(axis=1)) > 25).mean()
+    if bright_floor >= 0.4 and bright >= 0.8:
+        return "H"
+    if white >= 0.6:
+        return "N"
+    if vwhite >= 0.6:
+        return "n"
+    if veiled >= 0.75:
+        return "."
+    if sat >= 0.6:
+        return "L"
+    return "?"
+
+
 def _digit(cell):
     h, w, _ = cell.shape
     reg = cell[int(0.08 * h):int(0.62 * h), int(0.2 * w):int(0.8 * w)].reshape(-1, 3)
@@ -133,13 +168,31 @@ def _marks(cell):
     return "r" if red > 0.02 else "x" if grey > 0.03 else ""
 
 
-def _counter(a):
-    """The cat counter "k/N" in the white bar above the board -> (k, N), or None when it does not read."""
+def _counter(a, dimmed=False):
+    """The cat counter "k/N" in the white bar above the board -> (k, N), or None when it does not read.
+    dimmed: the win screen's dark veil (the bar's white at ~51): the colours are scaled back first and
+    the cat icon is the first wide run of saturated columns (confetti flies over the bar)."""
     H, W, _ = a.shape
     reg = a[int(H * 0.235):int(H * 0.275), int(W * 0.38):int(W * 0.95)]
+    if dimmed:
+        white = float(np.median(reg.max(axis=2)))
+        if not 30 <= white <= 200:
+            return None
+        reg = np.clip(reg.astype(np.float32) * (255.0 / white), 0, 255).astype(np.int16)
     mx = reg.max(axis=2)
     sat = mx - reg.min(axis=2)
-    icon = np.where((sat > 60).sum(axis=0) > 3)[0]  # the cat icon left of the text
+    satcol = (sat > 60).sum(axis=0) > 3
+    if dimmed:
+        runs = []
+        for s, e in _runs(satcol):
+            if runs and s - runs[-1][1] <= 0.01 * W:
+                runs[-1] = (runs[-1][0], e)
+            else:
+                runs.append((s, e))
+        wide = [r for r in runs if r[1] - r[0] >= 0.03 * W]
+        icon = np.array([wide[0][1]]) if wide else np.array([], dtype=int)
+    else:
+        icon = np.where(satcol)[0]  # the cat icon left of the text
     dark = (mx < 95) & (sat < 30)
     grey = (mx >= 95) & (mx < 175) & (sat < 30)
     ink = dark | grey
@@ -169,29 +222,63 @@ def _counter(a):
     return int(k), int(n)
 
 
-def _read(image):
+class _Dimmed(ValueError):
+    """The game's page under a dark veil: a popup, the win screen or the fail screen."""
+
+    def __init__(self, msg, a):
+        super().__init__(msg)
+        self.a = a
+
+
+def _page(image):
+    """-> (array, page background, mode): "play" the level page, "tutorial" the dimmed tutorial page with
+    the cells to tap left bright, "tutorial_done" the light page of a finished tutorial board ("Got it!")."""
     a = np.asarray(image.convert("RGB")).astype(np.int16)
     H, W, _ = a.shape
     y0, y1 = int(H * 0.285), int(H * 0.78)
     bg = np.median(a[y0:y1, 3:max(6, int(W * 0.025))].reshape(-1, 3), axis=0)
-    if np.abs(bg - BG).sum() > 15:
-        ratio = bg / BG
-        dim = ratio.max() < 0.8 and ratio.max() - ratio.min() < 0.06  # the game's page under a dark veil
-        raise ValueError(f"not the board: the page background is {bg.astype(int).tolist()}"
-                         + (" (dimmed: a popup or the win screen)" if dim else " (an ad or another screen)"))
-    nb = np.abs(a - bg).sum(axis=2) > 14
+    if np.abs(bg - BG).sum() <= 15:
+        return a, bg, "play"
+    if np.abs(bg - TUT_DONE_BG).sum() <= 8:
+        return a, bg, "tutorial_done"
+    ratio = bg / BG
+    dim = ratio.max() < 0.8 and ratio.max() - ratio.min() < 0.06  # the game's page under a dark veil
+    if np.abs(bg - TUT_BG).sum() <= 12:
+        return a, bg, "tutorial"
+    msg = (f"not the board: the page background is {bg.astype(int).tolist()}"
+           + (" (dimmed: a popup or the win screen)" if dim else " (an ad or another screen)"))
+    raise _Dimmed(msg, a) if dim else ValueError(msg)
+
+
+def _read(image, page=None):
+    a, bg, mode = page or _page(image)
+    H, W, _ = a.shape
+    y0, y1 = int(H * 0.285), int(H * 0.78)
+    # the finished tutorial's caption panel is the play page's colour, 17 off its own background
+    nb = np.abs(a - bg).sum(axis=2) > (30 if mode == "tutorial_done" else 14)
     Q = nb[y0:y1].mean(axis=0)
     xs = np.where(Q > 0.05)[0]
     if len(xs) < W * 0.2:
         raise ValueError("not the board: nothing in the board area")
     L, R = int(xs[0]), int(xs[-1])
-    inner = Q[L:R + 1]
-    gaps = [L + (s + e) / 2 for s, e in _runs(inner < 0.3 * np.median(inner)) if e - s >= 2]
+    if mode == "play":
+        inner = Q[L:R + 1]
+        gaps = [L + (s + e) / 2 for s, e in _runs(inner < 0.3 * np.median(inner)) if e - s >= 2]
+    else:
+        # the tutorial: a glow, the hand and the caption fill parts of the gaps; over the board's rows only,
+        # a gap column is still page background in at least a quarter of the rows, a cell column in nearly none
+        Qr0 = nb[y0:y1, L:R + 1].mean(axis=1)
+        rr = np.where(Qr0 > 0.5)[0]
+        if len(rr) == 0:
+            raise ValueError("not the board: no board rows")
+        inner = nb[y0 + rr[0]:y0 + rr[-1] + 1, L:R + 1].mean(axis=0)
+        gaps = [L + (s + e) / 2 for s, e in _runs(inner < 0.5) if 2 <= e - s <= W * 0.04]
     if len(gaps) < 2:
         raise ValueError("not the board: no gaps between cells")
     p = float(np.median(np.diff(gaps)))
     if not (W * 0.06 < p < W * 0.36):
-        raise ValueError(f"not the board: cell pitch {p:.0f} px")
+        raise ValueError(f"not the board: cell pitch {p:.0f} px"
+                         + (" (a light page without a grid: the home screen?)" if mode == "tutorial_done" else ""))
     bx = _phase(Q, p, L, R)
     Qr = nb[:, L:R + 1].mean(axis=1)
     ys = [y for y in range(y0, y1) if Qr[y] > 0.35]
@@ -231,7 +318,13 @@ def _read(image):
         for j in range(c0, c1 + 1):
             xa, xb = cols[j]
             cell = a[int(ya):int(yb), int(xa):int(xb)]
-            k = _classify(cell, bg)
+            k = _classify_tutorial(cell, bg) if mode == "tutorial" else _classify(cell, bg)
+            if k == "H":
+                line += k
+                continue
+            if k == "n":  # a number under the tutorial's veil: read the digit with the veil taken off
+                cell = np.clip(cell * (BG / bg), 0, 255).astype(np.int16)
+                k = "N"
             if k == " " and nb[int(ya):int(yb), int(xa):int(xb)].mean() > 0.03:
                 k = "?"  # outside cells must be clean page background (not a cell fading in)
             if k == "N":
@@ -247,7 +340,8 @@ def _read(image):
             line += k
         grid.append(line)
     return {"grid": grid, "x": cx, "y": cy, "pitch": p, "marks": marks,
-            "edge": (cols[c0][0], W - cols[c1][1]), "counter": _counter(a)}
+            "edge": (cols[c0][0], W - cols[c1][1]), "counter": _counter(a) if mode == "play" else None,
+            "mode": mode, "a": a}
 
 
 class _Solver:
@@ -378,9 +472,54 @@ def _lit_by(grid, cats):
     return lit
 
 
+def _orange_button(a, y0=0.88, y1=0.92, share=0.5):
+    """The orange "Got it!" button under a finished tutorial board (default band), or the bulb hint's
+    "Apply" button (y 0.835-0.865) on the veiled page."""
+    H, W, _ = a.shape
+    reg = a[int(H * y0):int(H * y1), int(W * 0.4):int(W * 0.6)].reshape(-1, 3)
+    return ((reg[:, 0] > 200) & (reg[:, 1] > 120) & (reg[:, 1] < 200) & (reg[:, 2] < 90)).mean() > share
+
+
+def _tutorial(rd, R, C, shown):
+    """The tutorial's two scripted boards: the game veils the page and leaves the cell(s) to tap bright."""
+    grid = rd["grid"]
+    if rd["mode"] == "tutorial_done":
+        if any(ch not in "L01234" for row in grid for ch in row) or not _orange_button(rd["a"]):
+            return _no(f"not the board: a light page that is not a finished tutorial board. Read: {shown}")
+        return {"moves": [], "rescan": False, "done": True,
+                "note": f"the tutorial board {R}x{C} is complete: tap \"Got it!\" (364,1425 in a 730x1583 frame) "
+                        f"and run solve again on the next tutorial board. Read: {shown}"}
+    if _orange_button(rd["a"], 0.835, 0.865, 0.3):
+        # the bulb booster's hint has the tutorial's veil, but an orange "Apply" button under the board
+        return _no("the bulb hint is up: veiled page with an orange Apply button: tap Apply (364,1348 in a 730x1583 "
+                   f"frame) to place its cats, wait 1 s and run solve again. Read: {shown}")
+    hot = [(r, c) for r in range(R) for c in range(C) if grid[r][c] == "H"]
+    if not hot:
+        return _no(f"tutorial: no cell is pointed at (the next hint is still coming): look again. Read: {shown}")
+    if len(hot) > 4:
+        return _no(f"tutorial: {len(hot)} bright cells, more than a hint shows: misread? Read: {shown}")
+    walls = [[ch in "01234#" for ch in row] for row in grid]
+    for i, (r, c) in enumerate(hot):
+        for r2, c2 in hot[i + 1:]:
+            if (r == r2 and not any(walls[r][k] for k in range(min(c, c2) + 1, max(c, c2)))) or                     (c == c2 and not any(walls[k][c] for k in range(min(r, r2) + 1, max(r, r2)))):
+                return _no(f"tutorial: the bright cells {(r + 1, c + 1)} and {(r2 + 1, c2 + 1)} see each other: "
+                           f"misread? Read: {shown}")
+    moves = [[round(rd["x"][c]), round(rd["y"][r]), 2] for r, c in hot]
+    return {"moves": moves, "rescan": True, "done": False,
+            "note": f"tutorial {R}x{C}: double tap the cell(s) the game lights up {[(r + 1, c + 1) for r, c in hot]} "
+                    f"(row, col from 1; H bright, L lit, ? under the hand). Read: {shown}"}
+
+
 def _from_image(image):
     try:
         rd = _read(image)
+    except _Dimmed as e:
+        cnt = _counter(e.a, dimmed=True)
+        if cnt and cnt[0] == cnt[1] > 0:
+            return {"moves": [], "rescan": False, "done": True,
+                    "note": f"the win screen: the counter reads {cnt[0]}/{cnt[1]} under the veil, the level is won. "
+                            "Take a shot of it for level end won, then tap the \"Level N+1\" button (364,1285)"}
+        return _no(str(e) + (f"; the counter reads {cnt[0]}/{cnt[1]}" if cnt else ""))
     except ValueError as e:
         return _no(str(e))
     grid = rd["grid"]
@@ -388,6 +527,8 @@ def _from_image(image):
     shown = "|".join(row.replace(" ", "#") for row in grid)
     if not (MIN_SIDE <= R <= MAX_SIDE and MIN_SIDE <= C <= MAX_SIDE):
         return _no(f"implausible grid {R}x{C}: {shown}")
+    if rd["mode"] != "play":
+        return _tutorial(rd, R, C, shown)
     bad = [(r + 1, c + 1) for r in range(R) for c in range(C) if grid[r][c] == "?"]
     if bad:
         return _no(f"{R}x{C}: cells at (row, col) {bad[:6]} are none of floor/wall/box (the board is still "

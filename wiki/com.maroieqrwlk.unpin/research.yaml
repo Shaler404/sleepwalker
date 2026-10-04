@@ -1,0 +1,2977 @@
+# Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
+game: com.maroieqrwlk.unpin
+version: 241.5.1
+play_version: 241.5.2
+play_checked: '2026-10-03T19:29:29'
+phone_version: 241.5.1
+discovery: open
+ftue_verified: '2026-10-03'
+progress:
+  text: level 13
+  value: 13.0
+  at: '2026-10-04T01:06:57'
+  session: 20261004-005453-chrono-2FYKPJ
+gate: null
+synced:
+  chrono: '2026-10-04T01:10:05'
+mechanics:
+- id: pin-pull
+  name: pin-pull
+  status: mastered
+  method: solver
+  levels:
+    won: 15
+    lost: 2
+    quit: 3
+  recent:
+  - level: level 10
+    result: quit
+    seconds: 142
+    model: opus
+  - level: level 10
+    result: quit
+    seconds: 62
+    model: opus
+  - level: level 10
+    result: quit
+    seconds: 34
+    model: opus
+  - level: level 10
+    result: won
+    seconds: 25
+    model: opus
+  - level: level 11
+    result: lost
+    seconds: 66
+    model: opus
+  - level: level 11
+    result: lost
+    seconds: 112
+    model: opus
+  - level: level 11
+    result: won
+    seconds: 72
+    model: opus
+  - level: level 12
+    result: won
+    seconds: 97
+    model: opus
+  - level: level 13
+    result: won
+    seconds: 60
+    model: opus
+    note: won (league board shot 37), post-win flow cut by the owner taking the phone;
+      whether the win was saved is open
+  solver: solvers/com.maroieqrwlk.unpin/pin-pull.py
+  note: 'solver: one pull per round (no dependence on --gap), follows a zoomed/shifted
+    view after a pull, reads rings on the Space theme; L11 library order E C W F B;
+    dream 2026-10-04: removed the phantom ''level 11 quit 345 s'' (level_start logged
+    on the league screen, 20261003-211035-chrono-2FYKPJ#15, L11 never opened); L13
+    ''quit'' corrected to won (20261004-005453-chrono-2FYKPJ#16-17)'
+  best_s: 17
+features:
+- id: core-level
+  name: Pin-pull level
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'No menu: the app opens straight into the current level; the level screen
+      is the hub'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#2
+  - id: chk-screen
+    text: 'Level screen marked: gear, level path, restart, ADS, board with pins, cup
+      with fill percent, banner'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#2
+  - id: chk-win
+    text: 'Win screen: ''Awesome! Level completed!'', +22 coins (L1), +17 (L2), gift
+      bar +11-12%, Tap to continue opens the next level'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#3
+    outcome: true
+  - id: win-flow-revert
+    text: 'A force-stop during the post-win screens (stuck rewarded-ad end card after
+      the coin multiplier video) reverted the L10 win: map back at 10, coins 230 (multiplier
+      reward not credited), league pins kept; the win is saved only when the post-win
+      flow ends'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#23
+  - id: chk-hud
+    text: 'Top: back arrow, level path (prev ticked, current with ! badge, next),
+      restart; right: league button with pin count 27, ADS (no-ads offer), Stage column
+      on multi-stage levels; centre board, cup with fill %, bottom-left native ad
+      tile, bottom banner; at L1-L2 there is no back arrow and no league button yet
+      (20261003-193015-chrono-2FYKPJ#5)'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#29
+    version: 241.5.1
+  - id: chk-restart
+    text: Restart icon opens 'You can do better!' (Restart / Continue); Continue closes
+      it; Restart plays an interstitial (skip control opened the Play Store, launch
+      returned) then reloads only the current stage, earlier stages stay ticked; no
+      coin cost
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#29
+    version: 241.5.1
+    outcome: true
+  - id: chk-quit
+    text: Back arrow returns to the map at once, no confirmation, no cost; reopening
+      via Play keeps the multi-stage progress (stage 4 of 4)
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#29
+    version: 241.5.1
+    outcome: true
+  - id: chk-exit-app
+    text: 'The previous session left L10 at stage 4; after the app was closed and
+      relaunched this session, L10 opened at stage 4 with stages 1-3 ticked: stage
+      progress survives an app exit'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#29
+    version: 241.5.1
+    outcome: true
+  - id: chk-rules
+    text: 'Playbook: tap pin rings, slider pins swipe; all balls coloured and in the
+      cup; lost on grey/bomb in cup or balls thrown out'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#29
+    version: 241.5.1
+  - id: chk-elements
+    text: 'Seen so far: grey balls, coloured balls, bombs, slider pins, colour buckets;
+      separate level-element features not yet registered - left to exp tasks'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#29
+    version: 241.5.1
+  - id: balls-out
+    text: 'Balls fell out: ''Pretty Close! Level failed!'' with tip ''Balls fell out
+      of the level! Avoid gaps to protect your balls from falling''; offers Skip (video)
+      and Retry; no coin cost; Retry plays an interstitial and reloads the level'
+    done: true
+    outcome: true
+    source: 20261004-004411-chrono-2FYKPJ#23
+  - id: chk-retry
+    text: 'Fail screen offers Skip (rewarded video, effect not yet tried: exp-fail-skip)
+      and Retry (free, plays an interstitial, reloads the level from the start); no
+      extra moves or revive'
+    done: true
+    source: 20261004-004411-chrono-2FYKPJ#23
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#2
+  - id: chk-loss
+    text: 'Each loss: lose the level every way it can be lost; register each kind
+      as an outcome (case <feature> <kind> "..." --outcome) with its screen and what
+      the loss costs'
+    done: false
+  type: core-level
+  appeared:
+    text: 'first launch, after the intro comic: level 1 opens with a tutorial hand'
+    certainty: fact
+    source: 20261003-193015-chrono-2FYKPJ#2
+  page: features/core-level.md
+- id: coins
+  name: Coins
+  status: documented
+  cases:
+  - id: chk-sources
+    text: 'Sources seen: level win 17-24 coins (L2-L9), x2-x5 video multiplier on
+      some win screens (L5: 23 or 115), Daily Rewards day 1 +25 (day 2-6: 50/100/150/250/500)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#61
+    version: 241.5.1
+  - id: sink-gumball
+    text: 'Coin sink: gumball Spin costs 350 coins (first spin was free, balance stayed
+      230); the coin button is greyed while balance < 350; the coin spin price rose
+      to 375 after a video spin granted a skin (20261004-004411-chrono-2FYKPJ#6)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#55
+    version: 241.5.1
+  - id: chk-empty
+    text: 'Not enough coins: Spin 350 with 230 does nothing (no popup, no shop offer);
+      balance unchanged'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#56
+    version: 241.5.1
+  - id: sink-skins
+    text: 'Ball skins for coins: 1000, 3000, 10000; a tap with 230 coins does nothing
+      (no popup)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#61
+    version: 241.5.1
+  - id: chk-entry
+    text: 'Map: box button bottom right of Play! shows the coin balance and opens
+      Collections; also shown at the top of win screens and in the Collections header'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#61
+    version: 241.5.1
+  - id: chk-screen
+    text: 'No coin shop of its own: the balance lives in the Collections header; no
+      IAP coin packs seen'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#61
+    version: 241.5.1
+  - id: chk-balance
+    text: 'Balance after L9 and day-1 reward: 230; win screens animate coins into
+      the counter'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#61
+    version: 241.5.1
+  - id: chk-sinks
+    text: Gumball spin 350 (first spin free), ball skins 1000/3000/10000; other skin
+      categories not opened; the coin spin price rose to 375 after a video spin granted
+      a skin (20261004-004411-chrono-2FYKPJ#6)
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#61
+    version: 241.5.1
+  - id: chk-effect
+    text: Coins only buy cosmetics (gumball spins, skins); no booster or continue
+      seen for coins
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#61
+    version: 241.5.1
+  - id: chk-refill
+    text: No refill/buy-coins screen seen; at low balance the coin buttons are just
+      greyed
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#61
+    version: 241.5.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#3
+  found_at:
+    text: level 1
+    value: 1.0
+  type: currency-booster
+  appeared:
+    text: 'first level win: +22 coins'
+    certainty: fact
+    source: 20261003-193015-chrono-2FYKPJ#3
+  version_seen: 241.5.1
+  page: features/coins.md
+- id: unlock-progress
+  name: Gift unlock progress bar
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Shown only on the win screen, no button seen
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#3
+  - id: chk-screen
+    text: Silhouette gift card with percent bar on the win screen
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#3
+  - id: chk-progress
+    text: 'Fills per level win: 12% after L1, 23% after L2'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#7
+  - id: gift-at-l9
+    text: 'Gift bar per win: L2 32%, L3 40, L4 52, L5 62, L6 74, L7 85, L8 93, L9
+      full -> gift = cup skin Space'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#46
+    version: 241.5.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#3
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: meta-progress
+  appeared:
+    text: 'first level win screen: silhouette gift fills 12% per win'
+    certainty: fact
+    source: 20261003-193015-chrono-2FYKPJ#3
+  source: 20261003-203702-chrono-2FYKPJ#46
+  unlocked_at:
+    text: level 9
+    value: 9.0
+    source: 20261003-203702-chrono-2FYKPJ#46
+    lock: 'about level 9, not shown: +11-12% per win'
+  page: features/unlock-progress.md
+- id: settings
+  name: Settings
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Gear top left of the level screen
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#5
+  - id: chk-screen
+    text: 'Settings: Sound, Vibration toggles, Rate us, Privacy, version 241.5.1'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#5
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#5
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: system
+  appeared:
+    text: always on the level screen, gear top left
+    certainty: fact
+    source: 20261003-193015-chrono-2FYKPJ#5
+  page: features/settings.md
+- id: no-ads
+  name: Remove Ads
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: ADS crossed-out button under restart on the level screen (not tapped yet)
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#5
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#5
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-contents
+    text: Contents and price of every pack or tier
+    done: false
+  - id: chk-frequency
+    text: How often it comes up by itself (after a level, a loss, a session start)
+      and whether it comes back
+    done: false
+  - id: chk-timer
+    text: Its timer or limit, if any
+    done: false
+  - id: chk-buy-path
+    text: 'The way to buy: the game''s own screens up to the price button; do not
+      tap the price (it opens the payment sheet), never pay'
+    done: false
+  - id: chk-close
+    text: 'Closing it: the close button and what comes up after'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: offer
+  appeared:
+    text: always on the level screen, ADS button top right
+    certainty: fact
+    source: 20261003-193015-chrono-2FYKPJ#5
+  page: features/no-ads.md
+- id: level-path
+  name: Level path header
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Always shown in the level screen header
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#5
+  - id: chk-screen
+    text: Previous (checked), current, next level circles between gear and restart
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#5
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#5
+  - id: chk-entries
+    text: 'Every entry point on it: open (a feature), locked (feature --locked with
+      its condition) or unclear (an experiment)'
+    done: false
+  - id: chk-badges
+    text: Badges, timers and counters on it and what each points to
+    done: false
+  - id: chk-changes
+    text: What changes on it with progress (new buttons, a moving map, a theme)
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: hub
+  appeared:
+    text: 'level screen header: previous, current, next level circles'
+    certainty: fact
+    source: 20261003-193015-chrono-2FYKPJ#5
+  page: features/level-path.md
+- id: intro-tutorial
+  name: Intro comic and tutorial hand
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: Intro comic, 5 panels with progress dots and Tap to Skip
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: Comes by itself on the first launch
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#1
+  - id: chk-steps
+    text: Each step and what it teaches, with a frame (an animated hand is a clip)
+    done: false
+  - id: chk-skip
+    text: Whether it can be skipped, and what happens when the app is left in the
+      middle of it
+    done: false
+  - id: chk-end
+    text: Where it ends and what opens after it
+    done: false
+  - id: chk-replay
+    text: Whether it can be seen again (How to play, a help button)
+    done: false
+  found_at:
+    text: level 3
+    value: 3.0
+  type: tutorial
+  appeared:
+    text: 'first launch: 5-panel intro comic (Tap to Skip), then a tutorial hand on
+      level 1'
+    certainty: fact
+    source: 20261003-193015-chrono-2FYKPJ#1
+- id: banner-ad
+  name: Banner ad
+  status: documented
+  cases:
+  - id: chk-entry
+    text: Comes by itself at the bottom of the screen from level 1
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#3
+  - id: chk-screen
+    text: Bottom banner (store install ad) on the level and win screens
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#3
+  - id: chk-kind
+    text: Banner, bottom of the level, win and settings screens
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#5
+  - id: chk-reward
+    text: 'Not applicable: a banner, not a rewarded video'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#3
+  - id: where
+    text: 'Bottom strip, ~95 px, on every screen seen: level boards (from L3; L1-L2
+      too), win screens, league screen, map, daily rewards; not over interstitials.
+      Creatives rotate (app install cards, image banners)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#49
+    version: 241.5.1
+  - id: close
+    text: 'No close button: only an (i) AdChoices icon at its left edge; removal only
+      via the paid No Ads button (not tapped)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#49
+    version: 241.5.1
+  - id: tap
+    text: A tap opens a Google Play overlay sheet over the game (Install, X); launch
+      returns to the game with the screen and win intact
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#49
+    version: 241.5.1
+  - id: chk-frequency
+    text: 'Always on: shown continuously on every screen from the first level; creative
+      refreshes every few screens'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#49
+    version: 241.5.1
+  - id: chk-close
+    text: 'Cannot be closed: no X on it, only the (i) AdChoices icon at its left edge
+      (Back not tried on it)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#50
+    version: 241.5.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#3
+  found_at:
+    text: level 1
+    value: 1.0
+  type: ad-placement
+  appeared:
+    text: 'from level 1: banner at the bottom of the level and win screens'
+    certainty: fact
+    source: 20261003-193015-chrono-2FYKPJ#3
+  version_seen: 241.5.1
+  page: features/banner-ad.md
+- id: notification-prompt
+  name: Notification permission prompt
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Comes by itself at the first launch
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#0
+  - id: chk-screen
+    text: Android system dialog Allow / Don't allow
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#0
+  - id: chk-links
+    text: 'Not applicable: system dialog with no links'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#0
+  - id: chk-options
+    text: 'Two answers: Allow / Don''t allow (Don''t allow taken)'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-193015-chrono-2FYKPJ#0
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: system
+  appeared:
+    text: 'first launch, before the intro comic: Android notification prompt'
+    certainty: fact
+    source: 20261003-193015-chrono-2FYKPJ#0
+- id: map-tutorial
+  name: Map tutorial tooltips
+  status: in_progress
+  cases:
+  - id: chk-steps
+    text: 'One dimmed overlay with four tooltips: items collection (box button), unique
+      rewards in levels (key node), bonus levels (character node), levels with special
+      features (L9)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#6
+  - id: chk-entry
+    text: 'No entry: shows by itself on the first Play! tap on the map after the L3
+      win'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#6
+  - id: chk-screen
+    text: Dimmed map with four speech-bubble tooltips (shot 11)
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#6
+  - id: chk-end
+    text: A tap dismisses it; the next Play! tap opens Daily Rewards
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#8
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#6
+  - id: chk-skip
+    text: Whether it can be skipped, and what happens when the app is left in the
+      middle of it
+    done: false
+  - id: chk-replay
+    text: Whether it can be seen again (How to play, a help button)
+    done: false
+  found_at:
+    text: level 4 (map shown after L3)
+    value: 4.0
+  type: tutorial
+  appeared:
+    text: first tap on Play! on the map after the L3 win
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#6
+  page: features/map-tutorial.md
+- id: daily-rewards
+  name: Daily Rewards
+  status: in_progress
+  cases:
+  - id: claim-day1
+    text: 'Claim day 1: +25 coins (79 -> 102 shown), day 1 ticked'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#9
+    version: 241.5.1
+  - id: chk-calendar
+    text: '7-day calendar: d1 +25, d2 +50, d3 +100, d4 +150, d5 +250, d6 +500 coins,
+      d7 gift boxes'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#8
+  - id: chk-today
+    text: 'Day 1 claimed with Claim: +25 coins, day ticked'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#9
+  - id: chk-screen
+    text: Daily Rewards popup over the map with the 7-day calendar and Claim
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#8
+  - id: chk-entry
+    text: 'No button: the popup opens by itself on the first map visit of a day (day
+      1 at 20:37); a relaunch the same day (21:40) did not show it again'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#30
+    version: 241.5.1
+  - id: chk-play
+    text: 'Not a board: a calendar popup only'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#30
+    version: 241.5.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#8
+  - id: chk-next-day
+    text: 'The next day: what renews and when (a daily follow-up)'
+    done: false
+  - id: chk-missed
+    text: 'A missed day: what is lost or reset'
+    done: false
+  found_at:
+    text: level 4 (map shown after L3)
+    value: 4.0
+  type: daily
+  appeared:
+    text: popup on the second Play! tap on the map after the L3 win (first map visit)
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#8
+  page: features/daily-rewards.md
+- id: coin-multiplier
+  name: Win coin multiplier (video)
+  status: in_progress
+  cases:
+  - id: decline
+    text: 'Get 23 (no video): base coins credited, multiplier skipped'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#19
+    version: 241.5.1
+  - id: chk-screen
+    text: 'Win screen: moving x2-x5 bar, ''Get x5 (115)'' video button and ''Get 23''
+      plain button'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#18
+  - id: chk-kind
+    text: Rewarded video on the win screen that multiplies the level's coins
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#18
+  - id: where
+    text: Appears on the 'Incredible! Level completed!' screen after a multi stage
+      win, after Puzzle Piece Found and the Bronze League screen; shows +19 base coins
+      and a gift progress (12%)
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#23
+    version: 241.5.1
+  - id: bar-pick
+    text: 'A highlight sweeps back and forth over x2 x3 x4 x5 x4 x3 x2; the video
+      button label follows it (Get x3 57); the factor locks at the moment of the tap
+      (tapped at x5: 95 coins)'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#23
+    version: 241.5.1
+  - id: video-reward
+    text: After the video the multiplied coins are credited
+    done: false
+  - id: plain-close
+    text: 'Get N (no video) closes the win screen with the base coins: confirmed earlier
+      as case decline (Get 23 credited)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ
+  - id: stuck-ad
+    text: Rewarded video end card (playable) had no working close; Next, Back and
+      launch kept it up; restart reverted the win and the reward
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#23
+    version: 241.5.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#18
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-frequency
+    text: 'How often it shows: after which action, every Nth level, a cooldown'
+    done: false
+  - id: chk-reward
+    text: 'Rewarded: the offer screen before it and what watching gives'
+    done: false
+  - id: chk-close
+    text: 'How it closes: the timer before the close cross, where the cross is, what
+      comes after'
+    done: false
+  found_at:
+    text: level 5
+    value: 5.0
+  type: ad-placement
+  appeared:
+    text: first on the level 5 (Multi Stage) win screen
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#18
+  page: features/coin-multiplier.md
+- id: pull-fest
+  name: Pull Fest Ranking (Bronze League)
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Pull Fest: Time Left 6d 6h, ''pull as many pins'', 6 league cups, leaderboard
+      (Player rank 997, editable name), Play'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#22
+  - id: chk-points
+    text: 'One point per pin pulled in a won level (L6: 3 pins); rank 997 -> 992 after
+      L6, 868 with 13 pins after L9'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#25
+  - id: post-win-screen
+    text: 'Bronze League screen comes after the puzzle-piece screen on a win (L10):
+      Time Left 6d 5h, Pins 27, leaderboard list with the player at 847 (868 before),
+      Next Level! button, back arrow top left; this is the same league as Pull Fest'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#15
+  - id: chk-period
+    text: 'Weekly-looking period: Time Left 6d 6h at L5 (session 20261003-203702),
+      6d 5h at L10; the reset itself not seen yet'
+    done: false
+  - id: pins-kept-on-revert
+    text: Pins scored in the post-win flow were kept (27) when a force-stop reverted
+      the L10 win itself
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#23
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#19
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-board
+    text: 'The board: ranks, the player''s place, the number of players'
+    done: false
+  - id: chk-rewards
+    text: Rewards per rank, promotion and relegation
+    done: false
+  - id: chk-end
+    text: 'The end of a period: the results screen and the reward (a follow-up)'
+    done: false
+  - id: bronze-league-is-league
+    text: The 'Bronze League' board after a win (Time Left 6d 5h, Pins 27, rank 868
+      -> 847, Next Level!) is this leaderboard; the separate feature bronze-league
+      was merged here
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#15
+  found_at:
+    text: level 5
+    value: 5.0
+  type: social
+  appeared:
+    text: 'after the level 5 win: map overlay ''Pull Fest Ranking!'' with Bronze League
+      banner, rank 997, icon right of map with 0 points'
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#19
+  page: features/pull-fest.md
+- id: map-chest
+  name: Map chest with timer
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Map, left side: chest icon with a timer; shows a green OPEN label when
+      ready (seen at L10, 21:48)'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#30
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#19
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-progress
+    text: 'The progress: the bar, the album or the counter, what fills it and where
+      it is now'
+    done: false
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  found_at:
+    text: level 4 (map shown after L3)
+    value: 4.0
+  type: meta-progress
+  appeared:
+    text: on the map from its first visit after L3, timer 13m36s counting down
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#19
+  page: features/map-chest.md
+- id: jump-to-level
+  name: Jump to Level (video)
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#19
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-kind
+    text: 'The kind: banner, interstitial, rewarded video or cross-promo, and where
+      it shows'
+    done: false
+  - id: chk-frequency
+    text: 'How often it shows: after which action, every Nth level, a cooldown'
+    done: false
+  - id: chk-reward
+    text: 'Rewarded: the offer screen before it and what watching gives'
+    done: false
+  - id: chk-close
+    text: 'How it closes: the timer before the close cross, where the cross is, what
+      comes after'
+    done: false
+  found_at:
+    text: level 4 (map shown after L3)
+    value: 4.0
+  type: ad-placement
+  appeared:
+    text: on the map next to the next level from the first map visit (L5, later L7)
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#19
+  page: features/jump-to-level.md
+- id: multi-stage
+  name: Multi Stage Level
+  status: in_progress
+  cases:
+  - id: under-win
+    text: 'Win after the last of 4 stages (L5): same Level completed screen, plus
+      the x2-x5 video coin multiplier (first seen here)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#18
+  - id: chk-announce
+    text: Map node with a yellow ring, a ! badge and a 'Multi Stage Level' speech
+      bubble (L5, L10, L15, L16)
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#5
+  - id: chk-differs
+    text: 'Several boards in a row in one level (L5: 4 stages), each solved separately;
+      the level is won after the last stage'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#18
+  - id: chk-win
+    text: Same 'Level completed' screen after the last stage; L5 win +23 coins with
+      the x2-x5 video multiplier offer
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#18
+  - id: stage-count-varies
+    text: 'L10 had 4 stages this time (the board library had 3 for it): the stage
+      count of a level is not fixed between installs or versions; look again after
+      every stage'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#14
+  - id: chk-frequency
+    text: 'Multi stage levels seen at L5 and L10: hypothesis every 5th level; check
+      L15 and L20'
+    done: false
+  - id: under-restart
+    text: 'Restart on L10 stage 4: ''You can do better!'' then an interstitial, then
+      only the current stage reloads; stages 1-3 stay ticked'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#29
+  - id: under-quit
+    text: 'Back arrow on L10 stage 4: map at once, no cost; Play reopens at stage
+      4 with stages 1-3 kept'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#24
+  - id: under-exit-app
+    text: App closed after the last session with L10 at stage 4; relaunch reopened
+      stage 4 with stages 1-3 ticked
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#21
+  - id: map-label-l16
+    text: 'Map tooltip ''Multi Stage Level'' next to L16 (not L15): the every-5th
+      hypothesis may be wrong'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#30
+  - id: chk-entry
+    text: 'No own entry: a map node with a yellow ring and a ''Multi Stage Level''
+      bubble, opened by Play!'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#30
+  - id: chk-screen
+    text: Level screen with a Stage column on the right (ticked stages, the last one
+      a boss)
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#23
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#19
+  - id: chk-loss
+    text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
+      progress)'
+    done: false
+  - id: chk-retry
+    text: Retry and continue offers after a loss and their price (a video, coins);
+      where a retry sends you (the start, the same stage)
+    done: false
+  - id: under-balls-out
+    text: 'Balls fell out under Multi Stage Level: as the base, or what differs'
+    done: false
+  found_at:
+    text: level 5
+    value: 5.0
+  type: level-type
+  appeared:
+    text: level 5 (4 stages), map label on L5/L6/L10
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#19
+  page: features/multi-stage.md
+- id: map-keys
+  name: Keys on the map (key nodes, 3-key gate at L11-12)
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#52
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 5
+    value: 5.0
+  type: currency-booster
+  appeared:
+    text: 'key node on level 9: winning L9 filled 1 of the 3 key slots above L17 (''Unlock
+      New Mode'')'
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#52
+  page: features/map-keys.md
+- id: puzzle-pieces
+  name: Puzzle piece collection
+  status: in_progress
+  cases:
+  - id: after-l10
+    text: The L10 multi stage win gives 'Puzzle Piece Found' 1/9 with a Get Another
+      (video) button and Tap to continue, before the league and coin screens
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#14
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#24
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-progress
+    text: 'The progress: the bar, the album or the counter, what fills it and where
+      it is now'
+    done: false
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  found_at:
+    text: level 6
+    value: 6.0
+  type: meta-progress
+  appeared:
+    text: 'after winning level 6 (the puzzle-piece node on the map): ''Puzzle Piece
+      Found!'' 3x3 picture, 1 piece'
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#24
+  page: features/puzzle-pieces.md
+- id: interstitial
+  name: Interstitial video ad after a win
+  status: in_progress
+  cases:
+  - id: close-flow
+    text: 'Video ~30 s until X; then a playable end card: skip arrow top right after
+      ~8 s, then an install sheet, closed by Back -> map'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#30
+    version: 241.5.1
+  - id: after-each-win
+    text: 'Interstitials after L6, L7 and L8 wins in a row (on Tap to continue); L8:
+      video ~45 s then a playable with a faint X at top right (683,70)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#42
+    version: 241.5.1
+  - id: chk-entry
+    text: 'No entry: comes by itself on Tap to continue after a level win, from L6
+      on'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#27
+  - id: chk-screen
+    text: Full-screen video with a countdown at top left, then a playable end card
+      and an install sheet
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#27
+  - id: chk-kind
+    text: 'Interstitial (not rewarded): video then playable end card, after level
+      wins'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#27
+  - id: chk-frequency
+    text: 'After the Tap to continue of most wins from L6 on (L6-L9 in a row, L11,
+      L12), after an in-level Restart (214021#27) and a fail-screen Retry (004411#20);
+      NOT after the L10 win that came ~4 min after a rewarded ad (004411#16): cooldown
+      is task exp-interstitial-cooldown'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#42
+  - id: chk-reward
+    text: 'Not rewarded: nothing is given for watching'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#42
+  - id: chk-close
+    text: X after ~30-45 s (top right, sometimes faint at 683,70); end card skip icon
+      (45,110 or 676,116), then Close; an install sheet is dismissed by Back -> map
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#30
+  - id: between-stages
+    text: In the multi stage L10 interstitials came between stages (after stage 1
+      and after stage 3), not only after the win; the skip arrow top left (45,108)
+      opened the Play Store each time, launch brought the game back
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#7
+  - id: after-restart
+    text: Confirming Restart in a level also plays an interstitial (not only wins);
+      its skip control opened the Play Store
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#27
+  - id: no-ad-after-l10
+    text: 'L10 win (stage 4, 00:50): Puzzle Piece -> league -> Next Level -> Wonderful
+      +19 -> Get 19 -> map with no interstitial (a video-spin rewarded ad had played
+      ~4 min earlier: likely a cooldown)'
+    done: true
+    source: 20261004-004411-chrono-2FYKPJ#16
+    version: 241.5.1
+  - id: after-retry
+    text: Retry on the 'Level failed' screen plays an interstitial (L11, ~2 min after
+      a no-ad win)
+    done: true
+    source: 20261004-004411-chrono-2FYKPJ#20
+    version: 241.5.1
+  - id: after-win-l11
+    text: 'L11 win (00:58, ~5 min after the last ad): Tap to continue -> ad-loading
+      logo -> ~50 s video -> end card with only the skip icon (45,108), which opened
+      the Play Store; launch returned to the map at L12 with the win kept'
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#6
+    version: 241.5.1
+  - id: back-to-back
+    text: 'Interstitials after both L11 and L12 wins about 3 minutes apart: no cooldown
+      between consecutive wins (the L10 no-ad win followed a rewarded ad)'
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#11
+    version: 241.5.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#27
+  found_at:
+    text: level 6
+    value: 6.0
+  type: ad-placement
+  appeared:
+    text: first after the level 6 win, on Tap to continue (6th level of the install),
+      video with a 57 s counter
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#27
+  page: features/interstitial.md
+- id: collections
+  name: Collections
+  status: documented
+  cases:
+  - id: chk-entry
+    text: 'Map: box button bottom right (shows coin balance, ! badge when something
+      new)'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#20
+    version: 241.5.1
+  - id: chk-screen
+    text: 'Collections screen with coin balance and 4 tabs: gumball machine, trophies,
+      puzzles, skins'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#20
+    version: 241.5.1
+  - id: chk-progress
+    text: 'Trophies: weekly chest with 6 trophy tiers (1 reached, 6d 5h left); puzzles:
+      2 of 9 pieces in Landscapes; ball skins count completed levels 9/115, 9/300'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#20
+    version: 241.5.1
+  - id: chk-items
+    text: 'Skins: Themes 15 gift-box + event, Trails 7 puzzle + 8 chest + consecutive-wins
+      + event, Walls 12 daily-task + event, Pins 15 gift-box + event, Balls 2 level-count
+      + 3 coin + 9 gumball + event; owned at L10: defaults, space theme, popcorn ball'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#20
+    version: 241.5.1
+  - id: chk-earn
+    text: 'Sources by section label: gift boxes, puzzle pieces, chests, consecutive
+      wins, daily tasks, gumball spin (350 coins or video), coins, levels completed,
+      special events'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#20
+    version: 241.5.1
+  - id: chk-use
+    text: Tap an owned skin equips it at once (Space theme equipped, yellow frame
+      moves); a tap on a locked skin was not tried
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#20
+    version: 241.5.1
+  - id: chk-complete
+    text: 'Not reached: Landscapes album reward is the green trail; trophy chest reward
+      weekly - follow up'
+    done: false
+    version: 241.5.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#53
+  found_at:
+    text: level 10
+    value: 10.0
+  type: meta-progress
+  appeared:
+    text: on the map from its first visit after L3 (box button with the coin balance,
+      'Check your items collection!' tooltip)
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#53
+  version_seen: 241.5.1
+  page: features/collections.md
+- id: ball-jar
+  name: All You Can Play! (modes menu)
+  status: documented
+  cases:
+  - id: locked-card-tap
+    text: Tapping a locked mode card does nothing (no tooltip)
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#2
+    version: 241.5.1
+  - id: contents
+    text: 'Holds 5 upcoming modes: IQ Test L16, Challenge L21, Merge Balls L22, Protect
+      The Balloon L30, Dark Levels L50; banner ad at the bottom'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#2
+    version: 241.5.1
+  - id: back
+    text: Back arrow returns to map; the ! badge on the icon clears after the first
+      open
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#3
+    version: 241.5.1
+  - id: badge-returns
+    text: After the restart that reverted L10 the ! badge on the jar icon came back
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#23
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: Map, top-left jar icon (60,268) with a ! badge; the badge clears after the
+      first open and came back after a restart that reverted L10
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#0
+  - id: chk-screen
+    text: '''All You Can Play!'' list ''Upcoming Modes'': 5 greyed cards IQ Test L16,
+      Challenge L21, Merge Balls L22, Protect The Balloon L30, Dark Levels L50; footer
+      ''Complete more levels to unlock new modes''; back arrow (66,115)'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#1
+  - id: chk-entries
+    text: 'Every entry point on it: open (a feature), locked (feature --locked with
+      its condition) or unclear (an experiment)'
+    done: false
+  - id: chk-badges
+    text: Badges, timers and counters on it and what each points to
+    done: false
+  - id: chk-changes
+    text: What changes on it with progress (new buttons, a moving map, a theme)
+    done: false
+  found_at:
+    text: level 9
+    value: 9.0
+  type: hub
+  appeared:
+    text: jar icon with a ! badge at the top left of the map, first seen after the
+      L8 win
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#52
+  version_seen: 241.5.1
+  page: features/ball-jar.md
+- id: hard-levels
+  name: Hard levels (skull node)
+  status: in_progress
+  cases:
+  - id: under-win
+    text: 'L7 (skull node) won first try: same win screen and reward as the base (+coins,
+      Pull Fest pins); interstitial followed as after any win'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#32
+  - id: chk-announce
+    text: Red ring and a skull badge on the map node (L7, L12, L17); L14 and once
+      L7 a flame skull
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#6
+  - id: chk-entry
+    text: 'Map: the level node with a red ring and a skull badge (L7, L12, L17; flame
+      skull at L14); L12 opened from Play! with no popup when the path reached it'
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#7
+  - id: chk-win
+    text: 'L12 hard (241.5.1) won: same win flow as the base (league board -> Next
+      Level); the golden star-wand pin pulled added Golden Pins 1 (score 50 = 45 pins
+      + 5) and a video offer +5 golden pins'
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#9
+    version: 241.5.1
+  - id: chk-screen
+    text: 'L12: opens straight from Play with no popup or warning; only the header
+      node 12 has a red ring and skull badge; the board looks like a normal level
+      (2 pulls)'
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#9
+    version: 241.5.1
+  - id: chk-differs
+    text: 'L12 plays like a base level: same pins, cup, no timer or move limit; the
+      difficulty is only the board (L7, L12 both won first try with known orders)'
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#9
+    version: 241.5.1
+  - id: chk-frequency
+    text: Skull nodes seen at L7, L12, L17 (every 5 levels from 7); flame skull at
+      L14
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#9
+    version: 241.5.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#6
+  - id: chk-loss
+    text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
+      progress)'
+    done: false
+  - id: chk-retry
+    text: Retry and continue offers after a loss and their price (a video, coins);
+      where a retry sends you (the start, the same stage)
+    done: false
+  - id: under-restart
+    text: 'Restart icon opens ''You can do better!'' (Restart / Continue); Continue
+      closes it; Restart plays an interstitial (skip control opened the Play Store,
+      launch returned) then reloads only the current stage, earlier stages stay ticked;
+      no coin cost under Hard levels (skull node): as the base, or what differs'
+    done: false
+  - id: under-quit
+    text: 'Back arrow returns to the map at once, no confirmation, no cost; reopening
+      via Play keeps the multi-stage progress (stage 4 of 4) under Hard levels (skull
+      node): as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'The previous session left L10 at stage 4; after the app was closed and
+      relaunched this session, L10 opened at stage 4 with stages 1-3 ticked under
+      Hard levels (skull node): as the base, or what differs'
+    done: false
+  - id: under-balls-out
+    text: 'Balls fell out under Hard levels (skull node): as the base, or what differs'
+    done: false
+  found_at:
+    text: level 10
+    value: 10.0
+  type: level-type
+  appeared:
+    text: 'map tutorial after the L3 win: skull badges on L7 and L12 (red ring); L14
+      has a flame skull'
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#6
+  page: features/hard-levels.md
+- id: bonus-levels
+  name: Bonus levels (character node)
+  status: in_progress
+  cases:
+  - id: tap-before-reached
+    text: 'Tapping the character node before reaching it (progress L10): no reaction,
+      no tooltip'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#4
+    version: 241.5.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#6
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-announce
+    text: 'How it is announced: the map node, the badge or the popup before it, and
+      what it says'
+    done: false
+  - id: chk-differs
+    text: 'What differs in play from the base level: the board, the rules, the limits,
+      stages, a timer'
+    done: false
+  - id: chk-win
+    text: 'Its win: the win screen and the reward, against the base level''s'
+    done: false
+  - id: chk-loss
+    text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
+      progress)'
+    done: false
+  - id: chk-retry
+    text: Retry and continue offers after a loss and their price (a video, coins);
+      where a retry sends you (the start, the same stage)
+    done: false
+  - id: chk-frequency
+    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
+      from which level'
+    done: false
+  - id: under-win
+    text: 'Win screen under Bonus levels (character node): as the base, or what differs'
+    done: false
+  - id: under-restart
+    text: 'Restart icon opens ''You can do better!'' (Restart / Continue); Continue
+      closes it; Restart plays an interstitial (skip control opened the Play Store,
+      launch returned) then reloads only the current stage, earlier stages stay ticked;
+      no coin cost under Bonus levels (character node): as the base, or what differs'
+    done: false
+  - id: under-quit
+    text: 'Back arrow returns to the map at once, no confirmation, no cost; reopening
+      via Play keeps the multi-stage progress (stage 4 of 4) under Bonus levels (character
+      node): as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'The previous session left L10 at stage 4; after the app was closed and
+      relaunched this session, L10 opened at stage 4 with stages 1-3 ticked under
+      Bonus levels (character node): as the base, or what differs'
+    done: false
+  - id: under-balls-out
+    text: 'Balls fell out under Bonus levels (character node): as the base, or what
+      differs'
+    done: false
+  found_at:
+    text: level 10
+    value: 10.0
+  type: level-type
+  appeared:
+    text: 'map tutorial tooltip after the L3 win: ''Discover bonus levels as you go'',
+      a character node between L8 and L9; later seen between L16 and L17'
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#6
+  locked:
+    text: reach the node after level 16
+    value: 16.0
+  page: features/bonus-levels.md
+- id: new-mode
+  name: New Mode (key gate at level 17)
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#52
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  found_at:
+    text: level 10
+    value: 10.0
+  type: mode
+  appeared:
+    text: 'on the map from the first visit after L3: 3 key slots; after the L9 key
+      node the label ''Unlock New Mode'' at the L17 key node'
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#52
+  locked:
+    text: '3 keys: the 3-key gate at the level 17 key node, ''Unlock New Mode'''
+    value: 17.0
+- id: mode-iq-test
+  name: Sketchman IQ Test
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  found_at:
+    text: level 10
+    value: 10.0
+  type: mode
+  appeared:
+    text: listed in All You Can Play! modes menu
+    certainty: fact
+    source: 20261003-211035-chrono-2FYKPJ#1
+  locked:
+    text: level 16
+    value: 16.0
+  page: features/mode-iq-test.md
+- id: mode-challenge
+  name: Challenge
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  found_at:
+    text: level 10
+    value: 10.0
+  type: mode
+  appeared:
+    text: listed in All You Can Play! modes menu
+    certainty: fact
+    source: 20261003-211035-chrono-2FYKPJ#1
+  locked:
+    text: level 21
+    value: 21.0
+  page: features/mode-challenge.md
+- id: mode-merge-balls
+  name: Merge Balls
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  found_at:
+    text: level 10
+    value: 10.0
+  type: mode
+  appeared:
+    text: listed in All You Can Play! modes menu
+    certainty: fact
+    source: 20261003-211035-chrono-2FYKPJ#1
+  locked:
+    text: level 22
+    value: 22.0
+  page: features/mode-merge-balls.md
+- id: mode-protect-balloon
+  name: Protect The Balloon
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  found_at:
+    text: level 10
+    value: 10.0
+  type: mode
+  appeared:
+    text: listed in All You Can Play! modes menu
+    certainty: fact
+    source: 20261003-211035-chrono-2FYKPJ#1
+  locked:
+    text: level 30
+    value: 30.0
+  page: features/mode-protect-balloon.md
+- id: mode-dark-levels
+  name: Dark Levels
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-211035-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: 'Rules: the goal and how it differs from the core game'
+    done: false
+  - id: chk-win
+    text: 'A win: its screen and what it pays'
+    done: false
+  - id: chk-loss
+    text: 'A loss: its screen, what it costs and the retry offers'
+    done: false
+  - id: chk-progression
+    text: 'Progression inside the mode: stages, stars, a best score'
+    done: false
+  - id: chk-limits
+    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
+    done: false
+  found_at:
+    text: level 10
+    value: 10.0
+  type: mode
+  appeared:
+    text: listed in All You Can Play! modes menu
+    certainty: fact
+    source: 20261003-211035-chrono-2FYKPJ#1
+  locked:
+    text: level 50
+    value: 50.0
+  page: features/mode-dark-levels.md
+- id: trophies
+  name: Weekly trophy chest
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Collections > trophies tab (2nd tab)
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#2
+  - id: chk-screen
+    text: '''Collect trophies to win rewards'': weekly chest with ''Time left for
+      this week'' 6d 5h, a row of 6 trophy tiers, ''Catch up on missed chests'''
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#2
+  - id: chk-progress
+    text: Tier 1 of 6 ticked at L10; what fills the tiers is unknown
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#2
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-earn
+    text: How an item or a step is earned (wins, keys, a spin, a pack)
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  found_at:
+    text: level 10 (stage 4 of 4)
+    value: 10.0
+  type: meta-progress
+  appeared:
+    text: present on the Collections trophies tab from the first Collections visit
+      (L3+); the first trophy tier was already reached at L10, likely by level wins
+    certainty: hypothesis
+    source: 20261003-214021-chrono-2FYKPJ#2
+  page: features/trophies.md
+- id: gumball
+  name: Gumball machine
+  status: documented
+  cases:
+  - id: chk-entry
+    text: Collections > gumball tab (1st tab, opens by default)
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#1
+  - id: chk-screen
+    text: '''Spin to receive a reward!'': Spin 350 coins (disabled at 230 coins) or
+      Spin with video; the coin spin price rose to 375 after a video spin granted
+      a skin (20261004-004411-chrono-2FYKPJ#6)'
+    done: true
+    source: 20261003-214021-chrono-2FYKPJ#1
+  - id: spin-video-ad
+    text: 'Spin with video plays a rewarded ad: about 2.5 min of video (Google Play
+      skip at top right), then a playable end card with X top right'
+    done: true
+    source: 20261004-001002-chrono-2FYKPJ#2
+    version: 241.5.1
+  - id: spin-video-stuck
+    text: 'Spin with video (2nd try): ~1 min video, then a playable end card that
+      opened the Play Store sheet by itself every ~20 s; its Next control did not
+      respond to taps; Back did nothing; restart returned to the map with coins 230
+      and no reward shown'
+    done: true
+    source: 20261004-003223-chrono-2FYKPJ#12
+    version: 241.5.1
+  - id: chk-appeared
+    text: 'Gumball tab is the first tab of Collections (map: gift box with the coin
+      balance next to Play!), present since the Collections button is; the jar icon
+      top left of the map is NOT gumball, it opens the modes list ''All You Can Play!'''
+    done: true
+    source: 20261004-004411-chrono-2FYKPJ#3
+    version: 241.5.1
+  - id: chk-progress
+    text: 'No bar or counter on the gumball screen: only the machine and two spin
+      buttons'
+    done: true
+    source: 20261004-003223-chrono-2FYKPJ#12
+    version: 241.5.1
+  - id: chk-use
+    text: 'Spin: 350 coins (first spin was free) or a rewarded video; with 230 coins
+      the coin spin is greyed; the coin spin price rose to 375 after a video spin
+      granted a skin (20261004-004411-chrono-2FYKPJ#6)'
+    done: true
+    source: 20261004-003223-chrono-2FYKPJ#12
+    version: 241.5.1
+  - id: chk-complete
+    text: 'Does not apply: no set or bar on the gumball screen'
+    done: true
+    source: 20261004-003223-chrono-2FYKPJ#12
+    version: 241.5.1
+  - id: chk-items
+    text: 'Ball skins only: Collections > Skins > Balls ''Get from gumball machine''
+      lists 9 balls (default green owned, Popcorn won by the free spin, 7 locked:
+      soccer, yin-yang, smiley, beach ball, earth, pyramid, cross)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#60
+  - id: chk-earn
+    text: 'One spin gives one gumball ball skin: the first spin was free and gave
+      Popcorn (NEW, Collect); next spins cost 350 coins or a rewarded video (the video
+      spin gave the ball skin Line through a Reward granted sheet, 20261004-004411-chrono-2FYKPJ#5)'
+    done: true
+    source: 20261003-203702-chrono-2FYKPJ#54
+  - id: video-spin-reward
+    text: 'Video spin (3rd try): ~30 s ad, then a Google sheet ''Reward granted''
+      with X top left; X -> machine spin animation (~4 s) -> ''Congrats! You get a
+      new skin!'' ball skin Line (NEW), Collect; coins unchanged 230'
+    done: true
+    source: 20261004-004411-chrono-2FYKPJ#5
+    version: 241.5.1
+  - id: price-escalates
+    text: After the video-spin skin the coin spin price rose 350 -> 375; the Skins
+      tab got a ! badge (new skin)
+    done: true
+    source: 20261004-004411-chrono-2FYKPJ#6
+    version: 241.5.1
+  found_at:
+    text: level 10 (stage 4 of 4)
+    value: 10.0
+  type: meta-progress
+  appeared:
+    text: 'with Collections on the first visit after L3: the gumball tab opens first
+      with a free Spin! badge'
+    certainty: fact
+    source: 20261003-203702-chrono-2FYKPJ#53
+  version_seen: 241.5.1
+  page: features/gumball.md
+- id: race
+  name: Level race
+  status: in_progress
+  cases:
+  - id: declined
+    text: No, thanks closes the popup and opens the level at once
+    done: true
+    source: 20261004-004411-chrono-2FYKPJ#18
+    version: 241.5.1
+  - id: chk-rules
+    text: 'Popup ''New race started!'': race 3 other players (4 racers) to beat 15
+      levels the fastest; a bar with places 4..1 and You at 4th; Go! joins, No, thanks
+      declines'
+    done: true
+    source: 20261004-004411-chrono-2FYKPJ#17
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261004-004411-chrono-2FYKPJ#17
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-timer
+    text: 'Its timer and schedule: how long it runs and when it comes back'
+    done: false
+  - id: chk-in-level
+    text: What shows during a level while it runs (a bar, a counter, collectibles)
+    done: false
+  - id: chk-progress
+    text: 'Progress per level: the points or items after a win, and after a loss'
+    done: false
+  - id: chk-rewards
+    text: The rewards per rank or milestone
+    done: false
+  - id: chk-end
+    text: 'The end: the results screen and the reward paid (a follow-up at the timer''s
+      end)'
+    done: false
+  - id: under-win
+    text: 'Win screen under Level race: as the base, or what differs'
+    done: false
+  - id: under-restart
+    text: 'Restart icon opens ''You can do better!'' (Restart / Continue); Continue
+      closes it; Restart plays an interstitial (skip control opened the Play Store,
+      launch returned) then reloads only the current stage, earlier stages stay ticked;
+      no coin cost under Level race: as the base, or what differs'
+    done: false
+  - id: under-quit
+    text: 'Back arrow returns to the map at once, no confirmation, no cost; reopening
+      via Play keeps the multi-stage progress (stage 4 of 4) under Level race: as
+      the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'The previous session left L10 at stage 4; after the app was closed and
+      relaunched this session, L10 opened at stage 4 with stages 1-3 ticked under
+      Level race: as the base, or what differs'
+    done: false
+  - id: under-balls-out
+    text: 'Balls fell out under Level race: as the base, or what differs'
+    done: false
+  found_at:
+    text: level 11
+    value: 11.0
+  type: event
+  appeared:
+    text: popup 'New race started!' on tapping Play for L11, right after the L10 win
+      (first time at progress L11)
+    certainty: fact
+    source: 20261004-004411-chrono-2FYKPJ#17
+  page: features/race.md
+- id: color-bucket-level
+  name: Color Bucket Level
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-announce
+    text: 'How it is announced: the map node, the badge or the popup before it, and
+      what it says'
+    done: false
+  - id: chk-differs
+    text: 'What differs in play from the base level: the board, the rules, the limits,
+      stages, a timer'
+    done: false
+  - id: chk-win
+    text: 'Its win: the win screen and the reward, against the base level''s'
+    done: false
+  - id: chk-loss
+    text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
+      progress)'
+    done: false
+  - id: chk-retry
+    text: Retry and continue offers after a loss and their price (a video, coins);
+      where a retry sends you (the start, the same stage)
+    done: false
+  - id: chk-frequency
+    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
+      from which level'
+    done: false
+  - id: under-win
+    text: 'Win screen under Color Bucket Level: as the base, or what differs'
+    done: false
+  - id: under-restart
+    text: 'Restart icon opens ''You can do better!'' (Restart / Continue); Continue
+      closes it; Restart plays an interstitial (skip control opened the Play Store,
+      launch returned) then reloads only the current stage, earlier stages stay ticked;
+      no coin cost under Color Bucket Level: as the base, or what differs'
+    done: false
+  - id: under-quit
+    text: 'Back arrow returns to the map at once, no confirmation, no cost; reopening
+      via Play keeps the multi-stage progress (stage 4 of 4) under Color Bucket Level:
+      as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'The previous session left L10 at stage 4; after the app was closed and
+      relaunched this session, L10 opened at stage 4 with stages 1-3 ticked under
+      Color Bucket Level: as the base, or what differs'
+    done: false
+  - id: under-balls-out
+    text: 'Balls fell out under Color Bucket Level: as the base, or what differs'
+    done: false
+  found_at:
+    text: level 11
+    value: 11.0
+  type: level-type
+  appeared:
+    text: announced on the map by a 'Color Bucket Level' bubble beside node 19 (seen
+      at progress L11, faint under the league header)
+    certainty: hypothesis
+    source: 20261004-004411-chrono-2FYKPJ#16
+  locked:
+    text: reach the 'Color Bucket Level' node (level 19)
+    value: 19.0
+- id: golden-pins
+  name: Golden pins (league score)
+  status: in_progress
+  cases:
+  - id: video-plus-5
+    text: League board after a win offers a video for +5 golden pins (left of Next
+      Level); not taken
+    done: false
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#12
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'League board after a win: Pins, Golden Pins and Total Score (Total = Pins
+      + 5 x Golden: 45 + 5 = 50 after L12, 49 + 5 = 54 after L13)'
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#9
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: Map league panel shows a wand counter (0 before L12); the league board shows
+      Golden Pins 1 after L12
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#6
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 12
+    value: 12.0
+  type: currency-booster
+  appeared:
+    text: golden star-wand pin on hard L12; after the win the Bronze League board
+      showed a Golden Pins counter (1) next to Pins, Total Score 50, and a video offer
+      +5 golden pins; the map league panel now shows a wand counter
+    certainty: fact
+    source: 20261004-005453-chrono-2FYKPJ#12
+  page: features/golden-pins.md
+tasks:
+- id: analyze
+  title: Analyze the game
+  kind: analyze
+  requires: any
+  status: open
+  created: '2026-10-03T19:29:30'
+  source: external
+  note: find all features and work through all user cases on the version on the phone
+- id: update-241.5.2
+  title: Recheck the features on version 241.5.2
+  kind: update
+  requires: any
+  status: open
+  created: '2026-10-03T19:29:30'
+  version: 241.5.2
+  source: external
+  note: 'a newer version is on Google Play: update the game on the phone, then recheck
+    the documented features and look for new ones'
+- id: scout-1
+  title: 'Map the game: play until the main menu and every entry point is visible;
+    list each entry point as open (a study goal), locked with its unlock condition
+    (an unlock goal) or unclear (an experiment)'
+  kind: scout
+  requires: any
+  status: done
+  created: '2026-10-03T19:29:30'
+  source: external
+  note: 'Fresh install: intro comic, no main menu, the level screen is the hub (gear,
+    restart, ADS, level path). Win screen: coins + gift bar ~11%/win, gift locked
+    ~L9. Banner ads from L1.'
+  closed: '2026-10-03T19:33:11'
+  closed_by: 20261003-193015-chrono-2FYKPJ#7
+  new_entries: 6
+  at_progress: level 3
+  new_entry_names:
+  - Pin-pull level
+  - Settings
+  - Remove Ads
+  - Level path header
+  - Coins
+  - Gift unlock progress bar
+- id: unlock-unlock-progress
+  title: 'Unlock Gift unlock progress bar: about level 9, not shown: +11-12% per win'
+  kind: unlock
+  requires: any
+  status: done
+  created: '2026-10-03T19:33:10'
+  feature: unlock-progress
+  source: session
+  note: seen open at level 9
+  target_text: 'about level 9, not shown: +11-12% per win'
+  target_value: 9.0
+  closed: '2026-10-03T20:56:17'
+  closed_by: planner
+- id: exp-coins
+  title: What coins are spent on (no shop seen at level 3)
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T19:33:10'
+  feature: coins
+  source: session
+  plan: play levels until a coin sink (shop, skins) appears
+  closed: '2026-10-03T21:03:29'
+  closed_by: 20261003-203702-chrono-2FYKPJ#62
+  note: 'Coins are spent in Collections (map box button): gumball spin 350, ball skins
+    1000/3000/10000'
+  result: confirmed
+- id: ftue
+  title: 'Continue FTUE from level 3: record when each feature unlocks (gift at ~L9)'
+  kind: ftue
+  requires: any
+  status: done
+  created: '2026-10-03T19:33:15'
+  source: session
+  closed: '2026-10-03T20:56:18'
+  closed_by: 20261003-203702-chrono-2FYKPJ#46
+  note: 'Fresh install L3-L9: map first shown after the L3 win (map tutorial tooltips,
+    Daily Rewards on the 2nd Play), Multi Stage L5, coin multiplier on the L5 win
+    screen, Pull Fest (Bronze League) after L5, puzzle piece after L6, interstitials
+    after every win from L6, gift bar full at L9 = cup skin Space. Chest timer and
+    Jump to Level on the map from L3.'
+- id: study-core-level
+  title: 'Study Pin-pull level: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T19:33:55'
+  feature: core-level
+  source: external
+  closed: '2026-10-03T21:48:07'
+  closed_by: 20261003-214021-chrono-2FYKPJ#29
+  note: HUD, restart (cancel and confirm, interstitial), quit, exit-app verified;
+    loss and retry left to exp-loss
+- id: study-coins
+  title: 'Study Coins: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T19:33:55'
+  feature: coins
+  source: external
+  closed: '2026-10-03T21:03:05'
+  closed_by: 20261003-203702-chrono-2FYKPJ#61
+  note: 'Coins: sources win 17-24/level, video x2-x5 multiplier, daily rewards 25..500;
+    entry map box button -> Collections (balance header); sinks gumball 350 (first
+    spin free), ball skins 1000/3000/10000; not enough = greyed/no reaction; no coin
+    shop/IAP packs seen'
+- id: study-settings
+  title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:33:55'
+  feature: settings
+  source: external
+- id: study-no-ads
+  title: 'Study Remove Ads: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:33:55'
+  feature: no-ads
+  source: external
+- id: study-level-path
+  title: 'Study Level path header: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:33:55'
+  feature: level-path
+  source: external
+- id: exp-loss
+  title: Lose a pin-pull level on purpose and record each loss kind as an outcome
+    of core-level
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T19:35:04'
+  feature: core-level
+  source: session
+  plan: 'On a level with grey balls or a hazard, pull the pins in the wrong order
+    (e.g. drop uncoloured balls into the cup); confirmed when a fail screen appears:
+    mark it, register the loss as an outcome, record the retry offers'
+  closed: '2026-10-04T00:55:31'
+  closed_by: 20261004-004411-chrono-2FYKPJ#23
+  note: 'L11 lost twice (not on purpose): fail screen ''Pretty Close! Level failed!'',
+    tip ''Balls fell out of the level''; outcome balls-out registered; retry offers
+    Skip (video) / Retry. Other loss kinds (grey or bomb in the cup) left to exp-loss-other-kinds'
+  result: confirmed
+- id: exp-core-outcomes
+  title: Run restart, quit and exit-app once on a level
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T19:35:04'
+  feature: core-level
+  source: session
+  plan: 'Mid-level tap restart (top right): note any confirmation or cost; leave the
+    app with Home and return: is the level kept; done when each is marked'
+  closed: '2026-10-03T22:24:05'
+  closed_by: 20261003-214021-chrono-2FYKPJ#29
+  note: restart (cancel and confirm), quit and exit-app all run on L10 stage 4
+  result: confirmed
+- id: look-shop-skins
+  title: Look for a shop, skins or daily rewards (genre checklist) while playing to
+    level 10
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T19:35:04'
+  source: session
+  plan: Play levels 3-10, watching the level screen for new buttons after each win;
+    confirmed when a shop/skins/daily entry appears, or none by level 10 (then record
+    its absence)
+  closed: '2026-10-03T21:07:50'
+  closed_by: 20261003-203702-chrono-2FYKPJ#60
+  note: 'By level 10: Daily Rewards (map, 2nd Play after L3), Collections with skins
+    (Themes, Trails, Walls, Pins, Balls) and gumball machine from the map box button;
+    no IAP shop besides No Ads'
+  result: confirmed
+- id: exp-interstitial
+  title: Find whether interstitial or rewarded ads come after level wins
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T19:35:04'
+  feature: banner-ad
+  source: session
+  plan: Count full-screen ads after each win from level 3 on; record the first level
+    that shows one and the cadence
+  closed: '2026-10-03T21:07:51'
+  closed_by: 20261003-203702-chrono-2FYKPJ#42
+  note: Interstitial video after every win from L6 on (L6, L7, L8, L9), on Tap to
+    continue; feature interstitial
+  result: confirmed
+- id: study-intro-tutorial
+  title: 'Study the intro comic and tutorial: frame each panel and hand step, test
+    skip and replay'
+  kind: study
+  requires: fresh
+  status: open
+  created: '2026-10-03T19:35:13'
+  feature: intro-tutorial
+  source: session
+- id: study-banner-ad
+  title: 'Study the banner ad: where it shows, whether it closes, what a tap opens'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T19:35:14'
+  feature: banner-ad
+  source: session
+  closed: '2026-10-03T20:57:33'
+  closed_by: 20261003-203702-chrono-2FYKPJ#49
+  note: 'where: bottom strip on levels, win, league, map, daily rewards; no close
+    (only AdChoices i); tap -> Play Store overlay sheet, launch returns intact'
+- id: study-notification-prompt
+  title: 'Study the notification prompt: whether it comes back after Don''t allow'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T19:35:14'
+  feature: notification-prompt
+  source: session
+- id: daily-rewards-d2-d1
+  title: Claim Daily Rewards day 2 (+50) — day 1 of 1
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-03T20:39:54'
+  feature: daily-rewards
+  not_before: '2026-10-04T20:39:54'
+  source: game
+- id: outcomes-multi-stage
+  title: 'Run each outcome once under Multi Stage Level: Balls fell out'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T20:44:18'
+  feature: multi-stage
+  source: session
+  plan: 'while Multi Stage Level is on, reach each listed outcome of the base level
+    once, one at a time (a deliberate loss is allowed unless it spends premium currency);
+    mark the outcome screen (mark --feature multi-stage --as result) and close its
+    cell: case multi-stage under-<outcome> "as the base" or "what differs" --done'
+  rank: 7
+  closed: '2026-10-03T22:24:03'
+  closed_by: planner
+  note: every known outcome of the base level was run under Multi Stage Level
+- id: appeared-map-keys
+  title: 'Find why Keys on the map (key nodes, 3-key gate at L11-12) appeared: key
+    node on L9 (earlier L6); 3 key slots above L11/L12'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T20:44:18'
+  feature: map-keys
+  source: session
+  plan: 'find the moment Keys on the map (key nodes, 3-key gate at L11-12) shows up
+    and what comes just before it (key node on L9 (earlier L6); 3 key slots above
+    L11/L12); confirmed when a frame shows the trigger. Record it with feature map-keys
+    --appeared "...": the goal closes by itself'
+  closed: '2026-10-03T20:59:30'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: key node on level 9: winning L9 filled
+    1 of the 3 key slots above L17 (''Unlock New Mode'') [20261003-203702-chrono-2FYKPJ#52]'
+- id: first-look-unlock-progress
+  title: 'First look at Gift unlock progress bar: open it once, record what it is
+    and decide whether it needs a full study'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T20:55:29'
+  feature: unlock-progress
+  source: session
+  note: 'Gift bar filled at L9: gift box opened = cup skin Space, Get Another One
+    (video); a skin-reward bar, study via study-collections'
+  rank: 0
+  closed: '2026-10-03T21:07:51'
+  closed_by: 20261003-203702-chrono-2FYKPJ#46
+- id: study-map-chest
+  title: Open the map chest (OPEN after the 15 min timer)
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T20:59:31'
+  feature: map-chest
+  source: session
+- id: study-collections
+  title: 'Study Collections: trophies chest, puzzle albums, every skin category (Themes,
+    Trails, Walls, Pins)'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T21:02:58'
+  feature: collections
+  source: session
+  closed: '2026-10-03T21:45:19'
+  closed_by: 20261003-214021-chrono-2FYKPJ#20
+  note: 4 tabs and all 5 skin categories marked; space theme equipped
+- id: outcomes-hard-levels
+  title: 'Run each outcome once under Hard levels (skull node): Restart icon opens
+    ''You can do better!'' (Restart / Continue); Continue closes it; Restart plays
+    an interstitial (skip control opened the Play Store, launch returned) then reloads
+    only the current stage, earlier stages stay ticked; no coin cost, Back arrow returns
+    to the map at once, no confirmation, no cost; reopening via Play keeps the multi-stage
+    progress (stage 4 of 4), The previous session left L10 at stage 4; after the app
+    was closed and relaunched this session, L10 opened at stage 4 with stages 1-3
+    ticked, Balls fell out'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T21:08:27'
+  feature: hard-levels
+  source: session
+  plan: 'while Hard levels (skull node) is on, reach each listed outcome of the base
+    level once, one at a time (a deliberate loss is allowed unless it spends premium
+    currency); mark the outcome screen (mark --feature hard-levels --as result) and
+    close its cell: case hard-levels under-<outcome> "as the base" or "what differs"
+    --done'
+  rank: 7
+- id: outcomes-bonus-levels
+  title: 'Run each outcome once under Bonus levels (character node): Win screen, Restart,
+    Quit, Exit the app'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T21:08:28'
+  feature: bonus-levels
+  source: session
+  plan: 'while Bonus levels (character node) is on, reach each listed outcome of the
+    base level once, one at a time (a deliberate loss is allowed unless it spends
+    premium currency); mark the outcome screen (mark --feature bonus-levels --as result)
+    and close its cell: case bonus-levels under-<outcome> "as the base" or "what differs"
+    --done'
+  rank: 7
+- id: unlock-new-mode
+  title: 'Unlock New Mode (key gate at level 17): 3 keys: the 3-key gate at the level
+    17 key node, ''Unlock New Mode'''
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T21:08:28'
+  feature: new-mode
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: '3 keys: the 3-key gate at the level 17 key node, ''Unlock New Mode'''
+  target_value: 17.0
+- id: study-ball-jar
+  title: 'Study the jar icon on the map: open it, record what it holds, how it fills
+    and what it gives'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T21:08:42'
+  feature: ball-jar
+  source: session
+  closed: '2026-10-03T21:12:08'
+  closed_by: 20261003-211035-chrono-2FYKPJ#3
+  note: Jar icon = 'All You Can Play!' modes menu; 5 locked modes registered (L16,21,22,30,50);
+    no filling or reward; tap on locked card does nothing; badge clears on first open
+- id: study-pull-fest
+  title: 'Study Pull Fest: leaderboard, league cups and their rewards, the period
+    end; record what a tier-up gives (never compete or chat)'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T21:08:43'
+  feature: pull-fest
+  source: session
+- id: study-puzzle-pieces
+  title: 'Study puzzle pieces: the map puzzle nodes, the album in Collections, what
+    completing a 3x3 picture gives'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T21:08:43'
+  feature: puzzle-pieces
+  source: session
+- id: study-map-keys
+  title: 'Study keys: collect the key nodes (L9 done, next ones), watch the 3 slots
+    fill, record what 3 keys open'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T21:08:44'
+  feature: map-keys
+  source: session
+- id: study-jump-to-level
+  title: 'Study Jump to Level: tap it once, record the offer screen (video) and where
+    it sends; decline without watching'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T21:08:44'
+  feature: jump-to-level
+  source: session
+- id: study-coin-multiplier
+  title: 'Study the win coin multiplier: on which win screens it appears, how the
+    moving x2-x5 bar picks the factor, and the close path'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T21:08:45'
+  feature: coin-multiplier
+  source: session
+  closed: '2026-10-03T21:23:50'
+  closed_by: 20261003-211035-chrono-2FYKPJ#23
+  note: 'Seen on the L10 multi stage win after puzzle piece and league screens: base
+    +19, bar x2-x5 sweeps, factor locks on tap (x5=95). Credit after the video not
+    verified: the ad end card hung and the restart reverted the win; exp-multiplier-credit
+    added'
+- id: exp-bonus-level
+  title: Play a bonus level (character node) and record how it differs from a normal
+    level
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T21:08:45'
+  feature: bonus-levels
+  source: session
+  plan: Reach the character node on the map (now between L16 and L17), tap it; mark
+    its entry, board and win/loss screens; confirmed when its rules and reward are
+    recorded, refuted if it is only a decoration
+- id: study-map-tutorial
+  title: 'Study Map tutorial tooltips: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T21:10:02'
+  feature: map-tutorial
+  source: external
+- id: study-daily-rewards
+  title: 'Study Daily Rewards: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T21:10:02'
+  feature: daily-rewards
+  source: external
+  closed: '2026-10-03T21:48:45'
+  closed_by: 20261003-214021-chrono-2FYKPJ#30
+  note: 'entry checked: popup-only, no map button; same-day relaunch shows nothing;
+    next day in daily-rewards-d2-d1, missed day in daily-rewards-missed'
+- id: study-multi-stage
+  title: 'Study Multi Stage Level: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T21:10:02'
+  feature: multi-stage
+  source: external
+- id: study-interstitial
+  title: 'Study Interstitial video ad after a win: open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T21:10:02'
+  feature: interstitial
+  source: external
+  closed: '2026-10-04T01:06:59'
+  closed_by: 20261004-005453-chrono-2FYKPJ#12
+  note: Marked entry (Tap to continue -> ad-loading logo), screen (video), end card
+    with only the skip icon (opened the Play Store, launch returned to the map with
+    the win kept), a second network's variant with 'Google Play >>' and a playable
+    end card closed by the faint X (683,70). Interstitials after both L11 and L12
+    wins ~3 min apart (no cooldown between wins)
+- id: study-hard-levels
+  title: 'Study Hard levels (skull node): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T21:10:02'
+  feature: hard-levels
+  source: external
+- id: study-bonus-levels
+  title: 'Study Bonus levels (character node): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T21:10:02'
+  feature: bonus-levels
+  source: external
+  closed: '2026-10-03T21:12:23'
+  closed_by: 20261003-211035-chrono-2FYKPJ#4
+  note: 'Not studiable at L10: node after L16 is inert when tapped; lock recorded
+    at 16 so the planner sets the unlock goal; study it after L16 is won'
+- id: unlock-mode-iq-test
+  title: 'Unlock Sketchman IQ Test: level 16'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T21:11:33'
+  feature: mode-iq-test
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 16
+  target_value: 16.0
+- id: unlock-mode-challenge
+  title: 'Unlock Challenge: level 21'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T21:11:34'
+  feature: mode-challenge
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 21
+  target_value: 21.0
+- id: unlock-mode-merge-balls
+  title: 'Unlock Merge Balls: level 22'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T21:11:34'
+  feature: mode-merge-balls
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 22
+  target_value: 22.0
+- id: unlock-mode-protect-balloon
+  title: 'Unlock Protect The Balloon: level 30'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T21:11:34'
+  feature: mode-protect-balloon
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 30
+  target_value: 30.0
+- id: unlock-mode-dark-levels
+  title: 'Unlock Dark Levels: level 50'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T21:11:35'
+  feature: mode-dark-levels
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 50
+  target_value: 50.0
+- id: unlock-bonus-levels
+  title: 'Unlock Bonus levels (character node): reach the node after level 16'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-03T21:12:23'
+  feature: bonus-levels
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: reach the node after level 16
+  target_value: 16.0
+- id: exp-multiplier-credit
+  title: Check the multiplier reward is credited after the video and the plain Get
+    N close path
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T21:23:49'
+  feature: coin-multiplier
+  source: session
+  plan: win a level; once take Get N (coins rise by base); next win take the video
+    and record coins before/after
+- id: study-bronze-league
+  title: 'Study Bronze League leaderboard: open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-03T21:25:31'
+  feature: bronze-league
+  source: external
+  closed: '2026-10-03T21:26:40'
+  closed_by: review-20261003
+  note: 'Duplicate: Bronze League is the pull-fest league (pull-fest is named ''Pull
+    Fest Ranking (Bronze League)''; same timer and pins score) [20261003-211035-chrono-2FYKPJ#15];
+    study it under study-pull-fest'
+- id: exp-multi-stage-every-5
+  title: Find whether multi stage levels come every 5th level (L15, L20)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T21:27:06'
+  feature: multi-stage
+  source: session
+  plan: Before playing L15 and L20 read the map node (yellow ring, 'Multi Stage Level'
+    bubble) and count stages; confirmed if both are multi stage and L11-L14 are not
+- id: exp-win-saved-when
+  title: 'Find when a win is saved: exit the app on the post-win screens on purpose'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T21:27:07'
+  feature: core-level
+  source: session
+  plan: Win a level; on the Puzzle Piece or League screen (before the coin screen)
+    force-stop via restart --after-win; confirmed if the map shows the level still
+    unwon, refuted if the next level is open
+- id: exp-gumball-spin
+  title: Spin the gumball machine once (video spin) and record the reward
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-03T21:45:19'
+  feature: collections
+  source: session
+  plan: Collections > gumball > Spin with video; mark the reward
+  closed: '2026-10-04T00:16:19'
+  closed_by: 20261004-001002-chrono-2FYKPJ#2
+  note: duplicate of exp-gumball-video-spin (same video spin, reward still unseen;
+    that goal sits on the gumball feature with the ad timing in its plan)
+- id: exp-daily-tasks
+  title: 'Walls say ''Unlock with daily tasks'': find the daily tasks entry'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T21:45:19'
+  feature: collections
+  source: session
+  plan: look for a daily tasks button on map or Daily Rewards
+- id: daily-rewards-missed
+  title: Skip a day of Daily Rewards and check if the calendar resets
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-03T21:48:44'
+  feature: daily-rewards
+  not_before: '2026-10-05T21:48:44'
+  source: game
+- id: appeared-trophies
+  title: 'Find why Weekly trophy chest appeared: present on the Collections trophies
+    tab from the first Collections visit (L3+); the first trophy tier was already
+    reached at L10, likely by level wins'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T22:24:22'
+  feature: trophies
+  source: session
+  plan: 'find the moment Weekly trophy chest shows up and what comes just before it
+    (present on the Collections trophies tab from the first Collections visit (L3+);
+    the first trophy tier was already reached at L10, likely by level wins); confirmed
+    when a frame shows the trigger. Record it with feature trophies --appeared "...":
+    the goal closes by itself'
+- id: appeared-gumball
+  title: 'Find why Gumball machine appeared: present on the Collections gumball tab
+    from the first Collections visit (L3+)'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-03T22:24:24'
+  feature: gumball
+  source: session
+  plan: 'find the moment Gumball machine shows up and what comes just before it (present
+    on the Collections gumball tab from the first Collections visit (L3+)); confirmed
+    when a frame shows the trigger. Record it with feature gumball --appeared "...":
+    the goal closes by itself'
+  closed: '2026-10-04T00:44:30'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: with Collections on the first visit after
+    L3: the gumball tab opens first with a free Spin! badge [20261003-203702-chrono-2FYKPJ#53]'
+- id: study-trophies
+  title: 'Study the weekly trophy chest: find what earns a trophy tier (check the
+    tab before and after a few level wins), tap the chest and ''Catch up on missed
+    chests'', record the reward'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-03T22:24:33'
+  feature: trophies
+  source: session
+- id: exp-win-streak
+  title: 'Look for a win streak: Trails say ''Unlock by consecutive wins''; find the
+    streak counter (win screen, map, level HUD) and what breaks it'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T22:24:34'
+  feature: collections
+  source: session
+  plan: Win 3+ levels in a row and watch the win screens and the Trails section for
+    a streak count; confirmed when a counter or a streak trail progress is marked
+- id: exp-special-events
+  title: 'Look for special events: every skin category has an ''Unlock in special
+    events'' section; find whether any event entry shows on the map'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-03T22:24:34'
+  feature: collections
+  source: session
+  plan: On each map visit and after wins up to L20 look for a timed event button or
+    popup; confirmed when an event entry is marked, refuted if none by L20
+- id: study-gumball
+  title: 'Study Gumball machine: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-03T22:49:41'
+  feature: gumball
+  source: external
+  closed: '2026-10-04T00:46:50'
+  closed_by: 20261004-004411-chrono-2FYKPJ#6
+  note: 'entry (Collections box on map), screen, video spin result marked; video spin
+    reward confirmed: skin Line; coin price 350->375'
+- id: exp-gumball-video-spin
+  title: 'Gumball Spin with video: what the reward is after the rewarded ad'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-04T00:14:23'
+  feature: gumball
+  source: session
+  plan: Collections > Spin with video, wait ~2.5 min (video then playable end card,
+    X top right), see the reward
+  closed: '2026-10-04T00:46:49'
+  closed_by: 20261004-004411-chrono-2FYKPJ#6
+  note: video spin gives one ball skin (Line), coin price then 375
+  result: confirmed
+- id: exp-gumball-video-reward
+  title: See what a gumball video spin gives
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-04T00:41:46'
+  feature: gumball
+  source: session
+  plan: Spin with video; if the end card opens the store, launch once and look for
+    a close; record the reward (item type) and whether it lands in Collections
+  closed: '2026-10-04T00:46:49'
+  closed_by: 20261004-004411-chrono-2FYKPJ#6
+  note: '3rd try: ad ~30 s, Google ''Reward granted'' sheet with X; X -> spin -> skin
+    Line (NEW). Earlier failures were the ad end cards, not the feature'
+  result: confirmed
+- id: win-l10-stage4
+  title: 'Win L10 stage 4 and reach L12: if the pin-pull solver sees no rings on the
+    Space theme, equip the default theme in Collections > Skins > Themes and retry'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-04T00:44:38'
+  source: game
+  plan: Play L10 stage 4 with the solver; on 'no pin ring on this frame' switch to
+    the default theme and solve again; done when L10 is won (take 'Get N', not the
+    video) and the map shows L11
+  closed: '2026-10-04T00:55:30'
+  closed_by: 20261004-004411-chrono-2FYKPJ#16
+  note: L10 stage 4 won by the solver on the default theme (25 s); map shows L11.
+    Reaching L12 is left to the pin-pull handoff (L11 lost twice)
+- id: exp-interstitial-cooldown
+  title: 'Interstitial skipped after a win shortly after a rewarded ad: is there a
+    cooldown?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T00:49:41'
+  feature: interstitial
+  source: session
+  plan: win a level right after a rewarded video and again 3+ min later; compare whether
+    the interstitial plays
+- id: outcomes-race
+  title: 'Run each outcome once under Level race: Win screen, Restart icon opens ''You
+    can do better!'' (Restart / Continue); Continue closes it; Restart plays an interstitial
+    (skip control opened the Play Store, launch returned) then reloads only the current
+    stage, earlier stages stay ticked; no coin cost, Back arrow returns to the map
+    at once, no confirmation, no cost; reopening via Play keeps the multi-stage progress
+    (stage 4 of 4), The previous session left L10 at stage 4; after the app was closed
+    and relaunched this session, L10 opened at stage 4 with stages 1-3 ticked, Balls
+    fell out'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T00:50:05'
+  feature: race
+  source: session
+  plan: 'while Level race is on, reach each listed outcome of the base level once,
+    one at a time (a deliberate loss is allowed unless it spends premium currency);
+    mark the outcome screen (mark --feature race --as result) and close its cell:
+    case race under-<outcome> "as the base" or "what differs" --done'
+  rank: 7
+- id: study-race
+  title: 'Study Level race: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-04T00:54:11'
+  feature: race
+  source: external
+- id: exp-loss-other-kinds
+  title: Lose a level by a grey ball and by a bomb in the cup; register each as a
+    core-level outcome
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T00:55:47'
+  feature: core-level
+  source: session
+  plan: 'On a level with grey balls (or a bomb), pull the pin that drops an unpainted
+    grey ball or a bomb into the cup; confirmed when a fail screen with a different
+    tip appears: mark it, register the kind with case core-level <kind> --outcome,
+    then close chk-loss; use level end lost --deliberate'
+- id: exp-fail-skip
+  title: 'Find what Skip (video) on the ''Level failed'' screen does: skips to the
+    next level or not'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T00:55:48'
+  feature: core-level
+  source: session
+  plan: After a loss tap Skip (rewarded video, no premium currency), close the ad;
+    confirmed if the map/next level opens with the failed level ticked, record coins
+    and whether the skipped level gives a reward
+- id: exp-race-return
+  title: 'After declining the race: does it come back, and is there a map entry for
+    it?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T00:55:51'
+  feature: race
+  source: session
+  plan: Watch the map and the Play! tap on the next few levels after 'No, thanks';
+    confirmed if the race popup or a race button shows again (mark it as entry), refuted
+    if nothing by L16; when it shows, take Go! to study it
+- id: unlock-color-bucket-level
+  title: 'Unlock Color Bucket Level: reach the ''Color Bucket Level'' node (level
+    19)'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-04T00:55:52'
+  feature: color-bucket-level
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: reach the 'Color Bucket Level' node (level 19)
+  target_value: 19.0
+- id: exp-golden-pins
+  title: 'Golden pins: what they give in the league and the +5 golden pins video offer'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:08:12'
+  feature: golden-pins
+  source: session
+  plan: after a win with a golden pin, note Pins/Golden Pins/Total Score; take the
+    +5 video once and check the score change
+- id: check-l13-kept
+  title: Is the L13 win saved? The post-win flow was cut on the league board when
+    the owner took the phone
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: core-level
+  source: session
+  note: 20261004-005453-chrono-2FYKPJ#17
+- id: exp-golden-pin-levels
+  title: Do golden pins appear only on skull (hard) levels? Record each level with
+    a golden pin
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: golden-pins
+  source: session
+- id: gumball-price-next
+  title: 'Gumball: coin spin once the balance is 375 or more; does the price rise
+    again? Is there a cap or cooldown on Spin with video?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: gumball
+  source: session
+- id: league-period-end
+  title: 'Pull Fest league: record the end-of-period rewards and reset when Time Left
+    (6d 1h on 2026-10-04 01:00) runs out'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-04T01:10:05'
+  feature: pull-fest
+  source: game
+  not_before: '2026-10-10T02:00:00'
