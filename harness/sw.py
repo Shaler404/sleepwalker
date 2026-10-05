@@ -36,7 +36,7 @@ Levels: think first, then play fast
                                          won: after a frame of the win screen; lost --retry: the same level again;
                                          lost --deliberate: an outcome run on purpose, not held against the mechanic
   mechanic ID "Name" [--status studying|mastered|broken] [--method manual|heuristic|solver] [--note ...]
-  solve MECHANIC [--board FILE] [--run [--rounds N]] [--force] | solve MECHANIC --image FRAME
+  solve MECHANIC [--board FILE|JSON] [--run [--rounds N]] [--force] | solve MECHANIC --image FRAME
                                          the mechanic's solver: check its moves, play them, or test it on a frame
   ask "question"                         one-shot advice from a stronger model on the last screenshot
 The lab: making gameplay fast without the phone (runbooks/lab.md)
@@ -3269,9 +3269,30 @@ def cmd_case(args) -> None:
          **({"planned": planned} if planned else {})})
 
 
+def task_id_of(view: dict, raw: str, strict: bool) -> str:
+    """The task a `done` or `cancel` names. The planner's ids keep their dots (`update-241.5.2`), so the id as
+    typed comes first and its slug second. `strict` (done): a task the map does not have is refused instead of
+    becoming a stray closed task (2026-10-05, Pull the Pin: `task done update-241.5.2` closed a new
+    `update-241-5-2` three times over two sessions and a review, and the real task stayed open
+    [s:20261005-013818-chrono-2FYKPJ#1] [s:20261005-014031-chrono-2FYKPJ#0]). A cancel of a task that does not
+    exist yet stays allowed: it keeps the planner from making it (`task cancel analyze`)."""
+    import difflib
+
+    for tid in (raw.strip(), slug(raw)):
+        if find_task(view, tid):
+            return tid
+    if not strict:
+        return slug(raw)
+    ids = [t["id"] for t in view["tasks"]]
+    near = difflib.get_close_matches(raw.strip(), ids, n=3, cutoff=0.6)
+    fail(f"no task {raw!r}" + (f" (did you mean {', '.join(near)}?)" if near else "") +
+         f"; open tasks: {', '.join(t['id'] for t in open_tasks(view)) or 'none'}")
+
+
 def cmd_task(args) -> None:
     cur = op_cur(args)
-    tid = slug(args.id)
+    tid = slug(args.id) if args.task_cmd == "add" else \
+        task_id_of(research_view(cur["game"]), args.id, strict=args.task_cmd == "done")
     if args.task_cmd == "add":
         if args.kind in ("study", "unlock") and not args.feature:
             fail(f"a {args.kind} goal names its feature: --feature ID")
@@ -3395,6 +3416,7 @@ def open_level(cur: dict, name: str, value, mid: str, plan: str, hi: bool, bonus
                moves_before: int = 0) -> None:
     cur["level"] = {"name": name, "value": value, "mechanic": mid, "t0": now, "plan_t": now, "plan": plan,
                     "replans": 0, "step0": cur["step"], "moves0": cur.get("moves", 0), "hi": hi,
+                    "shot0": cur.get("last_shot") or 0,
                     **({"bonus": True} if bonus else {}), **({"moves_before": moves_before} if moves_before else {})}
     cur["levels_game"] = True
     # a new try: counts and repeats start over, and restarts before it are not an ad loop
@@ -3415,14 +3437,15 @@ def level_op(cur: dict, lv: dict, result: str, note: str, now: float) -> dict:
     return {**op, **{k: lv[k] for k in ("bonus", "moves_before") if lv.get(k)}}
 
 
-def win_problem(cur: dict, lv: dict, op: dict, skipped: bool) -> str | None:
+def win_problem(cur: dict, lv: dict, op: dict, skipped: bool, named: bool = False) -> str | None:
     """Why a claimed win has no evidence on the frame it is claimed on. (2026-10-01, dream: Meowdoku levels
     were recorded won with two cats missing and from a stale ad frame, a MeowTrail level after the solver's
-    "no solution", a 5 s win with no moves from the previous win screen.)"""
+    "no solution", a 5 s win with no moves from the previous win screen.) `named`: the player named the frame
+    that showed the win (--shot), so no new frame is asked for."""
     app = cur.get("last_app")
     if app and app != cur["game"]:
         return f"the last frame shows {app}, not the game: take a frame of the game's win screen first (launch, shot)"
-    if not cur.get("looked"):
+    if not cur.get("looked") and not named:
         return ("take a frame of the win screen first (sw.py shot): the frame a move returns is taken a second "
                 "after it, before a win screen is up")
     if op["moves"] == 0 and not lv.get("moves_before") and op["seconds"] < ZERO_MOVE_WIN_S and not skipped:
@@ -3491,9 +3514,23 @@ def level_end(cur: dict, args, lv: dict, now: float) -> None:
         fail("--skipped marks a win the game gave for a video, not a solve: level end won --skipped")
     if args.deliberate and args.result != "lost":
         fail("--deliberate marks a loss played on purpose (an outcome under a feature): level end lost --deliberate")
-    op = {**level_op(cur, lv, args.result, args.note, now), "shot": cur.get("last_shot"),
+    named = getattr(args, "shot", None)
+    if named is not None:
+        # the frame that showed the win, named after leaving the win screen: a refusal followed by Back or
+        # Continue reset the "looked" flag, the second claim was refused again and the record was written on the
+        # home screen and on the next board (2026-10-05 [s:20261005-004506-chrono-2FYKPJ#24]
+        # [s:20261005-003925-chrono-2FYKPJ#14])
+        if args.result != "won":
+            fail("--shot names the frame that showed the win screen: level end won --shot N")
+        lo, hi = lv.get("shot0") or 0, cur.get("last_shot") or 0
+        if not (lo < named <= hi) or not (Path(cur["dir"]) / "shots" / f"{named:05d}.jpg").exists():
+            fail(f"--shot {named}: not a frame of this level (its frames are {lo + 1}..{hi})", level=lv["name"])
+    op = {**level_op(cur, lv, args.result, args.note, now), "shot": named if named is not None else cur.get("last_shot"),
+          **({"shot_named": True} if named is not None else {}),
           **({"skipped": True} if args.skipped else {}), **({"deliberate": True} if args.deliberate else {})}
-    problem = win_problem(cur, lv, op, args.skipped) if args.result == "won" else None
+    problem = win_problem(cur, lv, op, args.skipped, named is not None) if args.result == "won" else None
+    left = ("; if you already left the win screen, name the frame that showed it: level end won --shot N (the "
+            "record keeps that frame, not the screen in front of you)")
     if problem and not cur.get("looked") and cur.get("last_app") in (cur["game"], None):
         # the refusal used to send the player for a `shot` and back; five refusals in four sessions got no retry
         # at all, and a tutorial stayed open across a classic game (2026-10-03 [s:20261003-193423-chrono-2FYKPJ#4]
@@ -3503,10 +3540,11 @@ def level_end(cur: dict, args, lv: dict, now: float) -> None:
         cur["looked"] = True
         log_step(cur, {"type": "shot", **shot_rec(cur, info), "why": "level end won: the win screen"})
         save_session(cur)
-        fail(problem + ". The frame was taken now: open it; if it shows the win screen, repeat level end won",
+        fail(problem + ". The frame was taken now: open it; if it shows the win screen, repeat level end won" + left,
              level=lv["name"], shot=info["shot"], shot_n=info["shot_n"], app=info.get("app"))
     if problem:
-        fail(problem, level=lv["name"], shot_n=cur.get("last_shot"))
+        fail(problem + (left if "take a frame of the win screen first" in problem else ""),
+             level=lv["name"], shot_n=cur.get("last_shot"))
     if args.result == "quit" and op["moves"] == 0 and not lv.get("moves_before"):
         void_level(cur, lv, f"quit with no move ({args.note})", now)
         cur["level"] = None
@@ -3939,17 +3977,38 @@ def solve_refused(cur: dict, args, mech: str, res: dict, moves: list, rep: int, 
                       "stopped": repeat_msg(rep), "drawn": str(dest), **info}, warn))
 
 
+def board_file(arg: str) -> str:
+    """`--board` as an absolute path the solver can open: a JSON file, or the JSON itself written to one (the
+    solver runs in a temporary folder, so a relative path would not resolve, like --image). The playbook and the
+    mechanic note say "pass --board {"mode":"score"}", and that is how it was typed and refused for a missing
+    file (Block Juggle, 2026-10-05 [s:20261005-004506-chrono-2FYKPJ#13])."""
+    import os
+    import tempfile
+
+    s = arg.strip()
+    if s[:1] in ("{", "["):
+        try:
+            json.loads(s)
+        except json.JSONDecodeError as e:
+            fail(f"--board looks like JSON but does not parse: {e}")
+        p = Path(tempfile.gettempdir()) / "sleepwalker-boards" / f"board-{os.getpid()}-{int(time.time() * 1000)}.json"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(s, encoding="utf-8")
+        return str(p)
+    board = Path(arg).resolve()
+    if not board.is_file():
+        fail(f"--board {arg}: no such file (a JSON file with the board you read from the frame, or the JSON itself)")
+    return str(board)
+
+
 def cmd_solve(args) -> None:
     """Run the mechanic's solver. Without --run the moves are only drawn on a fresh full-resolution frame
     for checking. With --run, rounds of frame -> solver -> moves until the solver has no moves or says the
     level is done, the moves change nothing, something else comes on screen, or --rounds are used up.
     --image checks the solver on a saved frame without the phone."""
     mech = slug(args.mechanic)
-    if args.board:  # the solver runs in a temporary folder: a relative path would not resolve, like --image
-        board = Path(args.board).resolve()
-        if not board.is_file():
-            fail(f"--board {args.board}: no such file (a JSON file with the board you read from the frame)")
-        args.board = str(board)
+    if args.board:
+        args.board = board_file(args.board)
     if args.image:
         game = args.game or pick_session(args)["game"]
         src = Path(args.image).resolve()  # the solver runs in a temporary folder: a relative path would not resolve
@@ -4027,8 +4086,13 @@ def cmd_solve(args) -> None:
             gave_up = True
             break
         lv = cur.get("level")
-        if lv and time.time() - lv["t0"] > P()["play"]["level_budget_min"] * 60:
-            stop = "the level is over its time budget: look at the board yourself"
+        if lv and time.time() - lv["t0"] > P()["play"]["level_budget_min"] * 60 and not lv.get("budget_stop"):
+            # said once a level: after the look, every later `solve --run` was cut to one round and had to be
+            # called again, 53 calls for the rest of one Hard level (Amaze GO!, 2026-10-05
+            # [s:20261005-010045-chrono-2FYKPJ#39] to [s:20261005-010045-chrono-2FYKPJ#91])
+            lv["budget_stop"] = True
+            stop = ("the level is over its time budget: look at the board yourself (said once: the next solve --run "
+                    "in this level plays its rounds)")
             break
     else:
         stop = f"{args.rounds} round(s) played" + ("; the solver wants another look (rescan)" if res.get("rescan") else "")
@@ -6098,6 +6162,8 @@ def parser() -> argparse.ArgumentParser:
     q.add_argument("--deliberate", action="store_true",
                    help="lost on purpose, to run an outcome under a feature: not counted against the mechanic")
     q.add_argument("--retry", action="store_true", help="lost: open the same level again on a new clock")
+    q.add_argument("--shot", type=int, help="won: the frame (shot_n) that showed the win screen, when you have "
+                                            "already left it; the record keeps that frame")
     p = sub.add_parser("mechanic")
     p.add_argument("id")
     p.add_argument("name", nargs="?")
@@ -6127,7 +6193,8 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--game", help="outside a session")
     p = sub.add_parser("solve")
     p.add_argument("mechanic")
-    p.add_argument("--board", help="a JSON file with the board you read from the frame, if the solver takes one")
+    p.add_argument("--board", help="the board you read from the frame, if the solver takes one: a JSON file, or "
+                                   "the JSON itself ('{\"mode\":\"score\"}')")
     p.add_argument("--run", action="store_true", help="play the moves; without it they are only drawn for checking")
     p.add_argument("--rounds", type=int, default=1,
                    help="with --run: repeat frame -> solver -> moves up to N times (until solved or stuck)")
