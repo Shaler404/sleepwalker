@@ -39,7 +39,7 @@ try:
     local.write_text("# local draft\n", encoding="utf-8")
     os.utime(local, (time.time() - 3600, time.time() - 3600))
     check(swm.solver_path(G, "tmech") == local and "draft" in local.read_text(), "only a local solver: it runs")
-    merged_dir.mkdir(parents=True)
+    merged_dir.mkdir(parents=True, exist_ok=True)  # solvers/<game>/ exists once a solver of the game is published
     merged = merged_dir / "tmech.py"
     merged.write_text("# merged fix\n", encoding="utf-8")
     p = swm.solver_path(G, "tmech")

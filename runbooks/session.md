@@ -229,7 +229,11 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
      in the reply): open it; if it shows the win screen, repeat `level end won` — do not leave the level
      open and move on (five refusals in four sessions were followed by no retry; one tutorial stayed
      open across a classic game and was recorded as a 172 s classic win [s:20261003-193423-chrono-2FYKPJ#4]
-     [s:20261003-232357-chrono-2FYKPJ#17]);
+     [s:20261003-232357-chrono-2FYKPJ#17]). If you have already left the win screen (Back, Continue, the
+     next level), do not take a frame of whatever is in front of you: `level end won --shot N` names the
+     frame that showed the win, and the record keeps that frame. Two records were written on the home
+     screen and on the next board that way, after a refusal, a Back and a plain `shot`
+     [s:20261005-004506-chrono-2FYKPJ#24] [s:20261005-003925-chrono-2FYKPJ#14];
    - when the frame shows another app (the Play Store, a browser): `launch`, `shot`, then end it;
    - with no moves in the level and under 15 s: that is the previous win screen, a bonus offer or a
      skip. A level the game skipped for a video is `level end won --skipped` (not a solve: its time
@@ -368,7 +372,13 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
        had to reopen them [s:20261003-231804-chrono-2FYKPJ#8] [s:20261003-202631-chrono-2FYKPJ#23]
        [s:20261003-214021-chrono-2FYKPJ#20]). A new case needs its text: `case <feature> list` is not a
        command (it made an empty case named "list" [s:20261003-230937-chrono-2FYKPJ#0]); the feature's
-       cases are in `sw.py research <game>`;
+       cases are in `sw.py research <game>`. Close a case at the step whose frame shows it: its source is
+       the step the command runs at, so a batch of `--done` at the end of the session gives every case the
+       last step as its source, where none of it is on screen, and the dream cannot verify them (six or seven
+       cases on the last step in each of four games in one night [s:20261005-004506-chrono-2FYKPJ#24]
+       [s:20261005-003925-chrono-2FYKPJ#14] [s:20261005-001914-chrono-2FYKPJ#8]
+       [s:20261005-002947-chrono-2FYKPJ#10]). A case you close later anyway names its step:
+       `--source <session>#<step>`;
      - why it appeared, the trigger: `--appeared "…"` when you saw it (it closes `chk-appeared`), or
        `--appeared-guess "…"` when you only suspect it (the planner makes "Find why <feature> appeared: …").
        A feature registered without them is answered with a warning: fix it at once;

@@ -382,19 +382,27 @@ raw_dir: "{(T / 'raw2').as_posix()}"
 ENV2 = {**ENV, "SW_LOCAL": str(T / "local2.yaml")}
 games = sorted(p.parent.name for p in (ROOT / "wiki").glob("*/research.yaml"))
 digest = {g: hashlib.sha1((ROOT / "wiki" / g / "research.yaml").read_bytes()).hexdigest() for g in games}
+maps = {g: yaml.safe_load((ROOT / "wiki" / g / "research.yaml").read_text(encoding="utf-8")) for g in games}
+# the maps the type designer has not reached yet (the dreams type them one by one: com.block.juggle was typed by
+# 2026-10-05, and the audit of a typed map has a checklist and a matrix by design)
+legacy = [g for g in games if all(not f.get("type") for f in maps[g]["features"])]
 for g in games:
     a = sw("audit", g, device=False, env=ENV2)
-    n = len(yaml.safe_load((ROOT / "wiki" / g / "research.yaml").read_text(encoding="utf-8"))["features"])
-    check(a["counts"]["untyped"] == n == a["counts"]["features"] and a["matrix"] == [] and a["checklist_open"] == [],
-          f"{g}: {n} features, all untyped, no checklist, no matrix")
+    n = len(maps[g]["features"])
+    if g in legacy:
+        check(a["counts"]["untyped"] == n == a["counts"]["features"] and a["matrix"] == [] and a["checklist_open"] == [],
+              f"{g}: {n} features, all untyped, no checklist, no matrix")
+    else:
+        check(a["counts"]["features"] == n and a["counts"]["untyped"] < n, f"{g}: {n} features, the audit reads a typed map")
 os.environ["SW_LOCAL"] = str(T / "local2.yaml")
 spec2 = importlib.util.spec_from_file_location("sw2", DEV / "harness" / "sw.py")
 swm2 = importlib.util.module_from_spec(spec2)
 spec2.loader.exec_module(swm2)
-check(all(swm2.plan_feature_goals(g) == [] for g in games) and not (T / "state2").exists(),
+check(all(swm2.plan_feature_goals(g) == [] for g in legacy) and not (T / "state2").exists(),
       "the planner plans nothing for the untyped maps and writes no journal")
-check(all(len(swm2.research_view(g)["features"]) and swm2.feature_audit(swm2.research_view(g))["counts"]["untyped"]
-          for g in games), "research views of the existing games")
+check(all(len(swm2.research_view(g)["features"]) for g in games) and
+      all(swm2.feature_audit(swm2.research_view(g))["counts"]["untyped"] for g in legacy),
+      "research views of the existing games")
 check(all(hashlib.sha1((ROOT / "wiki" / g / "research.yaml").read_bytes()).hexdigest() == digest[g] for g in games),
       "the wiki's research.yaml files are untouched")
 os.environ["SW_LOCAL"] = ENV["SW_LOCAL"]
