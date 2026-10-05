@@ -18,7 +18,7 @@ player subagents. The repository root is one level above this file (the owner's 
    - `play` — the device is reserved for you; play;
    - `busy` — a session from another run is already going there; leave it alone;
    - `held` — the owner has taken the phone (`sw.py stop`); leave it alone;
-   - `idle` — the reason for idling: the phone is in use, locked, hot, no tasks. Per game — why
+   - `idle` — the reason for idling: the phone is locked, hot, low on battery, outside the hours, no tasks (a phone in use is not guessed from the app on screen: the owner says so and `sw.py stop` holds it). Per game — why
      (waiting for a timer, needs a fresh phone, sleeping until a new version).
 3. For each `play` assignment, start the subagent the assignment names in `agent` (for example
    `sleepwalker-player-sonnet-low`: its model and effort are set in its definition; if that type is
