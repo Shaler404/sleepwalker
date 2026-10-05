@@ -272,5 +272,17 @@ check(not any("ad loop" in w for w in r.get("warnings", [])), "a level in betwee
 sw("end", "--status", "ok", "--summary", "restarts")
 st = sw("stats", G)["games"][G]["sessions"][-1]
 check(st["restarts"] == 4, f"stats counts restarts per session: {st['restarts']}")
+# --- the owner's use of the phone is a hold, not a guess from the app on screen (2026-10-05) ---------------------
+_saved = (swm.adb, swm.locked, swm.touch_blocked, swm.focus, swm.in_hours)
+swm.adb = lambda d, *a, **k: ("level: 90\ntemperature: 300\nAC powered: true" if "battery" in " ".join(a)
+                              else "mWakefulness=Awake")
+swm.locked, swm.touch_blocked, swm.in_hours = (lambda d: False), (lambda d: False), (lambda *a: True)
+swm.focus = lambda d: "com.android.chrome"
+ok, why = swm.phone_status("nophone", {G})
+check(ok, f"a browser on screen does not make claim idle (the agent itself may have opened it): {why}")
+swm.locked = lambda d: True
+ok, why = swm.phone_status("nophone", {G})
+check(not ok and "locked" in why, f"a locked phone is still refused: {why}")
+swm.adb, swm.locked, swm.touch_blocked, swm.focus, swm.in_hours = _saved
 print("all ok")
 shutil.rmtree(T, ignore_errors=True)

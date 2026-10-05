@@ -678,7 +678,7 @@ def refuse_blocked(cur: dict, msg: str, **rec) -> None:
 
 
 def phone_status(serial: str, game_ids: set[str]) -> tuple[bool, str]:
-    """The phone may be personal: do not take it while it is in use, locked, hot or running low on battery."""
+    """The phone may be personal: do not take it while it is locked, hot or running low on battery or outside the hours; the owner's own use is a hold (sw.py stop)."""
     a = L()["android"]
     if not in_hours(a["hours"], dt.datetime.now().hour):
         return False, f"outside hours {a['hours']}"
@@ -693,10 +693,9 @@ def phone_status(serial: str, game_ids: set[str]) -> tuple[bool, str]:
         return False, f"phone is hot: {temp} °C"
     if level < a["min_battery"] and not re.search(r"(AC|USB) powered: true", bat):
         return False, f"battery {level}% and not charging"
-    awake = "mWakefulness=Awake" in adb(serial, "shell", "dumpsys power | grep mWakefulness")
-    app = focus(serial) or ""
-    if awake and app and "launcher" not in app and app not in game_ids and app not in SYSTEM_OVERLAYS:
-        return False, f"phone in use: {app} is on screen"
+    # Whether the owner is using the phone is not guessed from the app on screen (a browser the agent itself
+    # opened from a game's privacy link kept `claim` idle for hours, 2026-10-05): the owner says so, and
+    # `sw.py stop` puts a hold on the phone until `sw.py resume` (the owner, 2026-10-05).
     return True, "ok"
 
 
