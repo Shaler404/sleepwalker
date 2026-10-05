@@ -1,16 +1,16 @@
 # Tasks: Block Blast!
 
-Status: **▶️ active** — ready now: 31
+Status: **▶️ active** — ready now: 30
 
 Mode: **goals** — work through the session goals in order; play levels only as far as an unlock or experiment goal needs; register anything new you notice as a feature or a goal, do not pursue it now
 
-Progress reached: **adventure 3** · last new feature found at: **adventure 1**
+Progress reached: **adventure L5** · last new feature found at: **adventure L4**
 
-Goals: study 17, experiment 16 · maps: classic best 327 — 16 new
+Goals: study 12, experiment 19 · maps: classic best 327 — 16 new
 
-Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **classic** — studying, solver, levels won 0; **adventure** — mastered, solver, levels won 3, typical 2.3 min
+Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **classic** — studying, solver, levels won 0; **adventure** — mastered, solver, levels won 5, typical 3.1 min
 
-Google Play version: **10.8.0** (checked 2026-10-03 19:29:54) · analyzed version: **10.8.1** · FTUE from a fresh install: **never**
+Google Play version: **10.8.0** (checked 2026-10-05 00:13:01) · analyzed version: **10.8.1** · FTUE from a fresh install: **never**
 
 Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit by hand. Feature map: [features.md](features.md).
 
@@ -35,26 +35,24 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 | Study Mini-game: Onet: open it, walk its screens and tabs, verify its cases | study | [Mini-game: Onet](features/mg-onet.md) | external |  |
 | Study Mini-game: Mahjong: open it, walk its screens and tabs, verify its cases | study | [Mini-game: Mahjong](features/mg-mahjong.md) | external |  |
 | Study Mini-game: Sudoku: open it, walk its screens and tabs, verify its cases | study | [Mini-game: Sudoku](features/mg-sudoku.md) | external |  |
+| Look for daily rewards, a daily challenge or a timed event after day 1 | experiment |  | knowledge gap |  |
 | Look for a shop, a no-ads purchase or any offer popup | experiment |  | knowledge gap |  |
-| Run each outcome once under Consecutive Daily Victories: Settings gear > Replay, Leaving to the Play Store from an ad and launch | experiment | [Consecutive Daily Victories](features/daily-victories.md) | knowledge gap |  |
-| Study the home menu (Adventure, Medal, daily victories, cross-promo icons) | study | [Home menu](features/home-menu.md) | knowledge gap |  |
-| Study Medal: open it, walk its screens and tabs, verify its cases | study | [Medal](features/medal.md) | external |  |
-| Study Consecutive Daily Victories: open it, walk its screens and tabs, verify its cases | study | [Consecutive Daily Victories](features/daily-victories.md) | external |  |
-| Study Cross-promo icons on the home menu (GOGO! Blast, Rotate Rings): open it, walk its screens and tabs, verify its cases | study | [Cross-promo icons on the home menu (GOGO! Blast, Rotate Rings)](features/cross-promo-home.md) | external |  |
-| Run each outcome once under Adventure diamond-collection levels: Settings gear > Replay, Leaving to the Play Store from an ad and launch | experiment | [Adventure diamond-collection levels](features/adv-diamonds.md) | knowledge gap |  |
-| Run each outcome once under Adventure Consecutive Victories (win streak): Settings gear > Replay, Back key mid-game goes to the home menu with no confirmation and no cost; Classic button starts/returns to a fresh board (here a new board with score 0 appeared, best kept), Leaving to the Play Store from an ad and launch | experiment | [Adventure Consecutive Victories (win streak)](features/adv-win-streak.md) | knowledge gap |  |
+| Run each outcome once under Consecutive Daily Victories: Leaving the app mid-game | experiment | [Consecutive Daily Victories](features/daily-victories.md) | knowledge gap |  |
+| Run each outcome once under Adventure diamond-collection levels: Leaving the app mid-game | experiment | [Adventure diamond-collection levels](features/adv-diamonds.md) | knowledge gap |  |
+| Run each outcome once under Adventure Consecutive Victories (win streak): Leaving the app mid-game | experiment | [Adventure Consecutive Victories (win streak)](features/adv-win-streak.md) | knowledge gap |  |
 | Win 2-3 Adventure levels in a row and watch the Consecutive Victories panel: does anything pay at x2, x3? | experiment | [Adventure Consecutive Victories (win streak)](features/adv-win-streak.md) | knowledge gap |  |
 | How often an interstitial follows an Adventure result: seen after the L2 retry win (not after L1, the L2 loss or L3) | experiment | [Adventure mode](features/adventure.md) | knowledge gap |  |
-| Study Adventure diamond-collection levels: open it, walk its screens and tabs, verify its cases | study | [Adventure diamond-collection levels](features/adv-diamonds.md) | external |  |
 | Classic: press Back with score > 0, then Classic: is the game in progress kept? Also leave the app mid-game and launch | experiment | [Classic mode (endless 8x8)](features/classic.md) | knowledge gap |  |
 | Find how to close the Royal Match interstitial with a store header without opening Google Play | experiment | [Interstitial ad during classic play](features/ad-interstitial-classic.md) | knowledge gap |  |
 | Adventure: tap Retry on the loss panel and Next Level on the win panel; gear > Replay inside a level | experiment | [Adventure mode](features/adventure.md) | knowledge gap |  |
+| Play Adventure levels 5-12 and record which have gem goals | experiment | [Adventure diamond-collection levels](features/adv-diamonds.md) | knowledge gap |  |
+| Run each outcome once under Adventure hard levels (Next Hard Level): Settings gear > Replay, No Space Left, Does not apply, Back key mid-game opens the home menu with no confirmation; whether the game in progress is kept is NOT verified, Leaving the app mid-game | experiment | Adventure hard levels (Next Hard Level) | knowledge gap |  |
+| Lose Adventure hard level once (replay L5 or next hard) to see its fail screen and cost | experiment | Adventure hard levels (Next Hard Level) | knowledge gap |  |
 
 ## Waiting
 
 | Task | Not before | Kind | Feature |
 |---|---|---|---|
-| Look for daily rewards, a daily challenge or a timed event after day 1 | 2026-10-04 15:45:07 | experiment |  |
 | After a day with no Adventure win, read the Consecutive Daily Victories counter: does a missed day reset it to x0 (and is a save offered)? | 2026-10-06 10:00:00 | daily | [Consecutive Daily Victories](features/daily-victories.md) |
 
 ## Needs a human
@@ -69,6 +67,13 @@ The agent cannot do these tasks until it is given a suitable phone.
 
 | Task | Closed | By | Note |
 |---|---|---|---|
+| Study the home menu (Adventure, Medal, daily victories, cross-promo icons) | 2026-10-05 01:58:57 | 20261005-015205-chrono-2FYKPJ#22 | Walked home menu, entries and badges |
+| Study Adventure hard levels: start L5 (Next Hard Level), record its screen, what differs from a normal level, its win and its loss | 2026-10-05 01:58:57 | 20261005-015205-chrono-2FYKPJ#22 | L5 hard won (28/26/26 gems), no visible marker or extra rules; loss not seen, task hard-loss set |
+| Study Medal: open it, walk its screens and tabs, verify its cases | 2026-10-05 01:58:56 | 20261005-015205-chrono-2FYKPJ#22 | Achievement screen, 9 tiered awards, award popups, locked Adventurer |
+| L5 is offered as Next Hard Level (purple button after L4 win): open it, record what a hard level is (cancelled) | 2026-10-05 00:54:38 | review-20261005 | duplicate: hard levels are now their own feature adv-hard-levels (level-type); its study goal replaces this one |
+| Study Adventure diamond-collection levels: open it, walk its screens and tabs, verify its cases | 2026-10-05 00:52:33 | 20261005-004506-chrono-2FYKPJ#24 | Banner Target Collection at start, Replay gives interstitial+restart, win gives Next Hard Level for L5; frequency (which levels) left to experiment adv-diamonds-frequency |
+| Study Consecutive Daily Victories: open it, walk its screens and tabs, verify its cases | 2026-10-05 00:52:24 | 20261005-004506-chrono-2FYKPJ#24 | x2 grey -> x3 green after Oct 5 win; panel not tappable; missed-day and save offer remain open (task daily-victories-missed-day) |
+| Study Cross-promo icons on the home menu (GOGO! Blast, Rotate Rings): open it, walk its screens and tabs, verify its cases | 2026-10-05 00:52:24 | 20261005-004506-chrono-2FYKPJ#24 | Both icons open the Open with store chooser; static, no reward, Back closes |
 | Find why the classic score jumped from 19 to 124 with no move right after the tutorial board | 2026-10-04 01:10:05 | dream | Answered: a count-up. The 2x2 clear gives +120 and the score counts 4 -> 124; the 19 was a mid count-up frame [20261003-193423-chrono-2FYKPJ#4] (documenter clip tutorial-2x2-clear) |
 | Study Adventure Consecutive Victories (win streak): open it, walk its screens and tabs, verify its cases | 2026-10-04 00:11:41 | 20261003-235233-chrono-2FYKPJ#60 | All checklist items closed this session: counter on the Adventure result panel (x1 L1 win, x0 after L2 loss, x2 after L3), reset by a loss, no save, no reward at x1-x2, no entry (shows by itself). Outcome runs left to outcomes-adv-win-streak; rewards past x2 to adv-win-streak-rewards |
 | Study Adventure mode: open it, walk its screens and tabs, verify its cases | 2026-10-04 00:07:04 | 20261003-235233-chrono-2FYKPJ#64 | Adventure: 96-level trophy-shaped map (shot 8), Level N button, no energy/lives/timer. Levels are the classic 8x8 board with a pre-built layout and a goal: L1 score 368, L2 60 diamonds, L3 two gem colours, L4 three. Win: Consecutive Victories panel + lit trophy cell + Next Level, no currency; interstitial seen once (after L2 retry win). Loss: No Space Left -> 'You Can Do It!' + Retry, win streak resets, no revive. Gear: Settings with Home/Replay. Played L1 won, L2 lost (deliberate) then won, L3 won, L4 quit; the classic solver in score mode wins them in ~2-3 min. New features: adv-diamonds (gem-goal levels), adv-win-streak. |

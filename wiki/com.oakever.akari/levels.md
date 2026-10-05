@@ -2,7 +2,7 @@
 game: com.oakever.akari
 title: "Levels: MeowTrail"
 type: levels
-verified_at: 2026-10-04
+verified_at: 2026-10-05
 ---
 
 # Levels: MeowTrail

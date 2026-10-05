@@ -154,3 +154,8 @@ Typical 1.4 min, best 0.5 min: within the budget (`sw.py playbook`).
 | Level | Result | Seconds (win card) | Source |
 |---|---|---|---|
 | 1 | won (two letters by hand) | 113 (01:30) | [s:20261003-234451-chrono-2FYKPJ#15] |
+
+## Session 20261005-003245 (sonnet): loss and hints
+- Wrong letter is not kept in the cell; each costs one Mistakes circle. 3rd opens "You've made 3 mistakes" (Home, Restart, REVIVE); heart is spent already (5->4, 30 min regen).
+- Restart from that popup: same board, 0 mistakes, no ad. Force-stop mid-level: CONTINUE reopens the board fresh (hint-revealed letter gone, hint not refunded).
+- Hint bulb: tap, then tap one empty cell to reveal only that cell. At 0 the bulb shows a play icon: video ad with no close for 60+ s (restart needed).

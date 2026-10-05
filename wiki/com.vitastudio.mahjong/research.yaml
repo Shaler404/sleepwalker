@@ -2,7 +2,7 @@
 game: com.vitastudio.mahjong
 version: 3.40.1
 play_version: 3.40.1
-play_checked: '2026-10-03T19:29:54'
+play_checked: '2026-10-05T00:13:01'
 phone_version: 3.40.1
 discovery: open
 ftue_verified: null
@@ -13,7 +13,7 @@ progress:
   session: 20261003-195050-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-04T01:10:05'
+  chrono: '2026-10-05T02:00:53'
 mechanics:
 - id: core-match
   name: core-match
@@ -21,12 +21,21 @@ mechanics:
   method: solver
   levels:
     won: 0
-    lost: 0
-    quit: 1
+    lost: 1
+    quit: 2
   recent:
   - level: level 19
     result: quit
     seconds: 38
+    model: sonnet
+  - level: level 19
+    result: lost
+    seconds: 93
+    model: sonnet
+    deliberate: true
+  - level: level 19
+    result: quit
+    seconds: 150
     model: sonnet
   note: 'solver reads the cream, purple and red tile sets (3.40.1 L19 shows purple
     or red depending on the launch); red set checked on 231301/00022 and 231804/00008-00012
@@ -489,28 +498,44 @@ features:
     done: false
     outcome: true
   - id: chk-loss
-    text: 'Each loss: lose the level every way it can be lost; register each kind
-      as an outcome (case <feature> <kind> "..." --outcome) with its screen and what
-      the loss costs'
-    done: false
+    text: 'Lost by Out of space (4 distinct tiles, frames 8-10): tooltip at 3 tiles,
+      no life lost seen, no other loss kind seen'
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#13
+    version: 3.40.1
   - id: chk-retry
-    text: 'After a loss: the retry and continue offers (extra moves, a revive) and
-      their price (a video, coins, a life)'
-    done: false
+    text: Out of space window offers Revive (badge 5), -4 to revive (spends 4 Undo)
+      and Restart; Restart is free. Revive and -4 not tried (spend resources)
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#13
+    version: 3.40.1
   - id: chk-restart
-    text: 'Restart: restart the level from inside it: the confirmation and what it
-      costs'
-    done: false
+    text: 'Restart in the Out of space window: free, new board right away (layout
+      and tiles regenerated, IQ back to 40, boosters still 3/5/10), intro quote popup
+      shown first (frame 11-12)'
+    done: true
     outcome: true
+    source: 20261005-002327-chrono-2FYKPJ#13
+    version: 3.40.1
   - id: chk-exit-app
-    text: 'Exit the app: leave the app in the middle of the level and come back: is
-      the level kept, restarted or lost'
-    done: false
+    text: 'Force-stop after one pair cleared (IQ 40.4): relaunch shows Level 1 + saved-game
+      popup, Sync Data, Level 19 opens a freshly generated board, IQ 40, progress
+      NOT kept (frames 13-19)'
+    done: true
     outcome: true
+    source: 20261005-002327-chrono-2FYKPJ#13
+    version: 3.40.1
   - id: chk-elements
     text: 'Level elements: each obstacle or special piece the levels introduce is
       its own feature (type level-element), with the level it first shows on'
     done: false
+  - id: out-of-space
+    text: 'Out of space: tray holds 4 unmatched tiles (tooltip ''Don''t let the holder
+      get full'' at 3); window offers Revive (badge 5), -4 to revive (4 Undo), Restart
+      (free, new board)'
+    done: true
+    outcome: true
+    source: 20261005-002327-chrono-2FYKPJ#6
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -637,7 +662,7 @@ features:
   page: features/iq-score.md
 - id: face-down-tiles
   name: Face-down tiles
-  status: seen
+  status: documented
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -646,25 +671,42 @@ features:
     done: true
     source: 20261003-195050-chrono-2FYKPJ#17
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Seen on the board of the level opened from the home Level button (364,1300);
+      no separate entry
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#11
+    version: 3.40.1
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Board frames 6, 19: green flower-medallion backs (frame 6) and a round-lattice
+      medallion backs (frame 19); different set on each board generated'
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#11
+    version: 3.40.1
   - id: chk-first-level
-    text: The first level it shows on and how the game introduces it
-    done: false
+    text: Earlier sessions recorded greens from L11 (playbook, s:20261001-110957);
+      on 3.40.1 they are on L19 at the first open; intro of L11 not reseen
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#11
+    version: 3.40.1
   - id: chk-rules
-    text: What it does and how it is used
-    done: false
+    text: 'Tap on a free green flips it face up in place (frames 6-7: became a 4-circle),
+      tray stays empty, no cost'
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#11
+    version: 3.40.1
   - id: chk-interactions
-    text: How it interacts with the other pieces
-    done: false
+    text: 'Frames 20-21: flipping two free greens in a row (300,860 then 405,860)
+      showed two identical 2-bamboo faces and both vanished at once, IQ +0.4, tray
+      stayed empty; face-up green plus its twin matches without the tray'
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#13
+    version: 3.40.1
   - id: chk-loss
-    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
-      level (case <base> <kind> "..." --outcome)'
-    done: false
+    text: A flip takes no tray slot (frame 7 tray empty), so it adds no loss of its
+      own; only taps on faces fill the tray
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#11
+    version: 3.40.1
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -677,6 +719,7 @@ features:
     certainty: fact
     source: 20261003-195050-chrono-2FYKPJ#7
   page: features/face-down-tiles.md
+  version_seen: 3.40.1
 - id: level-options
   name: In-level Options
   status: in_progress
@@ -1094,6 +1137,9 @@ features:
   - id: under-exit-app
     text: 'Exit the app under Hard level: as the base, or what differs'
     done: false
+  - id: under-out-of-space
+    text: 'Out of space under Hard level: as the base, or what differs'
+    done: false
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -1103,6 +1149,95 @@ features:
     certainty: hypothesis
     source: 20261003-195050-chrono-2FYKPJ#28
   page: features/hard-level.md
+- id: iq-bonus-tiles
+  name: IQ bonus tiles
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: On the level board itself (L19 opened from the home Level button); no separate
+      entry
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#2
+  - id: chk-screen
+    text: 'Frames 6 and 19: a blue ''IQ+9'' / ''IQ+6'' banner on the top edge of a
+      tile, on mahjong faces and on picture tiles alike'
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#11
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-first-level
+    text: The first level it shows on and how the game introduces it
+    done: false
+  - id: chk-rules
+    text: What it does and how it is used
+    done: false
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 19 (restored from the cloud save on a fresh install)
+    value: 19.0
+  type: level-element
+  appeared:
+    text: tiles with a blue IQ+N banner (IQ+6, IQ+9 on L19, frames 6, 19); seen from
+      level 8 in 20260930-225122 (IQ+10), first level not seen
+    certainty: hypothesis
+    source: 20261005-002327-chrono-2FYKPJ#2
+- id: leaves
+  name: Leaf counter (home)
+  status: in_progress
+  cases:
+  - id: chk-balance
+    text: 'Home top bar right of the avatar: leaf icon ''x0'' at Level 1 (before Sync)
+      and at Level 19 (after)'
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-002327-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 19 (restored from the cloud save on a fresh install)
+    value: 19.0
+  type: currency-booster
+  appeared:
+    text: 'on the home top bar next to the avatar at the first home arrival, Level
+      1 before Sync (frame 3) and after (frame 4): leaf icon x0'
+    certainty: fact
+    source: 20261005-002327-chrono-2FYKPJ#1
 tasks:
 - id: analyze
   title: Analyze the game
@@ -1264,7 +1399,8 @@ tasks:
 - id: outcomes-hard-level
   title: 'Run each outcome once under Hard level: Back arrow in the level goes straight
     to the home screen, no confirmation, no cost seen (board kept, per earlier sessions),
-    Win, Restart, Exit the app'
+    Win, Restart in the Out of space window, Force-stop after one pair cleared (IQ
+    40.4), Out of space'
   kind: experiment
   requires: any
   status: open
@@ -1406,10 +1542,13 @@ tasks:
   title: 'Study Face-down tiles: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: face-down-tiles
   source: external
+  closed: '2026-10-05T00:28:31'
+  closed_by: 20261005-002327-chrono-2FYKPJ#13
+  note: 6/7 cases; entry, rules, interactions, loss verified on L19 green set
 - id: study-level-options
   title: 'Study In-level Options: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -1497,7 +1636,7 @@ tasks:
     continue offer and retry cost
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:03:22'
   feature: core-level
   source: session
@@ -1505,6 +1644,12 @@ tasks:
     Mark the lose popup: continue options (ad, coins, booster), retry, what is lost.
     Done when chk-loss and chk-retry of core-level are closed and the loss is an outcome
     case'
+  closed: '2026-10-05T00:31:22'
+  closed_by: 20261005-002327-chrono-2FYKPJ#13
+  note: 'Out of space at 4 distinct tiles in the tray (frames 8-10): Revive (badge
+    5), -4 to revive (4 Undo), Restart free; chk-loss, chk-retry closed, out-of-space
+    is an outcome'
+  result: confirmed
 - id: booster-refill
   title: 'Look for the booster refill: what Shuffle, Hint or Undo offer when a count
     is 0 (rewarded ad, coins, shop)'
@@ -1535,7 +1680,7 @@ tasks:
     prompts, and whether Sync always restores the current level
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:19:15'
   feature: cloud-sync
   source: session
@@ -1544,6 +1689,12 @@ tasks:
     and Sync/No returns the last level reached (then each session must budget this
     route and the solver can rely on the cloud save); refuted if the game opens straight
     on the current level
+  closed: '2026-10-05T00:31:23'
+  closed_by: 20261005-002327-chrono-2FYKPJ#10
+  note: Both launches of 002327 (frames 3 and 15) opened on Level 1 with the saved-game
+    popup and Sync Data returned Level 19; the age popup did NOT show on either launch
+    (it did in earlier sessions)
+  result: confirmed
 - id: age-bracket-effect
   title: 'Find what an age bracket changes: pick 55+ on the age popup when it shows
     on a relaunch and compare the home and the next level to the X-closed runs'
@@ -1609,7 +1760,106 @@ tasks:
     changed between 231301 shot 22 and 231804 shot 8)?
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T01:10:05'
   feature: core-level
   source: session
+  closed: '2026-10-05T00:31:22'
+  closed_by: 20261005-002327-chrono-2FYKPJ#13
+  note: Restart from Out of space (frame 12) and force-stop + Sync (frame 19) both
+    open a new L19 layout with a different tile/back set; board progress not kept
+  result: confirmed
+- id: appeared-hard-level
+  title: 'Find why Hard level appeared: level 10 was marked Hard in earlier sessions
+    on 3.39.1; not reseen on 3.40.1'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:13:08'
+  feature: hard-level
+  source: session
+  plan: 'find the moment Hard level shows up and what comes just before it (level
+    10 was marked Hard in earlier sessions on 3.39.1; not reseen on 3.40.1); confirmed
+    when a frame shows the trigger. Record it with feature hard-level --appeared "...":
+    the goal closes by itself'
+- id: hard-level-reach
+  title: Reach and study a Hard level (L10 was Hard on 3.39.1; reach L20+ on 3.40.1)
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-05T00:28:30'
+  feature: hard-level
+  source: session
+  target_text: next Hard level
+  target_value: 20.0
+- id: win-screen-l19
+  title: 'Win a level: win screen, rewards (needs solver for core-match)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:28:31'
+  feature: core-level
+  source: session
+  plan: win L19 and mark the win screen
+- id: appeared-iq-bonus-tiles
+  title: 'Find why IQ bonus tiles appeared: tiles with a blue IQ+N banner (IQ+6, IQ+9
+    on L19, frames 6, 19); seen from level 8 in 20260930-225122 (IQ+10), first level
+    not seen'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:31:30'
+  feature: iq-bonus-tiles
+  source: session
+  plan: 'find the moment IQ bonus tiles shows up and what comes just before it (tiles
+    with a blue IQ+N banner (IQ+6, IQ+9 on L19, frames 6, 19); seen from level 8 in
+    20260930-225122 (IQ+10), first level not seen); confirmed when a frame shows the
+    trigger. Record it with feature iq-bonus-tiles --appeared "...": the goal closes
+    by itself'
+- id: study-leaves
+  title: 'Study the home leaf counter: tap it, mark what opens, and record what leaves
+    are for'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T00:31:45'
+  feature: leaves
+  source: session
+- id: study-iq-bonus-tiles
+  title: 'Study IQ bonus tiles: match an IQ+N tile pair and record how much the IQ
+    score grows'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:31:45'
+  feature: iq-bonus-tiles
+  source: session
+  plan: 'On a level, note IQ, then clear the pair that carries an IQ+N banner (mark
+    before and after). Confirmed that the banner is the bonus if IQ grows by N (an
+    ordinary pair gave +0.4 in 002327 #13); also note whether the banner is on one
+    tile or both of the pair'
+- id: revive-cost
+  title: 'Find what Revive in the Out of space window costs (badge 5: a rewarded video
+    or free revives)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:31:46'
+  feature: core-level
+  source: session
+  plan: Lose on purpose by Out of space (4 distinct tiles), tap the green Revive (not
+    '-4 to revive'), mark what follows. Confirmed rewarded-ad placement if a video
+    plays (then record an ad-placement feature); a free revive if the tray clears
+    and the badge drops 5 to 4. Never pay
+- id: leaves-earn
+  title: 'Find what earns leaves: compare the home leaf counter (x0) before and after
+    a won level'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:31:46'
+  feature: leaves
+  source: session
+  plan: Mark the home leaf counter before a level, win the level, mark the win screen
+    and the home again. Confirmed level wins give leaves if x0 grows; refuted if it
+    stays 0 (then look in the leaf screen for the source)

@@ -1,16 +1,16 @@
 # Tasks: Amaze GO!
 
-Status: **▶️ active** — ready now: 19
+Status: **▶️ active** — ready now: 23
 
 Mode: **goals** — work through the session goals in order; play levels only as far as an unlock or experiment goal needs; register anything new you notice as a feature or a goal, do not pursue it now
 
-Progress reached: **level 5 hard** · last new feature found at: **level 3**
+Progress reached: **level 11** · last new feature found at: **level 10 hard**
 
-Goals: study 3, unlock 4, experiment 12 · maps: ? — 8 new
+Goals: study 6, unlock 3, experiment 15 · maps: ? — 8 new
 
-Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **arrows-escape** — studying, manual, levels won 3, typical 1.8 min
+Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **arrows-escape** — mastered, solver, levels won 9, typical 2.3 min
 
-Google Play version: **1.32.0** (checked 2026-10-03 19:29:54) · analyzed version: **1.33.0** · FTUE from a fresh install: **never**
+Google Play version: **1.32.0** (checked 2026-10-05 00:13:01) · analyzed version: **1.33.0** · FTUE from a fresh install: **never**
 
 Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit by hand. Feature map: [features.md](features.md).
 
@@ -18,30 +18,35 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 
 | Task | Kind | Feature | Source | Note |
 |---|---|---|---|---|
-| Unlock Bronze League: level 11 | unlock | [Bronze League](features/bronze-league.md) | knowledge gap | the lock seen on screen (feature --locked) |
 | Unlock Shark Run: level 70 | unlock | [Shark Run](features/shark-run.md) | knowledge gap | the lock seen on screen (feature --locked) |
 | Unlock Daily Challenge: level 20 | unlock | [Daily Challenge](features/daily-challenge.md) | knowledge gap | the lock seen on screen (feature --locked) |
 | Unlock Event Countryside Capers: level 16 | unlock | [Event Countryside Capers](features/countryside-capers.md) | knowledge gap | the lock seen on screen (feature --locked) |
 | Zen Mode: what does the toggle change in a level? | experiment | [Zen Mode toggle](features/zen-mode.md) | knowledge gap |  |
 | Study Zen Mode toggle: open it, walk its screens and tabs, verify its cases | study | [Zen Mode toggle](features/zen-mode.md) | external |  |
-| Study the core level: rules, HUD, win screen, every loss kind as an outcome, retry, restart, quit, exit-app (play levels 3-10) | study | [Level (arrows-escape board)](features/level.md) | knowledge gap |  |
 | Study Settings: each option once (Sound, Vibration, Music, Feedback, Privacy, Terms links), set back after | study | [Settings](features/settings.md) | knowledge gap |  |
 | Look for economy and monetization: lives or energy, coins, boosters or hints, shop, no-ads, ads after levels | experiment |  | knowledge gap |  |
-| Guideline on: find what it draws on a board (nothing visible on idle level 3; try tapping a blocked/free arrow, larger levels) | experiment | [Guideline toggle](features/guideline.md) | knowledge gap |  |
 | Run each outcome once under Daily Streak: Out of lives, Restart from Out of Lives popup resets the board immediately, no confirmation, no life cost, Force-stop and relaunch mid-level | experiment | [Daily Streak](features/daily-streak.md) | knowledge gap |  |
 | Theme picker: find whether the chosen theme stays after leaving the level and after an app restart | experiment | [Theme picker (palette icon in the level HUD)](features/theme-picker.md) | knowledge gap |  |
 | Find whether a free Continue after Out of Lives lowers the win result (stars, title, score, accuracy) against a clean win | experiment | [Level (arrows-escape board)](features/level.md) | knowledge gap |  |
 | Find whether the hint bulb appears on Normal levels after Hard level 5 (level 6) and whether a used hint changes the win screen | experiment | [Hint (bulb button in the level HUD)](features/hint.md) | knowledge gap |  |
-| Write the arrows-escape solver (read arrows and heads from panned frames, free-ray test, ordered removal) and win Hard level 8 with it using no hints | check | [Hard level (purple, larger zoomable board)](features/hard-level.md) | from the game | solver-hard-arrows was closed without a solver: Hard L5 was won by a hint-bulb loop (tap bulb, tap green pixels), 2 steps per arrow, 109 steps and 13 min, nearly a whole session budget. Hard levels recur (5, 8, ...); the hint loop stays the fallback |
 | Find whether using hints lowers the win result (stars, title, score) against a win without hints | experiment | [Hint (bulb button in the level HUD)](features/hint.md) | knowledge gap |  |
 | Find which level numbers are Hard up to level 20 (purple nodes on the level path) and whether the pattern is fixed | experiment | [Hard level (purple, larger zoomable board)](features/hard-level.md) | knowledge gap |  |
 | Hard levels: does a tap on a red (already blocked) arrow cost a drop or do nothing? | experiment | [Drops (mistake allowance in the level HUD)](features/drops.md) | knowledge gap | 20261003-233756-chrono-2FYKPJ#20 changed nothing |
-| Make Hard arrows levels fast: tap every visibly free arrow in each hint frame, one batched command per hint pair; measure on Hard L8 (L5 took 863 s) | experiment | [Hard level (purple, larger zoomable board)](features/hard-level.md) | knowledge gap |  |
+| Study Notification permission prompt: open it, walk its screens and tabs, verify its cases | study | Notification permission prompt | external |  |
+| Find whether Daily Streak resets every Monday (calendar week) or only on a missed day | experiment | [Daily Streak](features/daily-streak.md) | knowledge gap |  |
+| Find whether the in-level grid button and the home Settings Guideline toggle are one setting, and whether it stays on across levels and restarts | experiment | [Guideline toggle](features/guideline.md) | knowledge gap |  |
+| Study the Profile popup: rename, avatar and frame tabs, which items are locked and how they unlock | study | Profile (name, avatar, frame) | knowledge gap |  |
+| Gold arrows on boards after the league starts: do they add league points when cleared, and how many appear per level | experiment | Gold arrows (league tokens on the board) | knowledge gap |  |
+| Study the Bronze League: points per gold arrow, the (i) info, rewards per rank, promotion and demotion | study | [Bronze League](features/bronze-league.md) | knowledge gap |  |
+| Study Gold arrows (league tokens on the board): open it, walk its screens and tabs, verify its cases | study | Gold arrows (league tokens on the board) | external |  |
+| Find when the Rate Us popup comes back after wins (every N wins, once per day, or never after one dismissal) | experiment | [Rate Us](features/rate-us.md) | knowledge gap |  |
+| Find whether win stars drop with the level time: 2 stars on a win with no mistake and no hint | experiment | [Hard level (purple, larger zoomable board)](features/hard-level.md) | knowledge gap |  |
 
 ## Waiting
 
 | Task | Not before | Kind | Feature |
 |---|---|---|---|
+| Open the Bronze League after its first period ends: results screen, rank reward, promotion | 2026-10-06 01:35:50 | check | [Bronze League](features/bronze-league.md) |
 | Daily Streak: find what a missed day does to the streak (reset, a save offer and its price) | 2026-10-06 09:00:00 | experiment | [Daily Streak](features/daily-streak.md) |
 
 ## Needs a human
@@ -57,6 +62,14 @@ The agent cannot do these tasks until it is given a suitable phone.
 
 | Task | Closed | By | Note |
 |---|---|---|---|
+| Make Hard arrows levels fast: tap every visibly free arrow in each hint frame, one batched command per hint pair; measure on Hard L8 (L5 took 863 s) | 2026-10-05 01:39:28 | 20261005-012010-chrono-2FYKPJ#16 | The arrows-escape solver (no hints) won Hard L8 in 168 s and Hard L10 in 268 s, against 863 s for L5 by hint loop |
+| Hard win cards give 2 stars and 'Great Start!' even with no drop lost? | 2026-10-05 01:39:28 | 20261005-012010-chrono-2FYKPJ#16 | Hard L8 (0 mistakes, 3 drops, 01:30) gave 3 stars 'Arrow Pro!' 1700, Hard L10 gave 3 stars 'Untouchable!' [#29]; Hard L5 2 stars came with a ~14 min solve, so stars likely drop with time or hints, not capped on Hard |
+| Study the core level: rules, HUD, win screen, every loss kind as an outcome, retry, restart, quit, exit-app (play levels 3-10) | 2026-10-05 01:35:51 | 20261005-012010-chrono-2FYKPJ#35 | All core-level cases closed: rules re-verified on L6-L10 (295 solver taps, 0 mistakes), the only loss kind is out-of-lives (free Continue, no timer), no level elements through L10; gold rank arrows start on L11 with the Bronze League (feature gold-arrows). Win cards: normal (stars, title, Difficulty, Time, Score, Today's Levels, accuracy/mistakes/hints) and Hard (purple, Time/Score/Today's Levels); Rate Us popup after the L6 win; Hard L10 opens with a 'beat 74.59% of players' banner. |
+| First look at Bronze League: open it once, record what it is and decide whether it needs a full study | 2026-10-05 01:35:41 | 20261005-012010-chrono-2FYKPJ#35 | Opened from Home card Play: how-to overlay (collect rank arrows = gold arrows on boards, rewards, leaderboard), then the board: 24 h event timer, 50+ players, gifts for top 3, next tier locked. Needs a full study: points per gold arrow, rewards, the period end (24 h follow-up). |
+| Unlock Bronze League: level 11 | 2026-10-05 01:33:34 | planner | seen open at level 10 hard |
+| Write the arrows-escape solver (read arrows and heads from panned frames, free-ray test, ordered removal) and win Hard level 8 with it using no hints | 2026-10-05 01:27:24 | 20261005-012010-chrono-2FYKPJ#16 | Hard L8 won with the solver, no hints, 0 mistakes, 3 stars, 2.6 min logged (01:30 in-game), 6 solve rounds. The L8 board fit the screen at 35 px pitch (no panning); pitch search lowered to 26 px. |
+| Make the arrows-escape solver read normal boards (level 6 on): per-level grid pitch (about 61 px at 1080 on L6), arrow heads at the smaller pitch, mask the bottom-right guideline button; then play L6-L7 with solve --run | 2026-10-05 01:24:15 | 20261005-012010-chrono-2FYKPJ#9 | Fixed: pitch refined to 0.05 px (61.15 on L6, ~45 px on L7), head tip probe moved from 0.24 to 0.15 pitch (the triangle tip is only 0.23 pitch ahead of the node), guideline button masked as a white disc (its nodes unobserved). L6: 28 arrows, 2 rounds, 1.8 min, 3 stars. L7: 54 arrows, 4 rounds, 1.5 min, 3 stars, 0 mistakes. |
+| Guideline on: find what it draws on a board (nothing visible on idle level 3; try tapping a blocked/free arrow, larger levels) | 2026-10-05 01:20:42 | 20261005-010045-chrono-2FYKPJ#94 | The in-level grid button (bottom right, from level 6) turns the guideline on: a light tan line along every arrow's exit ray from its head to the screen edge; off again on the second tap (#95). Level 3 showed nothing because the in-level button and lines appear only from level 6 |
 | Run each outcome once under Hard level (purple, larger zoomable board): Win screen | 2026-10-04 00:33:35 | planner | every known outcome of the base level was run under Hard level (purple, larger zoomable board) |
 | Daily Streak day 2: win one level tomorrow and record the streak screen, the counter and any reward | 2026-10-04 00:33:24 | 20261004-001551-chrono-2FYKPJ#109 | Day 2 (Sun 4 Oct, first win of the day = Hard L5): streak screen before the win screen shows 2, SAT and SUN checked, text 'Well done! Your consistency is impressive.', Continue; no reward shown |
 | Does Hint run out (count or ad) after N uses? Used 8 on Hard L5 with no limit seen; check on Normal level and on win screen hints-used counter | 2026-10-04 00:33:24 | 20261004-001551-chrono-2FYKPJ#109 | About 55 hint uses on Hard L5 in one level: no counter, price, ad or popup ever; the bulb does not run out on Hard. Normal levels stay with exp-hint-on-normal |

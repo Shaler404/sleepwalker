@@ -2,36 +2,28 @@
 game: com.oakever.arrows
 version: 1.33.0
 play_version: 1.32.0
-play_checked: '2026-10-03T19:29:54'
+play_checked: '2026-10-05T00:13:01'
 phone_version: 1.33.0
 discovery: open
 ftue_verified: null
 progress:
-  text: level 5 hard
-  value: 5.0
-  at: '2026-10-04T00:30:33'
-  session: 20261004-001551-chrono-2FYKPJ
+  text: level 11
+  value: 11.0
+  at: '2026-10-05T01:35:51'
+  session: 20261005-012010-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-04T01:10:05'
+  chrono: '2026-10-05T02:00:53'
 mechanics:
 - id: arrows-escape
   name: arrows-escape
-  status: studying
-  method: manual
+  status: mastered
+  method: solver
   levels:
-    won: 3
+    won: 9
     lost: 0
     quit: 3
   recent:
-  - level: level 3 guideline look
-    result: quit
-    seconds: 29
-    model: sonnet
-  - level: level 3
-    result: won
-    seconds: 35
-    model: sonnet
   - level: level 4
     result: won
     seconds: 105
@@ -48,11 +40,33 @@ mechanics:
     result: won
     seconds: 863
     model: sonnet
-  note: 'dream 2026-10-04: back to studying: Hard levels (board ~3 screens wide) are
-    not played by hand; Hard L5 was won only with the free hint loop (bulb, wait ~2
-    s, tap the green arrow) in 863 s (20261004-001551-chrono-2FYKPJ#2-110). Normal
-    L3-L4 manual in 35-105 s'
+  - level: level 5 hard
+    result: won
+    seconds: 870
+    model: opus
+  - level: level 6
+    result: won
+    seconds: 110
+    model: opus
+  - level: level 7
+    result: won
+    seconds: 100
+    model: opus
+  - level: level 8 hard
+    result: won
+    seconds: 168
+    model: opus
+  - level: level 9
+    result: won
+    seconds: 71
+    model: opus
+  - level: level 10 hard
+    result: won
+    seconds: 268
+    model: opus
+  note: two levels in a row within 5 min
   best_s: 35
+  solver: solvers/com.oakever.arrows/arrows-escape.py
 features:
 - id: consent
   name: Consent screen
@@ -132,7 +146,7 @@ features:
   page: features/home.md
 - id: bronze-league
   name: Bronze League
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -141,15 +155,22 @@ features:
     done: true
     source: 20261003-200141-chrono-2FYKPJ#1
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Home, first card: Bronze League with timer, rank and a Play button (193,518)'
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#33
+    version: 1.33.0
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'League screen: timer, badge row (Bronze, locked next tier), leaderboard,
+      Let''s play'
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#35
+    version: 1.33.0
   - id: chk-board
-    text: 'The board: ranks, the player''s place, the number of players'
-    done: false
+    text: Ranks with avatar, name and rank-arrow count; at join the top 5 had 12/12/8/8/8,
+      the player is pinned 50th of at least 50 with 0; gifts shown for ranks 1-3
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#35
+    version: 1.33.0
   - id: chk-points
     text: What earns points (a level win, a score) and how many
     done: false
@@ -163,14 +184,18 @@ features:
     text: 'The end of a period: the results screen and the reward (a follow-up)'
     done: false
   type: social
-  locked:
-    text: level 11
-    value: 11.0
   appeared:
-    text: on the home carousel from first launch, locked (Unlock Lv.11)
+    text: 'after winning level 10 (reaching level 11, as the Home card lock ''Unlock
+      Lv.11'' said): a ''You have joined the Bronze League'' popup over the win card'
     certainty: fact
-    source: 20261003-200141-chrono-2FYKPJ#1
+    source: 20261005-012010-chrono-2FYKPJ#29
   page: features/bronze-league.md
+  source: 20261005-012010-chrono-2FYKPJ#29
+  unlocked_at:
+    text: level 10 hard
+    value: 10.0
+    source: 20261005-012010-chrono-2FYKPJ#29
+    lock: level 11
 - id: shark-run
   name: Shark Run
   status: seen
@@ -464,8 +489,17 @@ features:
     done: true
     source: 20261003-200141-chrono-2FYKPJ#5
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: 'Two switches: the home Settings toggle (off by default) and the in-level
+      grid button bottom right from level 6; on, it draws tan lines along every arrow''s
+      exit ray to the screen edge; the button icon turns orange; toggled back off'
+    done: true
+    source: 20261005-010045-chrono-2FYKPJ#94
+  - id: in-level-toggle
+    text: 'The in-level grid button (bottom right, from level 6) toggles the guideline:
+      tan lines along every arrow''s exit ray'
+    done: true
+    source: 20261005-010045-chrono-2FYKPJ#94
+    version: 1.33.0
   type: system
   appeared:
     text: present in Settings on the first visit after a fresh install (progress cloud-restored
@@ -541,18 +575,34 @@ features:
     done: true
     source: 20261003-200141-chrono-2FYKPJ#2
   - id: chk-rules
-    text: 'Rules: the goal, the controls, what blocks a move and how the level is
-      lost (the game''s own tutorial or How to play)'
-    done: false
+    text: 'Goal: clear every arrow. Tap any segment: the arrow slides out along its
+      head, the body following its path; it leaves only if no arrow lies on the straight
+      ray from its head to the board edge, else it flashes red and costs one of 3
+      drops. 0 drops = Out of Lives. Verified again on L6-L8: 160 taps chosen by the
+      free-ray rule, 0 mistakes'
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#16
+    version: 1.33.0
   - id: chk-loss
-    text: 'Each loss: lose the level every way it can be lost; register each kind
-      as an outcome (case <feature> <kind> "..." --outcome) with its screen and what
-      the loss costs'
-    done: false
+    text: 'The only loss kind seen through L8 is out-of-lives (3 blocked taps); there
+      is no timer or move limit (in-game Time only counts up) and Continue is free,
+      so the level cannot be lost for good. Registered outcome: out-of-lives'
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#16
+    version: 1.33.0
   - id: chk-elements
-    text: 'Level elements: each obstacle or special piece the levels introduce is
-      its own feature (type level-element), with the level it first shows on'
-    done: false
+    text: Levels 1-8 contain only arrows on a dot grid; no obstacles or special pieces.
+      Level 6 adds the guideline button (feature guideline, a tool, not an element);
+      Hard levels (5, 8, 10, 13) are a level type (hard-level)
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#16
+    version: 1.33.0
+  - id: win-not-kept
+    text: 'A win followed at once by a force-stop is not saved: Hard L5 won in 20261004-001551
+      (#110) showed again as the next level on the following launch; wait on the next
+      screen before stopping the app'
+    done: true
+    source: 20261005-010045-chrono-2FYKPJ#0
   type: core-level
   appeared:
     text: Play button on home from first launch (Play Level 1, Level 3 after cloud
@@ -642,6 +692,11 @@ features:
       test'
     done: true
     source: 20261003-200141-chrono-2FYKPJ#5
+  - id: chk-auto-prompt
+    text: Rate Us popup appeared unprompted over the level 6 win card (first win after
+      Hard L5, Today's Levels 2); X closed it to the win card
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#4
   type: system
   appeared:
     text: entry in Settings on the first visit
@@ -811,6 +866,13 @@ features:
     text: 'Force-stop and relaunch mid-level under Daily Streak: as the base, or what
       differs'
     done: false
+  - id: day-3-monday
+    text: 'Monday 2026-10-05, first win of the day (Hard L5): Daily Streak 1, week
+      row now MON..SUN with only MON checked, ''You are ready for a great week!'';
+      after a Sunday streak of 2. Either the week resets on Monday or the streak broke
+      because the Sunday win was not saved'
+    done: true
+    source: 20261005-010045-chrono-2FYKPJ#91
   found_at:
     text: level 4
     value: 4.0
@@ -903,6 +965,17 @@ features:
     text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
       from which level'
     done: false
+  - id: win-no-mistake
+    text: 'Hard L5 won by the solver with no hint and no drop lost: still 2 of 3 stars,
+      ''Great Start!'', Time 05:54, Score 1300; the Hard card gave 2 stars with 1
+      mistake and hints too'
+    done: true
+    source: 20261005-010045-chrono-2FYKPJ#92
+  - id: chk-banner
+    text: Hard L10 opened with a purple banner 'Pass this level and beat 74.59% of
+      players!' over the board, fading after ~3 s; Hard L8 showed none (not marked)
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#21
   found_at:
     text: level 4
     value: 4.0
@@ -963,6 +1036,11 @@ features:
   - id: chk-refill
     text: 'Refill timer, if any: how long one unit takes and the maximum'
     done: false
+  - id: normal-level
+    text: The bulb shows on Normal level 6 too (HUD top right under the gear), not
+      only on Hard levels; not used there
+    done: true
+    source: 20261005-010045-chrono-2FYKPJ#93
   found_at:
     text: level 5
     value: 5.0
@@ -981,7 +1059,7 @@ features:
       launch, not the first; answered Don't allow
     certainty: fact
     source: 20261003-232108-chrono-2FYKPJ#0
-  status: seen
+  status: in_progress
   found_at:
     text: level 3
     value: 3.0
@@ -991,6 +1069,122 @@ features:
       answered Don't allow
     done: true
     source: 20261003-232108-chrono-2FYKPJ#1
+  - id: chk-answers
+    text: 'Don''t allow (20261003-232108#1): the prompt did not come back on later
+      launches; on this launch home was checked for a dimmed system prompt and none
+      showed'
+    done: true
+    source: 20261005-010045-chrono-2FYKPJ#3
+  - id: chk-options
+    text: 'Does not apply: an Android system dialog with two answers (Allow, Don''t
+      allow), no options'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#1
+  - id: chk-links
+    text: 'Does not apply: a system dialog, no links out'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#0
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+- id: profile
+  name: Profile (name, avatar, frame)
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Profile popup: avatar with check, name Amaze-JtL with edit pencil, tabs
+      Avatar (12 avatars: default, arrow, star, crown, drop, animal portraits) and
+      Frame, Save'
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#30
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#30
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 10 hard
+    value: 10.0
+  type: system
+  appeared:
+    text: 'right after Start on the Bronze League joined popup (L10 win): the league
+      asks the player to set a profile; also the avatar button with a red dot top
+      left on Home'
+    certainty: fact
+    source: 20261005-012010-chrono-2FYKPJ#30
+- id: gold-arrows
+  name: Gold arrows (league tokens on the board)
+  status: in_progress
+  cases:
+  - id: chk-rules
+    text: 'The Bronze League how-to overlay calls them rank arrows: clearing them
+      collects league points (''Collect as many rank arrows as possible'')'
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#34
+    version: 1.33.0
+  - id: chk-screen
+    text: 'Level 11 board: four arrows turn gold (yellow-orange) about 3 s after the
+      board opens, among the brown arrows'
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#32
+  - id: chk-first-level
+    text: Level 11, the first level after joining the Bronze League (L10 win); no
+      tutorial on the board, the league how-to overlay explains them as rank arrows
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#32
+  - id: chk-entry
+    text: 'No entry of its own: it shows on level boards while the Bronze League runs
+      (Home > Play Level N)'
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#32
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-012010-chrono-2FYKPJ#32
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 10 hard
+    value: 10.0
+  type: level-element
+  appeared:
+    text: 'Level 11, the first level after joining the Bronze League: four arrows
+      of the board turned gold about 3 s after the board opened'
+    certainty: fact
+    source: 20261005-012010-chrono-2FYKPJ#32
 tasks:
 - id: analyze
   title: Analyze the game
@@ -1029,13 +1223,15 @@ tasks:
   title: 'Unlock Bronze League: level 11'
   kind: unlock
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:02:59'
   feature: bronze-league
   source: session
-  note: the lock seen on screen (feature --locked)
+  note: seen open at level 10 hard
   target_text: level 11
   target_value: 11.0
+  closed: '2026-10-05T01:33:34'
+  closed_by: planner
 - id: unlock-shark-run
   title: 'Unlock Shark Run: level 70'
   kind: unlock
@@ -1185,10 +1381,19 @@ tasks:
     retry, restart, quit, exit-app (play levels 3-10)'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:05:42'
   feature: level
   source: session
+  closed: '2026-10-05T01:35:51'
+  closed_by: 20261005-012010-chrono-2FYKPJ#35
+  note: 'All core-level cases closed: rules re-verified on L6-L10 (295 solver taps,
+    0 mistakes), the only loss kind is out-of-lives (free Continue, no timer), no
+    level elements through L10; gold rank arrows start on L11 with the Bronze League
+    (feature gold-arrows). Win cards: normal (stars, title, Difficulty, Time, Score,
+    Today''s Levels, accuracy/mistakes/hints) and Hard (purple, Time/Score/Today''s
+    Levels); Rate Us popup after the L6 win; Hard L10 opens with a ''beat 74.59% of
+    players'' banner.'
 - id: study-settings
   title: 'Study Settings: each option once (Sound, Vibration, Music, Feedback, Privacy,
     Terms links), set back after'
@@ -1252,11 +1457,18 @@ tasks:
     3; try tapping a blocked/free arrow, larger levels)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:23:17'
   feature: guideline
   source: session
   plan: enable Guideline, play a level, tap arrows, compare with off
+  closed: '2026-10-05T01:20:42'
+  closed_by: 20261005-010045-chrono-2FYKPJ#94
+  note: 'The in-level grid button (bottom right, from level 6) turns the guideline
+    on: a light tan line along every arrow''s exit ray from its head to the screen
+    edge; off again on the second tap (#95). Level 3 showed nothing because the in-level
+    button and lines appear only from level 6'
+  result: confirmed
 - id: study-consent-fresh
   title: 'Study consent screen on a fresh install: buttons, links, answers'
   kind: replay
@@ -1524,14 +1736,15 @@ tasks:
     free-ray test, ordered removal) and win Hard level 8 with it using no hints
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T00:33:24'
   feature: hard-level
   source: game
-  note: 'solver-hard-arrows was closed without a solver: Hard L5 was won by a hint-bulb
-    loop (tap bulb, tap green pixels), 2 steps per arrow, 109 steps and 13 min, nearly
-    a whole session budget. Hard levels recur (5, 8, ...); the hint loop stays the
-    fallback'
+  note: Hard L8 won with the solver, no hints, 0 mistakes, 3 stars, 2.6 min logged
+    (01:30 in-game), 6 solve rounds. The L8 board fit the screen at 35 px pitch (no
+    panning); pitch search lowered to 26 px.
+  closed: '2026-10-05T01:27:24'
+  closed_by: 20261005-012010-chrono-2FYKPJ#16
 - id: exp-hint-stars
   title: Find whether using hints lowers the win result (stars, title, score) against
     a win without hints
@@ -1572,7 +1785,172 @@ tasks:
     frame, one batched command per hint pair; measure on Hard L8 (L5 took 863 s)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T01:10:05'
   feature: hard-level
   source: session
+  closed: '2026-10-05T01:39:28'
+  closed_by: 20261005-012010-chrono-2FYKPJ#16
+  note: The arrows-escape solver (no hints) won Hard L8 in 168 s and Hard L10 in 268
+    s, against 863 s for L5 by hint loop
+  result: confirmed
+- id: study-notification-prompt
+  title: 'Study Notification permission prompt: open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T00:13:09'
+  feature: notification-prompt
+  source: external
+- id: solver-normal-levels
+  title: 'Make the arrows-escape solver read normal boards (level 6 on): per-level
+    grid pitch (about 61 px at 1080 on L6), arrow heads at the smaller pitch, mask
+    the bottom-right guideline button; then play L6-L7 with solve --run'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-05T01:17:30'
+  feature: level
+  source: game
+  note: 'Fixed: pitch refined to 0.05 px (61.15 on L6, ~45 px on L7), head tip probe
+    moved from 0.24 to 0.15 pitch (the triangle tip is only 0.23 pitch ahead of the
+    node), guideline button masked as a white disc (its nodes unobserved). L6: 28
+    arrows, 2 rounds, 1.8 min, 3 stars. L7: 54 arrows, 4 rounds, 1.5 min, 3 stars,
+    0 mistakes.'
+  closed: '2026-10-05T01:24:15'
+  closed_by: 20261005-012010-chrono-2FYKPJ#9
+- id: exp-hard-stars
+  title: Hard win cards give 2 stars and 'Great Start!' even with no drop lost?
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T01:17:30'
+  feature: hard-level
+  source: session
+  plan: after the next Hard win, compare drops left on the board (3) with the card's
+    stars; 3 drops and 2 stars confirms that Hard caps or scores stars by time
+  closed: '2026-10-05T01:39:28'
+  closed_by: 20261005-012010-chrono-2FYKPJ#16
+  note: Hard L8 (0 mistakes, 3 drops, 01:30) gave 3 stars 'Arrow Pro!' 1700, Hard
+    L10 gave 3 stars 'Untouchable!' [#29]; Hard L5 2 stars came with a ~14 min solve,
+    so stars likely drop with time or hints, not capped on Hard
+  result: refuted
+- id: exp-streak-week-reset
+  title: Find whether Daily Streak resets every Monday (calendar week) or only on
+    a missed day
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T01:20:54'
+  feature: daily-streak
+  source: session
+  plan: 'Win at least one level every day from Tue 2026-10-06 to Sun 2026-10-11 and
+    stop the app only after home shows (so the win is saved); open the badge each
+    day. On Mon 2026-10-12 win the first level: streak 8 with MON checked refutes
+    a weekly reset; streak 1 with ''ready for a great week'' confirms it. Context:
+    Sun 2026-10-04 showed 2, Mon 2026-10-05 showed 1, but the Sunday win itself was
+    not saved'
+- id: exp-guideline-sync
+  title: Find whether the in-level grid button and the home Settings Guideline toggle
+    are one setting, and whether it stays on across levels and restarts
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T01:20:54'
+  feature: guideline
+  source: session
+  plan: 'Turn the guideline on with the in-level button on a level from 6, go home
+    and open Settings: the Guideline row on confirms one shared setting; then open
+    the next level and relaunch the app: lines still drawn confirms it persists. Set
+    it back off after'
+- id: first-look-bronze-league
+  title: 'First look at Bronze League: open it once, record what it is and decide
+    whether it needs a full study'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T01:33:34'
+  feature: bronze-league
+  source: session
+  note: 'Opened from Home card Play: how-to overlay (collect rank arrows = gold arrows
+    on boards, rewards, leaderboard), then the board: 24 h event timer, 50+ players,
+    gifts for top 3, next tier locked. Needs a full study: points per gold arrow,
+    rewards, the period end (24 h follow-up).'
+  rank: 0
+  closed: '2026-10-05T01:35:41'
+  closed_by: 20261005-012010-chrono-2FYKPJ#35
+- id: study-profile
+  title: 'Study the Profile popup: rename, avatar and frame tabs, which items are
+    locked and how they unlock'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T01:33:52'
+  feature: profile
+  source: session
+- id: exp-gold-arrows
+  title: 'Gold arrows on boards after the league starts: do they add league points
+    when cleared, and how many appear per level'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T01:34:36'
+  feature: gold-arrows
+  source: session
+  plan: play a level with gold arrows by the solver (teach it gold = arrow colour),
+    then open the league board and compare the points before and after
+- id: study-bronze-league
+  title: 'Study the Bronze League: points per gold arrow, the (i) info, rewards per
+    rank, promotion and demotion'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T01:35:50'
+  feature: bronze-league
+  source: session
+- id: league-end
+  title: 'Open the Bronze League after its first period ends: results screen, rank
+    reward, promotion'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-05T01:35:50'
+  feature: bronze-league
+  not_before: '2026-10-06T01:35:50'
+  source: game
+- id: study-gold-arrows
+  title: 'Study Gold arrows (league tokens on the board): open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T01:37:42'
+  feature: gold-arrows
+  source: external
+- id: exp-rate-us-recur
+  title: Find when the Rate Us popup comes back after wins (every N wins, once per
+    day, or never after one dismissal)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T01:39:43'
+  feature: rate-us
+  source: session
+  plan: Dismiss it with X each time (never rate). Note every win card it covers by
+    level and Today's Levels; confirmed as recurring when it shows again within 10
+    wins, and the gap gives the rule; never again in 10 wins confirms once-only. First
+    seen over the L6 win card [20261005-012010-chrono-2FYKPJ#3]
+- id: exp-stars-by-time
+  title: 'Find whether win stars drop with the level time: 2 stars on a win with no
+    mistake and no hint'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T01:39:43'
+  feature: hard-level
+  source: session
+  plan: On a Hard level (13 or 15) let the solver clear all but a few arrows, idle
+    until the in-game Time passes 06:00, then finish with no mistake and no hint;
+    2 stars and 'Great Start!' confirm a time threshold (Hard L5 no-hint 05:54 gave
+    2 stars, Hard L8 01:30 and L10 gave 3). Repeat once on a Normal level past 06:00

@@ -2,7 +2,7 @@
 game: com.king.candycrushsaga
 version: 1.337.0.2
 play_version: 1.337.0.2
-play_checked: '2026-10-03T19:29:54'
+play_checked: '2026-10-05T00:13:01'
 phone_version: 1.337.0.2
 discovery: open
 ftue_verified: null
@@ -13,7 +13,7 @@ progress:
   session: 20261003-225003-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-04T01:10:05'
+  chrono: '2026-10-05T02:00:53'
 mechanics:
 - id: core-match
   name: core-match
@@ -22,7 +22,7 @@ mechanics:
   levels:
     won: 3
     lost: 0
-    quit: 2
+    quit: 3
   recent:
   - level: level 1
     result: won
@@ -43,6 +43,10 @@ mechanics:
   - level: level 4
     result: quit
     seconds: 66
+    model: sonnet
+  - level: level 4
+    result: quit
+    seconds: 111
     model: sonnet
   note: carried over from the study before the 2026-10-02 restart (playbook and solver
     kept)
@@ -100,6 +104,11 @@ features:
     done: false
   - id: under-exit-app
     text: 'Force-stop mid level under Events tab: as the base, or what differs'
+    done: false
+  - id: under-restart
+    text: 'No Restart button in the in-level settings (sound, Audio, Save progress,
+      Quit level); restart only by quit and replay from map popup under Events tab:
+      as the base, or what differs'
     done: false
   found_at:
     text: level 1
@@ -287,8 +296,10 @@ features:
       --at X,Y)'
     done: false
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Shop tab screen: Weekly Deal, Daily Deal (Popular) with a timer, 10 and
+      50 gold-bar packs, More Offers (frame 3)'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#2
   - id: chk-contents
     text: Contents and price of every pack or tier
     done: false
@@ -297,8 +308,11 @@ features:
       and whether it comes back
     done: false
   - id: chk-timer
-    text: Its timer or limit, if any
-    done: false
+    text: 'Daily Deal timer ends near 02:00 local each day: 06h12m at 2026-10-03 19:50
+      (ends ~02:02), 01h40m at 2026-10-05 00:20 (ends ~02:00); the deal rotated (contents
+      changed). Weekly Deal shows no timer'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#2
   - id: chk-buy-path
     text: 'The way to buy: the game''s own screens up to the price button; do not
       tap the price (it opens the payment sheet), never pay'
@@ -306,6 +320,12 @@ features:
   - id: chk-close
     text: 'Closing it: the close button and what comes up after'
     done: false
+  - id: daily-deal-rotation
+    text: 'Daily Deal contents change on rotation: 2026-10-03 10 bars + 1 lollipop
+      + 30m unlimited lives RSD 549; 2026-10-05 10 bars + x1 pink disc booster + 15m
+      unlimited lives RSD 549. Tab badge ''1'' gone on the second visit'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#2
   found_at:
     text: level 1
     value: 1.0
@@ -361,6 +381,16 @@ features:
   - id: chk-refill
     text: 'Refill timer, if any: how long one unit takes and the maximum'
     done: false
+  - id: source-sweet-gift
+    text: 'Sweet gift at launch: 2h Unlimited Lives (heart shows infinity 02:00);
+      level HUD shows 4/heart-infinity'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#1
+  - id: source-daily-deal
+    text: Shop Daily Deal includes timed unlimited lives (30m on 2026-10-03, 15m on
+      2026-10-05), paid
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#2
   found_at:
     text: level 1
     value: 1.0
@@ -1072,7 +1102,7 @@ features:
     source: 20261003-225003-chrono-2FYKPJ#13
 - id: bomb-dispenser
   name: Candy dispenser
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1081,34 +1111,107 @@ features:
     done: true
     source: 20261003-225003-chrono-2FYKPJ#25
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'No button: it is on the L4 board, reached via map level 4 > Play (frame
+      5)'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#8
+    version: 1.337.0.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Cap with a colour-bomb icon on the top row above column 4 (frame 7)
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#8
+    version: 1.337.0.2
   - id: chk-first-level
-    text: The first level it shows on and how the game introduces it
-    done: false
+    text: 'Level 4 (65 meringue + 50 green): no tutorial text seen, dispenser visible
+      from the first frame'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#8
+    version: 1.337.0.2
   - id: chk-rules
-    text: What it does and how it is used
-    done: false
+    text: 'Correction (review): no dispense was seen yet. The colour bomb under the
+      cap in frame 9 came from the move itself: a blue swapped up into the middle
+      of 4 blues on the top row (frame 7) is a 5-in-a-line, which makes a colour bomb
+      at the swap cell, and that cell is under the cap. After the bomb was used, the
+      cap''s column refilled with plain candies (frame 11); step 8 did not clear the
+      cap''s column (frame 13). The real rule is the open case dispense-trigger'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#8
+    version: 1.337.0.2
   - id: chk-interactions
-    text: How it interacts with the other pieces
-    done: false
+    text: 'Correction (review): the bomb+green clear (meringue 59 to 23, green 50
+      to 27, frames 9-11) is the colour bomb''s own interaction (color-bomb), not
+      the cap''s. The cap itself stays in place above column 4 through every blast
+      seen (frames 9-13)'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#8
+    version: 1.337.0.2
   - id: chk-loss
-    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
-      level (case <base> <kind> "..." --outcome)'
+    text: 'No extra way to lose seen: it only supplies candies; level is still out-of-moves
+      bound'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#8
+    version: 1.337.0.2
+  - id: dispense-trigger
+    text: 'What the cap with the colour-bomb icon releases and when (after N clears
+      of the cell under it, N moves, or never): goal dispenser-rule-exp'
     done: false
   found_at:
     text: level 4 reached, on map
     value: 4.0
   type: level-element
   appeared:
-    text: 'level 2: domes above the board''s top row (striped candy icon, shot 42);
-      on level 4 they drop colour bombs'
+    text: 'level 4 board: dispenser with a colour bomb icon on the top row'
     certainty: fact
-    source: 20261003-225003-chrono-2FYKPJ#25
+    source: 20261005-001914-chrono-2FYKPJ#5
+  version_seen: 1.337.0.2
+- id: sweet-gift
+  name: Sweet gift (launch gift)
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Popup ''Sweet gift'' over the map at launch: heart with infinity and a
+      2h stopwatch, text ''2 hours of Unlimited Lives for you!'', one Claim button
+      (frame 1)'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#0
+  - id: chk-today
+    text: 2 hours of Unlimited Lives; Claim at (365,1165) turns the map heart into
+      infinity 02:00 (frames 1-3)
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#1
+  - id: chk-entry
+    text: 'No button: it comes up by itself at launch, before the map is usable; Claim
+      is the only way out seen'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#0
+  - id: chk-play
+    text: 'Not a board: a one-button popup that grants a timer'
+    done: true
+    source: 20261005-001914-chrono-2FYKPJ#0
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-calendar
+    text: 'The calendar or the task list: every day or task and its reward'
+    done: false
+  - id: chk-next-day
+    text: 'The next day: what renews and when (a daily follow-up)'
+    done: false
+  - id: chk-missed
+    text: 'A missed day: what is lost or reset'
+    done: false
+  found_at:
+    text: level 4 reached, on map
+    value: 4.0
+  type: daily
+  appeared:
+    text: 'popup on the first launch after about 25 h away (last session 2026-10-03
+      23:09, this launch 2026-10-05 00:19): a daily or comeback gift; not seen at
+      the earlier launches of 2026-10-03'
+    certainty: hypothesis
+    source: 20261005-001914-chrono-2FYKPJ#0
 tasks:
 - id: analyze
   title: Analyze the game
@@ -1517,10 +1620,14 @@ tasks:
   title: 'Study Candy dispenser: make or meet it in a level, mark it, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:13:45'
   feature: bomb-dispenser
   source: session
+  closed: '2026-10-05T00:22:13'
+  closed_by: 20261005-001914-chrono-2FYKPJ#8
+  note: 'Dispenser on L4 top row: drops a colour bomb sometimes (once in 3 refills
+    seen), otherwise plain candies'
 - id: topbar-retap-map
   title: Tap the mail and gold-bar icons from the Map tab (not the Shop tab) and record
     what opens
@@ -1535,18 +1642,82 @@ tasks:
     read 26:10 -> 24:05 across a life loss)'
   kind: followup
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-04T01:10:05'
   feature: lives
   source: game
-  note: timer kept running through a life loss (20261003-230937-chrono-2FYKPJ#12)
+  note: Lives Full and unlimited (2h gift) at session; replaced by lives-refill-after-gift
+  closed: '2026-10-05T00:20:07'
+  closed_by: 20261005-001914-chrono-2FYKPJ#2
 - id: shop-deal-rotation
   title: 'Shop: after the Daily Deal timer (06h12m at 2026-10-03 19:50) runs out,
     does the deal rotate? What does the Shop tab badge 1 count?'
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T01:10:05'
   feature: shop
   source: game
   not_before: '2026-10-04T02:10:00'
+  closed: '2026-10-05T00:20:02'
+  closed_by: 20261005-001914-chrono-2FYKPJ#2
+  note: 'Deal rotated: timer now 01h40m, not a continuation of 06h12m. Badge 1 gone
+    on this visit (not identified what it counted).'
+- id: lives-refill-after-gift
+  title: Watch lives refill after the 2h unlimited gift ends (lose lives to 3, time
+    per life, cap)
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-05T00:20:02'
+  feature: lives
+  not_before: '2026-10-05T02:20:02'
+  source: game
+- id: appeared-sweet-gift
+  title: 'Find why Sweet gift (launch gift) appeared: popup on the first launch after
+    about 25 h away (last session 2026-10-03 23:09, this launch 2026-10-05 00:19):
+    a daily or comeback gift; not seen at the earlier launches of 2026-10-03'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:24:44'
+  feature: sweet-gift
+  source: session
+  plan: 'find the moment Sweet gift (launch gift) shows up and what comes just before
+    it (popup on the first launch after about 25 h away (last session 2026-10-03 23:09,
+    this launch 2026-10-05 00:19): a daily or comeback gift; not seen at the earlier
+    launches of 2026-10-03); confirmed when a frame shows the trigger. Record it with
+    feature sweet-gift --appeared "...": the goal closes by itself'
+- id: dispenser-rule-exp
+  title: Find what the level 4 cap (colour-bomb icon) releases and when
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:25:07'
+  feature: bomb-dispenser
+  source: session
+  plan: 'On level 4 make no 5-in-a-line near the top row. Clear the cell under the
+    cap with plain 3-matches at least 5 times (shot after each, 1-2 s) and count moves.
+    Confirmed it is a dispenser if a colour bomb falls from the cap with no 5-match
+    (note after how many clears or moves); refuted if only plain candies fall through
+    it in 5+ clears (then it is a plain spawner or decoration: say what the icon means).
+    Mark the frame of a dispensed bomb --feature bomb-dispenser --as result'
+- id: sweet-gift-next-day
+  title: 'Sweet gift: launch the next day and note whether the gift comes again, what
+    it gives and at what hour (calendar or one-off)'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-05T00:25:33'
+  feature: sweet-gift
+  not_before: '2026-10-06T00:30:00'
+  source: game
+- id: study-sweet-gift
+  title: 'Study Sweet gift (launch gift): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T00:29:17'
+  feature: sweet-gift
+  source: external

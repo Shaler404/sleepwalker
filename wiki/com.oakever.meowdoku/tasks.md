@@ -1,16 +1,16 @@
 # Tasks: Meowdoku: Brain Puzzle Games
 
-Status: **▶️ active** — ready now: 22
+Status: **▶️ active** — ready now: 20
 
 Mode: **goals** — work through the session goals in order; play levels only as far as an unlock or experiment goal needs; register anything new you notice as a feature or a goal, do not pursue it now
 
-Progress reached: **level 129** · last new feature found at: **level 129 home**
+Progress reached: **level 130** · last new feature found at: **level 129 home**
 
-Goals: study 13, unlock 1, experiment 8 · maps: level 127 home — 6 new
+Goals: study 11, unlock 1, experiment 8 · maps: level 127 home — 6 new
 
-Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **Cat placement on color regions (Queens-like)** — mastered, solver, levels won 3, typical 2.0 min
+Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **Cat placement on color regions (Queens-like)** — mastered, solver, levels won 4, typical 2.4 min
 
-Google Play version: **1.18.0** (checked 2026-10-03 19:29:54) · analyzed version: **1.19.1** · FTUE from a fresh install: **never**
+Google Play version: **1.18.0** (checked 2026-10-05 00:13:01) · analyzed version: **1.19.1** · FTUE from a fresh install: **never**
 
 Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit by hand. Feature map: [features.md](features.md).
 
@@ -29,23 +29,21 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 | Study Fish leaderboard: open it, walk its screens and tabs, verify its cases | study | [Fish leaderboard](features/fish-leaderboard.md) | external |  |
 | Unlock Cat skins (7 locked): unknown: 7 locked silhouettes, tap shows no hint; Daily Challenge says a 3-fish clear unlocks a trial skin | unlock | [Cat skins (7 locked)](features/cat-skins.md) | knowledge gap | the lock seen on screen (feature --locked) |
 | Study Mouse booster: open it, walk its screens and tabs, verify its cases | study | [Mouse booster](features/booster-mouse.md) | external |  |
-| Find why Banner ad under the level board appeared: shown on every level from some level on; first seen on level 128 (not checked on level 127) | experiment | [Banner ad under the level board](features/ad-banner.md) | knowledge gap |  |
 | Find how often the interstitial and banner show: play three levels in a row and mark which level starts show an interstitial and whether the banner is on every level | experiment | [Interstitial ad at level start](features/ad-interstitial.md) | knowledge gap |  |
 | Study the Rate Us popup: what X and Rate Us do (Rate Us leads to the store: back at once, no rating) and after which win it comes back | study | [Rate Us popup](features/rate-us.md) | knowledge gap |  |
 | Study rewarded videos: every place that offers one (streak restore, booster at 0, others) and what each gives after a full watch | study | [Rewarded video (streak restore, booster refill)](features/ad-rewarded.md) | knowledge gap |  |
-| Study Interstitial ad at level start: open it, walk its screens and tabs, verify its cases | study | [Interstitial ad at level start](features/ad-interstitial.md) | external |  |
-| Study Banner ad under the level board: open it, walk its screens and tabs, verify its cases | study | [Banner ad under the level board](features/ad-banner.md) | external |  |
 | Watch the Get 3 Fishes ad on Out of Fishes once: confirmed when the level continues with the placed cats kept and 3 fish back | experiment | [Rewarded video (streak restore, booster refill)](features/ad-rewarded.md) | knowledge gap |  |
 | Use the hint booster down to 0 and see what refills it: confirmed when the badge at 0 and its refill (video, timer, level win) are marked | experiment | [Hint booster (bulb)](features/booster-hint.md) | knowledge gap |  |
 | Toggle Pattern Mode in the in-level settings once: confirmed when the board with Pattern Mode on is marked and the toggle is set back | experiment | [Main level (cat placement board)](features/level.md) | knowledge gap |  |
 | What decides the score a placed cat gives (+576 on L128, +672 on L130)? | experiment | [Main level (cat placement board)](features/level.md) | knowledge gap |  |
 | Daily Streak interrupted: try Restore (video) once and record the day-7 gift | experiment | [Daily Streak](features/daily-streak.md) | knowledge gap |  |
+| Find what the Daily Streak break popup counts: confirmed when the number in 'N days interrupted' is matched to the current streak, the best streak or the days lost | experiment | [Daily Streak](features/daily-streak.md) | knowledge gap |  |
 
 ## Waiting
 
 | Task | Not before | Kind | Feature |
 |---|---|---|---|
-| Open the fish leaderboard after its 24h timer ends (started 2026-10-03 ~20:05): mark the results screen, the rank and the reward paid, and whether a new period starts | 2026-10-04 20:10:31 | check | [Fish leaderboard](features/fish-leaderboard.md) |
+| Watch a fish leaderboard period end with the game open: mark the results screen, the final rank and the reward paid (current period ends about 00:40 local on 2026-10-06) | 2026-10-06 00:25:00 | check | [Fish leaderboard](features/fish-leaderboard.md) |
 
 ## Needs a human
 
@@ -59,6 +57,10 @@ The agent cannot do these tasks until it is given a suitable phone.
 
 | Task | Closed | By | Note |
 |---|---|---|---|
+| Find why Banner ad under the level board appeared: shown on every level from some level on; first seen on level 128 (not checked on level 127) | 2026-10-05 00:45:58 | planner | the trigger is recorded as a fact: on the first level board played on this install (L127, Gossip Harbor banner under the boosters); on every level board since, never on Home or popups [20261003-201915-chrono-2FYKPJ#2] |
+| Study Interstitial ad at level start: open it, walk its screens and tabs, verify its cases | 2026-10-05 00:44:08 | 20261005-003925-chrono-2FYKPJ#14 | Video then end card after win -> next level; none on reopening same level; close via launch |
+| Study Banner ad under the level board: open it, walk its screens and tabs, verify its cases | 2026-10-05 00:44:07 | 20261005-003925-chrono-2FYKPJ#14 | Banner Royal Match under boosters on level board, persistent, absent elsewhere |
+| Open the fish leaderboard after its 24h timer ends (started 2026-10-03 ~20:05): mark the results screen, the rank and the reward paid, and whether a new period starts | 2026-10-05 00:40:32 | 20261005-003925-chrono-2FYKPJ#3 | Checked 10-05: period ended unseen; New Session popup, new 24h period started, leaderboard reset, own row 0 fish unranked. No results screen/rank/reward seen (game was closed at the end). Follow-up: keep game open at an end to see results. |
 | Run each outcome once under Daily Streak: Android Back on Home opens Quit popup; X cancels | 2026-10-03 20:38:09 | planner | every known outcome of the base level was run under Daily Streak |
 | Run each outcome once under Fish rank event (New Session): Android Back on Home opens Quit popup; X cancels | 2026-10-03 20:38:07 | planner | every known outcome of the base level was run under Fish rank event (New Session) |
 | Find whether a main level can be lost: place wrong cats until all 3 fish are grey and one more; confirmed when a fail screen (or the absence of one at 0 fish) is marked | 2026-10-03 20:37:54 | 20261003-202631-chrono-2FYKPJ#17 | L130: wrong cats grey one fish each; the third wrong cat ends the level with an Out of Fishes screen (Remaining 10, Get 3 Fishes AD, Restart) |

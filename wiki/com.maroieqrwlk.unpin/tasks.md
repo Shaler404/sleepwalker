@@ -1,16 +1,16 @@
 # Tasks: Pull the Pin
 
-Status: **▶️ active** — ready now: 42; update the game on the phone in Google Play to recheck on the new version: installed 241.5.1, Google Play 241.5.2
+Status: **▶️ active** — ready now: 37
 
 Mode: **goals** — work through the session goals in order; play levels only as far as an unlock or experiment goal needs; register anything new you notice as a feature or a goal, do not pursue it now
 
-Progress reached: **level 13** · last new feature found at: **level 12**
+Progress reached: **level 15** · last new feature found at: **level 15**
 
-Goals: study 15, unlock 8, experiment 19 · maps: level 3 — 6 new
+Goals: study 14, unlock 8, experiment 15 · maps: level 3 — 6 new
 
-Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **pin-pull** — mastered, solver, levels won 15, typical 1.1 min
+Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **pin-pull** — mastered, solver, levels won 16, typical 1.2 min
 
-Google Play version: **241.5.2** (checked 2026-10-03 19:29:29) · analyzed version: **241.5.1** · FTUE from a fresh install: **2026-10-03**
+Google Play version: **241.5.2** (checked 2026-10-05 00:13:01) · analyzed version: **241.5.2** · FTUE from a fresh install: **2026-10-03**
 
 Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit by hand. Feature map: [features.md](features.md).
 
@@ -18,23 +18,22 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 
 | Task | Kind | Feature | Source | Note |
 |---|---|---|---|---|
+| Recheck the features on version 241.5.2 | recheck |  | external | a newer version is on Google Play: update the game on the phone, then recheck the documented features and look for new ones |
 | Study Settings: open it, walk its screens and tabs, verify its cases | study | [Settings](features/settings.md) | external |  |
 | Study Remove Ads: open it, walk its screens and tabs, verify its cases | study | [Remove Ads](features/no-ads.md) | external |  |
 | Study Level path header: open it, walk its screens and tabs, verify its cases | study | [Level path header](features/level-path.md) | external |  |
 | Study the notification prompt: whether it comes back after Don't allow | study | Notification permission prompt | knowledge gap |  |
 | Run each outcome once under Multi Stage Level: Balls fell out | experiment | [Multi Stage Level](features/multi-stage.md) | knowledge gap | every known outcome of the base level was run under Multi Stage Level |
 | Open the map chest (OPEN after the 15 min timer) | study | [Map chest with timer](features/map-chest.md) | knowledge gap |  |
-| Run each outcome once under Hard levels (skull node): Restart icon opens 'You can do better!' (Restart / Continue); Continue closes it; Restart plays an interstitial (skip control opened the Play Store, launch returned) then reloads only the current stage, earlier stages stay ticked; no coin cost, Back arrow returns to the map at once, no confirmation, no cost; reopening via Play keeps the multi-stage progress (stage 4 of 4), The previous session left L10 at stage 4; after the app was closed and relaunched this session, L10 opened at stage 4 with stages 1-3 ticked, Balls fell out | experiment | [Hard levels (skull node)](features/hard-levels.md) | knowledge gap |  |
+| Run each outcome once under Hard levels (skull node): Restart icon opens 'You can do better!' (Restart / Continue); Continue closes it; Restart plays an interstitial (skip control opened the Play Store, launch returned) then reloads only the current stage, earlier stages stay ticked; no coin cost, Back arrow returns to the map at once, no confirmation, no cost; reopening via Play keeps the multi-stage progress (stage 4 of 4), The previous session left L10 at stage 4; after the app was closed and relaunched this session, L10 opened at stage 4 with stages 1-3 ticked | experiment | [Hard levels (skull node)](features/hard-levels.md) | knowledge gap |  |
 | Run each outcome once under Bonus levels (character node): Win screen, Restart, Quit, Exit the app | experiment | [Bonus levels (character node)](features/bonus-levels.md) | knowledge gap |  |
 | Unlock New Mode (key gate at level 17): 3 keys: the 3-key gate at the level 17 key node, 'Unlock New Mode' | unlock | New Mode (key gate at level 17) | knowledge gap | the lock seen on screen (feature --locked) |
 | Study Pull Fest: leaderboard, league cups and their rewards, the period end; record what a tier-up gives (never compete or chat) | study | [Pull Fest Ranking (Bronze League)](features/pull-fest.md) | knowledge gap |  |
 | Study puzzle pieces: the map puzzle nodes, the album in Collections, what completing a 3x3 picture gives | study | [Puzzle piece collection](features/puzzle-pieces.md) | knowledge gap |  |
 | Study keys: collect the key nodes (L9 done, next ones), watch the 3 slots fill, record what 3 keys open | study | [Keys on the map (key nodes, 3-key gate at L11-12)](features/map-keys.md) | knowledge gap |  |
-| Study Jump to Level: tap it once, record the offer screen (video) and where it sends; decline without watching | study | [Jump to Level (video)](features/jump-to-level.md) | knowledge gap |  |
 | Play a bonus level (character node) and record how it differs from a normal level | experiment | [Bonus levels (character node)](features/bonus-levels.md) | knowledge gap |  |
 | Study Map tutorial tooltips: open it, walk its screens and tabs, verify its cases | study | [Map tutorial tooltips](features/map-tutorial.md) | external |  |
 | Study Multi Stage Level: open it, walk its screens and tabs, verify its cases | study | [Multi Stage Level](features/multi-stage.md) | external |  |
-| Study Hard levels (skull node): open it, walk its screens and tabs, verify its cases | study | [Hard levels (skull node)](features/hard-levels.md) | external |  |
 | Unlock Sketchman IQ Test: level 16 | unlock | [Sketchman IQ Test](features/mode-iq-test.md) | knowledge gap | the lock seen on screen (feature --locked) |
 | Unlock Challenge: level 21 | unlock | [Challenge](features/mode-challenge.md) | knowledge gap | the lock seen on screen (feature --locked) |
 | Unlock Merge Balls: level 22 | unlock | [Merge Balls](features/mode-merge-balls.md) | knowledge gap | the lock seen on screen (feature --locked) |
@@ -43,8 +42,6 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 | Unlock Bonus levels (character node): reach the node after level 16 | unlock | [Bonus levels (character node)](features/bonus-levels.md) | knowledge gap | the lock seen on screen (feature --locked) |
 | Check the multiplier reward is credited after the video and the plain Get N close path | experiment | [Win coin multiplier (video)](features/coin-multiplier.md) | knowledge gap |  |
 | Find whether multi stage levels come every 5th level (L15, L20) | experiment | [Multi Stage Level](features/multi-stage.md) | knowledge gap |  |
-| Find when a win is saved: exit the app on the post-win screens on purpose | experiment | [Pin-pull level](features/core-level.md) | knowledge gap |  |
-| Walls say 'Unlock with daily tasks': find the daily tasks entry | experiment | [Collections](features/collections.md) | knowledge gap |  |
 | Find why Weekly trophy chest appeared: present on the Collections trophies tab from the first Collections visit (L3+); the first trophy tier was already reached at L10, likely by level wins | experiment | [Weekly trophy chest](features/trophies.md) | knowledge gap |  |
 | Study the weekly trophy chest: find what earns a trophy tier (check the tab before and after a few level wins), tap the chest and 'Catch up on missed chests', record the reward | study | [Weekly trophy chest](features/trophies.md) | knowledge gap |  |
 | Look for a win streak: Trails say 'Unlock by consecutive wins'; find the streak counter (win screen, map, level HUD) and what breaks it | experiment | [Collections](features/collections.md) | knowledge gap |  |
@@ -54,20 +51,18 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 | Study Level race: open it, walk its screens and tabs, verify its cases | study | [Level race](features/race.md) | external |  |
 | Lose a level by a grey ball and by a bomb in the cup; register each as a core-level outcome | experiment | [Pin-pull level](features/core-level.md) | knowledge gap |  |
 | Find what Skip (video) on the 'Level failed' screen does: skips to the next level or not | experiment | [Pin-pull level](features/core-level.md) | knowledge gap |  |
-| After declining the race: does it come back, and is there a map entry for it? | experiment | [Level race](features/race.md) | knowledge gap |  |
 | Unlock Color Bucket Level: reach the 'Color Bucket Level' node (level 19) | unlock | Color Bucket Level | knowledge gap | the lock seen on screen (feature --locked) |
-| Golden pins: what they give in the league and the +5 golden pins video offer | experiment | [Golden pins (league score)](features/golden-pins.md) | knowledge gap |  |
-| Is the L13 win saved? The post-win flow was cut on the league board when the owner took the phone | check | [Pin-pull level](features/core-level.md) | knowledge gap | 20261004-005453-chrono-2FYKPJ#17 |
-| Do golden pins appear only on skull (hard) levels? Record each level with a golden pin | experiment | [Golden pins (league score)](features/golden-pins.md) | knowledge gap |  |
+| Find which levels carry a golden star-wand pin: only skull (hard) levels or others too | experiment | [Golden pins (league score)](features/golden-pins.md) | knowledge gap |  |
 | Gumball: coin spin once the balance is 375 or more; does the price rise again? Is there a cap or cooldown on Spin with video? | experiment | [Gumball machine](features/gumball.md) | knowledge gap |  |
+| Study Daily tasks: open it, walk its screens and tabs, verify its cases | study | Daily tasks | external |  |
 
 ## Waiting
 
 | Task | Not before | Kind | Feature |
 |---|---|---|---|
-| Claim Daily Rewards day 2 (+50) — day 1 of 1 | 2026-10-04 20:39:54 | daily | [Daily Rewards](features/daily-rewards.md) |
 | Skip a day of Daily Rewards and check if the calendar resets | 2026-10-05 21:48:44 | check | [Daily Rewards](features/daily-rewards.md) |
 | Pull Fest league: record the end-of-period rewards and reset when Time Left (6d 1h on 2026-10-04 01:00) runs out | 2026-10-10 02:00:00 | check | [Pull Fest Ranking (Bronze League)](features/pull-fest.md) |
+| Check whether pins and golden pins reset when the league week ends (5d 1h left on 2026-10-05 01:50) | 2026-10-10 04:00:00 | check | [Golden pins (league score)](features/golden-pins.md) |
 
 ## Needs a human
 
@@ -75,13 +70,24 @@ The agent cannot do these tasks until it is given a suitable phone.
 
 | Task | What to provide | Feature |
 |---|---|---|
-| Recheck the features on version 241.5.2 | update the game on the phone in Google Play to recheck on the new version: installed 241.5.1, Google Play 241.5.2 |  |
 | Study the intro comic and tutorial: frame each panel and hand step, test skip and replay | a phone with a fresh install: uninstall the game and install it again (or clear its data), then connect the phone | Intro comic and tutorial hand |
 
 ## Done
 
 | Task | Closed | By | Note |
 |---|---|---|---|
+| After declining the race: does it come back, and is there a map entry for it? | 2026-10-05 01:53:12 | 20261005-014031-chrono-2FYKPJ#3 | After declining at L11, the 'New race started!' popup came back on leaving L13 (15 levels, 5h58m, +250, shot 7); declined again; no race button on the map |
+| Golden pins: what they give in the league and the +5 golden pins video offer | 2026-10-05 01:53:11 | 20261005-014031-chrono-2FYKPJ#19 | After the L14 win: Pins 64, Golden 1, Total 69; the +5 video gave Golden 6, Total 94 (golden = 5 points), rank 458 -> 343; offered once per played win, not after a Jump to Level skip |
+| Find how a flame-skull level (L14) differs from a plain skull level (L12) | 2026-10-05 01:53:10 | 20261005-014031-chrono-2FYKPJ#16 | L14 (flame skull) played like L12: a normal pin-pull board, same header with the red ring (flame badge), no popup, no golden pin (Golden stayed 1 until the +5 video), same loss and win flow, +25 coins. Only the board is harder (lost try 1). No difference beyond the badge |
+| Walls say 'Unlock with daily tasks': find the daily tasks entry | 2026-10-05 01:52:58 | 20261005-014031-chrono-2FYKPJ#21 | The Daily tasks entry is a map button on the left (clipboard with a star) that appeared after the L14 win, tooltip 'Take a look on Daily tasks!' (shot 38); feature daily-tasks |
+| update-241-5-2 | 2026-10-05 01:52:58 | 20261005-014031-chrono-2FYKPJ#0 | Phone on 241.5.2; map entry points as on 241.5.1 (shot 2); only new: Daily tasks button after L14 (feature daily-tasks) |
+| First look at the new clipboard-with-star map button (appeared after L14) (cancelled) | 2026-10-05 01:52:57 | 20261005-014031-chrono-2FYKPJ#21 | duplicate: its feature map-quest-list was never created (the session's feature op failed); the button's tooltip reads 'Take a look on Daily tasks!', recorded as feature daily-tasks (type daily), whose study goal the planner makes |
+| Study golden pins: record every source (golden pin in a level, the +5 video), any sink, and whether they reset with the league week | 2026-10-05 01:49:43 | 20261005-014031-chrono-2FYKPJ#19 | Sources: golden pin in a level (+1), post-win video (+5, watched after L14: 1->6, total 69->94). No sinks. Week reset not observable now (5d 1h left): followup golden-pins-week-reset |
+| Study Jump to Level: tap it once, record the offer screen (video) and where it sends; decline without watching | 2026-10-05 01:43:30 | 20261005-014031-chrono-2FYKPJ#6 | One tap starts a rewarded video directly (no offer screen, so declining was impossible); video counted as an L13 win (+25 coins, league board, map to L14), button moved to L15. Shots 2-11 |
+| Find when a win is saved: exit the app on the post-win screens on purpose | 2026-10-05 01:40:54 | 20261005-013818-chrono-2FYKPJ#1 | Two wins cut before the post-win flow ended were not saved: L10 (force-stop on the multiplier ad end card, 20261003-211035-chrono-2FYKPJ#23) and L13 (app left on the league board, map back at 13 next day); league pins kept in both. Not a deliberate force-stop, but both cuts land on the plan's screens |
+| Check at session start whether the L13 win was kept: the owner took the phone on the post-win league board | 2026-10-05 01:39:08 | 20261005-013818-chrono-2FYKPJ#1 | Map at 13 = reverted. Win flow cut at league board -> level not saved, but league pins (49) were kept. Case for exp-win-saved-when |
+| Claim Daily Rewards day 2 (+50) — day 1 of 1 | 2026-10-05 01:39:07 | 20261005-013818-chrono-2FYKPJ#1 | Day 2 +50 claimed from launch popup, coins 344 |
+| Study Hard levels (skull node): open it, walk its screens and tabs, verify its cases | 2026-10-04 01:11:23 | 20261004-005453-chrono-2FYKPJ#9 | Entry, screen, announce, win, differs and frequency closed from L12 (shots 17, 23, 25). The only open items, chk-loss and chk-retry, need a deliberate loss on a skull level; that run is the balls-out cell of outcomes-hard-levels, which stays open |
 | Study Interstitial video ad after a win: open it, walk its screens and tabs, verify its cases | 2026-10-04 01:06:59 | 20261004-005453-chrono-2FYKPJ#12 | Marked entry (Tap to continue -> ad-loading logo), screen (video), end card with only the skip icon (opened the Play Store, launch returned to the map with the win kept), a second network's variant with 'Google Play >>' and a playable end card closed by the faint X (683,70). Interstitials after both L11 and L12 wins ~3 min apart (no cooldown between wins) |
 | Lose a pin-pull level on purpose and record each loss kind as an outcome of core-level | 2026-10-04 00:55:31 | 20261004-004411-chrono-2FYKPJ#23 | L11 lost twice (not on purpose): fail screen 'Pretty Close! Level failed!', tip 'Balls fell out of the level'; outcome balls-out registered; retry offers Skip (video) / Retry. Other loss kinds (grey or bomb in the cup) left to exp-loss-other-kinds |
 | Win L10 stage 4 and reach L12: if the pin-pull solver sees no rings on the Space theme, equip the default theme in Collections > Skins > Themes and retry | 2026-10-04 00:55:30 | 20261004-004411-chrono-2FYKPJ#16 | L10 stage 4 won by the solver on the default theme (25 s); map shows L11. Reaching L12 is left to the pin-pull handoff (L11 lost twice) |

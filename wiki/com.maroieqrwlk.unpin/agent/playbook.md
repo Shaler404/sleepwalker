@@ -332,3 +332,9 @@ Levels 1-8 (241.3.1, old log format, rough): 25-65 s of play each; level 5 (4 st
 | 11 | won (E C W F B) | 72 | [s:20261004-005453-chrono-2FYKPJ#2] |
 | 12 hard (golden pin) | won | 97 | [s:20261004-005453-chrono-2FYKPJ#9] |
 | 13 | won (V T M B), flow cut | 60 | [s:20261004-005453-chrono-2FYKPJ#16] |
+
+### L14 (hard, flame skull) on 241.5.2 — hand order, no library board [s:20261005-014031-chrono-2FYKPJ]
+Solver: "no board" (6 rings, slanted floors). Won on try 2: top dividers (260,352) (362,352) (456,356), upper
+slants (118,422) (592,404), then the lower RIGHT slant (597,607) alone, then the floor (595,610). Keep the lower
+left slant (116,628): it steers the balls to the centre. Pulling floor and both lower slants together lost
+("Balls fell out" through the side gaps beside the chevrons).

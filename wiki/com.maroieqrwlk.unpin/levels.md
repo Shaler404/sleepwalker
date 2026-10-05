@@ -2,7 +2,7 @@
 game: com.maroieqrwlk.unpin
 title: "Levels: Pull the Pin"
 type: levels
-verified_at: 2026-10-04
+verified_at: 2026-10-05
 ---
 
 # Levels: Pull the Pin
@@ -17,9 +17,9 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 |---|---|---|---|---|
 | ![level 6](levels/0006.webp) | ![level 7](levels/0007.webp) | ![level 8](levels/0008.webp) | ![level 9](levels/0009.webp) | ![level 10](levels/0010.webp) |
 
-| level 11 | level 12 | level 13 |
-|---|---|---|
-| ![level 11](levels/0011.webp) | ![level 12](levels/0012.webp) | ![level 13](levels/0013.webp) |
+| level 11 | level 12 | level 13 | level 14 |
+|---|---|---|---|
+| ![level 11](levels/0011.webp) | ![level 12](levels/0012.webp) | ![level 13](levels/0013.webp) | no frame |
 
 ## Tries
 
@@ -38,3 +38,4 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 | level 11 | pin-pull | 1 won, 2 lost, 1 quit | 72 s | board L11-v2 (boards/L11-v2.json, written this session): order E C W F B gap 5 won first try. Fix: on 241.5.1 one grey stays on the C half of the V shelf after E (20261004-004411 shot 30); pulling C a |
 | level 12 | pin-pull | 1 won | 97 s | L12 hard: solve --run round 1 recognised library L12 but played only A (ring B, now a golden star-wand pin, not found by the circle search); round 2 did not recognise the post-A frame (no memory match |
 | level 13 | pin-pull | 1 quit | — | session ended (interrupted) |
+| level 14 | pin-pull | 1 won, 1 lost | 129 s | Try 2: dividers 260/362/456, slants 118,422 + 592,404, then right lower slant 597,607 alone, then floor 595,610: left lower slant 116,628 kept steers balls to the centre. Board order for the library:  |

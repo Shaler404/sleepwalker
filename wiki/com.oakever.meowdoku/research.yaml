@@ -2,25 +2,25 @@
 game: com.oakever.meowdoku
 version: 1.19.1
 play_version: 1.18.0
-play_checked: '2026-10-03T19:29:54'
+play_checked: '2026-10-05T00:13:01'
 phone_version: 1.19.1
 discovery: open
 ftue_verified: null
 progress:
-  text: level 129
-  value: 129.0
-  at: '2026-10-03T20:29:02'
-  session: 20261003-202631-chrono-2FYKPJ
+  text: level 130
+  value: 130.0
+  at: '2026-10-05T00:43:56'
+  session: 20261005-003925-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-04T01:10:05'
+  chrono: '2026-10-05T02:00:53'
 mechanics:
 - id: queens
   name: Cat placement on color regions (Queens-like)
   status: mastered
   method: solver
   levels:
-    won: 3
+    won: 4
     lost: 1
     quit: 1
   recent:
@@ -44,6 +44,10 @@ mechanics:
   - level: level 130
     result: quit
     seconds: 68
+    model: sonnet
+  - level: level 130
+    result: won
+    seconds: 162
     model: sonnet
   solver: solvers/com.oakever.meowdoku/queens.py
   note: 'the published solver (queens.py, MAX_CELLS 12) returns every missing cat
@@ -388,6 +392,18 @@ features:
   - id: chk-in-level
     text: What shows during a level while the streak runs
     done: false
+  - id: second-break
+    text: 'Second break on 2026-10-05 (first win of the day, L130): popup ''2 days
+      of Daily Streak interrupted'', Restore (video) or Give up; Give up -> ''Tap
+      the yarn ball'' screen -> current 1, best 2, row MON..SUN starting today (Monday),
+      gift on day 7: the row starts on day 1 of the current streak'
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#11
+  - id: count-shown
+    text: 'Open: the popup said 2 days interrupted, yet after the 10-03 Give up the
+      streak was 1 and only 10-04 was missed; find whether the popup shows the best
+      streak, or the day boundary is not local midnight'
+    done: false
   type: streak
   appeared:
     text: yarn counter at top of Home opens it; current 0, best 2, 7-day row with
@@ -439,6 +455,12 @@ features:
   - id: chk-end
     text: 'The end of a period: the results screen and the reward (a follow-up)'
     done: false
+  - id: end-while-closed
+    text: 'A period that ends while the game is closed shows no results, rank or reward
+      on the next launch: only the New Session popup (new 24h timer), the board reset
+      to 0 fish and unranked, coins still 0'
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#3
   type: social
   appeared:
     text: event podium icon with 24h timer on Home opens it; first opened
@@ -839,12 +861,34 @@ features:
     done: true
     source: 20261003-201915-chrono-2FYKPJ#10
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Entry: next level after a win (Skip to Level N / Level button on the win
+      screen)'
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#14
+    version: 1.19.1
   - id: chk-frequency
-    text: 'How often it shows: after which action, every Nth level, a cooldown'
-    done: false
+    text: Seen after win then next level (L130 to L131); not on reopening same level;
+      exact N-level cadence needs more levels
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#14
+    version: 1.19.1
+  - id: no-ad-on-first-start
+    text: Level start after launch showed no interstitial on L130 (Home to board direct)
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#5
+    version: 1.19.1
+  - id: after-win-next-level
+    text: 'Skip to Level 131 from the win screen: video interstitial (~30 s), then
+      end card with Install; launch returns to board L131 with banner'
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#14
+    version: 1.19.1
+  - id: repeat-open-no-ad
+    text: Reopening the same unfinished level from Home (twice) gave no interstitial;
+      ad only after a win and next level
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#14
+    version: 1.19.1
   found_at:
     text: level 129 home
     value: 129.0
@@ -882,26 +926,41 @@ features:
     done: true
     source: 20261003-235107-chrono-2FYKPJ#0
   - id: chk-appeared
-    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
-      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
-      test'
-    done: false
+    text: Appears on every level board bottom from the first level seen (v1.19.1);
+      present on L130 on first board view
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#5
+    version: 1.19.1
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Entry: start any level; banner sits under the boosters, absent on Home'
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#5
+    version: 1.19.1
   - id: chk-frequency
-    text: 'How often it shows: after which action, every Nth level, a cooldown'
-    done: false
+    text: Persistent on every level board; no cadence
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#14
+    version: 1.19.1
+  - id: banner-shown
+    text: Banner visible at the bottom of the level board (Royal Match, Install)
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#5
+    version: 1.19.1
+  - id: banner-absent-win
+    text: Banner shown only on the level board; absent on Home, leaderboard, streak
+      and win screens
+    done: true
+    source: 20261005-003925-chrono-2FYKPJ#14
+    version: 1.19.1
   found_at:
     text: level 129 home
     value: 129.0
   type: ad-placement
   appeared:
-    text: shown on every level from some level on; first seen on level 128 (not checked
-      on level 127)
-    certainty: hypothesis
-    source: 20261003-201915-chrono-2FYKPJ#15
+    text: on the first level board played on this install (L127, Gossip Harbor banner
+      under the boosters); on every level board since, never on Home or popups
+    certainty: fact
+    source: 20261003-201915-chrono-2FYKPJ#2
   page: features/ad-banner.md
 - id: ad-rewarded
   name: Rewarded video (streak restore, booster refill)
@@ -1181,11 +1240,16 @@ tasks:
     starts'
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:10:31'
   feature: fish-leaderboard
   not_before: '2026-10-04T20:10:31'
   source: game
+  closed: '2026-10-05T00:40:32'
+  closed_by: 20261005-003925-chrono-2FYKPJ#3
+  note: 'Checked 10-05: period ended unseen; New Session popup, new 24h period started,
+    leaderboard reset, own row 0 fish unranked. No results screen/rank/reward seen
+    (game was closed at the end). Follow-up: keep game open at an end to see results.'
 - id: study-booster-cat
   title: 'Study Cat booster: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -1222,7 +1286,7 @@ tasks:
     from some level on; first seen on level 128 (not checked on level 127)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:28:50'
   feature: ad-banner
   source: session
@@ -1230,6 +1294,11 @@ tasks:
     before it (shown on every level from some level on; first seen on level 128 (not
     checked on level 127)); confirmed when a frame shows the trigger. Record it with
     feature ad-banner --appeared "...": the goal closes by itself'
+  closed: '2026-10-05T00:45:58'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: on the first level board played on this
+    install (L127, Gossip Harbor banner under the boosters); on every level board
+    since, never on Home or popups [20261003-201915-chrono-2FYKPJ#2]'
 - id: exp-level-loss
   title: 'Find whether a main level can be lost: place wrong cats until all 3 fish
     are grey and one more; confirmed when a fail screen (or the absence of one at
@@ -1303,19 +1372,26 @@ tasks:
     verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:36:42'
   feature: ad-interstitial
   source: external
+  closed: '2026-10-05T00:44:08'
+  closed_by: 20261005-003925-chrono-2FYKPJ#14
+  note: Video then end card after win -> next level; none on reopening same level;
+    close via launch
 - id: study-ad-banner
   title: 'Study Banner ad under the level board: open it, walk its screens and tabs,
     verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:36:42'
   feature: ad-banner
   source: external
+  closed: '2026-10-05T00:44:07'
+  closed_by: 20261005-003925-chrono-2FYKPJ#14
+  note: Banner Royal Match under boosters on level board, persistent, absent elsewhere
 - id: exp-get-3-fishes
   title: 'Watch the Get 3 Fishes ad on Out of Fishes once: confirmed when the level
     continues with the placed cats kept and 3 fish back'
@@ -1370,3 +1446,32 @@ tasks:
   created: '2026-10-04T01:10:05'
   feature: daily-streak
   source: session
+- id: fish-event-end-open
+  title: 'Watch a fish leaderboard period end with the game open: mark the results
+    screen, the final rank and the reward paid (current period ends about 00:40 local
+    on 2026-10-06)'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-05T00:46:07'
+  feature: fish-leaderboard
+  not_before: '2026-10-06T00:25:00'
+  source: game
+  note: the period that ended on 2026-10-04 while the game was closed showed only
+    a New Session popup, no results [20261005-003925-chrono-2FYKPJ#3]; win at least
+    one level in the period so the own row has fish; open the leaderboard a few minutes
+    before 00:00:00 and stay on it (or on Home) past the timer
+- id: exp-streak-count
+  title: 'Find what the Daily Streak break popup counts: confirmed when the number
+    in ''N days interrupted'' is matched to the current streak, the best streak or
+    the days lost'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:46:08'
+  feature: daily-streak
+  source: session
+  plan: Before the first win of a day, open the yarn counter on Home and mark current
+    and best; win the first level of the day and mark the break popup if it comes.
+    Confirmed when its N equals one of them; 2026-10-05 showed 2 while the streak
+    should have been 1 after the 10-03 Give up
