@@ -82,3 +82,6 @@ many plain matches on meringue (level 3) and repeated moves on stale frames (lev
 | 1 | won (3 moves) | 92 | [s:20261003-194350-chrono-2FYKPJ#6] |
 | 2 | won | 294 | [s:20261003-225003-chrono-2FYKPJ#25] |
 | 3 | won (one `ask`) | 500 | [s:20261003-225003-chrono-2FYKPJ#43] |
+
+## Dispenser (L4)
+- The cap above column 4 refills the cell under it; a 5-line there gave a colour bomb, later refills were plain. Swap the bomb with green: 65 to 23 meringue in one move.

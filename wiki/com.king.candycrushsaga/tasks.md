@@ -1,16 +1,16 @@
 # Tasks: Candy Crush Saga
 
-Status: **▶️ active** — ready now: 30
+Status: **▶️ active** — ready now: 31
 
 Mode: **goals** — work through the session goals in order; play levels only as far as an unlock or experiment goal needs; register anything new you notice as a feature or a goal, do not pursue it now
 
 Progress reached: **level 4 reached, on map** · last new feature found at: **level 4 reached, on map**
 
-Goals: study 15, unlock 2, experiment 11 · maps: level 1 won, on map before level 2 — 11 new
+Goals: study 15, unlock 2, experiment 13 · maps: level 1 won, on map before level 2 — 11 new
 
 Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **core-match** — mastered, manual, levels won 3, typical 4.9 min
 
-Google Play version: **1.337.0.2** (checked 2026-10-03 19:29:54) · analyzed version: **1.337.0.2** · FTUE from a fresh install: **never**
+Google Play version: **1.337.0.2** (checked 2026-10-05 00:13:01) · analyzed version: **1.337.0.2** · FTUE from a fresh install: **never**
 
 Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit by hand. Feature map: [features.md](features.md).
 
@@ -44,14 +44,17 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 | Study Wrapped candy: make or meet it in a level, mark it, verify its cases | study | Wrapped candy | knowledge gap |  |
 | Study Fish candy: make or meet it in a level, mark it, verify its cases | study | Fish candy | knowledge gap |  |
 | Study Meringue blocker: make or meet it in a level, mark it, verify its cases | study | Meringue blocker | knowledge gap |  |
-| Study Candy dispenser: make or meet it in a level, mark it, verify its cases | study | Candy dispenser | knowledge gap |  |
 | Tap the mail and gold-bar icons from the Map tab (not the Shop tab) and record what opens | experiment | Gold bars | knowledge gap |  |
-| Watch the map heart from 3 lives to Full: time per life and the cap (timer read 26:10 -> 24:05 across a life loss) | check | [Lives](features/lives.md) | from the game | timer kept running through a life loss (20261003-230937-chrono-2FYKPJ#12) |
-| Shop: after the Daily Deal timer (06h12m at 2026-10-03 19:50) runs out, does the deal rotate? What does the Shop tab badge 1 count? | check | [Shop](features/shop.md) | from the game |  |
+| Watch lives refill after the 2h unlimited gift ends (lose lives to 3, time per life, cap) | check | [Lives](features/lives.md) | from the game |  |
+| Find why Sweet gift (launch gift) appeared: popup on the first launch after about 25 h away (last session 2026-10-03 23:09, this launch 2026-10-05 00:19): a daily or comeback gift; not seen at the earlier launches of 2026-10-03 | experiment | Sweet gift (launch gift) | knowledge gap |  |
+| Find what the level 4 cap (colour-bomb icon) releases and when | experiment | Candy dispenser | knowledge gap |  |
+| Study Sweet gift (launch gift): open it, walk its screens and tabs, verify its cases | study | Sweet gift (launch gift) | external |  |
 
 ## Waiting
 
-None.
+| Task | Not before | Kind | Feature |
+|---|---|---|---|
+| Sweet gift: launch the next day and note whether the gift comes again, what it gives and at what hour (calendar or one-off) | 2026-10-06 00:30:00 | check | Sweet gift (launch gift) |
 
 ## Needs a human
 
@@ -63,6 +66,9 @@ None.
 
 | Task | Closed | By | Note |
 |---|---|---|---|
+| Study Candy dispenser: make or meet it in a level, mark it, verify its cases | 2026-10-05 00:22:13 | 20261005-001914-chrono-2FYKPJ#8 | Dispenser on L4 top row: drops a colour bomb sometimes (once in 3 refills seen), otherwise plain candies |
+| Watch the map heart from 3 lives to Full: time per life and the cap (timer read 26:10 -> 24:05 across a life loss) (cancelled) | 2026-10-05 00:20:07 | 20261005-001914-chrono-2FYKPJ#2 | Lives Full and unlimited (2h gift) at session; replaced by lives-refill-after-gift |
+| Shop: after the Daily Deal timer (06h12m at 2026-10-03 19:50) runs out, does the deal rotate? What does the Shop tab badge 1 count? | 2026-10-05 00:20:02 | 20261005-001914-chrono-2FYKPJ#2 | Deal rotated: timer now 01h40m, not a continuation of 06h12m. Badge 1 gone on this visit (not identified what it counted). |
 | Lose a level on purpose and walk the Retry/out-of-moves flow (cancelled) | 2026-10-03 23:14:03 | review-20261003 | Duplicate of loss-oom (lose by running out of moves, fail screen, Retry and life cost) |
 | Capture the level win screen: score, stars, rewards and what follows it (level 1 went straight from Sugar Crush to the level 2 popup) | 2026-10-03 23:13:14 | 20261003-225003-chrono-2FYKPJ#43 | Shot 81: 'Level completed' with crown, level badge and three stars (one filling), then map with 'Sweet!' tag (shot 82), then Level 4 popup (shot 83). Score, Sugar Crush and rewards not captured |
 | Core level: Retry button flow, restart and exit-app mid level | 2026-10-03 23:12:26 | 20261003-230937-chrono-2FYKPJ#12 | Restart: none in-level; exit-app costs a life; Retry flow needs a loss, set as retry-flow task |

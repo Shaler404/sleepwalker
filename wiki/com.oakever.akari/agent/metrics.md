@@ -12,3 +12,4 @@ One line per dream from `sw.py stats` over the sessions of that dream (the wiki 
 | Date | Machine | Sessions | Steps per closed case | Steps without a screen change / with a small one | Skills ok/fail | Level time per mechanic | Moves outside a level | Repeated steps | Refused commands | Wasted handoffs | Models |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 2026-10-04 | chrono | 2 | 2.5 | 5% / 0% | 0/0 | akari typical 0.5 min (best 0.5), 3 won / 1 lost / 2 quit, mastered | 0 | 0 | 3 (0.3 min) | 0 (0 min) | sonnet:low (play) 2 |
+| 2026-10-05 | chrono | 1 | 1.6 | 9% / 0% | 0/0 | levels 0 won / 0 lost | 0 | 0 | 0 (0.0 min) | 0 (0 min) | sonnet:low (play) |

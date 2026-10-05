@@ -2,7 +2,7 @@
 game: com.oakever.meowdoku
 title: "Levels: Meowdoku: Brain Puzzle Games"
 type: levels
-verified_at: 2026-10-04
+verified_at: 2026-10-05
 ---
 
 # Levels: Meowdoku: Brain Puzzle Games
@@ -20,4 +20,4 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 | level 127 | queens | 1 won | 121 s | clean 3 fish, Perfect screen |
 | level 128 | queens | 1 won | 194 s | 1 deliberate wrong cat + cat/hint/mouse boosters; 2 fish, Brilliant, leaderboard +2 |
 | level 129 | queens | 1 won | 111 s | L129 solved with solve --run, 3 fish Immaculate; frame shows Level 130 |
-| level 130 | queens | 1 lost, 2 quit | — | 3 wrong cats -> Out of Fishes; Restart |
+| level 130 | queens | 1 won, 1 lost, 2 quit | 162 s | solve queens --run one call; L130 Hard, rank 6 with 3 fish, streak reset to 1 |

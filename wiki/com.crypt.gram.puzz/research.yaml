@@ -2,7 +2,7 @@
 game: com.crypt.gram.puzz
 version: 3.6.1
 play_version: 3.6.1
-play_checked: '2026-10-03T19:29:54'
+play_checked: '2026-10-05T00:13:01'
 phone_version: 3.6.1
 discovery: open
 ftue_verified: null
@@ -13,7 +13,7 @@ progress:
   session: 20261003-234451-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-04T01:10:05'
+  chrono: '2026-10-05T02:00:53'
 mechanics:
 - id: cryptogram
   name: Number-coded quote
@@ -21,8 +21,8 @@ mechanics:
   method: solver
   levels:
     won: 1
-    lost: 0
-    quit: 1
+    lost: 1
+    quit: 2
   recent:
   - level: level 1
     result: won
@@ -31,6 +31,15 @@ mechanics:
   - level: level 2
     result: quit
     seconds: 48
+    model: sonnet
+  - level: level 2
+    result: lost
+    seconds: 51
+    model: sonnet
+    deliberate: true
+  - level: level 2
+    result: quit
+    seconds: 242
     model: sonnet
   note: 'carried over from the study before the 2026-10-02 restart (playbook and solver
     kept); dream 2026-10-04: back to studying on the fresh install: the level-1 win
@@ -144,28 +153,41 @@ features:
     done: true
     source: 20261003-201504-chrono-2FYKPJ#1
   - id: chk-loss
-    text: 'Each loss: lose the level every way it can be lost; register each kind
-      as an outcome (case <feature> <kind> "..." --outcome) with its screen and what
-      the loss costs'
-    done: false
+    text: '3 mistakes: popup ''You''ve made 3 mistakes'', You will lose heart -1;
+      heart already spent on loss (5->4, regen 26m35s on home)'
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#12
+    version: 3.6.1
   - id: chk-retry
-    text: 'After a loss: the retry and continue offers (extra moves, a revive) and
-      their price (a video, coins, a life)'
-    done: false
+    text: Popup offers Home, Restart (both cost the heart) and REVIVE (yellow, video
+      icon); Restart gives the same board with 0 mistakes, no ad. REVIVE not tapped
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#12
+    version: 3.6.1
   - id: chk-restart
-    text: 'Restart: restart the level from inside it: the confirmation and what it
-      costs'
-    done: false
+    text: Restart only from the loss popup (no restart button on the HUD seen); no
+      confirmation, no ad, same board and cells, mistakes reset
+    done: true
     outcome: true
+    source: 20261005-003245-chrono-2FYKPJ#12
+    version: 3.6.1
   - id: chk-exit-app
-    text: 'Exit the app: leave the app in the middle of the level and come back: is
-      the level kept, restarted or lost'
-    done: false
+    text: 'Force-stop (restart) mid-level with a hint used: CONTINUE LEVEL 2 reopens
+      the same quote fresh: revealed letter lost, hint not refunded, no life lost'
+    done: true
     outcome: true
+    source: 20261005-003245-chrono-2FYKPJ#12
+    version: 3.6.1
   - id: chk-elements
     text: 'Level elements: each obstacle or special piece the levels introduce is
       its own feature (type level-element), with the level it first shows on'
     done: false
+  - id: loss-3-mistakes
+    text: 'Lose by 3 mistakes: popup with heart -1, Home/Restart/REVIVE'
+    done: true
+    outcome: true
+    source: 20261005-003245-chrono-2FYKPJ#4
+    version: 3.6.1
   type: core-level
   appeared:
     text: 'first launch: START LEVEL 1 on the home screen with a tutorial hand'
@@ -282,15 +304,20 @@ features:
     text: 'What it does: the effect of one unit or one use'
     done: false
   - id: chk-balance
-    text: 'The balance: where it shows and the starting amount'
-    done: false
+    text: 'Home top left: heart with the count; starts at 5 FULL; also shown on the
+      level loss popup'
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#11
   - id: chk-sources
     text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
       and how much'
     done: false
   - id: chk-sinks
-    text: 'Sinks: every way it is spent and the price'
-    done: false
+    text: 'One heart per lost level (3 mistakes): 5 -> 4 after the loss; Restart and
+      Home on the loss popup both cost it; quit by the home icon and a force-stop
+      cost none'
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#11
   - id: chk-empty
     text: 'At zero: what happens and the offers to refill it (never spend premium
       currency to get there)'
@@ -533,22 +560,36 @@ features:
     done: true
     source: 20261003-234451-chrono-2FYKPJ#17
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Bulb tap dims the board, highlights every empty cell, caption 'Choose a
+      letter you want to reveal', bulb turns into an X
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#12
+    version: 3.6.1
   - id: chk-effect
-    text: 'What it does: the effect of one unit or one use'
-    done: false
+    text: One tap on a cell reveals that single cell's letter (cell number 18 filled;
+      the other cells with the same number stayed empty); cursor moved on
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#12
+    version: 3.6.1
   - id: chk-sources
-    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
-      and how much'
-    done: false
+    text: 'Level 2 start: 1 free hint. At zero the bulb badge becomes an orange play
+      icon: tapping starts a full-screen video ad (playable, no close button after
+      about 60 s, end card Play Now). Reward not seen because the ad never closed'
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#12
+    version: 3.6.1
   - id: chk-sinks
-    text: 'Sinks: every way it is spent and the price'
-    done: false
+    text: A hint is spent on one revealed cell; no coin price seen. After force-stop
+      the used hint is not refunded
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#12
+    version: 3.6.1
   - id: chk-empty
-    text: 'At zero: what happens and the offers to refill it (never spend premium
-      currency to get there)'
-    done: false
+    text: At zero the bulb shows a play icon and offers a video ad hint; no purchase
+      prompt seen on the bulb itself
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#12
+    version: 3.6.1
   - id: chk-refill
     text: 'Refill timer, if any: how long one unit takes and the maximum'
     done: false
@@ -585,15 +626,18 @@ features:
     done: true
     source: 20261003-234451-chrono-2FYKPJ#17
   - id: chk-rules
-    text: What it does and how it is used
-    done: false
+    text: Each wrong letter fills one circle with a red X; the third X ends the level
+      with the 'You've made 3 mistakes' popup; Restart resets the counter to 0
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#4
   - id: chk-interactions
     text: How it interacts with the other pieces
     done: false
   - id: chk-loss
-    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
-      level (case <base> <kind> "..." --outcome)'
-    done: false
+    text: 'Yes: 3 mistakes is a loss, registered as the outcome loss-3-mistakes on
+      cryptogram-level (heart -1)'
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#4
   found_at:
     text: level 2 reached, 1 won
     value: 1.0
@@ -633,12 +677,18 @@ features:
     done: true
     source: 20261003-234451-chrono-2FYKPJ#16
   - id: chk-frequency
-    text: 'How often it shows: after which action, every Nth level, a cooldown'
-    done: false
+    text: Always on at the bottom of home and of the level; creative rotated about
+      every 20-60 s (Royal Kingdom, Royal Match, Gossip Harbor in 5 min); not tied
+      to levels
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#12
+    version: 3.6.1
   - id: chk-close
-    text: 'How it closes: the timer before the close cross, where the cross is, what
-      comes after'
-    done: false
+    text: 'No close cross: only AdChoices (i) at the right edge; the banner cannot
+      be dismissed'
+    done: true
+    source: 20261005-003245-chrono-2FYKPJ#12
+    version: 3.6.1
   found_at:
     text: level 2 reached, 1 won
     value: 1.0
@@ -886,18 +936,26 @@ tasks:
     bulb'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:50:09'
   feature: cryptogram-level
   source: session
+  closed: '2026-10-05T00:38:21'
+  closed_by: 20261005-003245-chrono-2FYKPJ#13
+  note: 'Studied: loss popup, restart, force-stop, hint bulb, banner rotation; REVIVE
+    and hint reward not tested (ad never closed); see cases'
 - id: study-hints
   title: 'Study Hints (bulb): open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:52:01'
   feature: hints
   source: external
+  closed: '2026-10-05T00:38:22'
+  closed_by: 20261005-003245-chrono-2FYKPJ#13
+  note: 'Studied: loss popup, restart, force-stop, hint bulb, banner rotation; REVIVE
+    and hint reward not tested (ad never closed); see cases'
 - id: study-mistakes-counter
   title: 'Study Mistakes counter: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -910,10 +968,14 @@ tasks:
   title: 'Study Banner ad: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:52:01'
   feature: banner-ad
   source: external
+  closed: '2026-10-05T00:38:22'
+  closed_by: 20261005-003245-chrono-2FYKPJ#13
+  note: 'Studied: loss popup, restart, force-stop, hint bulb, banner rotation; REVIVE
+    and hint reward not tested (ad never closed); see cases'
 - id: study-level-info
   title: 'Study Level info button (i): open it, walk its screens and tabs, verify
     its cases'
@@ -937,7 +999,7 @@ tasks:
     at 0)
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:52:13'
   feature: hints
   source: session
@@ -945,6 +1007,12 @@ tasks:
     letter, one number for all cells) and the count after; then tap it at 0 and mark
     the offer (rewarded video, coins, shop) without paying. Confirmed when the effect
     and the refill source are both marked'
+  closed: '2026-10-05T00:39:44'
+  closed_by: 20261005-003245-chrono-2FYKPJ#8
+  note: Bulb (count 1) reveals only the tapped cell (#7); at 0 the badge is an orange
+    play icon and the bulb starts a rewarded playable ad (#8); whether the hint is
+    granted is left to hint-reward-check
+  result: confirmed
 - id: look-for-interstitials
   title: 'Look for interstitial and rewarded-video ads: after which level wins and
     after a loss'
@@ -996,3 +1064,38 @@ tasks:
   created: '2026-10-04T01:10:05'
   source: session
   note: stall at 20261003-234451-chrono-2FYKPJ#13
+- id: hint-reward-check
+  title: 'Hint video: does the hint reward arrive after watching a rewarded ad to
+    its end'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:38:12'
+  feature: hints
+  source: session
+  plan: tap bulb at zero, wait out the video, look for a close X and the hint count
+- id: lives-plus-and-regen
+  title: 'Lives below full: tap the heart''s green plus and record the refill offer;
+    record how long one heart takes to regenerate'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:39:46'
+  feature: lives
+  source: session
+  plan: 'With lives below 5 (4 after this session''s loss), tap the heart widget or
+    its green plus on home and mark the popup (video, coins, wait) without paying;
+    note the timer, then check it again later: confirmed when the offer and the per-heart
+    regen time (26m35s seen right after the loss, so about 30 min) are marked'
+- id: revive-offer
+  title: 'Loss popup REVIVE: what it costs and gives (a video for undoing the 3rd
+    mistake, a heart kept?)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:39:46'
+  feature: cryptogram-level
+  source: session
+  plan: On level 2+ make 3 wrong letters, tap REVIVE (video icon) and mark what plays;
+    if the ad has no close after 90 s, restart and note it. Confirmed when the board
+    after REVIVE is marked (mistakes count, heart kept or lost)

@@ -2,18 +2,18 @@
 game: com.block.juggle
 version: 10.8.1
 play_version: 10.8.0
-play_checked: '2026-10-03T19:29:54'
+play_checked: '2026-10-05T00:13:01'
 phone_version: 10.8.1
 discovery: open
 ftue_verified: null
 progress:
-  text: adventure 3
-  value: 3.0
-  at: '2026-10-04T00:05:49'
-  session: 20261003-235233-chrono-2FYKPJ
+  text: adventure L5
+  value: 5.0
+  at: '2026-10-05T01:58:58'
+  session: 20261005-015205-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-04T01:10:05'
+  chrono: '2026-10-05T02:00:53'
 mechanics:
 - id: classic
   name: classic
@@ -49,7 +49,7 @@ mechanics:
   status: mastered
   method: solver
   levels:
-    won: 3
+    won: 5
     lost: 1
     quit: 1
   recent:
@@ -74,6 +74,14 @@ mechanics:
     result: quit
     seconds: 34
     model: opus
+  - level: adventure L4
+    result: won
+    seconds: 320
+    model: sonnet
+  - level: adventure L5 hard
+    result: won
+    seconds: 256
+    model: sonnet
   best_s: 131
   note: played with the classic solver in score mode (pass --board {"mode":"score"}
     on the first solve --run) [20261003-235233-chrono-2FYKPJ#8]
@@ -759,25 +767,26 @@ features:
   page: features/ad-interstitial-classic.md
 - id: home-menu
   name: Home menu
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
-    text: Back key in a classic game (no game over needed) opens it; the Classic button
-      returns to a board
+    text: Back key from the Adventure win panel (and from classic) opens the home
+      menu (shot 31)
     done: true
-    source: 20261003-212548-chrono-2FYKPJ#29
+    source: 20261005-015205-chrono-2FYKPJ#22
+    version: 10.8.1
   - id: chk-screen
-    text: Logo 'Block Blast Adventure Master', Medal top right, Consecutive Daily
-      Victories panel (x0), buttons Adventure (red dot), Classic, More Games; GOGO!
-      Blast and Rotate Rings promo icons at the bottom
+    text: 'Home: logo, Medal top right, Consecutive Daily Victories x3, Adventure,
+      Classic, More Games, GOGO! Blast and Rotate Rings icons (shot 1, 31)'
     done: true
-    source: 20261003-212548-chrono-2FYKPJ#29
+    source: 20261005-015205-chrono-2FYKPJ#22
+    version: 10.8.1
   - id: chk-entries
-    text: Adventure (open, adventure), Classic (open, classic), More Games (open,
-      more-games), Medal (open, medal), Consecutive Daily Victories panel (daily-victories),
-      GOGO! Blast and Rotate Rings (cross-promo-home); no locks seen
+    text: Adventure opens 96-level map with Level N button; Medal opens Achievement;
+      Classic and More Games open modes; promo icons are cross-promo
     done: true
-    source: 20261003-212548-chrono-2FYKPJ#29
+    source: 20261005-015205-chrono-2FYKPJ#22
+    version: 10.8.1
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
@@ -785,11 +794,17 @@ features:
     done: true
     source: 20261003-212548-chrono-2FYKPJ#29
   - id: chk-badges
-    text: Badges, timers and counters on it and what each points to
-    done: false
+    text: Medal red dot returns after a win (also seen before); daily panel green
+      check = today's win counted, stays x3 after L5 win same day
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#22
+    version: 10.8.1
   - id: chk-changes
-    text: What changes on it with progress (new buttons, a moving map, a theme)
-    done: false
+    text: Daily counter grew x2 -> x3 across days; Consecutive Victories in-level
+      x3 -> x4 after win; no new buttons seen
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#22
+    version: 10.8.1
   found_at:
     text: classic best 2516
     value: 327.0
@@ -800,6 +815,7 @@ features:
     certainty: fact
     source: 20261003-212548-chrono-2FYKPJ#29
   page: features/home-menu.md
+  version_seen: 10.8.1
 - id: adventure
   name: Adventure mode
   status: documented
@@ -889,12 +905,14 @@ features:
   page: features/adventure.md
 - id: medal
   name: Medal
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
-    text: Medal icon top right of the home menu, red badge
+    text: Medal icon top right of home menu with red dot; tap opens Achievement screen
+      (shot 2)
     done: true
-    source: 20261003-212548-chrono-2FYKPJ#29
+    source: 20261005-015205-chrono-2FYKPJ#9
+    version: 10.8.1
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
@@ -902,25 +920,44 @@ features:
     done: true
     source: 20261003-212548-chrono-2FYKPJ#29
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Achievement screen: Statistics (Highest Combo 13, Best Score 2516, Rounds
+      8, Login Days 2) and Awards grid of 9 tiered awards'
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#9
+    version: 10.8.1
   - id: chk-progress
-    text: 'The progress: the bar, the album or the counter, what fills it and where
-      it is now'
-    done: false
+    text: Each award tile shows tier progress n/m (Score Champion 2/12, Invincible
+      Legend 3/5, Perseverance 2/10, Block Master 1/10, Opportunist 2/10, Jewelry
+      Tycoon 4/10, Unwavering 5/5, Master Cleaner 1/10); red dot on tile for unseen
+      tier
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#9
+    version: 10.8.1
   - id: chk-items
-    text: 'The items: every set, skin or tier, which are owned and which are locked,
-      with their condition'
-    done: false
+    text: '9 awards: 8 unlocked incl. Unwavering gold (5/5 complete), Adventurer greyed/locked
+      until one Adventure Mode completion'
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#9
+    version: 10.8.1
   - id: chk-earn
-    text: How an item or a step is earned (wins, keys, a spin, a pack)
-    done: false
+    text: 'Earned by play: Score Champion by classic score (1800 pts), Unwavering
+      by max combo (7); Adventurer by completing Adventure Mode once; tap tile shows
+      date and text'
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#9
+    version: 10.8.1
   - id: chk-use
-    text: 'Using an item: equip a skin, open a chest, spin; what changes'
-    done: false
+    text: 'Tap a tile: Award popup with date and text, Confirm/X closes; viewing clears
+      the red dot; no equip action'
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#9
+    version: 10.8.1
   - id: chk-complete
-    text: 'Completing a set or the bar: the reward'
-    done: false
+    text: Unwavering 5/5 shows gold badge, popup says achieved with date 2026.10.3;
+      no currency reward shown
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#9
+    version: 10.8.1
   found_at:
     text: classic best 2516
     value: 327.0
@@ -931,6 +968,7 @@ features:
     certainty: fact
     source: 20261003-212548-chrono-2FYKPJ#29
   page: features/medal.md
+  version_seen: 10.8.1
 - id: daily-victories
   name: Consecutive Daily Victories
   status: in_progress
@@ -945,11 +983,11 @@ features:
     done: true
     source: 20261003-212548-chrono-2FYKPJ#29
   - id: chk-counter
-    text: 'Counts calendar days in a row with at least one Adventure win: x0 -> x1
-      on the L1 win (Oct 3, 23:56), x2 on the L2 win just after midnight (Oct 4),
-      still x2 after the L3 win the same day; green check = today''s win done'
+    text: Oct 5 first Adventure win (L4) moved x2 -> x3 and the grey check turned
+      green (shot 35); before the win x2 with grey check (shot 2); tapping the panel
+      does nothing
     done: true
-    source: 20261003-235233-chrono-2FYKPJ#60
+    source: 20261005-004506-chrono-2FYKPJ#24
     version: 10.8.1
   - id: chk-in-level
     text: Nothing during the Adventure level; the 'Consecutive Victories xN' panel
@@ -992,9 +1030,11 @@ features:
     text: Offers to keep it after a break and their price (a video, coins)
     done: false
   - id: under-restart
-    text: 'Settings gear > Replay under Consecutive Daily Victories: as the base,
-      or what differs'
-    done: false
+    text: Gear > Replay in L4 leaves x2 grey until the win; the win after the replay
+      gave x3 green
+    done: true
+    source: 20261005-004506-chrono-2FYKPJ#24
+    version: 10.8.1
   - id: under-exit-app
     text: 'Leaving to the Play Store from an ad and launch under Consecutive Daily
       Victories: as the base, or what differs'
@@ -1010,7 +1050,7 @@ features:
   page: features/daily-victories.md
 - id: cross-promo-home
   name: Cross-promo icons on the home menu (GOGO! Blast, Rotate Rings)
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: 'Two round icons at the bottom of the home menu: GOGO! Blast and Rotate
@@ -1028,19 +1068,29 @@ features:
     done: true
     source: 20261003-212548-chrono-2FYKPJ#29
   - id: chk-kind
-    text: 'The kind: banner, interstitial, rewarded video or cross-promo, and where
-      it shows'
-    done: false
+    text: 'Cross-promo: two static icons; a tap opens the Android Open with chooser
+      (Galaxy Store / Google Play Store) for the app''s store page, shots 4 and 7'
+    done: true
+    source: 20261005-004506-chrono-2FYKPJ#24
+    version: 10.8.1
   - id: chk-frequency
-    text: 'How often it shows: after which action, every Nth level, a cooldown'
-    done: false
+    text: Always on the home menu on every view (Oct 5 views at shots 2 and 35), no
+      cooldown or cap; no ad is shown by tapping
+    done: true
+    source: 20261005-004506-chrono-2FYKPJ#24
+    version: 10.8.1
   - id: chk-reward
-    text: 'Rewarded: the offer screen before it and what watching gives'
-    done: false
+    text: 'Not a rewarded ad: tapping gives no reward and no offer screen, only the
+      store chooser'
+    done: true
+    source: 20261005-004506-chrono-2FYKPJ#24
+    version: 10.8.1
   - id: chk-close
-    text: 'How it closes: the timer before the close cross, where the cross is, what
-      comes after'
-    done: false
+    text: 'Chooser has no X: Back key dismisses it to the home menu (launch also returns);
+      nothing is lost'
+    done: true
+    source: 20261005-004506-chrono-2FYKPJ#24
+    version: 10.8.1
   found_at:
     text: classic best 2516
     value: 327.0
@@ -1050,6 +1100,7 @@ features:
     certainty: fact
     source: 20261003-212548-chrono-2FYKPJ#29
   page: features/cross-promo-home.md
+  version_seen: 10.8.1
 - id: adv-diamonds
   name: Adventure diamond-collection levels
   status: in_progress
@@ -1085,10 +1136,11 @@ features:
     done: true
     source: 20261003-235233-chrono-2FYKPJ#25
   - id: chk-announce
-    text: 'No announcement: the map cell looks like any other and Level N opens the
-      board straight away; the goal is only the header (shot 30)'
+    text: A Target Collection banner slides over the board at level start showing
+      the goal gems (L4, shots 11, 20); the map cell has no mark
     done: true
-    source: 20261003-235233-chrono-2FYKPJ#25
+    source: 20261005-004506-chrono-2FYKPJ#13
+    version: 10.8.1
   - id: chk-differs
     text: Same 8x8 board, tray and drag; the goal is to collect gem tiles (clear the
       lines holding them) instead of a target score; the levels have a pre-built layout;
@@ -1124,9 +1176,12 @@ features:
       from which level'
     done: false
   - id: under-restart
-    text: 'Settings gear > Replay under Adventure diamond-collection levels: as the
-      base, or what differs'
-    done: false
+    text: 'Gear > Replay on L4: video interstitial (playable end card, Back key closed
+      it), then L4 restarts with Target Collection banner, same goals 22/20/20; first
+      tray differs from the pre-replay tray'
+    done: true
+    source: 20261005-004506-chrono-2FYKPJ#13
+    version: 10.8.1
   - id: under-exit-app
     text: 'Leaving to the Play Store from an ad and launch under Adventure diamond-collection
       levels: as the base, or what differs'
@@ -1201,15 +1256,15 @@ features:
     done: true
     source: 20261003-235233-chrono-2FYKPJ#30
   - id: under-restart
-    text: 'Settings gear > Replay under Adventure Consecutive Victories (win streak):
-      as the base, or what differs'
-    done: false
+    text: 'Gear > Replay mid-L4 kept the streak: x2 after L3, then Replay with an
+      interstitial, then the L4 win showed x3 (shot 31)'
+    done: true
+    source: 20261005-004506-chrono-2FYKPJ#23
   - id: under-quit
-    text: 'Back key mid-game goes to the home menu with no confirmation and no cost;
-      Classic button starts/returns to a fresh board (here a new board with score
-      0 appeared, best kept) under Adventure Consecutive Victories (win streak): as
-      the base, or what differs'
-    done: false
+    text: 'Quitting L4 by gear > Home (235233#64) kept the streak: x2 after L3, x3
+      on the next win (L4, shot 31); a quit does not reset it'
+    done: true
+    source: 20261005-004506-chrono-2FYKPJ#23
   - id: under-exit-app
     text: 'Leaving to the Play Store from an ad and launch under Adventure Consecutive
       Victories (win streak): as the base, or what differs'
@@ -1225,6 +1280,89 @@ features:
     source: 20261003-235233-chrono-2FYKPJ#30
   version_seen: 10.8.1
   page: features/adv-win-streak.md
+- id: adv-hard-levels
+  name: Adventure hard levels (Next Hard Level)
+  status: in_progress
+  cases:
+  - id: chk-announce
+    text: 'The level before it announces it: Adventure L4''s win screen shows a purple
+      Next Hard Level button in place of the green Next Level (shot 31); the map cell
+      5 has no hard mark (shot 10)'
+    done: true
+    source: 20261005-004506-chrono-2FYKPJ#23
+  - id: chk-entry
+    text: Adventure map > Level 5 button after L4 win offered Next Hard Level (shot
+      11-12)
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#21
+    version: 10.8.1
+  - id: chk-screen
+    text: 'L5 in-level screen: Target Collection banner, goals 28 blue diamonds, 26
+      stars, 26 red gems; no hard marker visible'
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#21
+    version: 10.8.1
+  - id: chk-differs
+    text: 'Hard L5: 3 gem goals with big counts (28/26/26 vs L4 22/20/20), pre-built
+      centre pattern, 3x3 tray pieces; no extra rules, same solver in score mode wins
+      it'
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#21
+    version: 10.8.1
+  - id: chk-win
+    text: Well Done, 3 green checks, Consecutive Victories x4, green Next Level; interstitial
+      ad before the panel
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#21
+    version: 10.8.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-004506-chrono-2FYKPJ#23
+  - id: chk-loss
+    text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
+      progress)'
+    done: false
+  - id: chk-retry
+    text: Retry and continue offers after a loss and their price (a video, coins);
+      where a retry sends you (the start, the same stage)
+    done: false
+  - id: chk-frequency
+    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
+      from which level'
+    done: false
+  - id: under-restart
+    text: 'Settings gear > Replay under Adventure hard levels (Next Hard Level): as
+      the base, or what differs'
+    done: false
+  - id: under-no-space-left
+    text: 'No Space Left under Adventure hard levels (Next Hard Level): as the base,
+      or what differs'
+    done: false
+  - id: under-win
+    text: 'Does not apply under Adventure hard levels (Next Hard Level): as the base,
+      or what differs'
+    done: false
+  - id: under-quit
+    text: 'Back key mid-game opens the home menu with no confirmation; whether the
+      game in progress is kept is NOT verified under Adventure hard levels (Next Hard
+      Level): as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Leaving the app mid-game under Adventure hard levels (Next Hard Level):
+      as the base, or what differs'
+    done: false
+  found_at:
+    text: adventure L4
+    value: 4.0
+  type: level-type
+  appeared:
+    text: 'after winning Adventure L4: the win screen''s button reads Next Hard Level
+      (purple) instead of the green Next Level, so L5 is flagged hard'
+    certainty: fact
+    source: 20261005-004506-chrono-2FYKPJ#23
 tasks:
 - id: analyze
   title: Analyze the game
@@ -1568,8 +1706,8 @@ tasks:
   note: 'the trigger is recorded as a fact: on the home menu (top right, with a red
     badge) the first time it was opened by Back from classic [20261003-212548-chrono-2FYKPJ#29]'
 - id: outcomes-daily-victories
-  title: 'Run each outcome once under Consecutive Daily Victories: Settings gear >
-    Replay, Leaving to the Play Store from an ad and launch'
+  title: 'Run each outcome once under Consecutive Daily Victories: Leaving the app
+    mid-game'
   kind: experiment
   requires: any
   status: open
@@ -1586,10 +1724,13 @@ tasks:
   title: Study the home menu (Adventure, Medal, daily victories, cross-promo icons)
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:37:28'
   feature: home-menu
   source: session
+  closed: '2026-10-05T01:58:57'
+  closed_by: 20261005-015205-chrono-2FYKPJ#22
+  note: Walked home menu, entries and badges
 - id: classic-row7
   title: 'Experiment: classic board where only row 7 is empty and tray has 1-row lines:
     is it a real stuck state?'
@@ -1628,19 +1769,26 @@ tasks:
   title: 'Study Medal: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:39:48'
   feature: medal
   source: external
+  closed: '2026-10-05T01:58:56'
+  closed_by: 20261005-015205-chrono-2FYKPJ#22
+  note: Achievement screen, 9 tiered awards, award popups, locked Adventurer
 - id: study-daily-victories
   title: 'Study Consecutive Daily Victories: open it, walk its screens and tabs, verify
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:39:48'
   feature: daily-victories
   source: external
+  closed: '2026-10-05T00:52:24'
+  closed_by: 20261005-004506-chrono-2FYKPJ#24
+  note: x2 grey -> x3 green after Oct 5 win; panel not tappable; missed-day and save
+    offer remain open (task daily-victories-missed-day)
 - id: classic-bottom-row-drop
   title: Land a tray piece on classic row 7 (the bottom row) by drag and record the
     finger end point that works
@@ -1682,10 +1830,13 @@ tasks:
     it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:41:49'
   feature: cross-promo-home
   source: external
+  closed: '2026-10-05T00:52:24'
+  closed_by: 20261005-004506-chrono-2FYKPJ#24
+  note: Both icons open the Open with store chooser; static, no reward, Back closes
 - id: daily-victories-day2
   title: Win an Adventure level on the next day and check whether the counter goes
     x1 -> x2 (and whether a second win the same day changes it)
@@ -1701,8 +1852,8 @@ tasks:
   note: 'answered this session: the session crossed midnight; a win on the next day
     made x1 -> x2 and a second same-day win kept x2'
 - id: outcomes-adv-diamonds
-  title: 'Run each outcome once under Adventure diamond-collection levels: Settings
-    gear > Replay, Leaving to the Play Store from an ad and launch'
+  title: 'Run each outcome once under Adventure diamond-collection levels: Leaving
+    the app mid-game'
   kind: experiment
   requires: any
   status: open
@@ -1717,9 +1868,7 @@ tasks:
   rank: 7
 - id: outcomes-adv-win-streak
   title: 'Run each outcome once under Adventure Consecutive Victories (win streak):
-    Settings gear > Replay, Back key mid-game goes to the home menu with no confirmation
-    and no cost; Classic button starts/returns to a fresh board (here a new board
-    with score 0 appeared, best kept), Leaving to the Play Store from an ad and launch'
+    Leaving the app mid-game'
   kind: experiment
   requires: any
   status: open
@@ -1768,10 +1917,14 @@ tasks:
     tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T00:09:27'
   feature: adv-diamonds
   source: external
+  closed: '2026-10-05T00:52:33'
+  closed_by: 20261005-004506-chrono-2FYKPJ#24
+  note: Banner Target Collection at start, Replay gives interstitial+restart, win
+    gives Next Hard Level for L5; frequency (which levels) left to experiment adv-diamonds-frequency
 - id: study-adv-win-streak
   title: 'Study Adventure Consecutive Victories (win streak): open it, walk its screens
     and tabs, verify its cases'
@@ -1818,3 +1971,65 @@ tasks:
   created: '2026-10-04T01:10:05'
   feature: adventure
   source: session
+- id: adv-hard-level
+  title: 'L5 is offered as Next Hard Level (purple button after L4 win): open it,
+    record what a hard level is'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-05T00:52:32'
+  feature: adv-diamonds
+  source: session
+  closed: '2026-10-05T00:54:38'
+  closed_by: review-20261005
+  note: 'duplicate: hard levels are now their own feature adv-hard-levels (level-type);
+    its study goal replaces this one'
+- id: adv-diamonds-frequency
+  title: Play Adventure levels 5-12 and record which have gem goals
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:52:33'
+  feature: adv-diamonds
+  source: session
+  plan: play levels, note goal type of each
+- id: outcomes-adv-hard-levels
+  title: 'Run each outcome once under Adventure hard levels (Next Hard Level): Settings
+    gear > Replay, No Space Left, Does not apply, Back key mid-game opens the home
+    menu with no confirmation; whether the game in progress is kept is NOT verified,
+    Leaving the app mid-game'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:54:25'
+  feature: adv-hard-levels
+  source: session
+  plan: 'while Adventure hard levels (Next Hard Level) is on, reach each listed outcome
+    of the base level once, one at a time (a deliberate loss is allowed unless it
+    spends premium currency); mark the outcome screen (mark --feature adv-hard-levels
+    --as result) and close its cell: case adv-hard-levels under-<outcome> "as the
+    base" or "what differs" --done'
+  rank: 7
+- id: study-adv-hard-levels
+  title: 'Study Adventure hard levels: start L5 (Next Hard Level), record its screen,
+    what differs from a normal level, its win and its loss'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T00:54:38'
+  feature: adv-hard-levels
+  source: session
+  closed: '2026-10-05T01:58:57'
+  closed_by: 20261005-015205-chrono-2FYKPJ#22
+  note: L5 hard won (28/26/26 gems), no visible marker or extra rules; loss not seen,
+    task hard-loss set
+- id: hard-loss
+  title: Lose Adventure hard level once (replay L5 or next hard) to see its fail screen
+    and cost
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T01:58:39'
+  feature: adv-hard-levels
+  source: session
+  plan: start a hard level, play gameover mode to No Space Left, mark the fail screen

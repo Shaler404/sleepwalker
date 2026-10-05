@@ -2,7 +2,7 @@
 game: com.oakever.akari
 version: 1.0.2
 play_version: 1.0.2
-play_checked: '2026-10-03T19:29:54'
+play_checked: '2026-10-05T00:13:01'
 phone_version: 1.0.2
 discovery: open
 ftue_verified: null
@@ -13,7 +13,7 @@ progress:
   session: 20261003-232850-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-04T01:10:05'
+  chrono: '2026-10-05T02:00:53'
 mechanics:
 - id: akari
   name: Cat placement (Light Up rules)
@@ -230,7 +230,7 @@ features:
   page: features/core-level.md
 - id: home
   name: Home screen
-  status: in_progress
+  status: documented
   cases:
   - id: chk-screen
     text: MeowTrail logo, 'Level N' button, settings gear; nothing else through level
@@ -253,11 +253,17 @@ features:
     done: true
     source: 20261003-200925-chrono-2FYKPJ#12
   - id: chk-badges
-    text: Badges, timers and counters on it and what each points to
-    done: false
+    text: No badges, timers or counters on Home at level 4; only logo, gear, Level
+      N button; background paw tiles change color between visits
+    done: true
+    source: 20261005-002947-chrono-2FYKPJ#10
+    version: 1.0.2
   - id: chk-changes
-    text: What changes on it with progress (new buttons, a moving map, a theme)
-    done: false
+    text: Through level 4 only the Level button number changes; no new buttons or
+      map
+    done: true
+    source: 20261005-002947-chrono-2FYKPJ#10
+    version: 1.0.2
   found_at:
     text: level 1
     value: null
@@ -267,6 +273,7 @@ features:
     certainty: fact
     source: 20261003-200925-chrono-2FYKPJ#12
   page: features/home.md
+  version_seen: 1.0.2
 - id: settings
   name: Settings
   status: in_progress
@@ -308,7 +315,7 @@ features:
   page: features/settings.md
 - id: help-center
   name: Help Center
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: 'Settings: the orange Help Center button'
@@ -321,19 +328,30 @@ features:
     done: true
     source: 20261003-200925-chrono-2FYKPJ#13
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'HelpShift MeowTrail Support: search, category tabs, popular articles, Chat
+      with us'
+    done: true
+    source: 20261005-002947-chrono-2FYKPJ#10
+    version: 1.0.2
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: Tabs Popular/Beginners Guide/Gameplay/Failure & Revive/Items/Ad Issues,
+      search, article Yes/No helpful, chat icon; no toggles. Chat not used (no-chat
+      rule)
+    done: true
+    source: 20261005-002947-chrono-2FYKPJ#10
+    version: 1.0.2
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: No prompt in Help Center; article feedback Yes/No not tapped, not a game
+      answer
+    done: true
+    source: 20261005-002947-chrono-2FYKPJ#10
+    version: 1.0.2
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: 'Help Center itself is the link out from Settings: in-game web view, X closes
+      straight to Home; Privacy/Terms are separate links in Settings'
+    done: true
+    source: 20261005-002947-chrono-2FYKPJ#10
+    version: 1.0.2
   found_at:
     text: level 1
     value: null
@@ -343,6 +361,7 @@ features:
     certainty: fact
     source: 20261003-200925-chrono-2FYKPJ#13
   page: features/help-center.md
+  version_seen: 1.0.2
 - id: boosters
   name: Cat and bulb boosters
   status: documented
@@ -409,7 +428,7 @@ features:
   page: features/boosters.md
 - id: hearts
   name: Hearts (3 per level)
-  status: in_progress
+  status: documented
   cases:
   - id: chk-first-level
     text: Shown from level 1 on the HUD (3 hearts), not mentioned by the tutorial
@@ -442,8 +461,12 @@ features:
     done: true
     source: 20261003-200925-chrono-2FYKPJ#13
   - id: chk-interactions
-    text: How it interacts with the other pieces
-    done: false
+    text: Help Center article says Revive (rewarded ad) restores a life after failure;
+      hearts bar sits beside cat counter and above boosters (cat, bulb); level start
+      shows 3/3 again on L4
+    done: true
+    source: 20261005-002947-chrono-2FYKPJ#10
+    version: 1.0.2
   found_at:
     text: level 1
     value: null
@@ -453,6 +476,7 @@ features:
     certainty: fact
     source: 20261003-200925-chrono-2FYKPJ#13
   page: features/hearts.md
+  version_seen: 1.0.2
 - id: notifications
   name: Notification permission prompt
   status: in_progress
@@ -493,6 +517,75 @@ features:
     certainty: fact
     source: 20261003-200925-chrono-2FYKPJ#1
   page: features/notifications.md
+- id: hard-level
+  name: Hard levels
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-announce
+    text: 'How it is announced: the map node, the badge or the popup before it, and
+      what it says'
+    done: false
+  - id: chk-differs
+    text: 'What differs in play from the base level: the board, the rules, the limits,
+      stages, a timer'
+    done: false
+  - id: chk-win
+    text: 'Its win: the win screen and the reward, against the base level''s'
+    done: false
+  - id: chk-loss
+    text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
+      progress)'
+    done: false
+  - id: chk-retry
+    text: Retry and continue offers after a loss and their price (a video, coins);
+      where a retry sends you (the start, the same stage)
+    done: false
+  - id: chk-frequency
+    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
+      from which level'
+    done: false
+  - id: under-win
+    text: 'Win under Hard levels: as the base, or what differs'
+    done: false
+  - id: under-out-of-hearts
+    text: 'Out of hearts under Hard levels: as the base, or what differs'
+    done: false
+  - id: under-restart
+    text: 'No in-level restart button; only Restart on the Almost! screen (free).
+      Back arrow quits without confirmation under Hard levels: as the base, or what
+      differs'
+    done: false
+  - id: under-quit
+    text: 'Back arrow leaves for Home at once under Hard levels: as the base, or what
+      differs'
+    done: false
+  - id: under-exit-app
+    text: 'Force-stop and relaunch mid-level (1 cat placed) lands on Home with the
+      same Level N button, no penalty seen; whether the board keeps the placed cat
+      was not checked (exp-exit-app-board) under Hard levels: as the base, or what
+      differs'
+    done: false
+  found_at:
+    text: level 3
+    value: 3.0
+  type: level-type
+  appeared:
+    text: Help Center says Hard badge on the level entry; trigger unknown, not yet
+      seen
+    certainty: hypothesis
+    source: 20261005-002947-chrono-2FYKPJ#6
 tasks:
 - id: analyze
   title: Analyze the game
@@ -588,27 +681,36 @@ tasks:
   title: 'Study Home screen: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:14:35'
   feature: home
   source: external
+  closed: '2026-10-05T00:31:43'
+  closed_by: 20261005-002947-chrono-2FYKPJ#11
+  note: walked and verified; see cases
 - id: study-help-center
   title: 'Study Help Center: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:14:35'
   feature: help-center
   source: external
+  closed: '2026-10-05T00:31:42'
+  closed_by: 20261005-002947-chrono-2FYKPJ#11
+  note: walked and verified; see cases
 - id: study-hearts
   title: 'Study Hearts (3 per level): open it, walk its screens and tabs, verify its
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:14:35'
   feature: hearts
   source: external
+  closed: '2026-10-05T00:31:42'
+  closed_by: 20261005-002947-chrono-2FYKPJ#11
+  note: walked and verified; see cases
 - id: exp-hearts-loss
   title: 'Experiment: find what costs a heart and what happens at zero hearts (a loss
     outcome, its screen, retry offer and price)'
@@ -708,3 +810,69 @@ tasks:
   status: open
   created: '2026-10-04T01:10:05'
   source: session
+- id: appeared-hard-level
+  title: 'Find why Hard levels appeared: Help Center says Hard badge on the level
+    entry; trigger unknown, not yet seen'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:30:57'
+  feature: hard-level
+  source: session
+  plan: 'find the moment Hard levels shows up and what comes just before it (Help
+    Center says Hard badge on the level entry; trigger unknown, not yet seen); confirmed
+    when a frame shows the trigger. Record it with feature hard-level --appeared "...":
+    the goal closes by itself'
+- id: outcomes-hard-level
+  title: 'Run each outcome once under Hard levels: Win, Out of hearts, No in-level
+    restart button; only Restart on the Almost! screen (free). Back arrow quits without
+    confirmation, Back arrow leaves for Home at once, Force-stop and relaunch mid-level
+    (1 cat placed) lands on Home with the same Level N button, no penalty seen; whether
+    the board keeps the placed cat was not checked (exp-exit-app-board)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:30:57'
+  feature: hard-level
+  source: session
+  plan: 'while Hard levels is on, reach each listed outcome of the base level once,
+    one at a time (a deliberate loss is allowed unless it spends premium currency);
+    mark the outcome screen (mark --feature hard-level --as result) and close its
+    cell: case hard-level under-<outcome> "as the base" or "what differs" --done'
+  rank: 7
+- id: exp-hard-level
+  title: Find first Hard level (badge on level entry, banner)
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-05T00:30:57'
+  feature: hard-level
+  source: session
+  plan: play levels, note first level with Hard badge
+  closed: '2026-10-05T00:32:41'
+  closed_by: review-20261005
+  note: duplicate of appeared-hard-level (finding the first Hard level is its trigger;
+    chk-frequency covers how often) [20261005-002947-chrono-2FYKPJ#6]
+- id: study-hard-level
+  title: 'Study Hard levels: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T00:32:13'
+  feature: hard-level
+  source: external
+- id: exp-help-articles
+  title: Read the unread Help Center tabs (Beginners Guide, Items, Ad Issues, the
+    tab past Items) and the Gameplay articles on exit and restart; every unseen feature
+    they name is recorded
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T00:32:41'
+  feature: help-center
+  source: session
+  plan: 'Settings gear > Help Center, wait 5 s; open each tab and each article title
+    not read yet (skip Chat). Confirmed when every article was read: a feature not
+    in the map (e.g. hints by other means, ad removal, daily) is recorded as a feature
+    with --appeared-guess; the exit-article answer is noted on exp-exit-app-board;
+    nothing new = say so in the note'

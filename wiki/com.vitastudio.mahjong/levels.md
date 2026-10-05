@@ -2,7 +2,7 @@
 game: com.vitastudio.mahjong
 title: "Levels: Vita Mahjong"
 type: levels
-verified_at: 2026-10-04
+verified_at: 2026-10-05
 ---
 
 # Levels: Vita Mahjong
@@ -17,4 +17,4 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 
 | Level | Mechanic | Result | Time | Note |
 |---|---|---|---|---|
-| level 19 | core-match | 1 quit | — | boosters study only |
+| level 19 | core-match | 1 lost, 2 quit | — | boosters study only |

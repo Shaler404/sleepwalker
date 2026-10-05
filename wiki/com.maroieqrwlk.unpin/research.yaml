@@ -1,33 +1,29 @@
 # Tasks and feature map of the game. Written only by the "dream" (sw.py snapshot + edits per the schema).
 game: com.maroieqrwlk.unpin
-version: 241.5.1
+version: 241.5.2
 play_version: 241.5.2
-play_checked: '2026-10-03T19:29:29'
-phone_version: 241.5.1
+play_checked: '2026-10-05T00:13:01'
+phone_version: 241.5.2
 discovery: open
 ftue_verified: '2026-10-03'
 progress:
-  text: level 13
-  value: 13.0
-  at: '2026-10-04T01:06:57'
-  session: 20261004-005453-chrono-2FYKPJ
+  text: level 15
+  value: 15.0
+  at: '2026-10-05T01:50:21'
+  session: 20261005-014031-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-04T01:10:05'
+  chrono: '2026-10-05T02:00:53'
 mechanics:
 - id: pin-pull
   name: pin-pull
   status: mastered
   method: solver
   levels:
-    won: 15
-    lost: 2
+    won: 16
+    lost: 3
     quit: 3
   recent:
-  - level: level 10
-    result: quit
-    seconds: 142
-    model: opus
   - level: level 10
     result: quit
     seconds: 62
@@ -62,12 +58,18 @@ mechanics:
     model: opus
     note: won (league board shot 37), post-win flow cut by the owner taking the phone;
       whether the win was saved is open
+  - level: level 14
+    result: lost
+    seconds: 71
+    model: opus
+  - level: level 14
+    result: won
+    seconds: 129
+    model: opus
   solver: solvers/com.maroieqrwlk.unpin/pin-pull.py
-  note: 'solver: one pull per round (no dependence on --gap), follows a zoomed/shifted
-    view after a pull, reads rings on the Space theme; L11 library order E C W F B;
-    dream 2026-10-04: removed the phantom ''level 11 quit 345 s'' (level_start logged
-    on the league screen, 20261003-211035-chrono-2FYKPJ#15, L11 never opened); L13
-    ''quit'' corrected to won (20261004-005453-chrono-2FYKPJ#16-17)'
+  note: 'solver: one pull per round; library of levels 3-26 recognised from rings
+    and golden star pins (2026-10-04: L12 B is a star); keeps the level across rounds
+    when a frame fits no board by rings alone (unsent pins checked on the frame)'
   best_s: 17
 features:
 - id: core-level
@@ -166,6 +168,12 @@ features:
       as an outcome (case <feature> <kind> "..." --outcome) with its screen and what
       the loss costs'
     done: false
+  - id: win-reverted-league-board
+    text: 'Win interrupted on the post-win league board (app left): map back at L13
+      next day, win not saved; league Pins 49 stayed'
+    done: true
+    source: 20261005-013818-chrono-2FYKPJ#1
+    version: 241.5.2
   type: core-level
   appeared:
     text: 'first launch, after the intro comic: level 1 opens with a tutorial hand'
@@ -174,7 +182,7 @@ features:
   page: features/core-level.md
 - id: coins
   name: Coins
-  status: documented
+  status: recheck
   cases:
   - id: chk-sources
     text: 'Sources seen: level win 17-24 coins (L2-L9), x2-x5 video multiplier on
@@ -470,7 +478,7 @@ features:
     source: 20261003-193015-chrono-2FYKPJ#1
 - id: banner-ad
   name: Banner ad
-  status: documented
+  status: recheck
   cases:
   - id: chk-entry
     text: Comes by itself at the bottom of the screen from level 1
@@ -663,6 +671,11 @@ features:
   - id: chk-missed
     text: 'A missed day: what is lost or reset'
     done: false
+  - id: claim-day2
+    text: 'Day 2 claimed on launch popup: +50 coins, balance 344 on map'
+    done: true
+    source: 20261005-013818-chrono-2FYKPJ#1
+    version: 241.5.2
   found_at:
     text: level 4 (map shown after L3)
     value: 4.0
@@ -857,7 +870,7 @@ features:
   page: features/map-chest.md
 - id: jump-to-level
   name: Jump to Level (video)
-  status: seen
+  status: documented
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -866,26 +879,40 @@ features:
     done: true
     source: 20261003-203702-chrono-2FYKPJ#19
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Green 'Jump to Level' video button on the map, left of the node after the
+      current level (L14 when at 13, L15 when at 14)
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#6
+    version: 241.5.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'No offer screen: one tap goes straight to a black load frame and a rewarded
+      video (two ads, ~30 s, Reward granted card with X)'
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#6
+    version: 241.5.2
   - id: chk-kind
-    text: 'The kind: banner, interstitial, rewarded video or cross-promo, and where
-      it shows'
-    done: false
+    text: Rewarded video skip of the current level
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#6
+    version: 241.5.2
   - id: chk-frequency
-    text: 'How often it shows: after which action, every Nth level, a cooldown'
-    done: false
+    text: Shown again right after use, now at L15; no cooldown seen
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#6
+    version: 241.5.2
   - id: chk-reward
-    text: 'Rewarded: the offer screen before it and what watching gives'
-    done: false
+    text: 'The current level (L13) counts as won: L13 screen shows briefly, back leads
+      to the race popup, league board (pins unchanged 49), Level completed +25 coins,
+      gift box progress; map advances to L14'
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#6
+    version: 241.5.2
   - id: chk-close
-    text: 'How it closes: the timer before the close cross, where the cross is, what
-      comes after'
-    done: false
+    text: 'Cannot decline: no confirm screen before the video. After the video the
+      X on Reward granted returns to the game'
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#6
+    version: 241.5.2
   found_at:
     text: level 4 (map shown after L3)
     value: 4.0
@@ -895,6 +922,7 @@ features:
     certainty: fact
     source: 20261003-203702-chrono-2FYKPJ#19
   page: features/jump-to-level.md
+  version_seen: 241.5.2
 - id: multi-stage
   name: Multi Stage Level
   status: in_progress
@@ -1183,7 +1211,7 @@ features:
   page: features/interstitial.md
 - id: collections
   name: Collections
-  status: documented
+  status: recheck
   cases:
   - id: chk-entry
     text: 'Map: box button bottom right (shows coin balance, ! badge when something
@@ -1247,7 +1275,7 @@ features:
   page: features/collections.md
 - id: ball-jar
   name: All You Can Play! (modes menu)
-  status: documented
+  status: recheck
   cases:
   - id: locked-card-tap
     text: Tapping a locked mode card does nothing (no tooltip)
@@ -1360,13 +1388,17 @@ features:
     done: true
     source: 20261003-203702-chrono-2FYKPJ#6
   - id: chk-loss
-    text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
-      progress)'
-    done: false
+    text: 'L14 (flame skull): ''Almost! Level failed!'' with tip ''Balls fell out
+      of the level!'' as on a normal level; costs nothing (no lives, coins kept),
+      pins pulled in the try stay on the league score'
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#10
   - id: chk-retry
-    text: Retry and continue offers after a loss and their price (a video, coins);
-      where a retry sends you (the start, the same stage)
-    done: false
+    text: Fail screen offers Skip (rewarded video) and Retry (free); Retry played
+      an interstitial, then L14 restarted from its first board (shot 22); Skip not
+      tried (exp-fail-skip)
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#11
   - id: under-restart
     text: 'Restart icon opens ''You can do better!'' (Restart / Continue); Continue
       closes it; Restart plays an interstitial (skip control opened the Play Store,
@@ -1384,8 +1416,12 @@ features:
       Hard levels (skull node): as the base, or what differs'
     done: false
   - id: under-balls-out
-    text: 'Balls fell out under Hard levels (skull node): as the base, or what differs'
-    done: false
+    text: 'L14 (flame skull) try 1: balls bounced out of the side gaps; the same ''Almost!
+      Level failed!'' screen as the base with the tip ''Balls fell out of the level!'',
+      Skip (video) and Retry; no coin or life cost; pins pulled in the lost try still
+      counted (49 -> 57)'
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#10
   found_at:
     text: level 10
     value: 10.0
@@ -1789,7 +1825,7 @@ features:
   page: features/trophies.md
 - id: gumball
   name: Gumball machine
-  status: documented
+  status: recheck
   cases:
   - id: chk-entry
     text: Collections > gumball tab (1st tab, opens by default)
@@ -1960,7 +1996,8 @@ features:
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
       test'
-    done: false
+    done: true
+    source: 20261005-013818-chrono-2FYKPJ#1
   - id: chk-entry
     text: 'Where to find it: the screen and the button that open it (mark --as entry
       --at X,Y)'
@@ -2018,10 +2055,10 @@ features:
     value: 11.0
   type: level-type
   appeared:
-    text: announced on the map by a 'Color Bucket Level' bubble beside node 19 (seen
-      at progress L11, faint under the league header)
-    certainty: hypothesis
-    source: 20261004-004411-chrono-2FYKPJ#16
+    text: announced on the level map by a 'Color Bucket Level' bubble beside node
+      19, already shown at progress L11-L13 (map screen after relaunch)
+    certainty: fact
+    source: 20261005-013818-chrono-2FYKPJ#1
   locked:
     text: reach the 'Color Bucket Level' node (level 19)
     value: 19.0
@@ -2030,9 +2067,12 @@ features:
   status: in_progress
   cases:
   - id: video-plus-5
-    text: League board after a win offers a video for +5 golden pins (left of Next
-      Level); not taken
-    done: false
+    text: 'Watched after the L14 win: rewarded video (~55 s, Reward granted X) adds
+      5 golden pins (1 -> 6), Total 69 -> 94; button then disappears, once per board;
+      not offered after a Jump to Level skip'
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#19
+    version: 241.5.2
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
@@ -2040,36 +2080,51 @@ features:
     done: true
     source: 20261004-005453-chrono-2FYKPJ#12
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'No own entry: shown on the post-win league board and as a wand counter
+      under the pins counter in the map league panel (shot 16, value 0 before L12)'
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#6
   - id: chk-screen
-    text: 'League board after a win: Pins, Golden Pins and Total Score (Total = Pins
-      + 5 x Golden: 45 + 5 = 50 after L12, 49 + 5 = 54 after L13)'
+    text: 'League board after a win (shot 23): Pins / Golden Pins / Total Score row
+      above the leaderboard, a ''+5 golden pins'' video button left of Next Level'
     done: true
     source: 20261004-005453-chrono-2FYKPJ#9
   - id: chk-effect
-    text: 'What it does: the effect of one unit or one use'
-    done: false
-  - id: chk-balance
-    text: Map league panel shows a wand counter (0 before L12); the league board shows
-      Golden Pins 1 after L12
+    text: 'One golden pin adds 5 to the league Total Score: 45 pins + 1 golden = 50
+      (shot 23); after L13, 49 + 1 golden = 54 (shot 37)'
     done: true
-    source: 20261004-005453-chrono-2FYKPJ#6
+    source: 20261004-005453-chrono-2FYKPJ#17
+  - id: chk-balance
+    text: Shown on the league board (Golden Pins) and the map league panel (wand counter);
+      started at 0, 1 after hard L12, still 1 after normal L13
+    done: true
+    source: 20261004-005453-chrono-2FYKPJ#17
   - id: chk-sources
-    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
-      and how much'
-    done: false
+    text: 'Two sources seen: a golden star-wand pin pulled in a level (+1, hard L12)
+      and the post-win league-board video (+5, once per played win). Ordinary pins:
+      +1 per pin pulled, counted even in a lost try (49 -> 57 after a loss, kept on
+      retry)'
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#19
+    version: 241.5.2
   - id: chk-sinks
-    text: 'Sinks: every way it is spent and the price'
-    done: false
+    text: 'None: golden pins are never spent; they only add 5 points each to the league
+      Total Score (no shop or button uses them on the map, board or Collections)'
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#19
+    version: 241.5.2
   - id: chk-empty
-    text: 'At zero: what happens and the offers to refill it (never spend premium
-      currency to get there)'
-    done: false
+    text: 'Does not apply: started at 0 with no effect beyond a lower league score;
+      no refill offer at 0'
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#19
+    version: 241.5.2
   - id: chk-refill
-    text: 'Refill timer, if any: how long one unit takes and the maximum'
-    done: false
+    text: 'Does not apply: no timer, golden pins come only from levels and the post-win
+      video'
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#19
+    version: 241.5.2
   found_at:
     text: level 12
     value: 12.0
@@ -2081,6 +2136,47 @@ features:
     certainty: fact
     source: 20261004-005453-chrono-2FYKPJ#12
   page: features/golden-pins.md
+- id: daily-tasks
+  name: Daily tasks
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-014031-chrono-2FYKPJ#21
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-today
+    text: 'Today''s claim, task list or challenge: what it gives'
+    done: false
+  - id: chk-calendar
+    text: 'The calendar or the task list: every day or task and its reward'
+    done: false
+  - id: chk-next-day
+    text: 'The next day: what renews and when (a daily follow-up)'
+    done: false
+  - id: chk-missed
+    text: 'A missed day: what is lost or reset'
+    done: false
+  - id: chk-play
+    text: 'If it is a board: play it once, its win and its loss'
+    done: false
+  found_at:
+    text: level 15
+    value: 15.0
+  type: daily
+  appeared:
+    text: map button (clipboard with a star, tooltip 'Take a look on Daily tasks!')
+      first shown on the map after the L14 win
+    certainty: fact
+    source: 20261005-014031-chrono-2FYKPJ#21
 tasks:
 - id: analyze
   title: Analyze the game
@@ -2312,11 +2408,14 @@ tasks:
   title: Claim Daily Rewards day 2 (+50) — day 1 of 1
   kind: daily
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:39:54'
   feature: daily-rewards
   not_before: '2026-10-04T20:39:54'
   source: game
+  closed: '2026-10-05T01:39:07'
+  closed_by: 20261005-013818-chrono-2FYKPJ#1
+  note: Day 2 +50 claimed from launch popup, coins 344
 - id: outcomes-multi-stage
   title: 'Run each outcome once under Multi Stage Level: Balls fell out'
   kind: experiment
@@ -2392,7 +2491,7 @@ tasks:
     to the map at once, no confirmation, no cost; reopening via Play keeps the multi-stage
     progress (stage 4 of 4), The previous session left L10 at stage 4; after the app
     was closed and relaunched this session, L10 opened at stage 4 with stages 1-3
-    ticked, Balls fell out'
+    ticked'
   kind: experiment
   requires: any
   status: open
@@ -2477,10 +2576,15 @@ tasks:
     it sends; decline without watching'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:08:44'
   feature: jump-to-level
   source: session
+  closed: '2026-10-05T01:43:30'
+  closed_by: 20261005-014031-chrono-2FYKPJ#6
+  note: One tap starts a rewarded video directly (no offer screen, so declining was
+    impossible); video counted as an L13 win (+25 coins, league board, map to L14),
+    button moved to L15. Shots 2-11
 - id: study-coin-multiplier
   title: 'Study the win coin multiplier: on which win screens it appears, how the
     moving x2-x5 bar picks the factor, and the close path'
@@ -2559,10 +2663,16 @@ tasks:
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:10:02'
   feature: hard-levels
   source: external
+  closed: '2026-10-04T01:11:23'
+  closed_by: 20261004-005453-chrono-2FYKPJ#9
+  note: Entry, screen, announce, win, differs and frequency closed from L12 (shots
+    17, 23, 25). The only open items, chk-loss and chk-retry, need a deliberate loss
+    on a skull level; that run is the balls-out cell of outcomes-hard-levels, which
+    stays open
 - id: study-bonus-levels
   title: 'Study Bonus levels (character node): open it, walk its screens and tabs,
     verify its cases'
@@ -2681,13 +2791,20 @@ tasks:
   title: 'Find when a win is saved: exit the app on the post-win screens on purpose'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:27:07'
   feature: core-level
   source: session
   plan: Win a level; on the Puzzle Piece or League screen (before the coin screen)
     force-stop via restart --after-win; confirmed if the map shows the level still
     unwon, refuted if the next level is open
+  closed: '2026-10-05T01:40:54'
+  closed_by: 20261005-013818-chrono-2FYKPJ#1
+  note: 'Two wins cut before the post-win flow ended were not saved: L10 (force-stop
+    on the multiplier ad end card, 20261003-211035-chrono-2FYKPJ#23) and L13 (app
+    left on the league board, map back at 13 next day); league pins kept in both.
+    Not a deliberate force-stop, but both cuts land on the plan''s screens'
+  result: confirmed
 - id: exp-gumball-spin
   title: Spin the gumball machine once (video spin) and record the reward
   kind: experiment
@@ -2705,11 +2822,17 @@ tasks:
   title: 'Walls say ''Unlock with daily tasks'': find the daily tasks entry'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:45:19'
   feature: collections
   source: session
   plan: look for a daily tasks button on map or Daily Rewards
+  closed: '2026-10-05T01:52:58'
+  closed_by: 20261005-014031-chrono-2FYKPJ#21
+  note: The Daily tasks entry is a map button on the left (clipboard with a star)
+    that appeared after the L14 win, tooltip 'Take a look on Daily tasks!' (shot 38);
+    feature daily-tasks
+  result: confirmed
 - id: daily-rewards-missed
   title: Skip a day of Daily Rewards and check if the calendar resets
   kind: followup
@@ -2908,13 +3031,18 @@ tasks:
     it?'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T00:55:51'
   feature: race
   source: session
   plan: Watch the map and the Play! tap on the next few levels after 'No, thanks';
     confirmed if the race popup or a race button shows again (mark it as entry), refuted
     if nothing by L16; when it shows, take Go! to study it
+  closed: '2026-10-05T01:53:12'
+  closed_by: 20261005-014031-chrono-2FYKPJ#3
+  note: After declining at L11, the 'New race started!' popup came back on leaving
+    L13 (15 levels, 5h58m, +250, shot 7); declined again; no race button on the map
+  result: confirmed
 - id: unlock-color-bucket-level
   title: 'Unlock Color Bucket Level: reach the ''Color Bucket Level'' node (level
     19)'
@@ -2931,31 +3059,44 @@ tasks:
   title: 'Golden pins: what they give in the league and the +5 golden pins video offer'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T01:08:12'
   feature: golden-pins
   source: session
   plan: after a win with a golden pin, note Pins/Golden Pins/Total Score; take the
     +5 video once and check the score change
+  closed: '2026-10-05T01:53:11'
+  closed_by: 20261005-014031-chrono-2FYKPJ#19
+  note: 'After the L14 win: Pins 64, Golden 1, Total 69; the +5 video gave Golden
+    6, Total 94 (golden = 5 points), rank 458 -> 343; offered once per played win,
+    not after a Jump to Level skip'
+  result: confirmed
 - id: check-l13-kept
-  title: Is the L13 win saved? The post-win flow was cut on the league board when
-    the owner took the phone
+  title: 'Check at session start whether the L13 win was kept: the owner took the
+    phone on the post-win league board'
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T01:10:05'
   feature: core-level
-  source: session
-  note: 20261004-005453-chrono-2FYKPJ#17
+  source: game
+  note: Map at 13 = reverted. Win flow cut at league board -> level not saved, but
+    league pins (49) were kept. Case for exp-win-saved-when
+  closed: '2026-10-05T01:39:08'
+  closed_by: 20261005-013818-chrono-2FYKPJ#1
 - id: exp-golden-pin-levels
-  title: Do golden pins appear only on skull (hard) levels? Record each level with
-    a golden pin
+  title: 'Find which levels carry a golden star-wand pin: only skull (hard) levels
+    or others too'
   kind: experiment
   requires: any
   status: open
   created: '2026-10-04T01:10:05'
   feature: golden-pins
   source: session
+  plan: 'On every level from L14 on, check the board for a golden star-wand pin and
+    read Golden Pins on the league board after the win. Confirmed if it shows on skull/flame
+    levels (L14, L17) and never on normal ones (L13 gave none: golden stayed 1, shot
+    37)'
 - id: gumball-price-next
   title: 'Gumball: coin spin once the balance is 375 or more; does the price rise
     again? Is there a cap or cooldown on Spin with video?'
@@ -2975,3 +3116,76 @@ tasks:
   feature: pull-fest
   source: game
   not_before: '2026-10-10T02:00:00'
+- id: study-golden-pins
+  title: 'Study golden pins: record every source (golden pin in a level, the +5 video),
+    any sink, and whether they reset with the league week'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-04T01:11:34'
+  feature: golden-pins
+  source: session
+  closed: '2026-10-05T01:49:43'
+  closed_by: 20261005-014031-chrono-2FYKPJ#19
+  note: 'Sources: golden pin in a level (+1), post-win video (+5, watched after L14:
+    1->6, total 69->94). No sinks. Week reset not observable now (5d 1h left): followup
+    golden-pins-week-reset'
+- id: exp-flame-skull
+  title: Find how a flame-skull level (L14) differs from a plain skull level (L12)
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-04T01:11:35'
+  feature: hard-levels
+  source: session
+  plan: 'Play L14 (flame skull on the map, shot 16): mark its board and header, note
+    pins, golden pins, coins and any popup against L12. Confirmed different if the
+    board, rules, reward or announcement differ; else record it as the same hard level'
+  closed: '2026-10-05T01:53:10'
+  closed_by: 20261005-014031-chrono-2FYKPJ#16
+  note: 'L14 (flame skull) played like L12: a normal pin-pull board, same header with
+    the red ring (flame badge), no popup, no golden pin (Golden stayed 1 until the
+    +5 video), same loss and win flow, +25 coins. Only the board is harder (lost try
+    1). No difference beyond the badge'
+  result: refuted
+- id: update-241-5-2
+  title: update-241-5-2
+  kind: followup
+  requires: any
+  created: '2026-10-05T01:39:16'
+  status: done
+  closed: '2026-10-05T01:52:58'
+  closed_by: 20261005-014031-chrono-2FYKPJ#0
+  note: 'Phone on 241.5.2; map entry points as on 241.5.1 (shot 2); only new: Daily
+    tasks button after L14 (feature daily-tasks)'
+- id: golden-pins-week-reset
+  title: Check whether pins and golden pins reset when the league week ends (5d 1h
+    left on 2026-10-05 01:50)
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-05T01:49:38'
+  feature: golden-pins
+  not_before: '2026-10-10T04:00:00'
+  source: game
+- id: study-map-quest-list
+  title: First look at the new clipboard-with-star map button (appeared after L14)
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-05T01:50:21'
+  feature: map-quest-list
+  source: session
+  closed: '2026-10-05T01:52:57'
+  closed_by: 20261005-014031-chrono-2FYKPJ#21
+  note: 'duplicate: its feature map-quest-list was never created (the session''s feature
+    op failed); the button''s tooltip reads ''Take a look on Daily tasks!'', recorded
+    as feature daily-tasks (type daily), whose study goal the planner makes'
+- id: study-daily-tasks
+  title: 'Study Daily tasks: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T01:53:20'
+  feature: daily-tasks
+  source: external
