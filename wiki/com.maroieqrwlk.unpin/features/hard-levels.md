@@ -95,6 +95,7 @@ Version 241.5.1.
 
 ## Not verified
 
+- Colours mixed (the Color Bucket fail) under a hard level, if one has colour cups: as the base, or what differs <!-- case:under-colour-mix -->
 - Each loss: the fail screen and what it costs <!-- case:chk-loss -->
 - Retry and continue offers after a loss <!-- case:chk-retry -->
 - Restart under a hard level: as the base, or what differs <!-- case:under-restart -->

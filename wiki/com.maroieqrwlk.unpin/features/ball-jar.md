@@ -4,8 +4,8 @@ title: "All You Can Play! (modes menu)"
 type: feature
 feature: ball-jar
 version_seen: 241.5.1
-verified_at: 2026-10-03
-sources: [20261003-211035-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-211035-chrono-2FYKPJ, 20261006-012240-chrono-2FYKPJ]
 ---
 
 # All You Can Play! (modes menu)
@@ -37,6 +37,15 @@ A back arrow and the title **All You Can Play!** at the top, then the heading **
 card per mode: the mode's name, a picture of it and the line "Unlock at Level N" [^s1]. The whole list is
 in greyscale while the modes are locked [^s1]. Under the cards a grey box reads "Complete more levels to
 unlock new modes" [^s1]. The game's banner ad sits at the bottom [^s3].
+
+On version 241.5.2, after the level 20 win, the jar on the map carried a **NEW** badge, and the list had two
+playable cards in colour above Upcoming Modes: Sketchman IQ Test (Level 2, its IQ Level gauge) and Challenge
+with its own **NEW** badge (Level 1, Reward 300); Merge Balls (level 22), Protect The Balloon (30) and Dark
+Levels (50) were still greyed [^s6] [^s7]. See [Sketchman IQ Test](mode-iq-test.md) and
+[Challenge](mode-challenge.md).
+
+![All You Can Play! at level 21: Sketchman IQ Test and Challenge (NEW) in colour, three modes greyed under Upcoming Modes](../img/20261006-mode-challenge-entry-ae9185e4.webp) [^s7]
+*All You Can Play! after the level 20 win: two open modes, the new one marked NEW (a local banner ad blacked out)*
 
 ## What you can do
 
@@ -91,7 +100,7 @@ Version 241.5.1.
 | Where to find it: the screen and the button that open it <!-- case:chk-entry --> | Tapped the jar icon on the map | ✅ The jar icon, top left of the map (left open in the map) | [^s2] |
 | What it looks like: its screen <!-- case:chk-screen --> | Opened it | ✅ The modes list, frame above (left open in the map) | [^s1] |
 | Every entry point on it <!-- case:chk-entries --> | Read the cards | not verified: five locked modes seen; none opened |  |
-| Badges, timers and counters on it and what each points to <!-- case:chk-badges --> | — | not verified: the ! badge on the map icon only; nothing inside |  |
+| Badges, timers and counters on it and what each points to <!-- case:chk-badges --> | Won level 20, opened the jar | ✅ When a mode unlocks the jar on the map shows NEW and the new mode's card carries NEW too (Challenge after the level 20 win); a purple ! on the jar earlier (level 10, the Sketchman unlock) | [^s7] |
 | What changes on it with progress <!-- case:chk-changes --> | — | not verified: no mode unlocked yet |  |
 
 ## Not verified
@@ -99,7 +108,6 @@ Version 241.5.1.
 - Where to find it: the jar icon is the entry (frame above); the map still has the item open <!-- case:chk-entry -->
 - What it looks like: the modes list (frame above); the map still has the item open <!-- case:chk-screen -->
 - Every entry point on it: what an unlocked mode card opens <!-- case:chk-entries -->
-- Badges, timers and counters: whether the ! badge comes back when a mode unlocks <!-- case:chk-badges -->
 - What changes on it with progress: the card of an unlocked mode, at level 16 or later <!-- case:chk-changes -->
 - When the jar icon first shows up on the map (before level 10).
 
@@ -108,3 +116,6 @@ Version 241.5.1.
 [^s3]: session 20261003-211035-chrono-2FYKPJ, step 2 — [video at 0:53](https://youtu.be/Mpfk4cqdltQ?t=53)
 [^s4]: session 20261003-211035-chrono-2FYKPJ, step 3 — [video at 1:07](https://youtu.be/Mpfk4cqdltQ?t=67)
 [^s5]: session 20261003-211035-chrono-2FYKPJ, step 23 — [video at 11:41](https://youtu.be/Mpfk4cqdltQ?t=701)
+
+[^s6]: session 20261006-012240-chrono-2FYKPJ, step 18 — [video at 10:17](https://youtu.be/jf_j5LiHuRs?t=617)
+[^s7]: session 20261006-012240-chrono-2FYKPJ, step 19 — [video at 11:16](https://youtu.be/jf_j5LiHuRs?t=676)

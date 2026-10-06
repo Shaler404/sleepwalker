@@ -2,7 +2,7 @@
 game: _common
 title: Common agent lessons
 type: agent
-verified_at: 2026-10-04
+verified_at: 2026-10-06
 ---
 
 # Common agent lessons
@@ -92,3 +92,9 @@ confirmed on two versions in a row is deleted.
   reopen the level and look before recording what was kept.
   *Confirmed: 20261003-212548-chrono-2FYKPJ, Block Blast! 10.8.1; 20261003-232850-chrono-2FYKPJ, MeowTrail 1.0.2.*
   [s:20261003-212548-chrono-2FYKPJ#29] [s:20261003-232850-chrono-2FYKPJ#23]
+- Take a `shot` of the win screen before `level end won`: the frame a move returns is taken too early and the command is refused (error code 2), which can leave the level open and the next level logged under it.
+  *Confirmed: 20261005-231555-chrono-2FYKPJ, Block Blast 10.8.1; 20261006-003220-chrono-2FYKPJ, Cryptogram 3.6.1; 20261005-221436-chrono-2FYKPJ, MeowTrail 1.0.2; 20261005-124219-chrono-2FYKPJ, Amaze GO 1.33.0; 20261005-151039-chrono-2FYKPJ, Pull the Pin 241.5.2; 20261005-123456-chrono-2FYKPJ, Meowdoku 1.19.1.* [s:20261005-231555-chrono-2FYKPJ#34] [s:20261006-003220-chrono-2FYKPJ#17] [s:20261005-221436-chrono-2FYKPJ#18] [s:20261005-124219-chrono-2FYKPJ#12] [s:20261005-151039-chrono-2FYKPJ#26] [s:20261005-123456-chrono-2FYKPJ#6]
+- The skip icon at the top left of an interstitial (about 45,110) opens the Play Store. Press Back or `launch` instead: Back closes an end card (after about 25-45 s on a frozen playable), `launch` returns from the store.
+  *Confirmed: 20261006-010939-chrono-2FYKPJ, Meowdoku 1.19.1; 20261006-024420-chrono-2FYKPJ, Cryptogram 3.6.1; Back on the end card after a wait: 20261005-231555-chrono-2FYKPJ, Block Blast 10.8.1.* [s:20261006-010939-chrono-2FYKPJ#28] [s:20261006-024420-chrono-2FYKPJ#32] [s:20261005-231555-chrono-2FYKPJ#20-25]
+- A tap sent in the coordinates of the previous frame misses after a hi-res frame or a popup that moves with the keyboard: take a frame after every layout change before the next tap.
+  *Confirmed: 20261006-011754-chrono-2FYKPJ, Block Blast 10.8.1; 20261005-143208-chrono-2FYKPJ, Cryptogram 3.6.1.* [s:20261006-011754-chrono-2FYKPJ#7] [s:20261005-143208-chrono-2FYKPJ#3]

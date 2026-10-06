@@ -3,9 +3,9 @@ game: com.maroieqrwlk.unpin
 title: "Puzzle piece collection"
 type: feature
 feature: puzzle-pieces
-version_seen: 241.5.1
-verified_at: 2026-10-03
-sources: [20261003-203702-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ]
+version_seen: 241.5.2
+verified_at: 2026-10-05
+sources: [20261003-203702-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261005-230946-chrono-2FYKPJ]
 ---
 
 # Puzzle piece collection
@@ -23,6 +23,8 @@ After winning level 6 (the puzzle-piece node on the map): 'Puzzle Piece Found!' 
 - The map: a round green badge with a puzzle piece beside a level node (levels 6, 10 and 14) [^s2]
   [^s4].
 - Collections (the box button on the map), the red puzzle tab [^s3].
+- The [map chest](map-chest.md): its second prize was a piece, on the same "Puzzle Piece Found!" screen
+  (version 241.5.2) [^s7].
 
 ![Map: the green puzzle-piece node beside level 6 (and level 10)](../img/20261003-puzzle-pieces-entry-99fc23cc.webp) [^s2]
 *The map after the level 3 win: green puzzle-piece badges beside levels 6 and 10*
@@ -67,6 +69,10 @@ Version 241.5.1.
   piece; not verified.
 - The picture is 3x3, so nine pieces make one picture [^s1].
 - **Get Another** offers a second piece for a video; not tried [^s1].
+- Version 241.5.2: the map chest is a second source. The chest opened at level 18 gave one piece, the centre
+  cell of a 3x3 picture of a stack of pancakes, with Get Another (video) and Tap to continue; the coins did not
+  change [^s7] [^s8]. Inferred from the picture:
+  it belongs to the Food album; not verified.
 - Inferred from the mountain on the piece: the first picture belongs to the Landscapes album; not verified.
 
 ## Cases
@@ -75,6 +81,7 @@ Version 241.5.1.
 |---|---|---|---|
 | Why it appeared <!-- case:chk-appeared --> | Won level 6 | ✅ Puzzle Piece Found! | [^s1] |
 | The L10 multi stage win gives 'Puzzle Piece Found' 1/9 with a Get Another (video) button and Tap to continue, before the league and coin screens <!-- case:after-l10 --> | Won level 10 | ✅ One piece of a second picture | [^s5] |
+| The map chest is a second source of pieces: chest 2 gave the centre piece of a 3x3 pancake <!-- case:chest-source --> | Opened the map chest at level 18 | ✅ Puzzle Piece Found! with one pancake piece; coins unchanged | [^s7] |
 | Where to find it <!-- case:chk-entry --> | Opened the puzzle tab in Collections | not verified: the albums were not opened | [^s3] |
 | What it looks like <!-- case:chk-screen --> | — | not verified: an album's inside not seen |  |
 | The progress <!-- case:chk-progress --> | Won level 6 | not verified: 1 of 9 pieces in the first picture | [^s1] |
@@ -89,7 +96,7 @@ Version 241.5.1.
 - What it looks like: the album's screen with the picture and its pieces <!-- case:chk-screen -->
 - The progress: where the piece count shows; why level 10's piece is in another picture than level 6's <!-- case:chk-progress -->
 - The items: how many pictures each album holds <!-- case:chk-items -->
-- How a piece is earned: Get Another for a video; any other source <!-- case:chk-earn -->
+- How a piece is earned: Get Another for a video; how often the map chest gives a piece instead of coins <!-- case:chk-earn -->
 - Using an item: whether a finished picture does anything <!-- case:chk-use -->
 - Completing a picture or an album: the reward <!-- case:chk-complete -->
 
@@ -100,3 +107,6 @@ Version 241.5.1.
 
 [^s5]: session 20261003-211035-chrono-2FYKPJ, step 14 — [video at 6:19](https://youtu.be/Mpfk4cqdltQ?t=379)
 [^s6]: session 20261003-211035-chrono-2FYKPJ, step 15 — [video at 6:40](https://youtu.be/Mpfk4cqdltQ?t=400)
+
+[^s7]: session 20261005-230946-chrono-2FYKPJ, step 9 — [video at 3:40](https://youtu.be/sunhCvwxYTk?t=220)
+[^s8]: session 20261005-230946-chrono-2FYKPJ, step 10 — [video at 4:10](https://youtu.be/sunhCvwxYTk?t=250)

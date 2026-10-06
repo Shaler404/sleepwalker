@@ -59,6 +59,12 @@ played, so a failing drag is never repeated. The note starts with what the last 
 Moves are all the tray pieces in order (their outcome is known: the tray does not refill before the last
 one); rescan is always true (the refill is random).
 
+Adventure (lab 2026-10-06): the same solver plays the Adventure levels. The mode follows the screen (back
+chevron top left = adventure = score mode; gold crown = classic = gameover) unless --board sets it. Done
+(no moves) on: the goal header all checked, the result panel (won: purple Next Level; lost: green Retry).
+A passing animation (gem fly, line clear, refill glow) gets a "WAIT" round: a tray piece pulled down and
+let go, so the run takes a new frame instead of stopping (at most 3 in a row).
+
 Fallback: --board FILE with {"board": ["........", ...8 rows, '#' filled], "pieces": [[".#.", "###"], null,
 ["###"]] (per slot, null = empty slot)} uses the frame only for geometry.
 """
@@ -241,6 +247,56 @@ def read_tray(a, x0, y0, cell):
         p["blocks"] = [(sx0 + bx, ty0 + by) for bx, by in p["blocks"]]
         pieces.append(p)
     return pieces, notes
+
+
+# ---------------------------------------------------------------- screens around the board (lab 2026-10-06)
+# Measured on 1080x2340 frames, regions in 730-wide model px (scaled by W/730). Adventure sessions -235233,
+# -004506, -015205 ended 7 of 8 runs "gave up" on screens that are the level's natural end or a passing gem
+# animation: the goal header all green-checked, the result panel, gems flying over the board.
+
+def _reg(a, x0, y0, x1, y1):
+    s = a.shape[1] / 730
+    return a[int(y0 * s):int(y1 * s), int(x0 * s):int(x1 * s)].reshape(-1, 3)
+
+
+def is_adventure(a):
+    """Adventure shows a light back chevron at the top left; classic a gold crown with the best score
+    (chevron 0.10 of the patch, gold 0 / gold 0.24, chevron 0)."""
+    tl = _reg(a, 30, 95, 110, 175)
+    gold = ((tl[:, 0] > 200) & (tl[:, 1] > 140) & (tl[:, 2] < 100)).mean()
+    chev = ((tl[:, 2] > 200) & (tl[:, 0] > 130) & (tl[:, 0] < 220)).mean()
+    return chev > 0.05 and gold < 0.02
+
+
+def goals_done(a):
+    """Adventure gem goals: under each goal icon a white counter, a green check once collected. All checked
+    (green 0.085 of the band, white 0) = the level is won; the result panel follows (-015205 frame 22: the
+    solver planned a drop on the emptied board, which 'did not drop')."""
+    hb = _reg(a, 150, 258, 580, 318)
+    green = ((hb[:, 1] > 150) & (hb[:, 0] < 140) & (hb[:, 2] < 110)).mean()
+    white = (hb.min(1) > 215).mean()
+    return green > 0.03 and white < 0.005
+
+
+def result_panel(a):
+    """'won' / 'lost' / None: the adventure result screen, a dark navy page with the light 'Consecutive
+    Victories' banner on top and a purple 'Next (Hard) Level' button (won) or a green 'Retry' (lost)."""
+    page = _reg(a, 5, 1350, 60, 1550).mean(0)
+    ban = _reg(a, 180, 175, 550, 290).mean(0)
+    if not (page.max() < 90 and page[2] > page[0] and ban.min() > 170):
+        return None
+    btn = _reg(a, 180, 1100, 550, 1180).mean(0)
+    if btn[2] > 190 and btn[0] > 130 and btn[1] < 150:
+        return "won"  # purple "Next Hard Level"
+    if not (btn[1] > 150 and btn[0] < 130 and btn[2] < 100):
+        return None
+    # green: "Next Level" (won, text ends at x ~512 of 730) or "Retry" (lost, text ends at ~470)
+    s = a.shape[1] / 730
+    strip = a[int(1110 * s):int(1170 * s), int(160 * s):int(570 * s)]
+    cols = np.where((strip.min(2) > 215).sum(0) > 2)[0]
+    if not len(cols):
+        return None
+    return "won" if 160 + cols[-1] / s > 495 else "lost"
 
 
 # ---------------------------------------------------------------- rules
@@ -432,14 +488,46 @@ def solve(image, board=None, frame_scale=1.0, state=None):
     # Every classic level is played to its game-over screen (an endless game played for score never ends
     # within the budget), so filling is the default and needs no --board: a typed --board in every call is
     # what the lab reads as a bypassed solver. {"mode": "score"} plays for score (clears lines).
-    mode = (state or {}).get("mode", DEFAULT_MODE)
+    # Adventure (the same board with a goal) plays for score with no --board: the back chevron at the top left
+    # says which mode it is, on every board frame (lab 2026-10-06: two adventure sessions passed --board or
+    # typed the JSON inline, which failed once). An explicit mode (--board, kept in the memory) still wins;
+    # memories older than this kept "mode" for every run: only their score mode counts as explicit.
+    st = state or {}
+    explicit = st.get("mode") if (st.get("mode_set") or st.get("mode") == "normal") else None
     if board and board.get("mode"):
-        mode = "normal" if board["mode"] in ("score", "normal") else board["mode"]
-    keep = {"mode": mode}
+        explicit = "normal" if board["mode"] in ("score", "normal") else board["mode"]
+    keep = {"mode": explicit, "mode_set": True} if explicit else {}
+    rp = result_panel(a)
+    if rp:
+        return {"moves": [], "rescan": False, "done": True, "state": keep,
+                "note": ("LEVEL WON: the result panel (Consecutive Victories, Next Level)" if rp == "won" else
+                         "LEVEL LOST: the result panel (You Can Do It!, Retry)") + ": level end " + rp}
+    adventure = is_adventure(a)
+    mode = explicit or ("normal" if adventure else DEFAULT_MODE)
     geo = find_board(a)
     if isinstance(geo, str):
-        return _no(f"not a classic board: {geo}", state={**(state or {}), **keep})
+        return _no(f"not a classic board: {geo}", state={**st, **keep})
     x0, y0, cell = geo
+    if adventure and goals_done(a):
+        return {"moves": [], "rescan": False, "done": True, "state": keep,
+                "note": "LEVEL WON: every goal in the header is checked (the result panel follows)"}
+
+    def wait(why):
+        """A passing animation (gems flying to their counters, a line clearing, the refill glow): instead of
+        stopping the run, pull a tray piece down and let it go back (the refill warm-up, harmless) so the run
+        takes a fresh frame. At most 3 in a row; the pull length differs each time (the harness stops a run
+        that repeats its moves)."""
+        k = st.get("waits", 0)
+        if k >= 3 or (board and board.get("board")):
+            return _no(f"{why} ({k} waits)", state={**st, **keep})
+        tray_w, _ = read_tray(a, x0, y0, cell)
+        ps = [p for p in tray_w if p]
+        if not ps:
+            return _no(why, state={**st, **keep})
+        t = min(ps, key=lambda p: len(p["shape"]))["touch"]
+        pull = min(H - 2, t[1] + (WARMUP_PULL + 0.1 * k) * cell)
+        return {"moves": [[round(t[0]), round(t[1]), round(t[0]), round(pull)]], "rescan": True, "done": False,
+                "note": f"WAIT {k + 1}: {why}; pulled a tray piece back as a pause", "state": {**st, **keep, "waits": k + 1}}
     # page background left of the board and under it, clear of the glowing dot ring (score ~319 on)
     bg_probe = np.vstack([a[int(y0):int(y0 + 8 * cell), :int(x0 * .3)].reshape(-1, 3),
                           a[int(y0 + 8 * cell + .55 * cell):int(y0 + 8 * cell + .8 * cell)].reshape(-1, 3)])
@@ -462,8 +550,7 @@ def solve(image, board=None, frame_scale=1.0, state=None):
     else:
         grid, bad = classify_cells(a, x0, y0, cell)
         if bad:
-            return _no(f"{len(bad)} board cell(s) neither empty nor a block (animation or popup): {bad[:3]}",
-                       state={**(state or {}), **keep})
+            return wait(f"{len(bad)} board cell(s) neither empty nor a block (animation or popup): {bad[:3]}")
         # a refilled tray glows (light-blue halo around each new piece) for ~1 s: the halo read as blocks
         # (session 20261003-212548 frame 39: a 1x2 and two 1x4 read as 3x4 crosses). Pixels slightly off
         # the page blue cover ~7% of a slot normally, 24-28% with the glow.
@@ -472,11 +559,11 @@ def solve(image, board=None, frame_scale=1.0, state=None):
         halo = max((((dist > 20) & (dist <= 70))[:, int(x0 + k * 8 * cell / 3):int(x0 + (k + 1) * 8 * cell / 3)]).mean()
                    for k in range(3))
         if halo > 0.18:
-            return _no(f"tray glow ({halo:.2f}): the refill is animating", state={**(state or {}), **keep})
+            return wait(f"tray glow ({halo:.2f}): the refill is animating")
         tray, tray_notes = read_tray(a, x0, y0, cell)
     bb = _bb_of(grid)
     if place(bb, 0)[1]:
-        return _no("the board has a full line: a clear is still animating", state={**(state or {}), **keep})
+        return wait("the board has a full line: a clear is still animating")
     pieces = [(s, p["shape"]) for s, p in enumerate(tray) if p]
     board_txt = "/".join("".join("#" if v else "." for v in row) for row in grid)
     if not pieces:

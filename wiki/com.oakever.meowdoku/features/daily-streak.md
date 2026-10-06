@@ -4,8 +4,8 @@ title: "Daily Streak"
 type: feature
 feature: daily-streak
 version_seen: 1.19.1
-verified_at: 2026-10-03
-sources: [20261003-200440-chrono-2FYKPJ, 20261003-201915-chrono-2FYKPJ, 20261003-202631-chrono-2FYKPJ]
+verified_at: 2026-10-05
+sources: [20261003-200440-chrono-2FYKPJ, 20261003-201915-chrono-2FYKPJ, 20261003-202631-chrono-2FYKPJ, 20261005-003925-chrono-2FYKPJ, 20261005-143752-chrono-2FYKPJ]
 ---
 
 # Daily Streak
@@ -21,11 +21,12 @@ Yarn counter at top of Home opens it; current 0, best 2, 7-day row with gift on 
 
 ## Where to find it
 
-On [Home](home.md), the yarn counter at the top centre (it showed 0) opens Daily Streak [^s2]. It also comes
-up by itself after the day's first won level, between the leaderboard and the win screen [^s3] [^s4].
+On [Home](home.md), the yarn counter at the top centre (a ball of yarn with feathers and the current streak:
+0 on 3 October, 2 on 5 October) opens Daily Streak [^s2] [^s13]. It also comes up by itself after the
+day's first won level, between the leaderboard and the win screen [^s3] [^s4].
 
-![Home screen: the yarn counter at the top centre opens Daily Streak](../img/20261003-daily-streak-entry-ad85780f.webp) [^s2]
-*Home screen: the yarn counter at the top centre opens Daily Streak*
+![Home screen: the yarn counter reading 2 at the top centre, between the profile picture and the gear](../img/20261005-daily-streak-entry-af85780b.webp) [^s14]
+*Home screen: the yarn counter at the top centre (reading 2) opens Daily Streak*
 
 ## What it looks like
 
@@ -44,6 +45,21 @@ Opened from Home with a streak of 0, the row ran WED to TUE, all empty [^s1]:
 
 ![Current streak 0, best 2, week row with gift on last day](../img/20261003-daily-streak-screen-f221995a.webp) [^s1]
 *Daily Streak from Home before any win: a pale ball of yarn, "0 Current Streak", "Best Streak: 2", the days WED to TUE with a gift on TUE*
+
+After the second break, the row started on the day of the new streak: MON to SUN on Monday 5 October, MON
+ticked, the gift on SUN [^s12]:
+
+![Current streak 1, best 2, the row MON to SUN with MON ticked and a gift on SUN, Continue](../img/20261005-daily-streak-screen-a6a61999.webp) [^s12]
+*Daily Streak after Give up on the second break: "1 Current Streak", "Best Streak: 2", MON ticked, a gift on SUN, Continue*
+
+Opened from Home at about 14:41 the same Monday, the screen read "2 Current Streak", "Best Streak: 2", with
+MON and TUE ticked, the gift on SUN and a back arrow [^s13]:
+
+![Current streak 2, best 2, the row MON to SUN with MON and TUE ticked and a gift on SUN, back arrow](../img/20261005-daily-streak-screen-b6638919.webp) [^s13]
+*Daily Streak from Home on Monday 5 October at about 14:41: an orange ball of yarn, "2 Current Streak", "Best Streak: 2", MON and TUE ticked, a gift on SUN*
+
+Tapping the gift on SUN changed nothing on screen [^s15]. Android Back returned to Home
+[^s16].
 
 ### Streak interrupted
 
@@ -73,8 +89,22 @@ The tap lights the ball, the screen switches to the streak of 1, and the first d
   win offered to restore the 2 days for a rewarded video [^s3]. Give up kept the best streak at 2 and started
   a new streak at 1 [^s4].
 - The row: from Home at a streak of 0 it ran WED to TUE [^s1]; after the new streak began on Saturday it ran
-  SAT to FRI, with SAT lit [^s4]. Inferred: the row starts on the first day of the current streak.
-- The gift on the seventh day: its content was not opened.
+  SAT to FRI, with SAT lit [^s4]; after the next break it began on Monday and ran MON to SUN, MON ticked
+  [^s12]. Inferred: the row starts on the first day of the current streak.
+- A second break: no level was won on Sunday 4 October; on Monday 5 October the day's first win (Level 130)
+  brought the same popup, again "2 days of Daily Streak interrupted" with Restore (video) and Give up,
+  although the streak had restarted at 1 on Saturday. Give up led to "Tap the yarn ball", then current 1,
+  best 2 [^s12]. Inferred: the number on the popup is not the streak that was just lost; what it counts is
+  not verified.
+- Same-day count: on Monday 5 October the streak was 1 (MON ticked) after the win shortly after 00:39
+  [^s12]; at about 14:38 the Home counter already read 2, before any win in that session, and the screen
+  showed MON and TUE ticked [^s17] [^s13]. A session ran between them (about 12:34) whose wins did not
+  record a streak screen. So the streak went from 1 to 2 within one calendar day. Inferred: the TUE tick
+  marks the streak's second day, not the weekday; why a second day counted on the same date is not
+  verified (hypothesis: the streak day does not end at local midnight).
+- The day's later wins show nothing: the clean Level 132 win at about 14:40 went from the leaderboard to the
+  win screen with no streak screen [^s18] [^s19].
+- The gift on the seventh day: tapping it shows nothing; its content was not seen [^s15].
 - Restore was not tapped: what the video gives back is not verified.
 - Opened from Home, the back arrow returned to Home; after a win, Continue led to the win screen [^s7] [^s4].
 
@@ -87,8 +117,8 @@ Version 1.19.1.
 | Daily Streak screen: current streak 0, best streak 2, a Wed-Tue week row with a gift on the 7th day <!-- case:chk-screen --> | Opened from the yarn counter, frame marked | ✅ | [^s1] |
 | Yarn counter at the top of Home (0) opens it; it counts consecutive days (current 0, best 2) <!-- case:chk-counter --> | Yarn counter tapped | ✅ | [^s1] |
 | Why it appeared: the trigger that brought it up (the first launch, a level won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to test <!-- case:chk-appeared --> | The yarn counter on Home | ✅ | [^s1] |
-| Where to find it: the screen and the button that open it (mark --as entry --at X,Y) <!-- case:chk-entry --> | Yarn counter tapped; also shown by itself after the day's first win | ✅ | [^s2] |
-| The reward for each step of the streak <!-- case:chk-rewards --> | Only the day-7 gift seen, not opened | not verified | [^s4] |
+| The yarn counter at the top of Home opens the Daily Streak screen; it also comes up by itself after the day's first win <!-- case:chk-entry --> | Yarn counter tapped on two days | ✅ | [^s13] |
+| The rewards: only the day-7 gift box (SUN) is shown; tapping it does nothing; its content not shown <!-- case:chk-rewards --> | The gift tapped | ✅ | [^s15] |
 | What shows during a level while the streak runs <!-- case:chk-in-level --> | Nothing about the streak on the level screen of Levels 127 and 128 | not verified | [^s6] |
 | What breaks it (a loss, a quit, a missed day) and what the break costs <!-- case:chk-break --> | A 2-day streak found broken; Give up: streak 1, best 2 | ✅ | [^s3] |
 | Offers to keep it after a break and their price (a video, coins) <!-- case:chk-save --> | Restore for a rewarded video offered after the win; Give up chosen | ✅ | [^s3] |
@@ -96,12 +126,16 @@ Version 1.19.1.
 | Restart under Daily Streak: as the base <!-- case:under-restart --> | Settings > Restart on Level 130: the board cleared, no popup from the event or the streak | ✅ | [^s8] |
 | Quit under Daily Streak: as the base <!-- case:under-quit --> | Back arrow on Level 130: straight to Home, no event or streak popup | ✅ | [^s9] |
 | Exit the app under Daily Streak: as the base <!-- case:under-exit-app --> | Android Back on Home: the Quit popup, its cross cancelled | ✅ | [^s10] |
+| Second break (Monday 5 October, the day's first win on Level 130): "2 days of Daily Streak interrupted", Restore (video) or Give up; Give up, then "Tap the yarn ball", then current 1, best 2, the row MON to SUN starting that day, a gift on day 7 <!-- case:second-break --> | Level 130 won after a day with no win; Give up, the yarn ball tapped | ✅ | [^s12] |
+| Streak 2, best 2, MON and TUE ticked at about 14:41 on Monday 5 October, though it was 1 with MON ticked shortly after 00:39 that day; the cause of the 2 is not known <!-- case:count-shown --> | Screen opened from Home | not verified | [^s13] |
 | Out of Fishes under Daily Streak: as the base <!-- case:under-out-of-fishes --> | Three wrong cats on Level 130: the Out of Fishes screen, no leaderboard or streak popup after the loss | ✅ | [^s11] |
 
 ## Not verified
 
-- The reward for each day, and what the day-7 gift holds <!-- case:chk-rewards -->
+- What the day-7 gift holds, and whether other days pay anything
 - What shows during a level <!-- case:chk-in-level -->
+- Why the streak read 2 on the same Monday it restarted at 1: when a streak day ends (local midnight or another boundary) <!-- case:count-shown -->
+- Why the popup said "2 days" on the second break, when the streak had restarted at 1
 - Whether the break happens at local midnight or after 24 h without a win; what Restore gives back
 
 [^s1]: session 20261003-200440-chrono-2FYKPJ, step 19 — [video at 3:11](https://youtu.be/Pqx4QY-FpBA?t=191)
@@ -116,3 +150,13 @@ Version 1.19.1.
 [^s9]: session 20261003-202631-chrono-2FYKPJ, step 21 — [video at 6:40](https://youtu.be/3-USmjAyOV8?t=400)
 [^s10]: session 20261003-202631-chrono-2FYKPJ, step 22 — [video at 6:55](https://youtu.be/3-USmjAyOV8?t=415)
 [^s11]: session 20261003-202631-chrono-2FYKPJ, step 17 — [video at 5:40](https://youtu.be/3-USmjAyOV8?t=340)
+
+[^s12]: session 20261005-003925-chrono-2FYKPJ, step 11 — [video at 2:28](https://youtu.be/CkktBjH7fAI?t=148)
+
+[^s13]: session 20261005-143752-chrono-2FYKPJ, step 13 — [video at 3:19](https://youtu.be/K_i7fJ2MDQo?t=199)
+[^s14]: session 20261005-143752-chrono-2FYKPJ, step 10 — [video at 3:00](https://youtu.be/K_i7fJ2MDQo?t=180)
+[^s15]: session 20261005-143752-chrono-2FYKPJ, step 14 — [video at 3:30](https://youtu.be/K_i7fJ2MDQo?t=210)
+[^s16]: session 20261005-143752-chrono-2FYKPJ, step 15 — [video at 3:52](https://youtu.be/K_i7fJ2MDQo?t=232)
+[^s17]: session 20261005-143752-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/K_i7fJ2MDQo?t=0)
+[^s18]: session 20261005-143752-chrono-2FYKPJ, step 5 — [video at 1:55](https://youtu.be/K_i7fJ2MDQo?t=115)
+[^s19]: session 20261005-143752-chrono-2FYKPJ, step 6 — [video at 2:13](https://youtu.be/K_i7fJ2MDQo?t=133)

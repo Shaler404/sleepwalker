@@ -2,71 +2,102 @@
 game: com.oakever.arrows
 version: 1.33.0
 play_version: 1.32.0
-play_checked: '2026-10-05T00:13:01'
+play_checked: '2026-10-05T22:05:43'
 phone_version: 1.33.0
 discovery: open
 ftue_verified: null
 progress:
-  text: level 11
-  value: 11.0
-  at: '2026-10-05T01:35:51'
-  session: 20261005-012010-chrono-2FYKPJ
+  text: level 17 continue-ad test
+  value: 17.0
+  at: '2026-10-05T23:47:23'
+  session: 20261005-233140-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-05T02:00:53'
+  chrono: '2026-10-06T04:02:50'
 mechanics:
 - id: arrows-escape
   name: arrows-escape
-  status: mastered
+  status: broken
   method: solver
   levels:
-    won: 9
-    lost: 0
-    quit: 3
+    won: 17
+    lost: 2
+    quit: 5
   recent:
-  - level: level 4
+  - level: level 12 zen on
     result: won
-    seconds: 105
+    seconds: 165
     model: sonnet
-  - level: level 5
+    moves_before: 7
+  - level: level 13 hard
+    result: won
+    seconds: 160
+    model: sonnet
+  - level: level 14 continue test
+    result: won
+    seconds: 132
+    model: sonnet
+    moves_before: 2
+  - level: level 15 hard
     result: quit
-    seconds: 30
+    seconds: 103
     model: sonnet
-  - level: level 5 hard
+  - level: level 15 hard resume
     result: quit
-    seconds: 356
+    seconds: 24
     model: sonnet
-  - level: level 5 hard
+  - level: level 15 hard retry
     result: won
-    seconds: 863
+    seconds: 455
     model: sonnet
-  - level: level 5 hard
+  - level: level 16
+    result: lost
+    seconds: 70
+    model: sonnet
+  - level: level 16
+    result: lost
+    seconds: 94
+    model: sonnet
+    deliberate: true
+  - level: level 16
     result: won
-    seconds: 870
+    seconds: 272
     model: opus
-  - level: level 6
+  - level: level 17 continue-ad test
     result: won
-    seconds: 110
+    seconds: 385
     model: opus
-  - level: level 7
-    result: won
-    seconds: 100
-    model: opus
-  - level: level 8 hard
-    result: won
-    seconds: 168
-    model: opus
-  - level: level 9
-    result: won
-    seconds: 71
-    model: opus
-  - level: level 10 hard
+  note: 'solver on every level (solve --run --rounds 20; Hard boards that do not fit:
+    --rounds 1 --settle 2.0); lab 2026-10-06: toasts over the board masked, idle tap
+    while a toast hides the board, map no longer polluted'
+  best_s: 35
+  solver: solvers/com.oakever.arrows/arrows-escape.py
+- id: worms-escape
+  name: worms-escape
+  status: studying
+  method: solver
+  levels:
+    won: 1
+    lost: 0
+    quit: 2
+  recent:
+  - level: event countryside L1
     result: won
     seconds: 268
     model: opus
-  note: two levels in a row within 5 min
-  best_s: 35
-  solver: solvers/com.oakever.arrows/arrows-escape.py
+  - level: event countryside L2
+    result: quit
+    seconds: 261
+    model: opus
+  - level: event countryside L2 resume
+    result: quit
+    seconds: 41
+    model: opus
+  best_s: 268
+  solver: solvers/com.oakever.arrows/worms-escape.py
+  note: 'solvers/worms-escape.py: arrows solver with a worm reader (beads, eyes =
+    head, dots); solve worms-escape --run --rounds 20 --settle 1.5; L1 replay 13 rounds
+    mismatch 0, L2 resume 34 worms read'
 features:
 - id: consent
   name: Consent screen
@@ -172,17 +203,41 @@ features:
     source: 20261005-012010-chrono-2FYKPJ#35
     version: 1.33.0
   - id: chk-points
-    text: What earns points (a level win, a score) and how many
-    done: false
+    text: 'Each gold arrow cleared on a level board gives 1 league point, credited
+      on the win: L11 0 to 4, L12 4 to 8; a league card after the win shows places
+      climbed'
+    done: true
+    source: 20261005-124219-chrono-2FYKPJ#16
+    version: 1.33.0
   - id: chk-period
-    text: 'The period and its timer: when it resets'
-    done: false
+    text: '24 h: joined on the L10 win about 01:35 on 2026-10-05, the Bronze League
+      End card came on the next launch at 01:37 on 2026-10-06 and Silver started at
+      23h59m'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#7
+    version: 1.33.0
   - id: chk-rewards
     text: Rewards per rank, promotion and relegation
     done: false
   - id: chk-end
-    text: 'The end of a period: the results screen and the reward (a follow-up)'
-    done: false
+    text: 'Bronze League End card on launch after the 24 h period: rank 8 of the board,
+      medal turns to Silver, ''Ranked 8, promoted to Silver level!'', Tap to Continue;
+      then the ''You have joined the Silver League!'' intro (Start opens the current
+      level). No currency or item reward was shown for rank 8'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#7
+    version: 1.33.0
+  - id: tiers
+    text: 'Badge carousel above the board: swiping shows the next tiers locked (a
+      locked round badge, ''Gold'' in the centre, a locked octagon to the right);
+      taps on a locked badge or the top-3 gifts do nothing; the board stays the same'
+    done: true
+    source: 20261005-124219-chrono-2FYKPJ#5
+  - id: demotion
+    text: 'League card after a win: ''To be demoted'' divider under rank 30 of 50
+      (ranks 31+ demote); the promotion zone is not shown at rank 30'
+    done: true
+    source: 20261005-124219-chrono-2FYKPJ#20
   type: social
   appeared:
     text: 'after winning level 10 (reaching level 11, as the Home card lock ''Unlock
@@ -251,6 +306,10 @@ features:
     text: 'Force-stop and relaunch mid-level under Shark Run: as the base, or what
       differs'
     done: false
+  - id: under-restart-gear
+    text: 'Restart from the in-level gear popup (Restart board) under Shark Run: as
+      the base, or what differs'
+    done: false
   type: event
   locked:
     text: level 70
@@ -308,7 +367,7 @@ features:
   page: features/daily-challenge.md
 - id: countryside-capers
   name: Event Countryside Capers
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -317,21 +376,34 @@ features:
     done: true
     source: 20261003-200141-chrono-2FYKPJ#4
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home carousel card 'Event Countryside Caper', Play button (365,518); locked
+      'Unlock Lv.16' until the L15 win
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#2
+    version: 1.33.0
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: A separate level path (nodes 1, 2, 3 ... 9 and beyond) over a countryside
+      picture, Play Level 1, (i) top right; first open shows a 'Join the event' popup
+      with OK
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#2
+    version: 1.33.0
   - id: chk-rules
-    text: 'Rules: what earns points or items and what the goal is'
-    done: false
+    text: '(i) shows only ''Take on challenges and conquer all levels!'': the goal
+      is to clear a separate numbered level path; no points, items or rewards are
+      named'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#11
+    version: 1.33.0
   - id: chk-timer
     text: 'Its timer and schedule: how long it runs and when it comes back'
     done: false
   - id: chk-in-level
-    text: What shows during a level while it runs (a bar, a counter, collectibles)
-    done: false
+    text: Worm skin of the arrows board (beads with eyed heads), 3 red hearts instead
+      of drops, AD hint bulb, gear; no event bar, counter or collectibles in the level
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#16
+    version: 1.33.0
   - id: chk-progress
     text: 'Progress per level: the points or items after a win, and after a loss'
     done: false
@@ -343,13 +415,21 @@ features:
       end)'
     done: false
   - id: under-quit
-    text: 'Back arrow top left leaves the level for home at once, no confirmation;
-      drops were full, no cost seen; Play still shows the same level under Event Countryside
-      Capers: as the base, or what differs'
-    done: false
+    text: 'Differs from the base: Back leaves to the event path at once (no confirm),
+      hearts not spent, and the board is saved: the path button turns to ''Continue
+      Level 2'' and reopens the same half-cleared board (2 worms removed by hints
+      still gone), shown zoomed out to fit'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#41
+    version: 1.33.0
   - id: under-win
-    text: 'Win screen under Event Countryside Capers: as the base, or what differs'
-    done: false
+    text: 'Green-themed win card: stars, Well Done!, difficulty/time/score/Today''s
+      Levels, accuracy/mistakes/hints; a single Continue instead of Next Level + Home;
+      Daily Streak screen before it (event wins count for the streak); an interstitial
+      started after it and opened the Play Store by itself'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#31
+    version: 1.33.0
   - id: under-out-of-lives
     text: 'Out of lives under Event Countryside Capers: as the base, or what differs'
     done: false
@@ -361,18 +441,30 @@ features:
     text: 'Force-stop and relaunch mid-level under Event Countryside Capers: as the
       base, or what differs'
     done: false
+  - id: home-card
+    text: Home carousel card 'Event Countryside Caper' with a Play button and no timer
+      (the league card next to it shows one); the event screen shows no timer either
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#0
+  - id: under-restart-gear
+    text: 'Restart from the in-level gear popup (Restart board) under Event Countryside
+      Capers: as the base, or what differs'
+    done: false
   type: event
-  locked:
-    text: level 16
-    value: 16.0
   appeared:
     text: on the home carousel from first launch, locked (Unlock Lv.16)
     certainty: fact
     source: 20261003-200141-chrono-2FYKPJ#4
   page: features/countryside-capers.md
+  source: 20261005-233140-chrono-2FYKPJ#0
+  unlocked_at:
+    text: level 15 hard retry
+    value: 15.0
+    source: 20261005-233140-chrono-2FYKPJ#0
+    lock: level 16
 - id: settings
   name: Settings
-  status: in_progress
+  status: documented
   cases:
   - id: chk-screen
     text: 'Settings: Sound, Vibration, Music (on), Guideline, Zen Mode (off), Save
@@ -395,25 +487,33 @@ features:
     done: true
     source: 20261003-200141-chrono-2FYKPJ#5
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: Sound, Vibration, Music, Guideline toggles each switched off (grey) and
+      back on (orange) in screens 18-20; Zen Mode studied separately
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#20
+    version: 1.33.0
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: No prompt in Settings; Rate Us (studied earlier as rate-us) and Save Your
+      Progress are separate
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#20
+    version: 1.33.0
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: Feedback opens in-game Helpshift Help Center (X closes); Privacy Policy
+      and Terms of Service open Chrome on oakevergames.com; launch returns to Settings
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#28
+    version: 1.33.0
   type: system
   appeared:
     text: gear icon top right of home, open from start
     certainty: fact
     source: 20261003-200141-chrono-2FYKPJ#5
   page: features/settings.md
+  version_seen: 1.33.0
 - id: zen-mode
   name: Zen Mode toggle
-  status: seen
+  status: documented
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -422,34 +522,68 @@ features:
     done: true
     source: 20261003-200141-chrono-2FYKPJ#5
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Settings (home gear 656,105), Zen Mode toggle row 5 at (621,676), off by
+      default
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#49
+    version: 1.33.0
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'No screen of its own: a toggle that persists across leaving Settings; level
+      looks the same (3 drops, hint, guideline button)'
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#49
+    version: 1.33.0
   - id: chk-rules
-    text: 'Rules: the goal and how it differs from the core game'
-    done: false
+    text: 'On L12 zen on showed no visible change: a blocked tap still cost a drop
+      (3 to 2) and the board, hint and win card were normal; the effect (if any) is
+      not visible'
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#49
+    version: 1.33.0
   - id: chk-win
-    text: 'A win: its screen and what it pays'
-    done: false
+    text: 'Win card with zen on is the normal card: Nice Spot, 2 stars, 1 mistake,
+      league board shown first'
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#49
+    version: 1.33.0
   - id: chk-loss
-    text: 'A loss: its screen, what it costs and the retry offers'
-    done: false
+    text: 'Not a mode: loss flow is the base Out of Lives; blocked tap under zen still
+      costs a drop (frame 38)'
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#49
+    version: 1.33.0
   - id: chk-progression
-    text: 'Progression inside the mode: stages, stars, a best score'
-    done: false
+    text: 'No progression of its own: a toggle, no stages or stars'
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#49
+    version: 1.33.0
   - id: chk-limits
-    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
-    done: false
-  type: mode
+    text: 'No limits or cost: free toggle, state persists after reopening Settings'
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#49
+    version: 1.33.0
+  - id: chk-options
+    text: 'One option, the Zen Mode switch (Settings row 5): grey off, orange on;
+      turned on before L12 and off again after, it stays as set when Settings is left
+      and reopened'
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#39
+  - id: chk-answers
+    text: 'Does not apply: a toggle, not a prompt'
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#26
+  - id: chk-links
+    text: 'Does not apply: no links out'
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#26
+  type: system
   appeared:
     text: present in Settings on the first visit after a fresh install (progress cloud-restored
       to level 3)
     certainty: fact
     source: 20261003-200141-chrono-2FYKPJ#5
   page: features/zen-mode.md
+  version_seen: 1.33.0
 - id: guideline
   name: Guideline toggle
   status: in_progress
@@ -603,6 +737,26 @@ features:
       screen before stopping the app'
     done: true
     source: 20261005-010045-chrono-2FYKPJ#0
+  - id: win-not-kept-2
+    text: 'Second time: the L12 win of 20261005-124219 (session stopped on the win
+      card) was lost; this session opened on Play Level 12 with Bronze League back
+      at 38th (the L12 gold points gone). After this win, leaving via Continue and
+      Home, Home showed Hard Level 13 and 30th'
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#0
+  - id: restart-gear
+    text: 'Restart from the in-level gear popup (Restart board): an interstitial ad
+      first (Hard L15, Next skip top left, ~35 s, then a Play Store sheet), then the
+      board from the start with 3 drops'
+    done: true
+    outcome: true
+    source: 20261005-224323-chrono-2FYKPJ#40
+  - id: continue-ad
+    text: 'Out of Lives Continue is not always free: Free on L14 (#29), but on L16
+      about 14 min later it read ''Watch an ad to get 3 more lives'' with a video
+      icon (rewarded-continue-ad)'
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#53
   type: core-level
   appeared:
     text: Play button on home from first launch (Play Level 1, Level 3 after cloud
@@ -873,6 +1027,16 @@ features:
       because the Sunday win was not saved'
     done: true
     source: 20261005-010045-chrono-2FYKPJ#91
+  - id: event-win-counts
+    text: 'An event level win (Countryside Caper L1) counts for the Daily Streak:
+      the streak screen came after it (2, TUE checked) before the event win card'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#29
+    version: 1.33.0
+  - id: under-restart-gear
+    text: 'Restart from the in-level gear popup (Restart board) under Daily Streak:
+      as the base, or what differs'
+    done: false
   found_at:
     text: level 4
     value: 4.0
@@ -962,9 +1126,10 @@ features:
     done: true
     source: 20261003-232357-chrono-2FYKPJ#17
   - id: chk-frequency
-    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
-      from which level'
-    done: false
+    text: Purple Hard nodes at levels 5, 8, 10, 13, 15, 18 (gaps 3,2,3,2,3); 14, 16,
+      17, 19 normal; level 20 is a red node, not purple (super-hard-level)
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#50
   - id: win-no-mistake
     text: 'Hard L5 won by the solver with no hint and no drop lost: still 2 of 3 stars,
       ''Great Start!'', Time 05:54, Score 1300; the Hard card gave 2 stars with 1
@@ -976,6 +1141,16 @@ features:
       players!' over the board, fading after ~3 s; Hard L8 showed none (not marked)
     done: true
     source: 20261005-012010-chrono-2FYKPJ#21
+  - id: under-restart-gear
+    text: 'Hard L15: the gear-popup Restart showed an interstitial ad, then the whole
+      Hard board from the start; otherwise as the base'
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#40
+  - id: hard-at-22
+    text: 'The L17 win card path shows 18 and 22 purple (Hard) and 20 red: Hard so
+      far at 5, 8, 10, 13, 15, 18, 22'
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#49
   found_at:
     text: level 4
     value: 4.0
@@ -1041,6 +1216,11 @@ features:
       only on Hard levels; not used there
     done: true
     source: 20261005-010045-chrono-2FYKPJ#93
+  - id: ad-badge
+    text: 'From Hard L15 the bulb shows an orange AD badge (none on L14): hints seem
+      to cost a rewarded video from here (rewarded-hint-ad); not tapped'
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#42
   found_at:
     text: level 5
     value: 5.0
@@ -1091,15 +1271,27 @@ features:
     done: true
     source: 20261003-232108-chrono-2FYKPJ#0
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'No button: Android system dialog over Home on the second launch of the
+      install (not on the first), answered Don''t allow'
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#0
+    version: 1.33.0
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: System dialog 'Allow Amaze GO! to send you notifications?' with Allow /
+      Don't allow, over the Home screen
+    done: true
+    source: 20261003-232108-chrono-2FYKPJ#0
+    version: 1.33.0
+  - id: in-game-prompt
+    text: 'A second, in-game prompt: a ''Notifications'' popup over Home at launch
+      (''Turn on notifications for a better experience.'', OK and an X); OK opens
+      the Android app notification settings (Allow notifications off), Back/launch
+      returns to Home. Seen on a progressed install after Don''t allow was given earlier'
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#1
 - id: profile
   name: Profile (name, avatar, frame)
-  status: in_progress
+  status: documented
   cases:
   - id: chk-screen
     text: 'Profile popup: avatar with check, name Amaze-JtL with edit pencil, tabs
@@ -1114,20 +1306,28 @@ features:
     done: true
     source: 20261005-012010-chrono-2FYKPJ#30
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home avatar button top left (83,105), shown as default silhouette before;
+      after Save shows the chosen avatar and frame
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#2
+    version: 1.33.0
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: Avatar tab 20 avatars (none locked, selecting shows check and preview);
+      Frame tab 12 frames (none locked); pencil opens text field with OK, name edited
+      to Amaze-JtL7; Save applies avatar, frame to Home button
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#10
+    version: 1.33.0
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: 'Not a prompt: no yes/no answers; Save closes the popup and applies changes'
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#11
+    version: 1.33.0
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: No links out in the Profile popup
+    done: true
+    source: 20261005-144428-chrono-2FYKPJ#10
+    version: 1.33.0
   found_at:
     text: level 10 hard
     value: 10.0
@@ -1138,6 +1338,7 @@ features:
       left on Home'
     certainty: fact
     source: 20261005-012010-chrono-2FYKPJ#30
+  version_seen: 1.33.0
 - id: gold-arrows
   name: Gold arrows (league tokens on the board)
   status: in_progress
@@ -1170,12 +1371,23 @@ features:
     done: true
     source: 20261005-012010-chrono-2FYKPJ#32
   - id: chk-interactions
-    text: How it interacts with the other pieces
-    done: false
+    text: 'Gold arrows are ordinary arrows in colour: they exit under the same free-ray
+      rule, the solver clears them with the rest; each cleared gold arrow = 1 league
+      point (L11: 4 arrows, 0 to 4)'
+    done: true
+    source: 20261005-124219-chrono-2FYKPJ#12
+    version: 1.33.0
   - id: chk-loss
-    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
-      level (case <base> <kind> "..." --outcome)'
-    done: false
+    text: 'No extra way to lose: a blocked tap on a gold arrow costs one drop like
+      any arrow (L12, 3 to 2 drops), arrow stays'
+    done: true
+    source: 20261005-124219-chrono-2FYKPJ#15
+    version: 1.33.0
+  - id: chk-count
+    text: 'Gold arrows per level: L11 4, L12 4 (shot 21; the session note''s 5 was
+      a miscount); each pays 1 league point on the win'
+    done: true
+    source: 20261005-124219-chrono-2FYKPJ#13
   found_at:
     text: level 10 hard
     value: 10.0
@@ -1185,6 +1397,318 @@ features:
       of the board turned gold about 3 s after the board opened'
     certainty: fact
     source: 20261005-012010-chrono-2FYKPJ#32
+- id: super-hard-level
+  name: Red level node (level 20)
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-announce
+    text: 'How it is announced: the map node, the badge or the popup before it, and
+      what it says'
+    done: false
+  - id: chk-differs
+    text: 'What differs in play from the base level: the board, the rules, the limits,
+      stages, a timer'
+    done: false
+  - id: chk-win
+    text: 'Its win: the win screen and the reward, against the base level''s'
+    done: false
+  - id: chk-loss
+    text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
+      progress)'
+    done: false
+  - id: chk-retry
+    text: Retry and continue offers after a loss and their price (a video, coins);
+      where a retry sends you (the start, the same stage)
+    done: false
+  - id: chk-frequency
+    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
+      from which level'
+    done: false
+  - id: under-quit
+    text: 'Back arrow top left leaves the level for home at once, no confirmation;
+      drops were full, no cost seen; Play still shows the same level under Red level
+      node (level 20): as the base, or what differs'
+    done: false
+  - id: under-win
+    text: 'Win screen under Red level node (level 20): as the base, or what differs'
+    done: false
+  - id: under-out-of-lives
+    text: 'Out of lives under Red level node (level 20): as the base, or what differs'
+    done: false
+  - id: under-restart
+    text: 'Restart from Out of Lives popup resets the board immediately, no confirmation,
+      no life cost under Red level node (level 20): as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Force-stop and relaunch mid-level under Red level node (level 20): as the
+      base, or what differs'
+    done: false
+  - id: under-restart-gear
+    text: 'Restart from the in-level gear popup (Restart board) under Red level node
+      (level 20): as the base, or what differs'
+    done: false
+  found_at:
+    text: level 15 hard retry
+    value: 15.0
+  type: level-type
+  appeared:
+    text: 'level 20 node is red on the path after L15 win: probably a harder tier
+      than purple Hard'
+    certainty: hypothesis
+    source: 20261005-224323-chrono-2FYKPJ#50
+- id: interstitial-ad
+  name: Interstitial ad (after a gear-popup restart or a win)
+  status: documented
+  cases:
+  - id: chk-entry
+    text: 'No button: it plays after Restart board in the in-level gear popup (Hard
+      L15) and after the L15 win before the win card (tap on the league Continue)'
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#48
+  - id: chk-kind
+    text: Interstitial, full screen, between a level action and the next screen
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#40
+  - id: chk-close
+    text: A 'Next' skip label top left; after about 35 s the ad opens a Play Store
+      sheet; Back/launch returns to the game (win card or a fresh board)
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#49
+  - id: chk-reward
+    text: 'Does not apply: an interstitial, no reward'
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#40
+  - id: chk-screen
+    text: 'Full-screen video: skip icon top left, app card (icon, rating, Install)
+      at the top, mute and pause over the video, (i) bottom right; no close X in the
+      first seconds'
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#22
+    version: 1.33.0
+  - id: back-closes
+    text: Android Back on the end card (no X after about 45 s) closes the ad and shows
+      the win card underneath, win kept, no store opened
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#23
+    version: 1.33.0
+  - id: after-win-auto
+    text: After the L16 win it started by itself about 3 s after the win card appeared,
+      with no tap (the L15 one came after the league Continue tap)
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#23
+    version: 1.33.0
+  - id: chk-frequency
+    text: 'Seen after: the gear-popup Restart on Hard L15, the L15 win (after the
+      league Continue), the L16 win (by itself ~3 s after the win card). Not after
+      the L13/L14 wins and not after the L17 win, which followed a rewarded Continue
+      ad about 3 min earlier: probably a cooldown shared with rewarded ads (experiment
+      exp-interstitial-cooldown)'
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#49
+    version: 1.33.0
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#40
+  found_at:
+    text: level 15 hard retry
+    value: 15.0
+  type: ad-placement
+  appeared:
+    text: 'first ad of the game: the Restart board button of the in-level gear popup
+      on Hard L15 showed a full-screen ad (Next skip top left, then a Play Store sheet);
+      none on the L13 and L14 wins earlier in the session'
+    certainty: fact
+    source: 20261005-224323-chrono-2FYKPJ#40
+  version_seen: 1.33.0
+- id: rewarded-continue-ad
+  name: Rewarded ad for Continue (Out of Lives)
+  status: documented
+  cases:
+  - id: chk-entry
+    text: The Continue button of the Out of Lives popup (365,852) once the free Continue
+      is used
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#53
+  - id: chk-kind
+    text: 'Rewarded video for a revive: the Continue button shows a play icon'
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#53
+  - id: chk-reward
+    text: 'Offer: ''Out of Lives! Watch an ad to get 3 more lives.'' with Continue
+      (video) and Restart; watching gives 3 drops and keeps the board (not watched
+      yet)'
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#53
+  - id: chk-screen
+    text: 'Rewarded pod of 2 videos: ''Ad 1 of 2'' label top left, app card with Install
+      at the top, mute/pause, (i) bottom right; the second video has no label'
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#29
+    version: 1.33.0
+  - id: chk-close
+    text: No X during the videos; about 35 s after Continue an end card listing both
+      apps shows 'X Reward granted' top left; that X returns to the level with 3 drops
+      and the board kept (blocked arrows stay red)
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#29
+    version: 1.33.0
+  - id: chk-frequency
+    text: 'Every Out of Lives after the free Continue: on L17 it was already the first
+      Out of Lives of this session (the free Continue was used once on L14 in the
+      previous session), so the free Continue is not per session'
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#29
+    version: 1.33.0
+  - id: reward-paid
+    text: 'Reward paid: 3 drops refilled, board unchanged, level continues'
+    done: true
+    source: 20261005-233140-chrono-2FYKPJ#29
+    version: 1.33.0
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#53
+  found_at:
+    text: level 15 hard retry
+    value: 15.0
+  type: ad-placement
+  appeared:
+    text: 'second Out of Lives of the session (L16): Continue shows a video icon and
+      ''Watch an ad to get 3 more lives''; the first one on L14 was Free'
+    certainty: fact
+    source: 20261005-224323-chrono-2FYKPJ#53
+  version_seen: 1.33.0
+- id: rewarded-hint-ad
+  name: Rewarded ad on the hint bulb (AD badge)
+  status: documented
+  cases:
+  - id: chk-entry
+    text: The hint bulb at the top right of the level HUD, with an orange AD badge
+      (L15, L16)
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#42
+  - id: chk-kind
+    text: Rewarded video behind the hint bulb with the AD badge (seen on normal L17,
+      Hard L15-L16 and the Countryside Caper event levels); full-screen video with
+      a Google Play / Install bar
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#34
+    version: 1.33.0
+  - id: chk-reward
+    text: 'No offer or confirm screen: one tap on the AD bulb starts the video at
+      once. Reward: one hint, the board pans to a free piece and draws a green line
+      along its exit ray (event L2: a green worm); tapping it clears it'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#35
+    version: 1.33.0
+  - id: chk-close
+    text: No close control appeared in ~35 s; at ~45 s the ad opened the Play Store
+      listing by itself; sw.py launch returned to the level with the hint already
+      applied (reward kept)
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#35
+    version: 1.33.0
+  - id: chk-screen
+    text: Black loading frame ~1 s, then a full-screen playable-style video with a
+      bottom Google Play / Install bar (marked at step 34)
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#34
+    version: 1.33.0
+  - id: chk-frequency
+    text: 'Every hint use needs its own ad: two AD bulb taps in one level (event L2)
+      gave two ads, one hint each; the badge stays AD; no cooldown seen between them
+      (~1.5 min apart). Ad length varies: a single video that ended in the Play Store
+      (~45 s), then a 2-ad pod with Reward granted X at ~30 s'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#38
+    version: 1.33.0
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-224323-chrono-2FYKPJ#42
+  found_at:
+    text: level 15 hard retry
+    value: 15.0
+  type: ad-placement
+  appeared:
+    text: the hint bulb carries an orange AD badge from Hard L15 on (no badge on L14
+      earlier in the session)
+    certainty: fact
+    source: 20261005-224323-chrono-2FYKPJ#42
+  version_seen: 1.33.0
+- id: silver-league
+  name: Silver League
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Board: header Silver League + 23h59m timer, tier carousel Bronze/Silver/locked
+      tier, rows with rank, avatar, name, gold-arrow points, gifts on ranks 1-3, Let''s
+      play'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#4
+    version: 1.33.0
+  - id: chk-entry
+    text: 'Home: Silver League card (left of the Event card), tap the medal; the card
+      shows the timer and the player''s rank'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#4
+    version: 1.33.0
+  - id: chk-board
+    text: 'At the period start the list has only 6 rows: 5 bots already at 4 points,
+      player 6th with 0 (''Me'' row, also pinned at the bottom). Bronze showed 50+
+      ranks later in its period, so the list probably fills over time'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#6
+    version: 1.33.0
+  - id: chk-period
+    text: '24 h period: the Silver timer read 23h59m right after the Bronze period
+      ended on the 01:37 launch (Bronze ran from about 01:35 on 2026-10-05)'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#7
+    version: 1.33.0
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-013740-chrono-2FYKPJ#1
+  - id: chk-points
+    text: What earns points (a level win, a score) and how many
+    done: false
+  - id: chk-rewards
+    text: Rewards per rank, promotion and relegation
+    done: false
+  - id: chk-end
+    text: 'The end of a period: the results screen and the reward (a follow-up)'
+    done: false
+  found_at:
+    text: level 17 continue-ad test
+    value: 17.0
+  type: social
+  appeared:
+    text: 'after the Bronze League period ended with rank 8 (promotion): Bronze League
+      End card, then the Silver League intro popup on launch'
+    certainty: fact
+    source: 20261006-013740-chrono-2FYKPJ#1
 tasks:
 - id: analyze
   title: Analyze the game
@@ -1258,13 +1782,15 @@ tasks:
   title: 'Unlock Event Countryside Capers: level 16'
   kind: unlock
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:03:22'
   feature: countryside-capers
   source: session
-  note: the lock seen on screen (feature --locked)
+  note: seen open at level 15 hard retry
   target_text: level 16
   target_value: 16.0
+  closed: '2026-10-05T23:32:03'
+  closed_by: planner
 - id: appeared-zen-mode
   title: 'Find why Zen Mode toggle appeared: setting toggle, off by default; effect
     unknown'
@@ -1302,12 +1828,19 @@ tasks:
   title: 'Zen Mode: what does the toggle change in a level?'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:03:36'
   feature: zen-mode
   source: session
   plan: enable Zen Mode in settings, play a level, compare with normal (mistakes,
     timer, stars)
+  closed: '2026-10-05T14:55:33'
+  closed_by: 20261005-144428-chrono-2FYKPJ#36
+  note: 'Normal L12 with Zen on: same HUD (3 drops, hint, theme, guideline button),
+    a blocked tap still cost a drop, normal win card (2 stars, 1 mistake, Time and
+    Score shown). No visible effect on a Normal level; the follow-up on a Hard level
+    is exp-zen-effect'
+  result: inconclusive
 - id: exp-guideline
   title: 'Guideline: what does the toggle show?'
   kind: experiment
@@ -1360,10 +1893,14 @@ tasks:
   title: 'Study Zen Mode toggle: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:04:16'
   feature: zen-mode
   source: external
+  closed: '2026-10-05T14:53:17'
+  closed_by: 20261005-144428-chrono-2FYKPJ#39
+  note: 'Zen toggle persists, free; L12 played with it on: no visible difference,
+    blocked tap still cost a drop'
 - id: study-guideline
   title: 'Study Guideline toggle: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -1399,10 +1936,14 @@ tasks:
     Terms links), set back after'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:05:43'
   feature: settings
   source: session
+  closed: '2026-10-05T14:49:21'
+  closed_by: 20261005-144428-chrono-2FYKPJ#25
+  note: All toggles flipped and restored; Feedback = Helpshift help center; Privacy/Terms
+    open Chrome on oakevergames.com
 - id: study-rate-us
   title: 'Study Rate Us: open it from Settings, record the prompt and what each answer
     does (never submit a rating)'
@@ -1433,12 +1974,19 @@ tasks:
     shop, no-ads, ads after levels'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:05:44'
   source: session
   plan: play levels 3-11 and note every HUD element, popup and screen after a win
     or a loss; confirmed found when a frame shows a currency, booster, shop or ad,
     absent if none by level 11
+  closed: '2026-10-05T12:50:49'
+  closed_by: 20261005-124219-chrono-2FYKPJ#21
+  note: 'No currency, booster price, shop, no-ads offer or ad seen through L12 (12
+    levels, sessions 20261003..20261005): hint is free and unlimited, Continue after
+    Out of Lives is free, the only rewards are the league gifts for ranks 1-3, whose
+    contents are unseen (league-end will show them)'
+  result: refuted
 - id: study-cloud-save
   title: 'Study Save Your Progress (cloud save): open it, walk its screens and tabs,
     verify its cases'
@@ -1509,7 +2057,7 @@ tasks:
 - id: outcomes-daily-streak
   title: 'Run each outcome once under Daily Streak: Out of lives, Restart from Out
     of Lives popup resets the board immediately, no confirmation, no life cost, Force-stop
-    and relaunch mid-level'
+    and relaunch mid-level, Restart from the in-level gear popup (Restart board)'
   kind: experiment
   requires: any
   status: open
@@ -1564,7 +2112,7 @@ tasks:
     Loss at 0 drops left to exp-drops.
 - id: outcomes-hard-level
   title: 'Run each outcome once under Hard level (purple, larger zoomable board):
-    Win screen'
+    Restart from the in-level gear popup (Restart board)'
   kind: experiment
   requires: any
   status: done
@@ -1577,7 +2125,7 @@ tasks:
     --as result) and close its cell: case hard-level under-<outcome> "as the base"
     or "what differs" --done'
   rank: 7
-  closed: '2026-10-04T00:33:35'
+  closed: '2026-10-05T23:11:10'
   closed_by: planner
   note: every known outcome of the base level was run under Hard level (purple, larger
     zoomable board)
@@ -1712,13 +2260,21 @@ tasks:
     title, score, accuracy) against a clean win
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:46:01'
   feature: level
   source: session
   plan: win one level after taking at least one free Continue and one level without;
     compare the win screens (stars, title, mistakes, accuracy, score); confirmed if
     the Continue win shows fewer stars or a lower title beyond the mistake count
+  closed: '2026-10-05T22:53:50'
+  closed_by: 20261005-224323-chrono-2FYKPJ#34
+  note: 'Continue win L14: Comeback Win! title, 2 stars, accuracy 92%, 4 mistakes,
+    score 1176. Clean wins L13 Hard: Lightning Fast 3 stars. Earlier L4 with 1 mistake
+    without Continue was Perfect (stars to check). Title changes to Comeback Win;
+    stars 2 but 4 mistakes confound: whether stars drop beyond mistake count needs
+    a no-Continue win with 4+ mistakes (not possible, 3 drops).'
+  result: confirmed
 - id: exp-hint-on-normal
   title: Find whether the hint bulb appears on Normal levels after Hard level 5 (level
     6) and whether a used hint changes the win screen
@@ -1763,13 +2319,20 @@ tasks:
     path) and whether the pattern is fixed
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T00:33:25'
   feature: hard-level
   source: session
   plan: On each win screen and on home, mark the level path; list purple nodes. Confirmed
     when the Hard numbers from 5 to 20 are known (so far 5 and 8) and a rule (every
     Nth, fixed list) fits them
+  closed: '2026-10-05T23:06:40'
+  closed_by: 20261005-224323-chrono-2FYKPJ#50
+  note: 'Purple (Hard) nodes seen on path: 5, 8, 10, 13, 15, 18; 14, 16, 17, 19 normal.
+    Gaps alternate 3,2,3,2,3 (every 2.5 levels), next would be 20 by the rule but
+    L20 node is RED, not purple (frame shot 77): a separate tier, registered as super-hard-level.
+    Rule fits 5-18; 20 not verified as Hard, 21+ unseen.'
+  result: confirmed
 - id: exp-red-arrow-tap
   title: 'Hard levels: does a tap on a red (already blocked) arrow cost a drop or
     do nothing?'
@@ -1799,10 +2362,14 @@ tasks:
     verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:13:09'
   feature: notification-prompt
   source: external
+  closed: '2026-10-05T12:48:41'
+  closed_by: 20261005-124219-chrono-2FYKPJ#21
+  note: Frames only from earlier session 20261003-232108#0; prompt cannot be re-triggered
+    on progressed install; fresh re-mark task added
 - id: solver-normal-levels
   title: 'Make the arrows-escape solver read normal boards (level 6 on): per-level
     grid pitch (about 61 px at 1080 on L6), arrow heads at the smaller pitch, mask
@@ -1856,7 +2423,7 @@ tasks:
     are one setting, and whether it stays on across levels and restarts
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T01:20:54'
   feature: guideline
   source: session
@@ -1864,6 +2431,16 @@ tasks:
     and open Settings: the Guideline row on confirms one shared setting; then open
     the next level and relaunch the app: lines still drawn confirms it persists. Set
     it back off after'
+  closed: '2026-10-05T22:53:56'
+  closed_by: 20261005-224323-chrono-2FYKPJ#34
+  note: 'Not one persistent setting. In-level grid button turned lines on in L14;
+    Settings Guideline row then showed on (Zen also showed on, unexpectedly). But
+    reopening the same level showed no lines, and after force-stop restart Settings
+    showed Guideline and Zen both on while an earlier zen-off had been set: Settings
+    toggles look like they show default on and do not mirror the in-level state; in-level
+    guideline resets per level entry. Both toggled off by hand at the end; L14 next
+    entry had no lines.'
+  result: refuted
 - id: first-look-bronze-league
   title: 'First look at Bronze League: open it once, record what it is and decide
     whether it needs a full study'
@@ -1885,49 +2462,79 @@ tasks:
     locked and how they unlock'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T01:33:52'
   feature: profile
   source: session
+  closed: '2026-10-05T14:46:56'
+  closed_by: 20261005-144428-chrono-2FYKPJ#14
+  note: 'Profile: avatar tab 20 avatars, frame tab 12 frames, none locked; rename
+    via pencil+OK; Save applies to Home button'
 - id: exp-gold-arrows
   title: 'Gold arrows on boards after the league starts: do they add league points
     when cleared, and how many appear per level'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T01:34:36'
   feature: gold-arrows
   source: session
   plan: play a level with gold arrows by the solver (teach it gold = arrow colour),
     then open the league board and compare the points before and after
+  closed: '2026-10-05T12:50:47'
+  closed_by: 20261005-124219-chrono-2FYKPJ#20
+  note: '1 league point per gold arrow, credited on the win: L11 4 gold arrows 0->4
+    [#11, #16], L12 4 gold arrows 4->8 [#13 shot 21, #20]. The player''s ''5 gold
+    on L12'' was a miscount: the L12 board frame (shot 21) shows 4 gold arrows, so
+    points = gold arrows cleared exactly'
+  result: confirmed
 - id: study-bronze-league
   title: 'Study the Bronze League: points per gold arrow, the (i) info, rewards per
     rank, promotion and demotion'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T01:35:50'
   feature: bronze-league
   source: session
+  closed: '2026-10-05T12:48:41'
+  closed_by: 20261005-124219-chrono-2FYKPJ#21
+  note: 'Points 1 per gold arrow; (i) = how-to overlay only; tier carousel shows locked
+    tiers (Gold labelled); league card after each win shows places climbed; demotion
+    line under rank 30 of 50; gifts for top 3 not tappable; period timer 12h50m at
+    start. Rewards values, promotion zone and period end unseen: league-end follow-up
+    remains'
 - id: league-end
   title: 'Open the Bronze League after its first period ends: results screen, rank
     reward, promotion'
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T01:35:50'
   feature: bronze-league
   not_before: '2026-10-06T01:35:50'
   source: game
+  closed: '2026-10-06T01:39:52'
+  closed_by: 20261006-013740-chrono-2FYKPJ#7
+  note: 'Bronze League End card on launch (01:37, 2026-10-06): ''Ranked 8, promoted
+    to Silver level!'' (rank 8 with 8 points), Tap to Continue -> ''You have joined
+    the Silver League!'' intro (Start opens the current level L17). No reward for
+    rank 8 (gifts only on ranks 1-3, their content not shown; gift taps do nothing).
+    Silver League: 24 h timer, 6 rows at start (5 bots at 4 pts, player 0). New feature
+    silver-league registered.'
 - id: study-gold-arrows
   title: 'Study Gold arrows (league tokens on the board): open it, walk its screens
     and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T01:37:42'
   feature: gold-arrows
   source: external
+  closed: '2026-10-05T12:48:40'
+  closed_by: 20261005-124219-chrono-2FYKPJ#21
+  note: 'Gold arrows: ordinary arrows in gold, 1 league point each on a win (L11 4
+    arrows 0->4, L12 4->8 with 5 seen gold), blocked tap costs a drop as usual'
 - id: exp-rate-us-recur
   title: Find when the Rate Us popup comes back after wins (every N wins, once per
     day, or never after one dismissal)
@@ -1954,3 +2561,315 @@ tasks:
     until the in-game Time passes 06:00, then finish with no mistake and no hint;
     2 stars and 'Great Start!' confirm a time threshold (Hard L5 no-hint 05:54 gave
     2 stars, Hard L8 01:30 and L10 gave 3). Repeat once on a Normal level past 06:00
+- id: notif-prompt-frame
+  title: Re-mark the notification prompt frame on a fresh install (the permission
+    dialog cannot be re-triggered on a progressed phone)
+  kind: replay
+  requires: fresh
+  status: open
+  created: '2026-10-05T12:48:39'
+  feature: notification-prompt
+  source: session
+- id: exp-league-points-loss
+  title: Find whether gold arrows cleared before a quit or an out-of-lives give league
+    points (points credited only on the win?)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T12:50:48'
+  feature: bronze-league
+  source: session
+  plan: 'On a level with gold arrows, let the solver clear at least 2 gold arrows,
+    then quit by the back arrow; reopen the league board: points unchanged confirms
+    win-only credit. Repeat with a loss at 0 drops (free Continue declined via Restart)
+    if the quit gave none. Mark the board before and after'
+- id: exp-zen-effect
+  title: What does Zen Mode change? Compare timer/score/drop behaviour with zen on
+    vs off on a Hard level
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T14:53:18'
+  feature: zen-mode
+  source: session
+  plan: play a Hard level with zen on, look for missing timer, hidden score, no-penalty
+- id: appeared-super-hard-level
+  title: 'Find why Red level node (level 20) appeared: level 20 node is red on the
+    path after L15 win: probably a harder tier than purple Hard'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T23:03:45'
+  feature: super-hard-level
+  source: session
+  plan: 'find the moment Red level node (level 20) shows up and what comes just before
+    it (level 20 node is red on the path after L15 win: probably a harder tier than
+    purple Hard); confirmed when a frame shows the trigger. Record it with feature
+    super-hard-level --appeared "...": the goal closes by itself'
+- id: outcomes-super-hard-level
+  title: 'Run each outcome once under Red level node (level 20): Back arrow top left
+    leaves the level for home at once, no confirmation; drops were full, no cost seen;
+    Play still shows the same level, Win screen, Out of lives, Restart from Out of
+    Lives popup resets the board immediately, no confirmation, no life cost, Force-stop
+    and relaunch mid-level, Restart from the in-level gear popup (Restart board)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T23:03:45'
+  feature: super-hard-level
+  source: session
+  plan: 'while Red level node (level 20) is on, reach each listed outcome of the base
+    level once, one at a time (a deliberate loss is allowed unless it spends premium
+    currency); mark the outcome screen (mark --feature super-hard-level --as result)
+    and close its cell: case super-hard-level under-<outcome> "as the base" or "what
+    differs" --done'
+  rank: 7
+- id: exp-level20-red
+  title: Find what the red level 20 node is (Hard tier above purple?) and which later
+    levels are red
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-05T23:06:41'
+  feature: super-hard-level
+  source: session
+  plan: play to level 20 (16-19 normal/Hard 18); open level 20 and read its header/difficulty
+    label; mark the path
+  closed: '2026-10-05T23:11:57'
+  closed_by: review-20261005
+  note: 'duplicate: study-super-hard-level (its checklist: announce, differs, frequency
+    of red levels) and appeared-super-hard-level cover the red L20 node'
+- id: exp-continue-free-once
+  title: Find when the Out of Lives Continue is free vs needs an ad
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T23:06:41'
+  feature: drops
+  source: session
+  plan: L14 first Continue Free; L16 (14 min later) 'Watch an ad'. Check per day/session/count;
+    test after next-day relaunch
+- id: solver-chain-taps
+  title: 'Solver taps 14 arrows with only 1 free on normal boards (L16): blocked taps
+    lose drops; sparse-board pitch doubles (L15)'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-05T23:06:42'
+  feature: level
+  source: game
+  closed: '2026-10-05T23:40:30'
+  closed_by: 20261005-233140-chrono-2FYKPJ#23
+  note: 'L16 won (Last Life Win!, 1 star, 2 mistakes) with the lab chain budget: round
+    4 (5 free + 4 chained) lost 2 drops. Frames 11-12: the round''s first tap, on
+    a free arrow (the hooked left-pointing arrow at col 463), was IGNORED (no red,
+    still on the board), and the two taps that depended on it turned red (2 drops).
+    Cause = ignored taps on free parents, not a logic error. Rounds 5-17 tapped only
+    free arrows: no drop lost, level done in 3.6 min. Fix: chain budget forced to
+    0 in solvers/arrows-escape.py. Pitch stayed right all level (memory pitch). Verify
+    on L17.'
+- id: study-super-hard-level
+  title: 'Study Red level node (level 20): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T23:09:25'
+  feature: super-hard-level
+  source: external
+- id: study-interstitial-ad
+  title: 'Study Interstitial ad (after a gear-popup restart or a win): open it, walk
+    its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T23:11:45'
+  feature: interstitial-ad
+  source: external
+  closed: '2026-10-05T23:48:19'
+  closed_by: 20261005-233140-chrono-2FYKPJ#49
+  note: 'Marked screen (video with skip icon top left, app card, (i)), end card (Play
+    Now, no X after 45 s), Back closes it to the win card with the win kept. Shown
+    after the L16 win by itself ~3 s after the win card; not after the L17 win that
+    followed a rewarded Continue (cooldown hypothesis: exp-interstitial-cooldown).'
+- id: study-rewarded-continue-ad
+  title: 'Study Rewarded ad for Continue (Out of Lives): open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T23:11:45'
+  feature: rewarded-continue-ad
+  source: external
+  closed: '2026-10-05T23:48:19'
+  closed_by: 20261005-233140-chrono-2FYKPJ#49
+  note: 'L17 Out of Lives (3 deliberate blocked taps): Continue with video icon ->
+    a 2-ad pod (''Ad 1 of 2'', then a second video), ~35 s, end card with ''X Reward
+    granted'' top left; X returns to the board with 3 drops, board kept, blocked arrows
+    stay red. Level then won by the solver: Clutch Comeback! 2 stars.'
+- id: study-rewarded-hint-ad
+  title: 'Study Rewarded ad on the hint bulb (AD badge): open it, walk its screens
+    and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T23:11:45'
+  feature: rewarded-hint-ad
+  source: external
+  closed: '2026-10-06T01:52:15'
+  closed_by: 20261006-013740-chrono-2FYKPJ#39
+  note: 'AD bulb tap starts a rewarded video at once (no offer screen). Use 1 (event
+    L2): single video, no close in ~35 s, opened the Play Store by itself at ~45 s,
+    launch returned with the hint applied (board pans to a free worm, green exit line).
+    Use 2 in the same level: 2-ad pod, ''Reward granted X'' top right at ~30 s, hint
+    applied. Every hint needs its own ad; badge stays AD.'
+- id: exp-notif-popup-recur
+  title: Find when the in-game Notifications popup comes back (every launch, daily,
+    after N launches) and what its X does
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T23:11:56'
+  feature: notification-prompt
+  source: session
+  plan: 'At each session start note whether the in-game ''Notifications'' popup (OK
+    / X) covers Home; dismiss it with X (never OK: OK opens system settings); confirmed
+    when two launches give the pattern (shown each launch, once a day, or gone after
+    X); mark the frame --feature notification-prompt'
+- id: first-look-countryside-capers
+  title: 'First look at Event Countryside Capers: open it once, record what it is
+    and decide whether it needs a full study'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T23:32:03'
+  feature: countryside-capers
+  source: session
+  note: 'Opened once after the L15 win (lock Lv.16): intro popup, then its own path
+    of event levels starting at 1. Needs a full study: (i) rules, event levels, timer
+    on the home card (not seen on the path screen), rewards.'
+  rank: 0
+  closed: '2026-10-05T23:32:42'
+  closed_by: 20261005-233140-chrono-2FYKPJ#2
+- id: outcomes-countryside-capers
+  title: 'Run each outcome once under Event Countryside Capers: Out of lives, Restart
+    from Out of Lives popup resets the board immediately, no confirmation, no life
+    cost, Force-stop and relaunch mid-level, Restart from the in-level gear popup
+    (Restart board)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T23:32:03'
+  feature: countryside-capers
+  source: session
+  plan: 'while Event Countryside Capers is on, reach each listed outcome of the base
+    level once, one at a time (a deliberate loss is allowed unless it spends premium
+    currency); mark the outcome screen (mark --feature countryside-capers --as result)
+    and close its cell: case countryside-capers under-<outcome> "as the base" or "what
+    differs" --done'
+  rank: 7
+- id: study-countryside-capers
+  title: 'Study Event Countryside Capers: (i) rules, event levels, timer, rewards'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T23:32:48'
+  feature: countryside-capers
+  source: session
+  closed: '2026-10-06T01:53:17'
+  closed_by: 20261006-013740-chrono-2FYKPJ#42
+  note: 'Path screen (nodes 1..~28, no rewards, no timer), (i) = join popup only,
+    in-level worm skin (hearts, AD hint), win flow (Daily Streak -> green win card
+    with one Continue -> interstitial), win advances the path one node, quit keeps
+    the board (Continue Level N). Open: timer/end (none shown anywhere), rewards (none
+    shown on path or win card), progress after a loss -> tasks exp-caper-end-reward
+    and outcomes-countryside-capers.'
+- id: exp-interstitial-cooldown
+  title: Interstitials skip a win soon after a rewarded ad and start at about L15
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T23:47:57'
+  feature: interstitial-ad
+  source: session
+  plan: play 3 wins in a row with no rewarded ad and note whether each win card is
+    followed by an interstitial; then one win right after a rewarded Continue. Confirmed
+    if every plain win from L15 on shows one and the win after a rewarded ad does
+    not
+- id: look-no-ads
+  title: Look for a Remove Ads offer, shop or VIP now that interstitials run (from
+    L15)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T23:52:02'
+  feature: interstitial-ad
+  source: session
+  plan: 'Open Settings, the Home carousel ends, the in-level gear popup and the win
+    card right after an interstitial; mark any Remove Ads, shop, pack or VIP entry
+    (never buy). Confirmed absent if none shows by the L20 win; found: record it as
+    a feature with its price'
+- id: exp-league-top3-reward
+  title: Finish a league period in the top 3 to see the gift reward
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T01:39:52'
+  feature: silver-league
+  source: session
+  plan: win levels with gold arrows during a Silver period until rank 1-3 and reopen
+    after the timer; confirmed when the end card shows a gift with its content
+- id: exp-caper-end-reward
+  title: 'Countryside Caper: is there any reward or end? Hypothesis: a reward appears
+    only when the whole path (~28 levels) is cleared, and the event has no timer'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T01:53:17'
+  feature: countryside-capers
+  source: session
+  plan: clear event levels (worm solver first) and watch each win card and the path
+    for chests or a final reward; check the Home card and path for a timer on later
+    days; confirmed if no reward before the last node and no timer appears
+- id: solver-worms-escape
+  title: Adapt the arrows solver to the Countryside Caper worm boards (beads, eyed
+    heads, tapered tails; L2 is ~28x28 and zooms out to fit after a resume)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T01:53:18'
+  feature: countryside-capers
+  source: session
+  plan: write state/com.oakever.arrows/solvers/worms-escape.py from frames 17-29 and
+    50 of 20261006-013740; confirmed when event L2 is won in under 5 min with no lost
+    heart
+- id: exp-l17-win-lost
+  title: 'Why was the L17 win of 20261005-233140 not saved? Hypothesis: the session
+    ended on the win card or its interstitial before the game wrote progress'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T01:53:26'
+  feature: level
+  source: session
+  plan: after the next main-level win, go Home and read the Play button before ending;
+    confirmed if a win left on its card/interstitial without reaching Home is lost
+    after a force-stop
+- id: silver-league-end
+  title: 'Open the Silver League after its first period ends: end card, rank, promotion
+    or demotion, any reward; and the points a gold arrow gives in Silver'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-06T01:55:53'
+  feature: silver-league
+  not_before: '2026-10-07T01:40:00'
+  source: game
+- id: study-silver-league
+  title: 'Study Silver League: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-06T02:09:25'
+  feature: silver-league
+  source: external

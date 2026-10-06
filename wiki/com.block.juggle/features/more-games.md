@@ -4,8 +4,8 @@ title: "More Games (mini-game list)"
 type: feature
 feature: more-games
 version_seen: 10.8.1
-verified_at: 2026-10-03
-sources: [20261003-193423-chrono-2FYKPJ, 20261003-212548-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-193423-chrono-2FYKPJ, 20261003-212548-chrono-2FYKPJ, 20261006-011754-chrono-2FYKPJ]
 ---
 
 # More Games (mini-game list)
@@ -27,18 +27,22 @@ In Settings from the first launch, with a red dot badge on its button [^s1].
 ![The Settings popup; More Games is the first green button, with a red dot](../img/20261003-more-games-entry-c1b83ec7.webp) [^s1]
 *The More Games button in Settings, with its red dot*
 
+![The home menu: Adventure, Classic and the blue More Games button, the third of the three mode buttons](../img/20261006-more-games-entry-93112c2c.webp) [^s10]
+*The blue More Games button on the home menu, under Classic*
+
 ## What it looks like
 
-![The More Games popup over the home menu: One Line, Tic Tac Toe, Fruit Merge, Water Sort, Onet, Mahjong, Sudoku, the list continuing below](../img/20261003-more-games-screen-c1103e6f.webp) [^s3]
-*More Games opened from the home menu: the same list as from Settings*
+![The More Games popup over the home menu: One Line, Tic Tac Toe, Fruit Merge, Water Sort, Onet, Mahjong, Sudoku, the list continuing below](../img/20261006-more-games-screen-c1103e6f.webp) [^s11]
+*More Games opened from the home menu: seven buttons visible, the X top right*
 
 A popup "More Games" with an X top right and a scrolling column of green buttons, each with a white icon
 and a name: One Line, Tic Tac Toe, Fruit Merge, Water Sort, Onet, Mahjong, Sudoku, Block Slide. None is
 locked or priced, and no button has a badge, timer or counter, from Settings or from the home menu
-[^s4] [^s5] [^s3].
+[^s4] [^s5] [^s3]. Three days later, with Adventure progressed to level 5, the list was the same eight
+buttons in the same order [^s11] [^s12].
 
-![The More Games list scrolled to its end, with Block Slide last](../img/20261003-more-games-screen-c1903e6b.webp) [^s1]
-*The list scrolled to its end: Block Slide is last*
+![The More Games list scrolled to its end, with Block Slide last](../img/20261006-more-games-tab-scrolled-c1903e6b.webp) [^s12]
+*The list scrolled to its end: Block Slide is the eighth and last*
 
 ## What you can do
 
@@ -67,7 +71,8 @@ returns to the More Games list over the classic board; the classic score (124) w
 ### Close (X)
 
 <!-- no-frame: the X is top right of the list frames above -->
-The X top right of the list closes it; the classic board is back as it was [^s8].
+The X top right of the list closes it; the classic board is back as it was [^s8]. Opened from the home
+menu, the X returns to the home menu [^s13].
 
 ## How it works
 
@@ -85,11 +90,11 @@ clears it.
 | Its screen: scrolling popup list of 8 mini-games <!-- case:chk-screen --> | Scrolled the list | ✅ | [^s4] |
 | Every entry: One Line, Tic Tac Toe, Fruit Merge, Water Sort, Onet, Mahjong, Sudoku, Block Slide; all open <!-- case:chk-entries --> | Scrolled the list, opened Block Slide | ✅ | [^s4] |
 | Badges, timers and counters on it <!-- case:chk-badges --> | Looked at the list from Settings and from the home menu | ✅ None: all 8 plain green buttons | [^s3] |
-| What changes on it with progress <!-- case:chk-changes --> | — | not verified: the same list in two sessions |  |
+| What changes on it with progress <!-- case:chk-changes --> | Opened the list from the home menu after Adventure level 5 and scrolled it to the end | ✅ Nothing: the same 8 green buttons, no locks or badges | [^s12] |
 
 ## Not verified
 
-- What changes on the list with progress (new games, order, badges) <!-- case:chk-changes -->
+- Whether the list changes further on (new games, order, badges) past Adventure level 5
 - Whether the red dot on the More Games button comes back (new games, a new day)
 
 [^s1]: session 20261003-193423-chrono-2FYKPJ, step 12 — [video at 2:19](https://youtu.be/A6Wh-xa4ryg?t=139)
@@ -101,3 +106,8 @@ clears it.
 [^s7]: session 20261003-193423-chrono-2FYKPJ, step 13 — [video at 2:36](https://youtu.be/A6Wh-xa4ryg?t=156)
 [^s8]: session 20261003-193423-chrono-2FYKPJ, step 15 — [video at 2:58](https://youtu.be/A6Wh-xa4ryg?t=178)
 [^s9]: session 20261003-212548-chrono-2FYKPJ, step 25 — [video at 4:18](https://youtu.be/ReMKqt9albk?t=258)
+
+[^s10]: session 20261006-011754-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/LkzkyenlZ3w?t=0)
+[^s11]: session 20261006-011754-chrono-2FYKPJ, step 1 — [video at 0:23](https://youtu.be/LkzkyenlZ3w?t=23)
+[^s12]: session 20261006-011754-chrono-2FYKPJ, step 2 — [video at 0:34](https://youtu.be/LkzkyenlZ3w?t=34)
+[^s13]: session 20261006-011754-chrono-2FYKPJ, step 3 — [video at 0:43](https://youtu.be/LkzkyenlZ3w?t=43)

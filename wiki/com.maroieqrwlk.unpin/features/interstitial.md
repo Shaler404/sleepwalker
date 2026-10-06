@@ -3,9 +3,9 @@ game: com.maroieqrwlk.unpin
 title: "Interstitial video ad after a win"
 type: feature
 feature: interstitial
-version_seen: 241.5.1
-verified_at: 2026-10-04
-sources: [20261003-203702-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261003-214021-chrono-2FYKPJ, 20261004-004411-chrono-2FYKPJ, 20261004-005453-chrono-2FYKPJ]
+version_seen: 241.5.2
+verified_at: 2026-10-05
+sources: [20261003-203702-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261003-214021-chrono-2FYKPJ, 20261004-004411-chrono-2FYKPJ, 20261004-005453-chrono-2FYKPJ, 20261005-141756-chrono-2FYKPJ]
 ---
 
 # Interstitial video ad after a win
@@ -65,6 +65,7 @@ The ad's controls change from creative to creative; these are the ones the versi
 | [End card](#end-card) | After the video: the advertised app's icon and Install; its only control, the skip icon at top left, opened the Play Store |
 | [Another ad format](#another-ad-format) | A second ad network's video: a sound icon at top left, "Google Play" with arrows at top right, a Download bar at the bottom |
 | [Playable end card](#playable-end-card) | After the video, a playable demo of the advertised game with a faint X at top right that closes the ad |
+| [Dead playable](#dead-playable) | Version 241.5.2, between level 15 stages: a playable demo whose Next label and Back did nothing; only a game restart got out |
 | [Result](#result) | The map, with the win kept |
 
 ### End card
@@ -93,6 +94,21 @@ icon at top left, a "Google Play" button with arrows at top right, a bar with GE
 
 After about 55 s of video the level 12 interstitial turned into a playable demo with the advertised game's
 Install at top left and a faint X at top right; the X closed the ad and brought the map [^s22].
+
+### Dead playable
+
+![Playable ad between L15 stages (241.5.2): a mahjong demo with a Next label at top left under the back arrow; Next and Back did nothing, no close appeared](../img/20261005-interstitial-tab-dead-playable-cc7e3bab.webp) [^s23]
+*Between level 15 stages (version 241.5.2): a playable mahjong demo with a Next label at top left; neither Next nor Back closed it*
+
+In version 241.5.2, after the stage 1 win of level 15, the interstitial opened a Play Store sheet; once the
+sheet was closed with its X, the ad was a playable mahjong demo with a **Next** label at top left
+[^s23]. A tap on Next changed nothing, no close control appeared during a
+15 s wait, and Back did nothing; the game was restarted [^s24]
+[^s25] [^s26]. After the stage 2 win of the next
+try the same happened with another playable (a ring puzzle with an Install bar): after the store sheet and
+a 20 s wait no close control appeared, and the game was restarted again [^s27]
+[^s28]. Both restarts cost the stage progress of the level (see
+[Multi Stage Level](multi-stage.md)).
 
 ### Result
 
@@ -136,6 +152,9 @@ Version 241.5.1.
   interstitial; not verified.
 - Closing through the Play Store and launching the game again keeps the win: the map came back at the next
   level [^s21].
+- Version 241.5.2, level 15: the interstitials after the stage 1 and the stage 2 wins both ended in a
+  playable with no working close, and only a game restart got out; the restart sent level 15 back to stage 1
+  [^s29] [^s27]. See [Dead playable](#dead-playable).
 - Nothing is given for watching [^s4].
 - Where the close control sits changes from creative to creative: an X at top right, a skip icon at top left
   or top right on the end card, then a Close button [^s3] [^s4].
@@ -160,6 +179,8 @@ Version 241.5.1.
 | Interstitial on Retry after a loss <!-- case:after-retry --> | Lost level 11, tapped Retry on "Level failed!", about 2 min after the no-ad win | ✅ Loading logo, then a video; its skip icon opened the Play Store; launching the game brought level 11 back from the start | [^s15] |
 | Interstitial after the level 11 win, about 5 min after the last ad <!-- case:after-win-l11 --> | Won level 11, tapped Tap to continue, waited out the video and the end card, tapped the skip icon, launched the game | ✅ Loading logo, about 50 s of video, an end card with only the skip icon, which opened the Play Store; the launch brought the map at level 12 with the win kept | [^s19] [^s21] |
 | Interstitials after two wins in a row <!-- case:back-to-back --> | Won levels 11 and 12, about 3 min apart | ✅ One after each win, in two different formats: no cooldown between consecutive wins | [^s20] |
+| Between-stage interstitials on L15 (241.5.2) twice turned into a playable ad after a store sheet: its 'Next' label and Back did nothing, no close appeared; only a restart got out <!-- case:dead-playable --> | Won level 15 stage 1, closed the store sheet, tapped Next, waited, pressed Back; on the next try won stage 2 and waited 20 s | ✅ No way out but a restart, both times | [^s27] |
+
 ## Not verified
 
 - Whether a loss brings it before Retry is tapped (it came on Retry, once [^s15]); whether Skip on the fail screen does.
@@ -167,6 +188,8 @@ Version 241.5.1.
 - Why the level 10 win brought none: a cooldown after the rewarded video is a hypothesis (task exp-interstitial-cooldown).
 - Which stages of a Multi Stage level bring it (level 10: after stages 1 and 3, not after stage 2).
 - Whether No Ads removes it.
+- Whether a stuck playable closes by itself after a longer wait (60 s or more), or after a tap on Next once a
+  timer has run (task exp-l15-stage-ad).
 
 [^s1]: session 20261003-203702-chrono-2FYKPJ, step 27 — [video at 9:02](https://youtu.be/cirqlD7KGWI?t=542)
 [^s2]: session 20261003-203702-chrono-2FYKPJ, step 26 — [video at 8:53](https://youtu.be/cirqlD7KGWI?t=533)
@@ -191,3 +214,11 @@ Version 241.5.1.
 [^s20]: session 20261004-005453-chrono-2FYKPJ, step 11 — [video at 9:10](https://youtu.be/rH_NzK3D4WA?t=550)
 [^s21]: session 20261004-005453-chrono-2FYKPJ, step 6 — [video at 5:59](https://youtu.be/rH_NzK3D4WA?t=359)
 [^s22]: session 20261004-005453-chrono-2FYKPJ, step 12 — [video at 10:56](https://youtu.be/rH_NzK3D4WA?t=656)
+
+[^s23]: session 20261005-141756-chrono-2FYKPJ, step 9 — [video at 2:37](https://youtu.be/pvvfGQcAObg?t=157)
+[^s24]: session 20261005-141756-chrono-2FYKPJ, step 10 — [video at 2:46](https://youtu.be/pvvfGQcAObg?t=166)
+[^s25]: session 20261005-141756-chrono-2FYKPJ, step 11 — [video at 3:09](https://youtu.be/pvvfGQcAObg?t=189)
+[^s26]: session 20261005-141756-chrono-2FYKPJ, step 12 — [video at 3:31](https://youtu.be/pvvfGQcAObg?t=211)
+[^s27]: session 20261005-141756-chrono-2FYKPJ, step 22 — [video at 5:58](https://youtu.be/pvvfGQcAObg?t=358)
+[^s28]: session 20261005-141756-chrono-2FYKPJ, step 23 — [video at 6:37](https://youtu.be/pvvfGQcAObg?t=397)
+[^s29]: session 20261005-141756-chrono-2FYKPJ, step 13 — [video at 3:55](https://youtu.be/pvvfGQcAObg?t=235)

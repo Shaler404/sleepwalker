@@ -2,60 +2,75 @@
 game: com.oakever.meowdoku
 version: 1.19.1
 play_version: 1.18.0
-play_checked: '2026-10-05T00:13:01'
+play_checked: '2026-10-05T22:05:43'
 phone_version: 1.19.1
-discovery: open
+discovery: closed
 ftue_verified: null
 progress:
-  text: level 130
-  value: 130.0
-  at: '2026-10-05T00:43:56'
-  session: 20261005-003925-chrono-2FYKPJ
+  text: level 139
+  value: 139.0
+  at: '2026-10-06T02:24:34'
+  session: 20261006-021434-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-05T02:00:53'
+  chrono: '2026-10-06T04:02:50'
 mechanics:
 - id: queens
   name: Cat placement on color regions (Queens-like)
   status: mastered
   method: solver
   levels:
-    won: 4
+    won: 16
     lost: 1
-    quit: 1
+    quit: 2
   recent:
-  - level: level 127
+  - level: L132 visit
     result: won
-    seconds: 121
+    seconds: 66
     model: sonnet
-  - level: level 128
+  - level: level 133
     result: won
-    seconds: 194
+    seconds: 62
     model: sonnet
-  - level: level 129
+    moves_before: 8
+  - level: level 134
     result: won
-    seconds: 111
+    seconds: 34
     model: sonnet
-  - level: level 130
-    result: lost
-    seconds: 221
-    model: sonnet
-    deliberate: true
-  - level: level 130
-    result: quit
-    seconds: 68
-    model: sonnet
-  - level: level 130
+  - level: level 135
     result: won
-    seconds: 162
+    seconds: 80
+    model: sonnet
+  - level: level 136
+    result: won
+    seconds: 53
+    model: sonnet
+  - level: level 137
+    result: won
+    seconds: 57
+    model: sonnet
+  - level: level 138
+    result: won
+    seconds: 63
+    model: sonnet
+  - level: golden after L138
+    result: won
+    seconds: 87
+    model: sonnet
+  - level: daily 10/06
+    result: won
+    seconds: 58
+    model: sonnet
+  - level: daily 10/06 retry
+    result: won
+    seconds: 47
     model: sonnet
   solver: solvers/com.oakever.meowdoku/queens.py
-  note: 'the published solver (queens.py, MAX_CELLS 12) returns every missing cat
-    in one round with rescan; on 2026-10-03 L129 was played with the earlier 3-per-round
-    version in 4 rounds (20261003-202631-chrono-2FYKPJ#2-5); play with solve queens
-    --run; dream 2026-10-04: removed a fake ''level 130 quit 8 s'' (level_start logged
-    before the device was lost, 20261003-235107-chrono-2FYKPJ#0)'
-  best_s: 111
+  note: Solver reads the board and returns every missing cat as a double tap in one
+    round with done=True (unique solution), so solve --run stops after 1 round without
+    looking at the win/Daily popup; dark tooltip boards are refused with a 'dimmed
+    by an overlay' note.
+  best_s: 28
 features:
 - id: consent
   name: Terms consent popup
@@ -72,20 +87,29 @@ features:
     done: true
     source: 20261003-200440-chrono-2FYKPJ#0
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: First launch only; afterwards Terms/Privacy links at bottom of Settings
+      (gear 670,112)
+    done: true
+    source: 20261005-123456-chrono-2FYKPJ#14
+    version: 1.19.1
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: Welcome popup has one Accept button and Terms/Privacy links; no decline
+      option seen in earlier frame (20261003-200440#0). Links in Settings not opened
+    done: true
+    source: 20261005-123456-chrono-2FYKPJ#14
+    version: 1.19.1
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: 'Only Accept exists, taken on first launch; the popup does not return on
+      later launches (this session: none on a progressed install)'
+    done: true
+    source: 20261005-123456-chrono-2FYKPJ#14
+    version: 1.19.1
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: Terms of Service (222,1119) and Privacy Policy (506,1119) in Home Settings
+      each open Chrome on oakevergames.com; launch returns to the game with Settings
+      still open
+    done: true
+    source: 20261006-010939-chrono-2FYKPJ#17
   type: system
   appeared:
     text: first launch, Welcome popup with Accept
@@ -142,21 +166,34 @@ features:
     done: true
     source: 20261003-200440-chrono-2FYKPJ#2
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home podium icon at (100,790) opens the leaderboard (marked on frame 26/28)
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#11
+    version: 1.19.1
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Leaderboard with timer, top-3 podium with red/blue/green gift boxes, list,
+      own row, i button, Go to Collect
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#15
+    version: 1.19.1
   - id: chk-timer
-    text: 'Its timer and schedule: how long it runs and when it comes back'
-    done: false
+    text: Period timer reads about 10h at 14:40 local (09:57 at 14:44); a new 10h-ish
+      window per New Session; podium on Home carries same timer
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#15
+    version: 1.19.1
   - id: chk-progress
-    text: 'Progress per level: the points or items after a win, and after a loss'
-    done: false
+    text: 'Win with 3 fish kept added +3 fish to the player''s total (L132: 5 to 8,
+      final 9, rank 47 then 32); losses not re-tested here'
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#6
+    version: 1.19.1
   - id: chk-rewards
-    text: The rewards per rank or milestone
-    done: false
+    text: Top 3 ranks show gift boxes (red, blue, green); rank 4+ none; box contents
+      not shown, tapping a box did nothing; own rank 32 gets none visible
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#16
+    version: 1.19.1
   - id: chk-end
     text: 'The end: the results screen and the reward paid (a follow-up at the timer''s
       end)'
@@ -184,19 +221,33 @@ features:
     done: true
     source: 20261003-200440-chrono-2FYKPJ#4
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home is the launch screen after the Oakever splash; return via back arrow
+      from a level or leaderboard
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#7
+    version: 1.19.1
   - id: chk-entries
-    text: 'Every entry point on it: open (a feature), locked (feature --locked with
-      its condition) or unclear (an experiment)'
-    done: false
+    text: 'Entries: avatar (profile), gear (settings), yarn counter, event podium
+      (fish leaderboard), Level button, Daily Challenge; all open, none locked'
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#7
+    version: 1.19.1
   - id: chk-badges
-    text: Badges, timers and counters on it and what each points to
-    done: false
+    text: 'Badges: red dot on avatar (profile), yarn counter 2 = daily streak (opens
+      Daily Streak), podium badge 38 = leaderboard rank with 24h timer (02:01 left),
+      Level 133, Daily Challenge TOP 1% tag and green-check 00:18, 4.412M players
+      joined today; gear on Home has no dot now (the red dot sits on the Settings
+      music toggle)'
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#11
+    version: 1.19.1
   - id: chk-changes
-    text: What changes on it with progress (new buttons, a moving map, a theme)
-    done: false
+    text: Level button advances 127 -> 133 over sessions; podium rank changes with
+      fish (21, 22, now 38); streak counter 2; layout otherwise unchanged across sessions
+      (no new buttons seen)
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#11
+    version: 1.19.1
   type: hub
   appeared:
     text: after consent on first launch
@@ -205,7 +256,7 @@ features:
   page: features/home.md
 - id: settings
   name: Settings
-  status: in_progress
+  status: documented
   cases:
   - id: chk-screen
     text: 'Settings popup: music/sound/voice/vibration toggles, Save your progress,
@@ -219,26 +270,37 @@ features:
     done: true
     source: 20261003-200440-chrono-2FYKPJ#5
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Gear top right opens Settings on Home (shot 15) and on the level screen
+      (shot 5); in-level variant differs: Pattern Mode + Restart instead of Save progress/Language/links'
+    done: true
+    source: 20261006-010939-chrono-2FYKPJ#2
+    version: 1.19.1
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: Music toggle OFF->ON->OFF and Pattern Mode OFF->ON (toast 'Pattern Mode
+      On')->OFF, sound/voice/vibration off and on, all restored; Feedback opens Helpshift
+      support; Save progress opens Facebook/Google sign-in + Delete Account (not tapped);
+      Language lists 10 languages with Confirm; in-level Restart not tapped
+    done: true
+    source: 20261006-010939-chrono-2FYKPJ#5
+    version: 1.19.1
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: 'Settings is not a prompt: nothing to answer (X just closes it)'
+    done: true
+    source: 20261006-010939-chrono-2FYKPJ#13
+    version: 1.19.1
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: Terms of Service and Privacy Policy each open Chrome on oakevergames.com;
+      launch returns to the game with Settings still open
+    done: true
+    source: 20261006-010939-chrono-2FYKPJ#17
+    version: 1.19.1
   type: system
   appeared:
     text: gear icon on Home, top right, red dot
     certainty: fact
     source: 20261003-200440-chrono-2FYKPJ#5
   page: features/settings.md
+  version_seen: 1.19.1
 - id: profile
   name: Profile (name, avatar, frame, skins)
   status: in_progress
@@ -255,26 +317,47 @@ features:
     done: true
     source: 20261003-200440-chrono-2FYKPJ#7
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home avatar button top-left (80,125) opens the Profile popup; red dot on
+      it and on the Skins tab clears after viewing
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#12
+    version: 1.19.1
   - id: chk-progress
-    text: 'The progress: the bar, the album or the counter, what fills it and where
-      it is now'
-    done: false
+    text: No bar or counter in the profile; Skins tab shows 1 of 8 slots owned (7
+      silhouettes)
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#13
+    version: 1.19.1
   - id: chk-items
-    text: 'The items: every set, skin or tier, which are owned and which are locked,
-      with their condition'
-    done: false
+    text: 'Avatars: 8 (cat, panda, corgi equipped, croc, chicken, duck, lion, calico)
+      all owned. Skins: 1 owned tuxedo cat, 7 locked silhouettes with no condition
+      shown, tap does nothing. Frames: Classic section 12+ plain colors all owned
+      (red equipped); Leaderboard section 5 locked crowned frames tagged 1, 5, 15,
+      30, 50'
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#17
+    version: 1.19.1
   - id: chk-earn
-    text: How an item or a step is earned (wins, keys, a spin, a pack)
-    done: false
+    text: 'Leaderboard frames: tap on locked rank-1 frame says ''Get first place in
+      the challenge to get this frame'' with GO (GO closed the tooltip, no navigation);
+      tags 5/15/30/50 suggest placement tiers, not verified. Skin unlock condition
+      not shown (see unlock-cat-skins)'
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#20
+    version: 1.19.1
   - id: chk-use
-    text: 'Using an item: equip a skin, open a chest, spin; what changes'
-    done: false
+    text: Tapping an owned frame/avatar moves the check mark and previews on the profile
+      header only; Home avatar changes after Confirm; closing with X discards the
+      preview (Home stayed red frame)
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#24
+    version: 1.19.1
   - id: chk-complete
-    text: 'Completing a set or the bar: the reward'
-    done: false
+    text: 'Does not apply: no set or bar in the profile; avatars and classic frames
+      all owned, no completion reward seen'
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#16
+    version: 1.19.1
   type: meta-progress
   appeared:
     text: avatar button top-left of Home
@@ -303,24 +386,54 @@ features:
     done: true
     source: 20261003-200440-chrono-2FYKPJ#16
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home Daily Challenge button (365,1330) opens today's board
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#1
+    version: 1.19.1
   - id: chk-today
-    text: 'Today''s claim, task list or challenge: what it gives'
-    done: false
+    text: 'Clearing the daily (10x10, 18s, 3 fish kept, score 10080) gave: Trial skin
+      (Beat 99.0% of players, 23:59 timer, Equip/Later), Challenge Cleared, Continue/Retry(ad);
+      Home button then shows skin, check, best time and TOP 1%'
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#3
+    version: 1.19.1
   - id: chk-calendar
-    text: 'The calendar or the task list: every day or task and its reward'
-    done: false
+    text: 'No calendar or task list: one dated board per day (10/05) from the Home
+      button; the only reward seen is the trial skin on a clear'
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#1
   - id: chk-next-day
-    text: 'The next day: what renews and when (a daily follow-up)'
-    done: false
+    text: 'Renews at local midnight: on 10-06 at ~02:22 the Home button had no check/best
+      time, timer 21:38:18 to midnight, bow-cat icon; it opened a new dated board
+      10/06 (10x10, 3 fish, stopwatch 00:00). A first 3-fish clear again offered the
+      24h trial skin'
+    done: true
+    source: 20261006-021434-chrono-2FYKPJ#26
   - id: chk-missed
     text: 'A missed day: what is lost or reset'
     done: false
   - id: chk-play
-    text: 'If it is a board: play it once, its win and its loss'
-    done: false
+    text: 'Played once with the queens solver in one round: win with trial skin offer;
+      reopening shows Best Time and Retry (ad) / Close; loss not tested'
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#3
+    version: 1.19.1
+  - id: retry-ad
+    text: After a clear, Retry carries an AD badge (Challenge Cleared screen and the
+      reopen popup, Best Time 00:18, Retry/Close); not watched
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#11
+  - id: home-cleared
+    text: 'Home button after the clear: equipped trial-skin cat, green check, best
+      time 00:18, TOP 1% tag'
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#10
+  - id: retry-watched
+    text: 'Retry (AD) watched: rewarded video ~8 s then X (695,118); the SAME board
+      with cats cleared, timer and fish reset; a 2-fish retry clear (00:38, beat 98.7%)
+      gave no trial skin, Retry (AD) offered again; best time kept 00:22'
+    done: true
+    source: 20261006-021434-chrono-2FYKPJ#33
   type: daily
   appeared:
     text: button under Level on Home, timer 03:5x until reset; opens a dated 10x10
@@ -383,12 +496,16 @@ features:
     done: true
     source: 20261003-200440-chrono-2FYKPJ#19
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home yarn counter at (365,112) opens the Daily Streak screen
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#13
+    version: 1.19.1
   - id: chk-rewards
-    text: The reward for each step of the streak
-    done: false
+    text: Only the day-7 gift box (SUN slot) is shown; tapping it did nothing (frame
+      unchanged); contents not shown
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#14
+    version: 1.19.1
   - id: chk-in-level
     text: What shows during a level while the streak runs
     done: false
@@ -400,9 +517,9 @@ features:
     done: true
     source: 20261005-003925-chrono-2FYKPJ#11
   - id: count-shown
-    text: 'Open: the popup said 2 days interrupted, yet after the 10-03 Give up the
-      streak was 1 and only 10-04 was missed; find whether the popup shows the best
-      streak, or the day boundary is not local midnight'
+    text: 'Today at 14:41 streak 2 best 2 with MON and TUE ticked though the date
+      is Monday 10-05: row starts at streak day 1, not at the calendar weekday; cause
+      of the 2 unresolved'
     done: false
   type: streak
   appeared:
@@ -443,15 +560,22 @@ features:
     done: true
     source: 20261003-200440-chrono-2FYKPJ#12
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home podium icon (100,790) with rank badge and period timer opens the leaderboard;
+      the post-win overlay shows it too
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#16
   - id: chk-period
-    text: 'The period and its timer: when it resets'
-    done: false
+    text: 'Timer 02:02:20 at ~22:45 on 10-05 on the leaderboard and Home podium: ends
+      about 00:45 on 10-06 (same per-install 24h cycle)'
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#7
+    version: 1.19.1
   - id: chk-rewards
-    text: Rewards per rank, promotion and relegation
-    done: false
+    text: Top 3 rows carry gift boxes (red, blue, green), rank 4 and below none; the
+      info sheet says 'Win exclusive frames and rewards' (a box with a frame); box
+      tap shows no contents; no promotion or relegation seen
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#18
   - id: chk-end
     text: 'The end of a period: the results screen and the reward (a follow-up)'
     done: false
@@ -461,6 +585,12 @@ features:
       to 0 fish and unranked, coins still 0'
     done: true
     source: 20261005-003925-chrono-2FYKPJ#3
+  - id: period-24h
+    text: 'Home timer 10:01:28 at 14:38 and 09:57:18 at 14:44 on 10-05: the period
+      ends about 00:40 on 10-06, 24 h after the launch at 00:39 on 10-05 that started
+      it (consistent with a per-install 24 h period started at launch)'
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#0
   type: social
   appeared:
     text: event podium icon with 24h timer on Home opens it; first opened
@@ -714,22 +844,31 @@ features:
     done: true
     source: 20261003-200440-chrono-2FYKPJ#3
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Level HUD, right booster button (553,1357)
+    done: true
+    source: 20261005-123456-chrono-2FYKPJ#4
+    version: 1.19.1
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'No screen: mouse runs onto a cell and puts an X (frame 10)'
+    done: true
+    source: 20261005-123456-chrono-2FYKPJ#4
+    version: 1.19.1
   - id: chk-sources
-    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
-      and how much'
-    done: false
+    text: Rewarded video from the green badge at 0 gives 1 charge (frames 6-10); 1
+      at level start
+    done: true
+    source: 20261005-123456-chrono-2FYKPJ#4
+    version: 1.19.1
   - id: chk-sinks
-    text: 'Sinks: every way it is spent and the price'
-    done: false
+    text: One use per tap, no currency cost; badge goes to video icon
+    done: true
+    source: 20261005-123456-chrono-2FYKPJ#4
+    version: 1.19.1
   - id: chk-refill
-    text: 'Refill timer, if any: how long one unit takes and the maximum'
-    done: false
+    text: 'No timer seen: refill only by rewarded video'
+    done: true
+    source: 20261005-123456-chrono-2FYKPJ#4
+    version: 1.19.1
   found_at:
     text: level 127 home
     value: 127.0
@@ -741,7 +880,7 @@ features:
   page: features/booster-mouse.md
 - id: cat-skins
   name: Cat skins (7 locked)
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -750,16 +889,19 @@ features:
     done: true
     source: 20261003-200440-chrono-2FYKPJ#8
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home avatar (80,125) > Profile popup > Skins tab (182,692); the tab carries
+      a red dot that clears once opened
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#13
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Skins tab: a 4x2 grid, one owned skin (tuxedo cat) and 7 beige cat silhouettes,
+      Confirm below (shot 16)'
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#13
   - id: chk-progress
-    text: 'The progress: the bar, the album or the counter, what fills it and where
-      it is now'
-    done: false
+    text: 'No bar or counter: 1 of 8 slots filled (tuxedo cat), 7 silhouettes'
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#13
   - id: chk-items
     text: 'The items: every set, skin or tier, which are owned and which are locked,
       with their condition'
@@ -773,6 +915,18 @@ features:
   - id: chk-complete
     text: 'Completing a set or the bar: the reward'
     done: false
+  - id: trial-from-daily
+    text: A 3-fish Daily Challenge clear (18 s) gave 'New trial skin unlocked' (red
+      polka-dot bandana cat, Trial 23:59), Equip/Later; after Equip the board cats
+      and the Home Daily button wear it and the Home avatar gets a red dot
+    done: true
+    source: 20261005-143752-chrono-2FYKPJ#2
+  - id: trial-not-listed
+    text: 'The Daily Challenge trial skin (cat with red polka-dot bow) is used on
+      the Level 133 board and the cat row (shot 9) but is not among the Skins tab
+      slots (shot 16): the tab shows only the tuxedo cat as owned'
+    done: true
+    source: 20261005-223641-chrono-2FYKPJ#13
   found_at:
     text: level 127 home
     value: 127.0
@@ -889,6 +1043,11 @@ features:
     done: true
     source: 20261005-003925-chrono-2FYKPJ#14
     version: 1.19.1
+  - id: skip-icon
+    text: The control at top-left (45,110) of the interstitial after the L133 win
+      opened the Play Store, not a close; launch returned to the game
+    done: true
+    source: 20261006-010939-chrono-2FYKPJ#28
   found_at:
     text: level 129 home
     value: 129.0
@@ -995,11 +1154,25 @@ features:
     done: true
     source: 20261003-201915-chrono-2FYKPJ#4
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Get 3 Fishes on Out of Fishes (365,1265), green video badge on cat/mouse
+      boosters at 0 (180/553,1357), Restore on Daily Streak popup
+    done: true
+    source: 20261005-123456-chrono-2FYKPJ#11
+    version: 1.19.1
   - id: chk-frequency
-    text: 'How often it shows: after which action, every Nth level, a cooldown'
+    text: 'Player-triggered only, no cooldown seen: mouse ad then Get 3 Fishes ad
+      back to back within 5 min both played. Interstitials separate'
+    done: true
+    source: 20261005-123456-chrono-2FYKPJ#11
+    version: 1.19.1
+  - id: get3-fishes-reward
+    text: Get 3 Fishes full watch gives 3 fish, same board kept (frames 23-26)
+    done: true
+    source: 20261005-123456-chrono-2FYKPJ#11
+    version: 1.19.1
+  - id: daily-retry
+    text: Daily Challenge Retry after a clear is a rewarded placement (AD badge);
+      not watched, what it gives unknown
     done: false
   found_at:
     text: level 129 home
@@ -1011,6 +1184,89 @@ features:
     certainty: fact
     source: 20261003-201915-chrono-2FYKPJ#4
   page: features/ad-rewarded.md
+- id: golden-fish
+  name: Golden Fish bonus board
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Win screen of every 4th main level: orange Golden Fish button (365,1217)
+      replaces the next-level button, ''Skip to Level N'' text below it'
+    done: true
+    source: 20261006-021434-chrono-2FYKPJ#17
+  - id: chk-screen
+    text: 'Golden board: 7x7, header shows Score only (no Level number), one golden
+      fish in place of the three fish, same three rules and boosters, banner at the
+      bottom'
+    done: true
+    source: 20261006-021434-chrono-2FYKPJ#18
+  - id: chk-announce
+    text: Announced only by the Golden Fish button on the win screen; on the board
+      a tooltip 'Only Golden Fish - Be careful!' and a first-time tutorial popup '1
+      Golden Fish = 5 Fishes on the leaderboard', Tap to Continue
+    done: true
+    source: 20261006-021434-chrono-2FYKPJ#19
+  - id: chk-differs
+    text: 'Smaller board (7x7 vs 9x9/10x10), no level number, one golden fish instead
+      of three (so one mistake should end it: untested), no interstitial before it;
+      rules and boosters as the base'
+    done: true
+    source: 20261006-021434-chrono-2FYKPJ#18
+  - id: chk-win
+    text: 'Win: leaderboard overlay with the golden counter 5 (+5 fish, 1 golden =
+      5), then Surgical praise with a golden fish and the Level N+1 button, no Skip;
+      the main level number does not advance'
+    done: true
+    source: 20261006-021434-chrono-2FYKPJ#22
+  - id: chk-frequency
+    text: 'Every 4th main level''s win screen offers it: L54, 58 ... 126, 134, 138
+      (L135-137 had none)'
+    done: true
+    source: 20261006-021434-chrono-2FYKPJ#17
+  - id: under-win
+    text: 'Differs: +5 fish (one golden) on the leaderboard instead of up to 3, no
+      rating/next-level skip, next button is the following main level'
+    done: true
+    source: 20261006-021434-chrono-2FYKPJ#22
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-010939-chrono-2FYKPJ#32
+  - id: chk-loss
+    text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
+      progress)'
+    done: false
+  - id: chk-retry
+    text: Retry and continue offers after a loss and their price (a video, coins);
+      where a retry sends you (the start, the same stage)
+    done: false
+  - id: under-out-of-fishes
+    text: 'Out of fishes under Golden Fish bonus board: as the base, or what differs'
+    done: false
+  - id: under-restart
+    text: 'Settings gear > Restart restarts the SAME board (same layout, cat bar order
+      shuffled), cats cleared, score 0, hint count kept, no confirm under Golden Fish
+      bonus board: as the base, or what differs'
+    done: false
+  - id: under-quit
+    text: 'Back arrow in level goes straight Home, no confirm, may trigger interstitial
+      under Golden Fish bonus board: as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Android Back on Home opens Quit popup; X cancels under Golden Fish bonus
+      board: as the base, or what differs'
+    done: false
+  found_at:
+    text: level 134
+    value: 134.0
+  type: level-type
+  appeared:
+    text: 'on the win screen of every 4th main level (L134 this session; 54, 58 ...
+      126 earlier): a Golden Fish button stands where the next-level button is, with
+      Skip to Level N below'
+    certainty: fact
+    source: 20261006-010939-chrono-2FYKPJ#32
 tasks:
 - id: analyze
   title: Analyze the game
@@ -1047,76 +1303,113 @@ tasks:
   title: 'Study profile: skins, avatars, frames and how locked skins unlock'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:08:28'
   feature: profile
   source: session
+  closed: '2026-10-05T22:41:05'
+  closed_by: 20261005-223641-chrono-2FYKPJ#21
+  note: Walked Avatar, Skins, Frame tabs; locked frames show rank-1 tooltip; skins
+    give no condition. exp-frame-rank-tiers set
 - id: study-fish-event
   title: Study fish event rewards and rank
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:08:28'
   feature: fish-event
   source: session
+  closed: '2026-10-05T14:43:08'
+  closed_by: 20261005-143752-chrono-2FYKPJ#20
+  note: leaderboard, +3 fish per clean win, top-3 gift boxes mapped; end results await
+    fish-event-end-open
 - id: study-daily-streak
   title: Study daily streak rewards and break rule
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:08:28'
   feature: daily-streak
   source: session
+  closed: '2026-10-05T14:43:07'
+  closed_by: 20261005-143752-chrono-2FYKPJ#20
+  note: screen, entry, week row mapped; gift contents and count-shown still open (experiments)
 - id: study-daily-challenge
   title: Study Daily Challenge incl. trial skin on 3-fish clear
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:08:29'
   feature: daily-challenge
   source: session
+  closed: '2026-10-05T14:43:06'
+  closed_by: 20261005-143752-chrono-2FYKPJ#20
+  note: entry, board, win with trial skin, cleared state mapped; loss, next-day renewal,
+    missed day open
 - id: exp-save-progress
   title: 'Save your progress in Settings: what it offers (do not sign in)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:08:29'
   feature: settings
   source: session
   plan: open it, mark, back out without signing in
+  closed: '2026-10-06T01:19:00'
+  closed_by: 20261006-010939-chrono-2FYKPJ#12
+  note: 'Home gear > Save your progress opens a popup: Sign in with Facebook, Sign
+    in with Google, Delete Account link; nothing tapped, X closes (shot 16)'
+  result: confirmed
 - id: study-consent
   title: 'Study Terms consent popup: open it, walk its screens and tabs, verify its
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:09:04'
   feature: consent
   source: external
+  closed: '2026-10-05T12:40:49'
+  closed_by: 20261005-123456-chrono-2FYKPJ#14
+  note: Popup is first-launch only (fresh install); on this progressed phone only
+    the Settings links remain; marked, links not opened
 - id: study-home
   title: 'Study Home screen: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:09:04'
   feature: home
   source: external
+  closed: '2026-10-05T22:39:08'
+  closed_by: 20261005-223641-chrono-2FYKPJ#11
+  note: 'Home walked: entries, badges, yarn counter opens Daily Streak, gear opens
+    Settings, podium opens leaderboard'
 - id: study-settings
   title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:09:04'
   feature: settings
   source: external
+  closed: '2026-10-06T01:13:46'
+  closed_by: 20261006-010939-chrono-2FYKPJ#22
+  note: Walked Home settings (toggles, Save progress, Language 10 langs, Feedback=Helpshift,
+    ToS/Privacy to Chrome) and in-level variant (Pattern Mode, Restart not tapped)
 - id: study-fish-leaderboard
   title: 'Study Fish leaderboard: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:09:04'
   feature: fish-leaderboard
   source: external
+  closed: '2026-10-05T22:38:32'
+  closed_by: 20261005-223641-chrono-2FYKPJ#7
+  note: 'Walked leaderboard: podium, list scroll, info sheet, row tap (nothing), Go
+    to Collect (opens L133 board), period timer. Hearts and period-end results left
+    open as tasks (exp-heart-cheers, fish-event-end-open)'
 - id: outcomes-fish-event
   title: 'Run each outcome once under Fish rank event (New Session): Android Back
     on Home opens Quit popup; X cancels'
@@ -1277,10 +1570,14 @@ tasks:
   title: 'Study Mouse booster: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:14:35'
   feature: booster-mouse
   source: external
+  closed: '2026-10-05T12:37:24'
+  closed_by: 20261005-123456-chrono-2FYKPJ#4
+  note: 'Mouse at 0: tap -> rewarded video, +1 charge, use puts mouse and X on a cell,
+    back to video badge'
 - id: appeared-ad-banner
   title: 'Find why Banner ad under the level board appeared: shown on every level
     from some level on; first seen on level 128 (not checked on level 127)'
@@ -1342,31 +1639,44 @@ tasks:
     on every level'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:29:20'
   feature: ad-interstitial
   source: session
   plan: Play three levels back to back with the solver; after each Level N button
     shot the next screen 2-3 s later; note interstitial yes/no per level and banner
     yes/no. Confirmed when a rule (every level, every Nth, a cooldown) fits all three.
+  closed: '2026-10-06T02:20:59'
+  closed_by: 20261006-021434-chrono-2FYKPJ#22
+  note: 'L135 no interstitial, L136 yes, L137 no, L138 yes; banner on every level
+    incl golden. Rule: interstitial at every other level start (alternating)'
+  result: confirmed
 - id: study-rate-us
   title: 'Study the Rate Us popup: what X and Rate Us do (Rate Us leads to the store:
     back at once, no rating) and after which win it comes back'
   kind: study
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-03T20:29:33'
   feature: rate-us
   source: session
+  closed: '2026-10-06T01:16:52'
+  closed_by: 20261006-010939-chrono-2FYKPJ#33
+  note: popup did not return after L133/L134; replaced by followup study-rate-us-2
 - id: study-ad-rewarded
   title: 'Study rewarded videos: every place that offers one (streak restore, booster
     at 0, others) and what each gives after a full watch'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:29:33'
   feature: ad-rewarded
   source: session
+  closed: '2026-10-05T12:40:19'
+  closed_by: 20261005-123456-chrono-2FYKPJ#11
+  note: 'Watched in full: mouse booster at 0 (+1 charge) and Out of Fishes Get 3 Fishes
+    (+3 fish, board kept, Reward granted + X). Streak Restore not reachable today
+    (exp-streak-restore covers)'
 - id: study-ad-interstitial
   title: 'Study Interstitial ad at level start: open it, walk its screens and tabs,
     verify its cases'
@@ -1397,7 +1707,7 @@ tasks:
     continues with the placed cats kept and 3 fish back'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:38:33'
   feature: ad-rewarded
   source: session
@@ -1405,6 +1715,13 @@ tasks:
     Fishes, sit through the ad (launch out if no cross after 60 s), mark the board
     after. Confirmed when the board keeps its cats and the fish are 3; refuted if
     the level restarts or nothing is given
+  closed: '2026-10-05T12:43:00'
+  closed_by: 20261005-123456-chrono-2FYKPJ#11
+  note: 'L132: 3 wrong cats -> Out of Fishes (shot 22); Get 3 Fishes ad ~40 s, ''Reward
+    granted'' + X top-left; back on the same board with the 3 wrong-cat X marks kept
+    and 3 fish (shot 26). No correct cat had been placed, so keeping placed cats is
+    inferred from the board being kept, not seen'
+  result: confirmed
 - id: exp-hint-empty
   title: 'Use the hint booster down to 0 and see what refills it: confirmed when the
     badge at 0 and its refill (video, timer, level win) are marked'
@@ -1452,15 +1769,15 @@ tasks:
     on 2026-10-06)'
   kind: followup
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-05T00:46:07'
   feature: fish-leaderboard
   not_before: '2026-10-06T00:25:00'
   source: game
-  note: the period that ended on 2026-10-04 while the game was closed showed only
-    a New Session popup, no results [20261005-003925-chrono-2FYKPJ#3]; win at least
-    one level in the period so the own row has fish; open the leaderboard a few minutes
-    before 00:00:00 and stay on it (or on Home) past the timer
+  note: period had already ended before the session opened (New Session popup on launch);
+    new followup fish-event-end-open-2 set for 2026-10-07
+  closed: '2026-10-06T01:16:51'
+  closed_by: 20261006-010939-chrono-2FYKPJ#33
 - id: exp-streak-count
   title: 'Find what the Daily Streak break popup counts: confirmed when the number
     in ''N days interrupted'' is matched to the current streak, the best streak or
@@ -1475,3 +1792,221 @@ tasks:
     and best; win the first level of the day and mark the break popup if it comes.
     Confirmed when its N equals one of them; 2026-10-05 showed 2 while the streak
     should have been 1 after the 10-03 Give up
+- id: exp-consent-links
+  title: 'Open Terms of Service and Privacy Policy from Settings: done when each link''s
+    destination (browser, in-app page) and the way back are marked'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T12:40:48'
+  feature: consent
+  source: session
+  plan: Home gear (670,112) > tap Terms of Service (about 222,1120), shot and mark
+    where it opens; launch back; same for Privacy Policy. Confirmed when both destinations
+    are marked and the game returns to Home; also closes consent chk-links and settings
+    chk-links
+  closed: '2026-10-06T01:18:55'
+  closed_by: 20261006-010939-chrono-2FYKPJ#17
+  note: ToS (step 17) and Privacy Policy (step 19) open Chrome pages on oakevergames.com;
+    launch brings the game back with Settings open
+  result: confirmed
+- id: exp-daily-trial-skin
+  title: Is the trial skin granted only for a 3-fish daily clear, and what happens
+    when its 24h trial ends
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T14:43:01'
+  feature: daily-challenge
+  source: session
+  plan: clear a daily with a mistake, compare; reopen after 24h
+- id: exp-streak-rewards
+  title: What the Daily Streak day-7 gift gives
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T14:43:02'
+  feature: daily-streak
+  source: session
+  plan: reach 7 days or find a gift tooltip
+- id: exp-avatar-red-dot
+  title: 'Find what the red dot on the Home avatar points to after the trial skin
+    was equipped: done when Profile > Skins is marked with the trial skin (owned/trial
+    state, timer) and the dot''s state after opening it'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T14:46:14'
+  feature: cat-skins
+  source: session
+  plan: Before about 14:35 on 2026-10-06 (the 24 h trial ends then), tap the Home
+    avatar (top-left), open the Skins tab, mark it; note whether the trial skin shows
+    a timer and whether the 7 locked silhouettes changed; back to Home and mark whether
+    the dot is gone. Confirmed when the dot leads to the trial skin entry
+  closed: '2026-10-05T22:43:53'
+  closed_by: 20261005-223641-chrono-2FYKPJ#13
+  note: The Home avatar dot led to the Profile Skins tab dot (shot 15); opening Skins
+    cleared both (shot 16). But the trial skin (red bow cat, worn on the L133 board,
+    shot 9) is not in the Skins grid and no trial timer is shown, so the dot leads
+    to the tab, not to a trial skin entry
+  result: inconclusive
+- id: exp-daily-retry-ad
+  title: 'Watch the Daily Challenge Retry ad once after a clear: done when what Retry
+    gives (the same board or a new one, timer reset, best time kept or replaced, another
+    trial skin or none) is marked'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T14:46:14'
+  feature: daily-challenge
+  source: session
+  plan: After clearing a day's daily, on Challenge Cleared (or reopen popup) tap Retry
+    (AD), sit through the ad (launch out if no cross after 60 s), mark the board;
+    solve it with a deliberate mistake (2 fish) and mark the result screen. Confirmed
+    when the retry board and its result are marked; also answers whether a non-3-fish
+    clear gives a trial skin (exp-daily-trial-skin)
+  closed: '2026-10-06T02:24:34'
+  closed_by: 20261006-021434-chrono-2FYKPJ#33
+  note: 'Retry (AD): ad ended with Reward granted + X (~8 s); gives the SAME board
+    with cats cleared, timer reset to 00:00, 3 fish. Retry clear with 2 fish: 00:38
+    beat 98.7% (first 00:22 beat 99.0%), no trial skin popup (skin popup came only
+    on 3-fish first clear, Equip/Later). Retry offered again. Best-time stored not
+    verified.'
+  result: confirmed
+- id: exp-streak-day-boundary
+  title: 'Find when the Daily Streak day rolls over: done when the yarn counter is
+    marked before and after the first win of a new calendar day and the jump (or none)
+    is explained'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T14:46:15'
+  feature: daily-streak
+  not_before: '2026-10-06T08:00:00'
+  source: session
+  plan: 'On 2026-10-06 before any level: open the yarn counter on Home, mark current/best
+    and the ticked days; win one level; open it again and mark. If it goes 2 to 3,
+    a day is the local calendar day and the 10-05 count of 2 came from the 00:39 Give-up
+    win counting as day 1 and a later win as day 2 (so the day boundary is not midnight);
+    if it stays 2 the day already counted. Closes daily-streak count-shown'
+- id: daily-challenge-next-day
+  title: 'Open the Daily Challenge on 2026-10-06: done when the renewed Home button
+    (timer, check gone, skin) and the new dated board are marked; then skip one day
+    and mark what a missed day shows'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-05T14:46:27'
+  feature: daily-challenge
+  not_before: '2026-10-06T08:00:00'
+  source: game
+  note: 10/06 renewed Home button (frame 45) and new dated board (frame 46) seen at
+    ~02:22; missed-day part moved to daily-missed-day
+  closed: '2026-10-06T02:27:45'
+  closed_by: 20261006-021434-chrono-2FYKPJ#26
+- id: exp-heart-cheers
+  title: 'Hearts on leaderboard rows: watch after a win what gives hearts and if tapping
+    does anything'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T22:38:25'
+  feature: fish-leaderboard
+  source: session
+  plan: win a level, open leaderboard, note heart counters and tap them
+- id: exp-frame-rank-tiers
+  title: 'Leaderboard frames 5/15/30/50: verify they are given for top-N placement
+    at period end'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T22:40:58'
+  feature: profile
+  not_before: '2026-10-06T01:40:58'
+  source: session
+  plan: after period end at ~00:45 10-06 check Frame tab for new unlocked frame
+- id: exp-frame-conditions
+  title: 'Read the own condition of each Leaderboard frame (5, 15, 30, 50): done when
+    each frame''s tooltip is marked'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T22:44:10'
+  feature: profile
+  source: session
+  plan: Profile > Frame; close any open tooltip first, then tap the 5 frame, mark
+    the tooltip, close it, repeat for 15, 30, 50. In this session the 5-frame tap
+    (step 18) left the rank-1 text 'Get first place in the challenge' on screen, so
+    the tags may count first places, not ranks. Confirmed (tiers by rank) when the
+    texts name top-5/15/30/50; refuted when they name a number of first places
+- id: fish-event-end-open-2
+  title: 'Watch a fish leaderboard period end with the game open: period ends about
+    01:09 phone time on 2026-10-07 (timer read 23:55:49 at 01:13 on 10-06); open the
+    leaderboard at 01:05 and stay past 01:09; mark results screen, final rank, reward'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-06T01:16:44'
+  feature: fish-leaderboard
+  not_before: '2026-10-07T01:03:00'
+  source: game
+- id: study-rate-us-2
+  title: 'Rate Us: wins of L133 and L134 did not bring it back; keep playing and note
+    after which win it returns, then tap X and Rate Us (back at once)'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-06T01:16:44'
+  feature: rate-us
+  not_before: '2026-10-07T01:16:44'
+  source: game
+- id: outcomes-golden-fish
+  title: 'Run each outcome once under Golden Fish bonus board: Out of fishes, Settings
+    gear > Restart restarts the SAME board (same layout, cat bar order shuffled),
+    cats cleared, score 0, hint count kept, no confirm, Back arrow in level goes straight
+    Home, no confirm, may trigger interstitial, Android Back on Home opens Quit popup;
+    X cancels'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T01:19:01'
+  feature: golden-fish
+  source: session
+  plan: 'while Golden Fish bonus board is on, reach each listed outcome of the base
+    level once, one at a time (a deliberate loss is allowed unless it spends premium
+    currency); mark the outcome screen (mark --feature golden-fish --as result) and
+    close its cell: case golden-fish under-<outcome> "as the base" or "what differs"
+    --done'
+  rank: 7
+- id: study-golden-fish
+  title: 'Study the Golden Fish bonus board: on the next 4th-level win (L138) tap
+    Golden Fish instead of Skip; done when the entry, the board (one fish, no Level
+    in the header), any ad before it, its win screen and its reward are marked'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-06T01:19:07'
+  feature: golden-fish
+  source: game
+  closed: '2026-10-06T02:20:58'
+  closed_by: 20261006-021434-chrono-2FYKPJ#22
+  note: 'L138 golden: entry, board, popup, result, leaderboard marked; no ad before;
+    1 golden=5 fish'
+- id: daily-missed-day
+  title: 'Skip the Daily Challenge on 2026-10-07 entirely, open it on 2026-10-08:
+    done when the Home button and the daily screen after a missed day are marked (what
+    is lost or reset, any streak or calendar effect)'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-06T02:27:45'
+  feature: daily-challenge
+  not_before: '2026-10-08T08:00:00'
+  source: game
+  note: closes daily-challenge chk-missed; sessions on 10-07 must not open or clear
+    the daily
+discovery_note: 'Golden Fish (the last new entry) was played through at L138: its
+  board, popup and win lead only back to the next main level, no new entry point;
+  Home, Settings, Profile, leaderboard and daily walked earlier; the one lock (cat
+  skins) has its unlock goal; no shop/IAP/no-ads/offer seen across L127-139; onboarding
+  left to ftue'

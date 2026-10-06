@@ -13,3 +13,4 @@ One line per dream from `sw.py stats` over the sessions of that dream (the wiki 
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 2026-10-04 | chrono | 3 | 1.9 | 6% / 9% | 0/0 | core-match typical None min (best None), 0 won / 0 lost / 1 quit, broken | 0 | 0 | 3 (0.3 min) | 0 (0 min) | opus (study) 1, sonnet:low (play) 2 |
 | 2026-10-05 | chrono | 1 | 1.3 | 0% / 33% | 0/0 | levels 0 won / 1 lost | 0 | 0 | 0 (0.0 min) | 0 (0 min) | sonnet:low (play) |
+| 2026-10-06 | chrono | 7 | 4.7 | 8% / 22% | 0/0 | median of medians 16.2 min; 2 won / 0 lost | 0 | 1 | 2 (0.0 min) | 0 (0 min) | sonnet:low (play) 5, opus (study) 2 |

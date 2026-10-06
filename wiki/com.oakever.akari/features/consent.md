@@ -62,11 +62,22 @@ The links on the Welcome card were not opened. The Terms of Service link in Sett
 | Welcome screen: Terms of Service and Privacy Policy, Accept button <!-- case:chk-screen --> | Fresh install, first launch | The Welcome card with the two links and Accept | ✅ [^s1] |
 | Why it appeared: the trigger that brought it up <!-- case:chk-appeared --> | First launch of a fresh install | Shown as the first screen | ✅ [^s1] |
 | Where to find it: the screen and the button that open it <!-- case:chk-entry --> | Launched the game again; opened Settings | Only on the first launch of a fresh install; the terms are reachable from Settings | ✅ [^s8] |
-| Every option or button and what it changes <!-- case:chk-options --> | Tapped Accept (fresh install); Terms of Service from Settings | Accept leads on into the game; the only other controls are the two links | ✅ [^s8] |
-| For a prompt: what each answer does and whether it comes back <!-- case:chk-answers --> | Accepted, then launched the game again and force-stopped it | Accept leads on; the card did not come back | ✅ [^s8] |
+| Every option or button and what it changes <!-- case:chk-options --> | Tapped Accept (fresh install); Terms of Service from Settings | not verified: Accept leads on into the game [^s3]; a decline path and what Back does on the card were not tried | [^s1] [^s3] |
+| For a prompt: what each answer does and whether it comes back <!-- case:chk-answers --> | Accepted, then launched the game again and force-stopped it | not verified: Accept leads on; the card did not come back on this install; only one answer was seen | [^s4] [^s5] |
 | Links out (privacy, terms): where they lead <!-- case:chk-links --> | Tapped Terms of Service in Settings | Chrome opens the terms on oakevergames.com; bringing the game back returns to it | ✅ [^s8] |
 
 ## Not verified
+
+- Every option on the card <!-- case:chk-options -->: one Accept button was seen on the first launch [^s1];
+  whether there is a decline path and what Back does on the card were not tried (a fresh install is
+  needed, task fresh-consent).
+- What each answer does and whether the card comes back <!-- case:chk-answers -->: after Accept it was not
+  shown again on this install, also after a force-stop [^s4] [^s5]; any other answer was not seen (task
+  fresh-consent).
+
+  > ⚠️ **Previously** (corrected 2026-10-06): the Cases table showed both cases as verified (✅), citing the
+  > Terms of Service step in Settings [^s8]. That step shows the links, not the card's options: only Accept
+  > was ever tapped, on a single fresh install.
 
 - The links on the Welcome card itself, and the Privacy Policy link: where they lead (inferred: the same oakevergames.com pages).
 - The card in motion on a fresh install (follow-up task fresh-consent).

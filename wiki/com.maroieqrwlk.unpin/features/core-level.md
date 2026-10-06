@@ -3,9 +3,9 @@ game: com.maroieqrwlk.unpin
 title: "Pin-pull level"
 type: feature
 feature: core-level
-version_seen: 241.5.1
-verified_at: 2026-10-04
-sources: [20261003-193015-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261003-214021-chrono-2FYKPJ, 20261004-004411-chrono-2FYKPJ]
+version_seen: 241.5.2
+verified_at: 2026-10-06
+sources: [20261003-193015-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261003-214021-chrono-2FYKPJ, 20261004-004411-chrono-2FYKPJ, 20261005-013818-chrono-2FYKPJ, 20261005-235042-chrono-2FYKPJ, 20261006-033538-chrono-2FYKPJ]
 ---
 
 # Pin-pull level
@@ -70,7 +70,8 @@ button or ad tile yet [^s1] [^s3].
 In level 1 the only pin holds all the balls; one tap pulls it and the balls pour into the cup while the
 percentage under it climbs (43%, 95%, 98% in the clip) [^s4].
 
-*Video (not embedded: clip limit of this dream): Level 1: the pin pulled, the balls pour through the funnel into the cup and the percentage climbs · [original on YouTube from 1:20](https://youtu.be/JjeHh2uiLgE?t=80)* [^s4]
+![Level 1: the pin pulled, the balls pour through the funnel into the cup and the percentage climbs](../clips/20261003-level1-pull-pin-win.webp) [^s4]
+*Clip 3 s · [original on YouTube from 1:20](https://youtu.be/JjeHh2uiLgE?t=80)*
 
 In level 2 two pins split the container: coloured balls on the top pin, grey balls on the lower one. The
 top pin was pulled first, then the lower one [^s2]. After the top pin, the lower layer shows only
@@ -122,6 +123,13 @@ the coins earned ([Coins](coins.md)), the coin balance top right and **Tap to co
 ![The level 1 win screen: Awesome! Level completed!, the gift card at 12%, +22 coins, Tap to continue](../img/20261003-core-level-result-b836c3c6.webp) [^s4]
 *The level 1 win screen: Tap to continue at the bottom opens level 2*
 
+If the app is left before the screens after a win are over, the win is lost. Level 13 was won and the
+app was left on the Bronze League board that follows the win; on the next launch the map stood at 13
+again with **Play!** under it, while the league panel kept the 49 pins of that win [^s17].
+
+![The map after relaunch: the current node is 13 again, the league panel on the right shows 49 pins, 344 coins right of Play!](../img/20261005-core-level-result-94fea42f.webp) [^s17]
+*The map the day after the level 13 win: node 13 is still the current level; the league panel right shows 49 pins (the player's name in the league banner blacked out)*
+
 ### Level failed
 
 ![Pretty Close! Level failed!: the tip 'Balls fell out of the level!', an ad tile, the green Skip with a video icon, Retry under it](../img/20261004-core-level-result-f2adda25.webp) [^s14]
@@ -139,6 +147,16 @@ for another game, a green **Skip** with a video icon and **Retry** under it [^s1
 - **Skip** (a rewarded video) was not tried [^s14].
 - No coins or lives were taken; there is no offer of extra moves or a revive [^s14].
 
+A second kind of loss came on level 20, a [Color Bucket Level](color-bucket-level.md) with a yellow and a blue
+cup: balls reached a cup of another colour and fell grey over the yellow cup while the blue cup stood at 93%
+[^s18]. The fail screen was the same, with "So Close!", a worried emoji and a tip that grey balls cannot be
+collected and coloured balls spread the paint; Skip (video) and Retry [^s19]. With a
+[Win streak](win-streak.md) running, "Watch your streak!" came before it [^s19]. Retry was free and played an
+interstitial before level 20 started again [^s20].
+
+![So Close! Level failed! after the colour mix on level 20: a tip that grey balls cannot be collected, Skip with a video icon, Retry](../img/20261005-color-bucket-level-outcome-colour-mix-b297cf39.webp) [^s19]
+*The fail screen of a colour mix (a local banner ad blacked out)*
+
 ## How it works
 
 Version 241.5.1.
@@ -152,7 +170,8 @@ Version 241.5.1.
   all balls coloured and in the cup; a level is recorded as lost when a grey ball or a bomb reaches the cup or
   balls fall outside it [^s11]. The last of these was seen at level 11: balls that leave the container
   through a gap in its wall fail the level ("Balls fell out of the level!") [^s14]. A grey ball or a bomb
-  reaching the cup has not been seen yet.
+  reaching the cup has not been seen yet. On a board with colour cups, balls in a cup of another colour turn
+  grey and fail the level ("So Close! Level failed!", version 241.5.2) [^s19].
 - Elements seen by level 10: grey and coloured balls, bombs, slider pins, colour buckets [^s11].
 - Restart: a confirmation popup, then an interstitial, then the current stage only is reloaded; free
   [^s10] [^s11].
@@ -166,7 +185,12 @@ Version 241.5.1.
   Bronze League, Level completed with the coin multiplier) the multiplier's video ended on an ad card that
   would not close; a force-stop and relaunch put the map back at level 10 with 230 coins, as before the
   level [^s5]. The Pull Fest pins from that level (27) were kept
-  [^s5]. See [Win coin multiplier](coin-multiplier.md) and
+  [^s5]. The same happened after the level 13 win: the app was left on the Bronze League board after the
+  win, and the next launch put the map back at level 13, with the league's 49 pins kept (version 241.5.2)
+  [^s17]. Once more after the level 21 win (6 October): after the coin screen a playable ad had no close for
+  50 s and the Back key did nothing; the game was restarted and the map was back at level 21, but the +16
+  coins of the win (2156) and the league pins (150) were kept [^s21]. The win streak counted that win too
+  (see [Win streak meter](win-streak.md)). See [Win coin multiplier](coin-multiplier.md) and
   [Pull Fest Ranking](pull-fest.md).
 
 ## Cases
@@ -186,11 +210,14 @@ Version 241.5.1.
 | Level elements: grey balls, coloured balls, bombs, slider pins, colour buckets <!-- case:chk-elements --> | Levels 1-10 | ✅ Seen; no page of their own yet | [^s11] |
 | Balls fell out <!-- case:balls-out --> | Played level 11 twice with the same order of four pulls | ✅ Balls left through a gap in the right wall; "Pretty Close! Level failed!" with the tip "Balls fell out of the level!"; Skip (video) and Retry; no coin cost | [^s13] [^s14] |
 | After a loss: the retry and continue offers <!-- case:chk-retry --> | Tapped Retry on the fail screen | ✅ Retry is free, plays an interstitial and reloads the level from the start; Skip (video) not tried; no extra moves or revive | [^s15] [^s16] |
-| Each loss <!-- case:chk-loss --> | Lost level 11 by balls falling out | not verified: only this one kind of loss seen |  |
+| Leaving the app on the post-win league board reverted the L13 win: map back at 13 the next day; the league's 49 pins stayed <!-- case:win-reverted-league-board --> | Won level 13; the app was left on the Bronze League board; relaunched the next day | ✅ Level 13 to play again, pins 49 kept | [^s17] |
+| Colours mixed on a colour-bucket board <!-- case:colour-mix --> | Lost level 20 (Color Bucket) | ✅ Balls in the wrong cup turn grey; "So Close! Level failed!" with the grey-balls tip; Skip (video) / Retry; a running win streak shows "Watch your streak!" first | [^s19] |
+| A playable ad with no close after the level 21 win; the game restarted <!-- case:win-revert-playable-ad --> | Won level 21; after the coin screen a playable ad had no close for 50 s, Back did nothing; restarted the game | ✅ The map back at level 21; the +16 coins (2156) and the league pins (150) kept | [^s21] |
+| Each loss <!-- case:chk-loss --> | Lost level 11 by balls falling out, level 20 by mixed colours | not verified: a grey ball or a bomb in the single cup not seen | [^s19] |
 
 ## Not verified
 
-- Each loss: a grey ball or a bomb in the cup not seen yet; only "balls fell out" <!-- case:chk-loss -->
+- Each loss: a grey ball or a bomb in the cup not seen yet; seen: balls fell out, colours mixed <!-- case:chk-loss -->
 - What Skip on the fail screen does after its video (task exp-fail-skip).
 - Whether a restart on a single-stage level also brings an interstitial.
 - Each level element (bombs, slider pins, colour buckets) with the level it first shows on.
@@ -211,3 +238,9 @@ Version 241.5.1.
 [^s14]: session 20261004-004411-chrono-2FYKPJ, step 23 — [video at 7:27](https://youtu.be/KwWbRYgzFFk?t=447)
 [^s15]: session 20261004-004411-chrono-2FYKPJ, step 20 — [video at 6:20](https://youtu.be/KwWbRYgzFFk?t=380)
 [^s16]: session 20261004-004411-chrono-2FYKPJ, step 22 — [video at 7:05](https://youtu.be/KwWbRYgzFFk?t=425)
+[^s17]: session 20261005-013818-chrono-2FYKPJ, step 1 — [video at 0:29](https://youtu.be/q_WyVbvA1og?t=29)
+
+[^s18]: session 20261005-235042-chrono-2FYKPJ, step 37 — [video at 13:12](https://youtu.be/PZ3ujKA8euo?t=792)
+[^s19]: session 20261005-235042-chrono-2FYKPJ, step 39 — [video at 13:40](https://youtu.be/PZ3ujKA8euo?t=820)
+[^s20]: session 20261005-235042-chrono-2FYKPJ, step 42 — [video at 15:04](https://youtu.be/PZ3ujKA8euo?t=904)
+[^s21]: session 20261006-033538-chrono-2FYKPJ, step 11 — [video at 3:53](https://youtu.be/j9sNlnJxE4Y?t=233)

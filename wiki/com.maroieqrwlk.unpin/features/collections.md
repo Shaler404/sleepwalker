@@ -214,11 +214,16 @@ free and instant [^s9].
 | Items: Themes 15 gift-box + event, Trails 7 puzzle + 8 chest + consecutive wins + more, Walls 12 daily-task + event, Pins 15 gift-box + event, Balls 2 level-count + 3 coin + 9 gumball + event <!-- case:chk-items --> | Opened all five skin categories | ✅ Owned at level 10: the defaults, Space theme, Popcorn ball | [^s16] |
 | How items are earned, by group title: gift boxes, puzzles, chests, consecutive wins, daily tasks, gumball spin (350 coins or video), coins, levels completed, special events <!-- case:chk-earn --> | Read every group title; one free gumball spin earlier | ✅ Only the gumball spin and the gift bar were seen giving an item | [^s16] |
 | Using an item: tapping an owned skin equips it at once <!-- case:chk-use --> | Tapped the owned Space theme, then played level 10 | ✅ Equipped with no confirmation; the level showed the Space background and cup | [^s9] |
-| Completing a set <!-- case:chk-complete --> | Opened the Landscapes album | ✅ Its reward is the green trail; no album or trophy row completed | [^s16] |
+| Completing a set <!-- case:chk-complete --> | Opened the Landscapes album | not verified: the album's listed reward is the green trail; no album or trophy row completed | [^s7] [^s16] |
 
 ## Not verified
 
-- Completing a set: what an album gives when it is complete, and the weekly trophy chest's contents <!-- case:chk-complete -->
+- Completing a set: what an album gives when it is complete, and the weekly trophy chest's contents <!-- case:chk-complete -->:
+  no album or trophy row was completed by level 10 [^s16].
+
+  > ⚠️ **Previously** (corrected 2026-10-06): the Cases table showed this case as verified (✅ "Its reward is
+  > the green trail; no album or trophy row completed"). The green trail is only the reward the Landscapes
+  > album lists [^s7]; no set was completed, so what completing one gives was not seen.
 - The video Spin! and what a paid spin can give (task exp-gumball-spin).
 - Where the daily tasks that unlock walls are (task exp-daily-tasks).
 - A tap on a locked skin: the session's case record says it does nothing, but no such tap is in its steps.

@@ -122,8 +122,12 @@ from the panel's texts: an account keeps the progress and moves it to another de
 | Screen: Account & Help with the user id and copy button, Help center, Help deleting account, Forum, My Account; My Account is the King panel with a 3-slide carousel, Sign up with email, Continue with Facebook, Log in with email, Terms of Use, Privacy and security <!-- case:chk-screen --> | Opened both | ✅ As listed; the panel's frames could not be kept (the harness refuses them) | [^s3] |
 | Options: Log in with email (e-mail and password form, forgot password, eye toggle, Sign up link) and Sign up (create-account form) <!-- case:chk-options --> | Opened both forms, submitted nothing; Facebook not tapped | ✅ Forms seen; no account created or logged in | [^s3] |
 | Answers: is it a prompt, and does it come back <!-- case:chk-answers --> | Closed the panel with X, played on | ✅ Not a prompt; it did not come back | [^s3] |
-| Links: Help center, Forum, Help deleting account, Terms of Use, Privacy and security <!-- case:chk-links --> | Not opened (they leave the game) | ✅ Seen as buttons and links only | [^s3] |
 | Why it appeared <!-- case:chk-appeared --> | Fresh install | ✅ Retrieve My Progress on the title screen; Account & Help in Settings | [^s4] |
+
+> ⚠️ **Previously** (corrected 2026-10-06): this page listed the links case as verified.
+> "Links: Help center, Forum, Help deleting account, Terms of Use, Privacy and security: not opened
+> (they leave the game); seen as buttons and links only" [^s3]. Seeing the links does not show where
+> they lead, which is what the case asks; none was opened.
 
 ## Not verified
 
@@ -131,8 +135,9 @@ from the panel's texts: an account keeps the progress and moves it to another de
   (the session had no credentials).
 - Retrieve My Progress on the title screen: not tapped; inferred to open the same King log-in.
 - The third slide of the My Account carousel.
-- Where Help center, Help deleting account, Forum, Terms of Use and Privacy and security lead (each leaves
-  the game).
+- Where Help center, Help deleting account, Forum, Terms of Use and Privacy and security lead, and
+  whether each returns straight to the game <!-- case:chk-links -->: seen as buttons and links on
+  Account & Help and the King panel [^s3], none opened.
 - A frame of the King account panel: the harness refuses its frames, so it is described in words.
 
 [^s1]: session 20261003-225003-chrono-2FYKPJ, step 2 — [video at 0:28](https://youtu.be/EeHt-Knje2A?t=28)

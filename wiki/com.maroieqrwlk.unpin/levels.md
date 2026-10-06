@@ -2,7 +2,7 @@
 game: com.maroieqrwlk.unpin
 title: "Levels: Pull the Pin"
 type: levels
-verified_at: 2026-10-05
+verified_at: 2026-10-06
 ---
 
 # Levels: Pull the Pin
@@ -17,9 +17,21 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 |---|---|---|---|---|
 | ![level 6](levels/0006.webp) | ![level 7](levels/0007.webp) | ![level 8](levels/0008.webp) | ![level 9](levels/0009.webp) | ![level 10](levels/0010.webp) |
 
-| level 11 | level 12 | level 13 | level 14 |
+| level 11 | level 12 | level 13 | level 14 | level 15 |
+|---|---|---|---|---|
+| ![level 11](levels/0011.webp) | ![level 12](levels/0012.webp) | ![level 13](levels/0013.webp) | no frame | ![level 15](levels/0015.webp) |
+
+| level 16 | level 17 | level 18 | level 19 | level 20 |
+|---|---|---|---|---|
+| ![level 16](levels/0016.webp) | ![level 17](levels/0017.webp) | ![level 18](levels/0018.webp) | ![level 19](levels/0019.webp) | ![level 20](levels/0020.webp) |
+
+| level 21 | level 22 | level 23 | challenge 1 | challenge 1 try 2 |
+|---|---|---|---|---|
+| ![level 21](levels/0021.webp) | ![level 22](levels/0022.webp) | ![level 23](levels/0023.webp) | ![challenge 1](levels/challenge-1.webp) | ![challenge 1 try 2](levels/challenge-1-try-2.webp) |
+
+| challenge 1 try 3 | sketchman 1 replay | sketchman 1 try again | Sketchman L1 |
 |---|---|---|---|
-| ![level 11](levels/0011.webp) | ![level 12](levels/0012.webp) | ![level 13](levels/0013.webp) | no frame |
+| ![challenge 1 try 3](levels/challenge-1-try-3.webp) | ![sketchman 1 replay](levels/sketchman-1-replay.webp) | ![sketchman 1 try again](levels/sketchman-1-try-again.webp) | ![Sketchman L1](levels/sketchman-l1.webp) |
 
 ## Tries
 
@@ -39,3 +51,18 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 | level 12 | pin-pull | 1 won | 97 s | L12 hard: solve --run round 1 recognised library L12 but played only A (ring B, now a golden star-wand pin, not found by the circle search); round 2 did not recognise the post-A frame (no memory match |
 | level 13 | pin-pull | 1 quit | — | session ended (interrupted) |
 | level 14 | pin-pull | 1 won, 1 lost | 129 s | Try 2: dividers 260/362/456, slants 118,422 + 592,404, then right lower slant 597,607 alone, then floor 595,610: left lower slant 116,628 kept steers balls to the centre. Board order for the library:  |
+| level 15 | pin-pull | 1 won, 2 quit | 196 s | stages 2-4 by solver library; between-stage ad opened the store once, launch returned to stage 3 |
+| level 16 | pin-pull | 1 won | 123 s | solver library order; 2 pulls by solver, rings shifted 15px up, RP GP F by hand |
+| level 17 | pin-pull | 1 won | 129 s | by hand, first try: TL vertical (bomb to neck), right diagonal (bomb to centre), neck pin (bombs meet), TR vertical (greys), left diagonal (colours paint), bottom pin |
+| level 18 | pin-pull | 1 won | 40 s | solver library order |
+| level 19 | pin-pull | 1 won | 77 s | solver T, hook K needed a manual swipe after balls settled |
+| level 20 | pin-pull | 1 won, 2 lost, 1 quit | 62 s | L20 color bucket won first try, 55 s: B, wait 6 s (blue all in its cup), M, 6 s gap, Y. The win flow opened straight on the Silver League board (pins 123, golden 7, score 158, rank 776). The 98% stall |
+| level 21 | pin-pull | 2 won | 49 s | solver library order LP G RP |
+| level 22 | pin-pull | 1 won | 63 s | solver library Y D B |
+| level 23 | pin-pull | 1 won | 296 s | 4 stages by solver library; stage 4 last pin by hand after the view moved; between-stage interstitial after stage 2 closed by Back |
+| challenge 1 | pin-pull | 1 won, 1 lost | 117 s | solver C1 played the first pull(s), final floor pin by hand; 2 moves of 10 |
+| challenge 1 try 2 | pin-pull | 1 lost | — | tapped ring (608,636) at 2 moves left: it was the triangle's vertical side, greys fell out. Rings at the triangle tip: the LOWER-LEFT one (588,668 on that frame) is the floor. Order that worked to the |
+| challenge 1 try 3 | pin-pull | 1 lost | — | both rings at the triangle tip (upper-right and lower-left) dump the greys out of the level: Balls fell out. Next try: never touch the triangle; after bombs+E,F,G and colored shelf, pull gray shelf th |
+| sketchman 1 replay | pin-pull | 1 won | 58 s | Deliberate bad play (all rods pulled, 71% in the cup) did not fail: Sketchman scores the share in the cup: IQ 122, Get 179 coins, Try again by video |
+| sketchman 1 try again | pin-pull | 1 lost | — | 0% in the cup on purpose: Sketchman has no fail screen; the result screen shows IQ 50 (minimum) and Get 0 coins; Try again costs a video |
+| Sketchman L1 | pin-pull | 1 won | 58 s | solver library IQ1, order T L1 L2 R1 |

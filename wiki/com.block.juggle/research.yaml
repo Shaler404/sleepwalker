@@ -2,18 +2,18 @@
 game: com.block.juggle
 version: 10.8.1
 play_version: 10.8.0
-play_checked: '2026-10-05T00:13:01'
+play_checked: '2026-10-05T22:05:43'
 phone_version: 10.8.1
 discovery: open
 ftue_verified: null
 progress:
-  text: adventure L5
-  value: 5.0
-  at: '2026-10-05T01:58:58'
-  session: 20261005-015205-chrono-2FYKPJ
+  text: Water Sort L2
+  value: 2.0
+  at: '2026-10-05T23:29:12'
+  session: 20261005-231555-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-05T02:00:53'
+  chrono: '2026-10-06T04:02:50'
 mechanics:
 - id: classic
   name: classic
@@ -38,12 +38,9 @@ mechanics:
     seconds: 60
     model: opus
   solver: solvers/com.block.juggle/classic.py
-  note: 'solver plays every placement via solve --run (gameover mode default); lab
-    2026-10-04: rightward drags aim 0.1 cell behind (4 of 65 overshot a column with
-    the 0.2 lead), leftward 0.2 ahead; replay of 156 drops: 86/90 on target in session
-    235233; dream 2026-10-04: the ''tutorial'' record (172 s, 15 moves) was removed
-    from classic: it counted Settings and More Games navigation, the tutorial itself
-    is one drag'
+  note: 'lab 2026-10-06 (2): no new levels; solver re-checked on start frames, unchanged.
+    Play one full game by solve --run only (gameover mode) to No Space Left, no hand
+    drags.'
 - id: adventure
   name: adventure
   status: mastered
@@ -83,9 +80,123 @@ mechanics:
     seconds: 256
     model: sonnet
   best_s: 131
-  note: played with the classic solver in score mode (pass --board {"mode":"score"}
-    on the first solve --run) [20261003-235233-chrono-2FYKPJ#8]
+  note: 'lab 2026-10-06 (2): no new levels; solve classic --run with no --board ends
+    on LEVEL WON/LOST, WAIT rounds on gem flights; re-checked on 6 start frames.'
   solver: solvers/com.block.juggle/classic.py
+- id: fruit-merge
+  name: fruit-merge
+  status: studying
+  method: heuristic
+  levels:
+    won: 0
+    lost: 0
+    quit: 2
+  recent:
+  - level: fruit merge 1
+    result: quit
+    seconds: 242
+    model: sonnet
+  - level: fruit merge loss
+    result: quit
+    seconds: 683
+    model: sonnet
+    moves_before: 12
+  note: 'lab 2026-10-06: ordered drop rules in the playbook; centre drops for a fast
+    game over'
+- id: mahjong-mg
+  name: mahjong-mg
+  status: studying
+  method: manual
+  levels:
+    won: 1
+    lost: 0
+    quit: 2
+  recent:
+  - level: mahjong 1
+    result: won
+    seconds: 112
+    model: sonnet
+  - level: mahjong 2
+    result: quit
+    seconds: 54
+    model: sonnet
+  - level: mahjong L3
+    result: quit
+    seconds: 106
+    model: sonnet
+  best_s: 112
+  note: 'lab 2026-10-06: stacked tiles, free test by eye; free twins first, MATCHES
+    0 = shuffle'
+- id: one-line
+  name: one-line
+  status: studying
+  method: solver
+  levels:
+    won: 0
+    lost: 0
+    quit: 1
+  recent:
+  - level: one line 1
+    result: quit
+    seconds: 298
+    model: sonnet
+  solver: solvers/com.block.juggle/one-line.py
+  note: 'lab 2026-10-06: Hamiltonian path from the coloured start, one swipe per straight
+    run, fresh boards only; checked on session 20261005-125535 frames 41-64'
+- id: onet
+  name: onet
+  status: studying
+  method: solver
+  levels:
+    won: 0
+    lost: 0
+    quit: 1
+  recent:
+  - level: Onet L1
+    result: quit
+    seconds: 221
+    model: sonnet
+    moves_before: 20
+  solver: solvers/com.block.juggle/onet.py
+  note: 'lab 2026-10-06: picture grouping, 2-turn paths incl. outside ring, 6 pairs
+    per round with expected-board check; checked on session 20261005-131038 frames
+    31-59'
+- id: sudoku
+  name: sudoku
+  status: studying
+  method: solver
+  levels:
+    won: 1
+    lost: 0
+    quit: 0
+  recent:
+  - level: Sudoku L1
+    result: won
+    seconds: 106
+    model: sonnet
+    moves_before: 202
+  solver: solvers/com.block.juggle/sudoku.py
+  note: 'lab 2026-10-06: grid + glyph templates (tray and kept 1-6), backtracking
+    with uniqueness check, digit then its cells; checked on session 20261005-153835
+    frames 39-56'
+- id: water-sort
+  name: water-sort
+  status: studying
+  method: solver
+  levels:
+    won: 1
+    lost: 0
+    quit: 0
+  recent:
+  - level: water sort L1
+    result: won
+    seconds: 60
+    model: sonnet
+  best_s: 60
+  solver: solvers/com.block.juggle/water-sort.py
+  note: 'lab 2026-10-06: fewest pours, rounds cut before a pour reusing the previous
+    pour''s tube, raised tube = selection tapped down first; checked on session 20261005-231555
+    frames 38-53'
 features:
 - id: terms-consent
   name: Terms of Use consent
@@ -103,9 +214,11 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#0
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Reopenable on a progressed install: gear > More Settings > Terms of Service
+      (365,767 then 340,948) opens the Terms of Use webview'
+    done: true
+    source: 20261006-032721-chrono-2FYKPJ#47
+    version: 10.8.1
   - id: chk-options
     text: Every option or button and what it changes (each toggle once, set back after)
     done: false
@@ -114,9 +227,12 @@ features:
       whether it comes back'
     done: false
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: Terms page text only, scrolled top viewed; Privacy Policy row in More Settings
+      opens separate Privacy webview, Contact Us opens support center; all return
+      to the board with Back
+    done: true
+    source: 20261006-032721-chrono-2FYKPJ#47
+    version: 10.8.1
   type: system
   appeared:
     text: first launch of a fresh install, before anything else
@@ -155,12 +271,18 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#1
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'No entry point: it shows only once, right after accepting the Terms of
+      Use on a fresh install; no button opens it later (Settings and More Settings
+      walked in full)'
+    done: true
+    source: 20261006-032721-chrono-2FYKPJ#4
   - id: chk-replay
-    text: Whether it can be seen again (How to play, a help button)
-    done: false
+    text: 'Cannot be seen again on a progressed install: no How to play or help entry
+      in Settings (Sound, BGM, Vibration, More Games, More Settings, Home, Replay,
+      Default Skin) or More Settings (Contact, Share, socials, Terms, Privacy, About);
+      the home menu has none either'
+    done: true
+    source: 20261006-032721-chrono-2FYKPJ#4
   type: tutorial
   appeared:
     text: right after accepting the Terms of Use on a fresh install
@@ -271,7 +393,7 @@ features:
   page: features/classic.md
 - id: settings
   name: Settings
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: Gear at top right of the classic board (660,135)
@@ -296,25 +418,38 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#5
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: 'Sound toggle: icon crossed on tap, restored (shots 9,13); BGM toggle: crossed/uncrossed
+      (shots 12,14), now off as before; Vibration slider minus/plus moves the knob
+      (shots 15,17), restored; Default Skin grey, tap does nothing (shot 17); Home/Replay/More
+      Games/More Settings lead as in routes'
+    done: true
+    source: 20261006-011754-chrono-2FYKPJ#12
+    version: 10.8.1
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: No prompt in Settings; the only popups are Settings and More Settings, closed
+      with the X or the Back key (Back from the terms page returned to the classic
+      board and closed More Settings too, shot 21)
+    done: true
+    source: 20261006-011754-chrono-2FYKPJ#21
+    version: 10.8.1
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: 'More Settings: Terms of Service opens an in-game white webview then Terms
+      of Use text (Last Updated Aug 5 2026, Hungry Studio / ARETIS LIMITED), Back
+      returns to the board (shots 19-21). Privacy Policy, About Us, Contact Us, Share
+      with Friends and 6 social icons not opened'
+    done: true
+    source: 20261006-011754-chrono-2FYKPJ#20
+    version: 10.8.1
   type: system
   appeared:
     text: 'always on the classic board: gear top right'
     certainty: fact
     source: 20261003-193423-chrono-2FYKPJ#5
   page: features/settings.md
+  version_seen: 10.8.1
 - id: skins
   name: Skins (Default Skin button)
-  status: seen
+  status: documented
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -323,38 +458,54 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#5
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Settings gear > Default Skin button (365,1163), grey, last in the popup
+      (shot 7)
+    done: true
+    source: 20261006-011754-chrono-2FYKPJ#6
+    version: 10.8.1
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'No skins screen: tapping the grey Default Skin button changes nothing (shot
+      17), the Settings popup stays'
+    done: true
+    source: 20261006-011754-chrono-2FYKPJ#17
+    version: 10.8.1
   - id: chk-progress
-    text: 'The progress: the bar, the album or the counter, what fills it and where
-      it is now'
-    done: false
+    text: No bar, album or counter on or near the button; no progress exists
+    done: true
+    source: 20261006-011754-chrono-2FYKPJ#17
+    version: 10.8.1
   - id: chk-items
-    text: 'The items: every set, skin or tier, which are owned and which are locked,
-      with their condition'
-    done: false
+    text: Only one skin, Default, shown as a greyed (disabled) button; no other skins
+      listed
+    done: true
+    source: 20261006-011754-chrono-2FYKPJ#7
+    version: 10.8.1
   - id: chk-earn
-    text: How an item or a step is earned (wins, keys, a spin, a pack)
-    done: false
+    text: 'No way to earn shown: the button is disabled, no lock text or price (shots
+      7, 17); unlock rule unknown, see task skins-unlock'
+    done: true
+    source: 20261006-011754-chrono-2FYKPJ#17
+    version: 10.8.1
   - id: chk-use
-    text: 'Using an item: equip a skin, open a chest, spin; what changes'
-    done: false
+    text: Tap on the disabled Default Skin equips or opens nothing (shot 17)
+    done: true
+    source: 20261006-011754-chrono-2FYKPJ#17
+    version: 10.8.1
   - id: chk-complete
-    text: 'Completing a set or the bar: the reward'
-    done: false
+    text: No set or bar exists, nothing to complete
+    done: true
+    source: 20261006-011754-chrono-2FYKPJ#17
+    version: 10.8.1
   type: meta-progress
   appeared:
     text: 'in Settings from the first launch: a grey Default Skin button under Replay'
     certainty: fact
     source: 20261003-193423-chrono-2FYKPJ#5
   page: features/skins.md
+  version_seen: 10.8.1
 - id: more-games
   name: More Games (mini-game list)
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: Settings gear > More Games, and the More Games button on the home menu
@@ -381,14 +532,18 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#12
   - id: chk-changes
-    text: What changes on it with progress (new buttons, a moving map, a theme)
-    done: false
+    text: Same 8 green entries, no locks or badges after Adventure L5 progress (shot
+      3-4) vs earlier sessions; list unchanged with progress so far
+    done: true
+    source: 20261006-011754-chrono-2FYKPJ#2
+    version: 10.8.1
   type: hub
   appeared:
     text: in Settings from the first launch, with a red dot badge
     certainty: fact
     source: 20261003-193423-chrono-2FYKPJ#12
   page: features/more-games.md
+  version_seen: 10.8.1
 - id: mg-one-line
   name: 'Mini-game: One Line'
   status: in_progress
@@ -404,23 +559,42 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#12
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Title LEVEL N, progress bar of squares filled (1/7), restart arrow, hint
+      lightbulb x3, grid of grey squares with a coloured start dot
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#32
+    version: 10.8.1
   - id: chk-rules
-    text: 'Rules: the goal and how it differs from the core game'
-    done: false
+    text: Drag one continuous line from the start dot through every square exactly
+      once; line persists between drags and continues from its end; hint auto-draws
+      the next squares (-1 charge, 3 to 2); dead end gives no message, restart arrow
+      is the way out; tutorial 4 steps with Skip
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#35
+    version: 10.8.1
   - id: chk-win
-    text: 'A win: its screen and what it pays'
-    done: false
+    text: 'Last square filled: Next Puzzle ribbon with confetti, preceded by a video
+      interstitial (Back key closes the video; L2 interstitial chained into a looping
+      playable)'
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#38
+    version: 10.8.1
   - id: chk-loss
-    text: 'A loss: its screen, what it costs and the retry offers'
-    done: false
+    text: 'No loss state: a dead end shows nothing, bar stays at 8/11; restart arrow
+      only'
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#36
+    version: 10.8.1
   - id: chk-progression
-    text: 'Progression inside the mode: stages, stars, a best score'
-    done: false
+    text: Numbered levels, grid grows (L1 7 squares, L2 11 squares), Next Puzzle advances
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#39
+    version: 10.8.1
   - id: chk-limits
-    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
-    done: false
+    text: No energy or timer seen; hint x3 per level shown
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#37
+    version: 10.8.1
   type: mode
   appeared:
     text: listed in Settings > More Games from the first launch
@@ -429,7 +603,7 @@ features:
   page: features/mg-one-line.md
 - id: mg-tic-tac-toe
   name: 'Mini-game: Tic Tac Toe'
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: Settings > More Games list entry (open, no lock)
@@ -442,29 +616,50 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#12
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 3x3 board, back arrow, restart arrow, player vs robot scoreboard 0 VS 0,
+      turn arrow beside the active avatar
+    done: true
+    source: 20261005-231555-chrono-2FYKPJ#18
+    version: 10.8.1
   - id: chk-rules
-    text: 'Rules: the goal and how it differs from the core game'
-    done: false
+    text: 'Classic tic tac toe vs a robot: three marks in a row wins; guided tutorial
+      (block, then win a column) with Skip; first move alternates between rounds;
+      bot blocks and completes its own lines'
+    done: true
+    source: 20261005-231555-chrono-2FYKPJ#14
+    version: 10.8.1
   - id: chk-win
-    text: 'A win: its screen and what it pays'
-    done: false
+    text: Tutorial win by column shows Way to go overlay then the real board; a real
+      win against the bot was not played (draw and loss only)
+    done: true
+    source: 20261005-231555-chrono-2FYKPJ#16
+    version: 10.8.1
   - id: chk-loss
-    text: 'A loss: its screen, what it costs and the retry offers'
-    done: false
+    text: You Lost screen after an interstitial video and playable, buttons Home (back
+      to More Games) and Play Again; no cost, no retry offer, draw gives the same
+      layout titled Draw
+    done: true
+    source: 20261005-231555-chrono-2FYKPJ#37
+    version: 10.8.1
   - id: chk-progression
-    text: 'Progression inside the mode: stages, stars, a best score'
-    done: false
+    text: 'No stages or levels: endless rounds; header scoreboard stayed 0 VS 0 after
+      a draw and a loss'
+    done: true
+    source: 20261005-231555-chrono-2FYKPJ#33
+    version: 10.8.1
   - id: chk-limits
-    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
-    done: false
+    text: No attempt limit or timer seen across tutorial, draw round and loss round;
+      a video interstitial plays after each finished round
+    done: true
+    source: 20261005-231555-chrono-2FYKPJ#26
+    version: 10.8.1
   type: mode
   appeared:
     text: listed in Settings > More Games from the first launch
     certainty: fact
     source: 20261003-193423-chrono-2FYKPJ#12
   page: features/mg-tic-tac-toe.md
+  version_seen: 10.8.1
 - id: mg-fruit-merge
   name: 'Mini-game: Fruit Merge'
   status: in_progress
@@ -480,23 +675,47 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#12
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Jar with fruit chain bar, score and all-time, 2 boosters, Next preview,
+      restart arrow
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#4
+    version: 10.8.1
   - id: chk-rules
-    text: 'Rules: the goal and how it differs from the core game'
-    done: false
+    text: 'Tap drops the current fruit at x; two equal fruits merge into the next
+      of 11 (blueberry to watermelon); score rises on merges (about 5880 after 140
+      drops); boosters: shake and bomb (clear one fruit); tutorial text on first open
+      with Skip'
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#4
+    version: 10.8.1
   - id: chk-win
     text: 'A win: its screen and what it pays'
     done: false
   - id: chk-loss
-    text: 'A loss: its screen, what it costs and the retry offers'
-    done: false
+    text: 'Game over when the pile crosses the top line: an interstitial (video, then
+      a store sheet) covers it; after launch + Back the Game Over screen shows Score
+      (7680), Golden Best Score (15150), Home and Play Again (buttons slide up from
+      the bottom). No revive or continue offer; Home returns to the More Games list'
+    done: true
+    source: 20261005-153835-chrono-2FYKPJ#12
   - id: chk-progression
-    text: 'Progression inside the mode: stages, stars, a best score'
-    done: false
+    text: Score and ALL-TIME best shown at the top; no stages
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#4
+    version: 10.8.1
   - id: chk-limits
-    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
-    done: false
+    text: Each booster x1 free, afterwards a green play badge (rewarded ad refill);
+      no energy or timer seen; back arrow leaves at once to More Games, restart arrow
+      asks Restart Game confirm
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#10
+    version: 10.8.1
+  - id: game-over
+    text: 'Game over when the pile crosses the top line: ad then Game Over screen
+      with score, best, Home, Play Again'
+    done: true
+    source: 20261005-153835-chrono-2FYKPJ#12
+    version: 10.8.1
   type: mode
   appeared:
     text: listed in Settings > More Games from the first launch
@@ -518,20 +737,34 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#12
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Tube board: Level N title, back arrow, restart arrow, tubes, locked extra
+      tube with add-tube booster, undo and hint buttons'
+    done: true
+    source: 20261005-231555-chrono-2FYKPJ#44
+    version: 10.8.1
   - id: chk-rules
-    text: 'Rules: the goal and how it differs from the core game'
-    done: false
+    text: 'Select a tube then a target: pour only onto the same top colour with free
+      space; a full single-colour tube gets a cork and confetti; tutorial text and
+      Skip; boosters: add tube (stock 3, Use Item sheet), hint (3, auto-pours one
+      move), free undo'
+    done: true
+    source: 20261005-231555-chrono-2FYKPJ#41
+    version: 10.8.1
   - id: chk-win
-    text: 'A win: its screen and what it pays'
-    done: false
+    text: 'Last cork then the next level loads at once: no win screen, no ad (L1 to
+      L2)'
+    done: true
+    source: 20261005-231555-chrono-2FYKPJ#48
+    version: 10.8.1
   - id: chk-loss
     text: 'A loss: its screen, what it costs and the retry offers'
     done: false
   - id: chk-progression
-    text: 'Progression inside the mode: stages, stars, a best score'
-    done: false
+    text: 'Numbered levels: L1 3 colours x 2 layers with 2 empty tubes, L2 3 colours
+      x 3 layers; progress goes on without a result screen'
+    done: true
+    source: 20261005-231555-chrono-2FYKPJ#48
+    version: 10.8.1
   - id: chk-limits
     text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
     done: false
@@ -556,11 +789,18 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#12
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Board of 4x5 (L1) / 4x7 (L2) tiles, LEVEL N label with 3-star bar, back
+      and restart arrows, bottom tools shuffle/freeze/hint
+    done: true
+    source: 20261005-131038-chrono-2FYKPJ#27
+    version: 10.8.1
   - id: chk-rules
-    text: 'Rules: the goal and how it differs from the core game'
-    done: false
+    text: Tap two identical tiles joined by a path of at most 2 turns through empty
+      cells (path may run outside the board edge); clear the board to win; tutorial
+      of 4 prompts with Skip
+    done: true
+    source: 20261005-131038-chrono-2FYKPJ#25
+    version: 10.8.1
   - id: chk-win
     text: 'A win: its screen and what it pays'
     done: false
@@ -568,11 +808,23 @@ features:
     text: 'A loss: its screen, what it costs and the retry offers'
     done: false
   - id: chk-progression
-    text: 'Progression inside the mode: stages, stars, a best score'
-    done: false
+    text: Numbered levels (L1 4x5 fruits, L2 4x7 sweets), progress bar with 3 stars
+      fills as pairs match, combo counter with timer bar; L1 clear advanced to L2
+    done: true
+    source: 20261005-131038-chrono-2FYKPJ#28
+    version: 10.8.1
   - id: chk-limits
-    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
-    done: false
+    text: No energy; no timer seen; tools shuffle x3 (works, 3 to 2), freeze-time
+      x3 (greyed, tap does nothing), hint x3 (spends one, draws path); restart asks
+      and counts as Loss
+    done: true
+    source: 20261005-131038-chrono-2FYKPJ#39
+    version: 10.8.1
+  - id: progress-kept
+    text: 'Progress is saved per level: L1 cleared, the app was restarted during the
+      post-win ad, and reopening Onet started at LEVEL 2 with hint 2 left'
+    done: true
+    source: 20261005-131038-chrono-2FYKPJ#37
   type: mode
   appeared:
     text: listed in Settings > More Games from the first launch
@@ -581,7 +833,7 @@ features:
   page: features/mg-onet.md
 - id: mg-mahjong
   name: 'Mini-game: Mahjong'
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: Settings > More Games list entry (open, no lock)
@@ -594,32 +846,59 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#12
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Level counter, score in the middle, MATCHES (available pairs), restart arrow;
+      layered tile board; bottom undo / shuffle x3 / hint x3 from level 2
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#25
+    version: 10.8.1
   - id: chk-rules
-    text: 'Rules: the goal and how it differs from the core game'
-    done: false
+    text: Tap two identical free tiles to remove them (+30 each); free tiles are not
+      covered; L1 is a guided tutorial with Skip; hint glows a pair (-1 charge), shuffle
+      rearranges (-1 charge), undo restores the last pair free
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#33
+    version: 10.8.1
   - id: chk-win
-    text: 'A win: its screen and what it pays'
-    done: false
+    text: 'Clearing the board: Level Clear! screen with Score 230, Home and Continue;
+      a video interstitial plays before it; no currency reward seen'
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#31
+    version: 10.8.1
   - id: chk-loss
-    text: 'A loss: its screen, what it costs and the retry offers'
-    done: false
+    text: 'No loss state reached: L2 and L3 played with deliberate bad pairings across
+      two sessions, MATCHES never reached 0 and a twin always stayed reachable; the
+      board looks generated solvable, with shuffle x3 and undo as the only aids. Treated
+      as not applicable unless a later level shows a no-moves screen'
+    done: true
+    source: 20261005-231555-chrono-2FYKPJ#8
   - id: chk-progression
-    text: 'Progression inside the mode: stages, stars, a best score'
-    done: false
+    text: Numbered levels (L1 tutorial, Continue goes to L2), score per level
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#32
+    version: 10.8.1
   - id: chk-limits
-    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
-    done: false
+    text: No energy or timer seen; tools x3 each; restart dialog (Restart / New Game
+      / X); back key asks Are you sure you want to leave (No/Yes)
+    done: true
+    source: 20261005-125535-chrono-2FYKPJ#40
+    version: 10.8.1
+  - id: win-l2
+    text: L2 cleared by playing every free pair (MATCHES never reached 0); a video
+      interstitial then a Water Sort playable with no close followed; Back and launch
+      did not leave it, a restart was needed, so the L2 Level Clear screen was not
+      seen
+    done: true
+    source: 20261005-153835-chrono-2FYKPJ#28
   type: mode
   appeared:
     text: listed in Settings > More Games from the first launch
     certainty: fact
     source: 20261003-193423-chrono-2FYKPJ#12
   page: features/mg-mahjong.md
+  version_seen: 10.8.1
 - id: mg-sudoku
   name: 'Mini-game: Sudoku'
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: Settings > More Games list entry (open, no lock)
@@ -632,29 +911,55 @@ features:
     done: true
     source: 20261003-193423-chrono-2FYKPJ#12
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 6x6 grid (2x3 boxes), Level, score, TIME, 3 hearts, digit tray 1-6 with
+      stacked counts, restart arrow (frames 44-45)
+    done: true
+    source: 20261005-153835-chrono-2FYKPJ#50
+    version: 10.8.1
   - id: chk-rules
-    text: 'Rules: the goal and how it differs from the core game'
-    done: false
+    text: Fill each row, column and 2x3 box with 1-6. Tap a digit then a cell (or
+      cell then digit); same digits highlight; guided tutorial with Skip teaches column,
+      box and x-elimination
+    done: true
+    source: 20261005-153835-chrono-2FYKPJ#50
+    version: 10.8.1
   - id: chk-win
-    text: 'A win: its screen and what it pays'
-    done: false
+    text: 'Board full: Pass Level panel, score 4620 (about 10 points per cell plus
+      solve), time 1:33, New Game / Back; New Game opens Level 2 (frame 55)'
+    done: true
+    source: 20261005-153835-chrono-2FYKPJ#50
+    version: 10.8.1
   - id: chk-loss
-    text: 'A loss: its screen, what it costs and the retry offers'
-    done: false
+    text: '3 wrong digits: each costs a heart and the cell is cleared; at 0 hearts
+      a sheet offers Restore 1 Heart (rewarded ad), New Game, Restart; Restart reloads
+      same board with 3 hearts and timer 0 (frames 46-50)'
+    done: true
+    source: 20261005-153835-chrono-2FYKPJ#50
+    version: 10.8.1
   - id: chk-progression
-    text: 'Progression inside the mode: stages, stars, a best score'
-    done: false
+    text: 'Numbered levels: L1 solved then New Game opens L2 with a new board; score
+      and time per level'
+    done: true
+    source: 20261005-153835-chrono-2FYKPJ#50
+    version: 10.8.1
   - id: chk-limits
-    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
-    done: false
+    text: 3 hearts per board; no energy or timer seen in L1-L2; Restore Heart costs
+      a rewarded ad
+    done: true
+    source: 20261005-153835-chrono-2FYKPJ#50
+    version: 10.8.1
+  - id: quit
+    text: Back key in a level opens 'Are you sure you want to leave?' with No / Yes
+      (L2 at 00:46, the session ended on it; Yes not tapped)
+    done: true
+    source: 20261005-153835-chrono-2FYKPJ#51
   type: mode
   appeared:
     text: listed in Settings > More Games from the first launch
     certainty: fact
     source: 20261003-193423-chrono-2FYKPJ#12
   page: features/mg-sudoku.md
+  version_seen: 10.8.1
 - id: mg-block-slide
   name: 'Mini-game: Block Slide'
   status: documented
@@ -1342,9 +1647,11 @@ features:
       or what differs'
     done: false
   - id: under-win
-    text: 'Does not apply under Adventure hard levels (Next Hard Level): as the base,
-      or what differs'
-    done: false
+    text: 'As the base win: Well Done panel with 3 gem checks, Consecutive Victories
+      x3 -> x4, green Next Level (L6 not hard); an interstitial ad came before the
+      panel'
+    done: true
+    source: 20261005-015205-chrono-2FYKPJ#21
   - id: under-quit
     text: 'Back key mid-game opens the home menu with no confirmation; whether the
       game in progress is kept is NOT verified under Adventure hard levels (Next Hard
@@ -1504,19 +1811,29 @@ tasks:
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: terms-consent
   source: external
+  closed: '2026-10-06T03:34:27'
+  closed_by: 20261006-032721-chrono-2FYKPJ#47
+  note: 'Consent window itself shows only on first launch of a fresh install; studied
+    what is reachable now: Terms of Use page via More Settings > Terms of Service
+    (webview, no accept button). chk-options and chk-answers left for fresh install
+    task terms-consent-fresh.'
 - id: study-tutorial
   title: 'Study First-launch tutorial board: open it, walk its screens and tabs, verify
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: tutorial
   source: external
+  closed: '2026-10-06T03:34:28'
+  closed_by: 20261006-032721-chrono-2FYKPJ#47
+  note: Tutorial board appears only on a fresh install and cannot be opened on this
+    progressed phone; chk-skip stays open under existing tutorial-skip (requires fresh).
 - id: study-classic
   title: 'Study Classic mode (endless 8x8): open it, walk its screens and tabs, verify
     its cases'
@@ -1533,90 +1850,129 @@ tasks:
   title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: settings
   source: external
+  closed: '2026-10-06T01:21:13'
+  closed_by: 20261006-011754-chrono-2FYKPJ#17
+  note: Toggles, slider, More Settings and Terms link checked; rest of links set as
+    settings-links-rest
 - id: study-skins
   title: 'Study Skins (Default Skin button): open it, walk its screens and tabs, verify
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: skins
   source: external
+  closed: '2026-10-06T01:21:12'
+  closed_by: 20261006-011754-chrono-2FYKPJ#17
+  note: Default Skin is a disabled grey button in Settings; tap does nothing; no skin
+    screen exists; unlock rule left to skins-unlock
 - id: study-more-games
   title: 'Study More Games (mini-game list): open it, walk its screens and tabs, verify
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: more-games
   source: external
+  closed: '2026-10-06T01:18:53'
+  closed_by: 20261006-011754-chrono-2FYKPJ#3
+  note: List of 8 open mini-games walked from the home menu, scrolled to Block Slide;
+    unchanged with progress
 - id: study-mg-one-line
   title: 'Study Mini-game: One Line: open it, walk its screens and tabs, verify its
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: mg-one-line
   source: external
+  closed: '2026-10-05T13:09:43'
+  closed_by: 20261005-125535-chrono-2FYKPJ#45
+  note: Walked tutorial, L1 win, L2 dead end and hint, interstitials; playable ad
+    after L2 stuck, restart needed
 - id: study-mg-tic-tac-toe
   title: 'Study Mini-game: Tic Tac Toe: open it, walk its screens and tabs, verify
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: mg-tic-tac-toe
   source: external
+  closed: '2026-10-05T23:29:11'
+  closed_by: 20261005-231555-chrono-2FYKPJ#38
+  note: tutorial, board, draw, loss with ad, Home/Play Again; real win not played
 - id: study-mg-fruit-merge
   title: 'Study Mini-game: Fruit Merge: open it, walk its screens and tabs, verify
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: mg-fruit-merge
   source: external
+  closed: '2026-10-05T13:00:35'
+  closed_by: 20261005-125535-chrono-2FYKPJ#16
+  note: 'Walked screen, rules, both boosters, restart confirm, exit. Loss (overflow)
+    and win not reached in 140 drops: merging keeps jar low; chk-win and chk-loss
+    left open'
 - id: study-mg-water-sort
   title: 'Study Mini-game: Water Sort: open it, walk its screens and tabs, verify
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: mg-water-sort
   source: external
+  closed: '2026-10-05T23:29:11'
+  closed_by: 20261005-231555-chrono-2FYKPJ#38
+  note: tutorial, L1 won, L2 seen, add-tube/hint/undo tested; loss and limits open
+    in water-sort-loss-limits
 - id: study-mg-onet
   title: 'Study Mini-game: Onet: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: mg-onet
   source: external
+  closed: '2026-10-05T13:33:04'
+  closed_by: 20261005-131038-chrono-2FYKPJ#41
+  note: screen, rules, progression and limits closed (steps 25-41, tutorial, L1 cleared,
+    tools, restart prompt counts a Loss); win and loss screens continue in onet-win-loss
 - id: study-mg-mahjong
   title: 'Study Mini-game: Mahjong: open it, walk its screens and tabs, verify its
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: mg-mahjong
   source: external
+  closed: '2026-10-05T13:04:10'
+  closed_by: 20261005-125535-chrono-2FYKPJ#32
+  note: 'Walked tutorial L1 (won), L2 tools hint/shuffle/undo, restart and leave dialogs,
+    win screen with interstitial. Loss (no moves left) not reached: chk-loss open'
 - id: study-mg-sudoku
   title: 'Study Mini-game: Sudoku: open it, walk its screens and tabs, verify its
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:43:31'
   feature: mg-sudoku
   source: external
+  closed: '2026-10-05T15:57:15'
+  closed_by: 20261005-153835-chrono-2FYKPJ#50
+  note: Walked tutorial, board, mistake, out-of-hearts sheet, win panel, L2 opens
 - id: study-mg-block-slide
   title: 'Study Mini-game: Block Slide: open it, walk its screens and tabs, verify
     its cases'
@@ -1995,9 +2351,8 @@ tasks:
   plan: play levels, note goal type of each
 - id: outcomes-adv-hard-levels
   title: 'Run each outcome once under Adventure hard levels (Next Hard Level): Settings
-    gear > Replay, No Space Left, Does not apply, Back key mid-game opens the home
-    menu with no confirmation; whether the game in progress is kept is NOT verified,
-    Leaving the app mid-game'
+    gear > Replay, No Space Left, Back key mid-game opens the home menu with no confirmation;
+    whether the game in progress is kept is NOT verified, Leaving the app mid-game'
   kind: experiment
   requires: any
   status: open
@@ -2033,3 +2388,217 @@ tasks:
   feature: adv-hard-levels
   source: session
   plan: start a hard level, play gameover mode to No Space Left, mark the fail screen
+- id: adv-hard-frequency
+  title: Record which Adventure levels L6-L15 are hard (purple Next Hard Level on
+    the previous win)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T02:00:57'
+  feature: adv-hard-levels
+  source: session
+  plan: 'win Adventure levels L6-L15 with the classic solver (score mode); on each
+    win panel note whether the button is green Next Level or purple Next Hard Level,
+    and the goal counts of the next level; done when the list of hard levels up to
+    L15 is recorded (closes adv-hard-levels chk-frequency); known so far: L5 hard,
+    L6 not hard'
+- id: fruit-merge-loss
+  title: 'Reach Fruit Merge game over: drop mismatched fruits to overflow, mark loss
+    screen'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-05T13:00:35'
+  feature: mg-fruit-merge
+  source: session
+  closed: '2026-10-05T13:33:05'
+  closed_by: 20261005-131038-chrono-2FYKPJ#18
+  note: 'superseded by fruit-merge-loss-2 (same goal with the working recipe: drop
+    at x=365 about 50 times, then Back-key the ad); the overflow was reached at step
+    9 but the ad froze and hid the game over'
+- id: mahjong-loss
+  title: Reach Mahjong no-moves loss (or shuffle prompt), mark screen
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-05T13:04:10'
+  feature: mg-mahjong
+  source: session
+  closed: '2026-10-05T16:00:20'
+  closed_by: 20261005-153835-chrono-2FYKPJ#50
+  note: 'duplicate of mahjong-loss-3 (same goal, set by session 153835 with the method:
+    leave twins buried until MATCHES reads 0); this session won L2 instead'
+- id: fruit-merge-win
+  title: 'Find whether Fruit Merge has a win: is making a watermelon an end screen
+    or is the jar endless'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T13:12:33'
+  feature: mg-fruit-merge
+  source: session
+  plan: Drop fruits in columns that keep equal fruits adjacent (sort by size left
+    to right) to build up the chain; shot after each merge of pineapple or larger.
+    A Level Clear / win screen on the first watermelon confirms a win; the jar continuing
+    with the watermelon inside confirms endless (close chk-win as does not apply)
+- id: mg-progress-kept
+  title: 'Mini-games: reopen One Line, Mahjong and Fruit Merge and record whether
+    each resumes where it was left'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T13:12:34'
+  feature: more-games
+  source: session
+  plan: 'From More Games open One Line (left after the L2 board was finished but the
+    win screen was blocked by an ad and the app restarted), Mahjong (left on L2 with
+    tools used) and Fruit Merge (left mid-jar at 5880). Confirmed kept: One Line opens
+    at L3 (or L2 solved), Mahjong at L2 with shuffle/hint 2, Fruit Merge with the
+    same jar and score; reset: level 1 / empty jar'
+- id: mg-ad-cadence
+  title: 'Mini-games: count interstitials per win (does every One Line / Mahjong level
+    win play an ad)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T13:12:34'
+  feature: more-games
+  source: session
+  plan: 'Win three One Line levels in a row (and two Mahjong levels if time); record
+    for each win whether a video interstitial plays before the win screen; never tap
+    the top-left icon (opens the store), close with the Back key. Confirmed: an ad
+    after every win (seen so far: Mahjong L1, One Line L1 and L2); otherwise the count
+    between ads'
+- id: onet-win-loss
+  title: See Onet win screen (after the post-win ad; the ad froze twice) and whether
+    any loss exists
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T13:29:57'
+  feature: mg-onet
+  source: session
+  plan: clear L2, close ad with Back, mark Level Clear; try dead end with no shuffle
+- id: fruit-merge-loss-2
+  title: 'Reach Fruit Merge game over again: keep dropping at x=365 until the line
+    is crossed, then Back-key the ad'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T13:29:58'
+  feature: mg-fruit-merge
+  source: session
+  closed: '2026-10-05T15:44:13'
+  closed_by: 20261005-153835-chrono-2FYKPJ#12
+  note: Game over reached after about 140 center drops (score 7680); video ad then
+    store sheet, launch+Back showed Game Over screen
+- id: mg-ad-escape
+  title: Find a way out of the frozen playable ad after a mini-game ends (without
+    a restart) so the win or game over screen behind it is seen
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T13:33:06'
+  feature: more-games
+  source: session
+  plan: 'When the post-level playable/video with the Google Play Install footer appears:
+    do not press Back at once; shot every 10 s for 60 s and look for an X or >> in
+    the top black band (corners) and in the top-right of the playable; tap only a
+    visible X, never Install or the icon; if none, try one tap at the top-right corner
+    (about 690,40) then Back. Confirmed: a close control that returns to the game
+    showing the win or game over screen; refuted: after 90 s and these tries only
+    a restart works'
+  closed: '2026-10-05T23:32:29'
+  closed_by: 20261005-231555-chrono-2FYKPJ#25
+  note: 'Tic Tac Toe: after the round the video ad turns into a Royal Match playable;
+    Back at once does nothing, but after about 40-45 s Back closes it and the Draw
+    / You Lost screen is shown (steps 20-21, 24-25). No restart needed'
+  result: confirmed
+- id: onet-freeze-tool
+  title: 'Onet: find when the greyed freeze-time tool becomes usable (timed levels
+    or a level number)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T13:33:06'
+  feature: mg-onet
+  source: session
+  plan: 'On each new Onet level note whether a timer bar appears and whether the clock
+    tool turns pink; tap it once when pink and note the effect. Confirmed: it is active
+    only on levels with a timer (or from level N); a tooltip or lock text read on
+    tap counts as the answer'
+- id: mahjong-loss-3
+  title: 'Reach Mahjong no-moves state: pair tiles so twins stay buried until MATCHES
+    reads 0, mark the screen'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T15:57:28'
+  feature: mg-mahjong
+  source: session
+  closed: '2026-10-05T23:29:10'
+  closed_by: 20261005-231555-chrono-2FYKPJ#38
+  note: 'L3 played with deliberate pairings (screens 5-10): no dead end, twins always
+    reached; game seems generated solvable; loss unreached, chk-loss stays open'
+- id: sudoku-leave-kept
+  title: 'Sudoku: tap Yes on the leave dialog in L2, reopen Sudoku from More Games
+    and record whether L2 resumes with its filled cells and timer or starts fresh'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T16:00:27'
+  feature: mg-sudoku
+  source: session
+  plan: 'The phone was left on Sudoku L2 with ''Are you sure you want to leave?''
+    open (00:46). Tap Yes, note where it lands (More Games list or main screen), reopen
+    Sudoku. Confirmed kept: Level 2 with the same filled cells and the timer from
+    about 00:46; refuted: a new L2 board, timer 00:00, or Level 1. Close with a case
+    on mg-sudoku (progress-kept).'
+- id: water-sort-loss-limits
+  title: 'Water Sort: find a loss/stuck state, restart, and limits (later levels with
+    fewer empty tubes; leave with back arrow)'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T23:29:09'
+  feature: mg-water-sort
+  source: session
+- id: ttt-real-win
+  title: 'Tic Tac Toe: win a real round against the robot and record the win screen
+    and whether the 0 VS 0 scoreboard changes'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T23:32:30'
+  feature: mg-tic-tac-toe
+  source: session
+  plan: 'On a round where you move first take a corner, then the opposite corner or
+    a fork; if the robot never errs in 3 rounds, record it as unbeatable (draw at
+    best). After the ad wait about 40 s, then Back. Confirmed: a win screen (title,
+    buttons, any reward) is marked and the scoreboard reads 1 VS 0; refuted: 3 rounds
+    give only draws/losses'
+- id: settings-links-rest
+  title: Open Privacy Policy, About Us, Contact Us, Share with Friends, social icons
+    in More Settings and note where each leads
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-06T01:20:55'
+  feature: settings
+  source: session
+  closed: '2026-10-06T03:34:17'
+  closed_by: 20261006-032721-chrono-2FYKPJ#47
+  note: 'Contact Us: in-app Block Blast Support webview. Share: Android share sheet
+    with onelink link. Privacy Policy and Terms of Service: in-app webviews (Hungry
+    Studio/ARETIS, updated Aug 5 2026). About Us and Official icon: Chrome, official
+    site share.blockblast.com. TikTok, Discord, X, Facebook: Chrome profile pages
+    with login walls. YouTube: YouTube app. Back key closes webview and settings together.'
+- id: terms-consent-fresh
+  title: 'On a fresh install walk the consent window: Accept, links, whether it can
+    be declined or comes back'
+  kind: study
+  requires: fresh
+  status: open
+  created: '2026-10-06T03:34:26'
+  feature: terms-consent
+  source: session

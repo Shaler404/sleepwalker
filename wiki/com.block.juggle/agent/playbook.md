@@ -107,8 +107,10 @@ the dream merges it here. Level times: `sw.py playbook`. Positions are in the 73
     [s:20261001-200952-chrono-2FYKPJ#19] [s:20261001-200952-chrono-2FYKPJ#22].
   - Recompute the bbox of the piece before every hand swipe: a wrong T centre dropped it back
     [s:20261001-200952-chrono-2FYKPJ#29].
-  - The solver refuses frames with a popup, "Good!/Excellent!" over the board or a line-clear flash:
-    run again. "the moves changed nothing on screen" = every drag missed: run again (now barred).
+  - The solver refuses frames with a popup or a dimmed page: run again. "Good!/Excellent!" text, a
+    line-clear flash, flying gems or the refill glow give a "WAIT n" round instead (lab 2026-10-06: a
+    tray piece pulled down and let go, the run continues; after 3 waits in a row it stops: look at the
+    frame). "the moves changed nothing on screen" = every drag missed: run again (now barred).
     "UNTESTED low drop" = a finger near the cutoff: check the result. "RETRY of a barred drop" = nothing
     else fits; a RETRY note with "4+ misses" means place that piece by hand now instead of running
     again. The "half bright" stop of session 230945 was a misread green piece (fixed); whether a
@@ -169,14 +171,19 @@ make-classic-fast (lab fixes checked in play + gameover mode).
   counter). A goal turns into a green check when done.
 - Same 8x8 geometry, tray, drag model and scoring as classic. Loss: No Space Left before the goal ->
   "You Can Do It!" + Retry, no revive, nothing spent. No lives, energy or timer.
-- Method: the classic solver in score mode, which maximises clears (clears collect the gems):
-  `solve classic --run --rounds 30 --board <file with {"mode":"score"}>` on the FIRST `--run` of the
-  level; later `--run` calls without `--board` keep score mode (memory). A `--board` on a plain
-  `solve` (no --run) did NOT carry over: the next --run played gameover mode (L1 still won by luck).
-  The gameover mode loses a gem level fast (L2: 16 moves, 4/60) - use it only for a deliberate loss.
-- The run stops on the gem-fly animation ("cells neither empty nor a block") and on the result screen
-  ("board block is not square"): rerun / look at the frame. After the goal: the win panel slides in
-  (Consecutive Victories xN counts up ~3 s), sometimes an interstitial first (skip icon top left).
+- Method (lab 2026-10-06): `solve classic --run --rounds 30` with NO `--board`. The solver sees the
+  Adventure screen itself (back chevron top left instead of the classic crown) and plays score mode,
+  which maximises clears (clears collect the gems); the note starts `[mode score]`. Only a deliberate
+  loss needs `--board '{"mode":"gameover"}'` on the first `--run` (the gameover mode loses a gem level
+  fast: L2, 16 moves, 4/60).
+  > Previously (2026-10-04): `--board <file with {"mode":"score"}>` on the first `--run` of every level
+  > (an inline `--board {"mode":"score"}` was refused once as "no such file", session 20261005-004506).
+- How a run ends: "LEVEL WON: every goal in the header is checked" or "LEVEL WON/LOST: the result
+  panel" (done): take a `shot` and `level end won|lost`. A gem-fly animation, a line clear or the refill
+  glow now gives a "WAIT n" round (a tray piece pulled down and let go) and the run goes on; up to 3 in
+  a row. Before this, 7 of 8 adventure runs of three sessions ended as "gave up" on exactly those
+  screens. After the goal: the win panel slides in (Consecutive Victories xN counts up ~3 s; green
+  "Next Level" or purple "Next Hard Level"), sometimes an interstitial first (skip icon top left).
 - Results (session 20261003-235233): L1 won 2.2 min, L2 lost (deliberate), L2 won 3.1 min (incl. ad),
   L3 won 2.3 min. Mastered.
 
@@ -196,3 +203,162 @@ make-classic-fast (lab fixes checked in play + gameover mode).
 | adventure 1 (score 368) | won | 131 | [s:20261003-235233-chrono-2FYKPJ#21] |
 | adventure 2 (60 diamonds) | lost on purpose, then won | 62 / 188 | [s:20261003-235233-chrono-2FYKPJ#29] [s:20261003-235233-chrono-2FYKPJ#45] |
 | adventure 3 (gems) | won | 137 | [s:20261003-235233-chrono-2FYKPJ#59] |
+
+## More Games mini-games (2026-10-05)
+- Fruit Merge: tap drops the current fruit at x; equal fruits merge along 11 steps (blueberry to watermelon); jar rarely overflows with merging (140 drops, none). Boosters shake and bomb x1 each, then rewarded-ad badge. Back arrow leaves at once; restart arrow asks to confirm.
+- Mahjong: tap two identical free tiles (+30). L1 guided tutorial, tools undo (free), shuffle x3, hint x3 from L2. Win: interstitial then Level Clear (Home/Continue). Back key asks Are you sure you want to leave.
+- One Line: drags must be straight segments via `taps "a>b c>d"`; the line persists between drags. Hint auto-draws squares. No loss state. Win is followed by an interstitial: Back closes the video, the L2 one chained into a playable ad that Back, launch and 40 s did not close (restart fixed it).
+
+## Onet and Fruit Merge (2026-10-05, session 20261005-131038)
+- Onet: tap two identical tiles joined by a path of at most 2 turns through empty cells; the path may run outside the board. Clear edge pairs first to open paths. Hint draws the path. After a board clear an interstitial plays then a playable that freezes: only restart gets out (L2 opened, so progress saved).
+- Fruit Merge: dropping at the center x only (40+ drops) fills the jar; at overflow an ad covered the screen before the game over screen was seen.
+
+## Sudoku and loss states (2026-10-05, session 20261005-153835)
+- Sudoku: 6x6, 2x3 boxes, 3 hearts. Solve by logic (row/col/box elimination), digit then cell via `taps`; tray digits keep fixed x (80,196,308,420,533,645 on a 730 frame). Wrong digit costs a heart and is cleared; 0 hearts: Restore 1 Heart (ad)/New Game/Restart. L1 solved in 1:33.
+- Fruit Merge: ~140 center drops (x=365) reach game over; a video ad and a store sheet cover it; launch then Back shows Game Over.
+- Mahjong: MATCHES counter = free pairs; playing every pair wins. Win then interstitial then frozen playable: restart.
+
+## Tic Tac Toe, Water Sort, Mahjong loss (2026-10-05, session 20261005-231555)
+- Tic Tac Toe: tutorial (block, then win column) then rounds vs robot; bot blocks and takes lines; draw/loss each: ad then Draw/You Lost, Home (to More Games) / Play Again. Back closes the playable.
+- Water Sort: tap source tube then target; pour needs same top colour and room; finished tube corks. L1: 3 colours, 2 empty tubes. Win goes straight to next level. Hint auto-pours (3), add tube (3), undo free.
+- Mahjong: pairing free twins in any order never dead-ended on L3; no loss found.
+
+## More Games mini-games: method per mechanic (lab 2026-10-06)
+Each solver is `solve <mechanic> --run` with no `--board`; open the drawn frame of a plain `solve` once
+per new mini-game. They were checked only on the recorded frames of one session each: watch the first
+level played with them.
+- water-sort: solver `solvers/com.block.juggle/water-sort.py`. Reads tubes and 4-layer colours, finds the
+  fewest pours, taps source then target. A round stops before a pour whose source took part in the
+  pour just before (that tap is lost while the tube is still moving: session 20261005-231555 step 32 lost
+  the tap of 3>4 and only selected tube 4), so a level takes 2-3 rounds. A raised tube is a selection: the
+  solver taps it first to put it down (frames 48-53 of that session: the bottom-left tube of L2 sat
+  selected through the whole level). The small add-tube tube is planned only when nothing else works
+  (its capacity is a guess). Refuses corks/the win glow and tilted (pouring) tubes: run again.
+- sudoku: solver `solvers/com.block.juggle/sudoku.py`. Reads the grid (N and the box shape from the thick
+  lines) and the digits (matched against the tray glyphs and kept 1-6 bitmaps), solves, then taps a tray
+  digit and every cell that takes it, digit by digit (the whole board in one round on L1-L2). Refuses a
+  red-outlined (wrong) cell, the hearts sheet and the Pass Level panel.
+- onet: solver `solvers/com.block.juggle/onet.py`. Groups equal pictures, searches a clearing order (paths
+  of at most 2 turns, outside the board allowed), taps 6 pairs per round. If the board after a round is
+  not the expected one (tiles sliding at later levels) it plays one pair per round and says so. A hint
+  path over the board makes it refuse (odd picture counts): run again after the path fades. If it says
+  "no order clears": shuffle.
+- one-line: solver `solvers/com.block.juggle/one-line.py`. Finds the path from the coloured start square
+  over every square and sends one swipe per straight run (the line stays between swipes). Only a fresh
+  board: with a line already drawn it refuses; restart the level (arrow top right) first.
+- mahjong-mg: manual. Tiles are stacked (half-hidden lower layers), so the free test needs the eye: a
+  tile is free when nothing lies on it and its left or right side is open. Pair free twins, buried twins
+  last; three of a kind free: keep the one that frees the most. MATCHES N at the top = free pairs now;
+  0 means shuffle. L1 won and L2-L3 played (sessions 20261005-125535, -231555): pairing free twins in
+  any order never dead-ended.
+- fruit-merge: heuristic (random next fruit, physics). Endless; a "level" is played for a goal only. To
+  lose fast (game over study): drop every fruit at the centre x=365 (~140 drops). To play for score:
+  1) drop the current fruit onto the same fruit when one sits on top of the pile; 2) else drop small
+  fruits at the side where the smallest fruits are, keep the largest in one corner; 3) never drop
+  a large fruit on top of small ones. Past the 5-minute budget: quit.
+
+## Level times by mechanic (dream 2026-10-06)
+
+```yaml
+---
+mechanics:
+- id: classic
+  name: classic
+  status: studying
+  method: solver
+  solver: solvers/com.block.juggle/classic.py
+  levels:
+    won: 0
+    lost: 1
+    quit: 2
+  typical_min: null
+  best_min: null
+  solver_file: solvers/com.block.juggle/classic.py
+  solver_sign: 'solver bypassed: 2 of 4 levels placed by hand; solver gave up in 2
+    of 4 levels (no moves, the same moves, or no change on screen)'
+- id: adventure
+  name: adventure
+  status: mastered
+  method: solver
+  solver: solvers/com.block.juggle/classic.py
+  levels:
+    won: 5
+    lost: 1
+    quit: 1
+  typical_min: 3.1
+  best_min: 2.2
+  solver_file: ''
+  solver_sign: solver gave up in 4 of 5 levels (no moves, the same moves, or no change
+    on screen)
+- id: fruit-merge
+  name: fruit-merge
+  status: studying
+  method: heuristic
+  levels:
+    won: 0
+    lost: 0
+    quit: 2
+  typical_min: null
+  best_min: null
+  solver_file: ''
+- id: mahjong-mg
+  name: mahjong-mg
+  status: studying
+  method: manual
+  levels:
+    won: 1
+    lost: 0
+    quit: 2
+  typical_min: 1.9
+  best_min: 1.9
+  solver_file: ''
+- id: one-line
+  name: one-line
+  status: studying
+  method: solver
+  solver: solvers/com.block.juggle/one-line.py
+  levels:
+    won: 0
+    lost: 0
+    quit: 1
+  typical_min: null
+  best_min: null
+  solver_file: solvers/com.block.juggle/one-line.py
+- id: onet
+  name: onet
+  status: studying
+  method: solver
+  solver: solvers/com.block.juggle/onet.py
+  levels:
+    won: 0
+    lost: 0
+    quit: 1
+  typical_min: null
+  best_min: null
+  solver_file: solvers/com.block.juggle/onet.py
+- id: sudoku
+  name: sudoku
+  status: studying
+  method: solver
+  solver: solvers/com.block.juggle/sudoku.py
+  levels:
+    won: 1
+    lost: 0
+    quit: 0
+  typical_min: null
+  best_min: null
+  solver_file: solvers/com.block.juggle/sudoku.py
+- id: water-sort
+  name: water-sort
+  status: studying
+  method: solver
+  solver: solvers/com.block.juggle/water-sort.py
+  levels:
+    won: 1
+    lost: 0
+    quit: 0
+  typical_min: 1.0
+  best_min: 1.0
+  solver_file: solvers/com.block.juggle/water-sort.py
+level_budget_min: 5
+```

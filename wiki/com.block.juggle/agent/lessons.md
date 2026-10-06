@@ -3,7 +3,7 @@ game: com.block.juggle
 title: "Lessons"
 type: agent
 version_seen: 10.8.1
-verified_at: 2026-10-04
+verified_at: 2026-10-06
 ---
 
 # Lessons for the agent: Block Blast!
@@ -15,3 +15,11 @@ verified_at: 2026-10-04
   *Confirmed: 20261003-235233-chrono-2FYKPJ, 20261005-004506-chrono-2FYKPJ, 10.8.1.* [s:20261005-004506-chrono-2FYKPJ#13] [s:20261003-235233-chrono-2FYKPJ#8]
 - To reach the home menu, press Back on the classic board; the app opens straight on the board and has no menu button.
   *Confirmed: 20261003-212548-chrono-2FYKPJ, 20261003-235233-chrono-2FYKPJ, 10.8.1.* [s:20261003-212548-chrono-2FYKPJ#29] [s:20261003-235233-chrono-2FYKPJ#5]
+- After a mini-game ends, an ad plays and a playable ad can follow with no close button: wait about 40-45 s, then press Back; restart only if that fails (a restart during the ad loses the win screen).
+  *Confirmed: 20261005-231555-chrono-2FYKPJ, 10.8.1; 20261005-131038-chrono-2FYKPJ, 10.8.1.* [s:20261005-231555-chrono-2FYKPJ#20] [s:20261005-231555-chrono-2FYKPJ#24] [s:20261005-131038-chrono-2FYKPJ#33]
+- The harness `taps` command takes two-point swipes only and at most 40 moves per call: draw One Line runs as separate swipes and split large batches.
+  *Confirmed: 20261005-125535-chrono-2FYKPJ, 10.8.1; 20261005-131038-chrono-2FYKPJ, 10.8.1.* [s:20261005-125535-chrono-2FYKPJ#33] [s:20261005-131038-chrono-2FYKPJ#5]
+- Game Over and result buttons slide in from the bottom: wait until they settle (about y 1220 on Fruit Merge) before tapping.
+  *Confirmed: 20261005-153835-chrono-2FYKPJ, 10.8.1.* [s:20261005-153835-chrono-2FYKPJ#13]
+- The More Settings button of the classic Settings sits at y 767 (it was 833 in older notes); a tap at the old place leaves the frame unchanged.
+  *Confirmed: 20261006-032721-chrono-2FYKPJ, 10.8.1.* [s:20261006-032721-chrono-2FYKPJ#3]
