@@ -203,8 +203,16 @@ check(code == 3 and step["type"] == "error" and step["touch_blocked"] and step["
 check("touch protection" in saved.get("blocked_reason", ""), "the reason stays in the session")
 swm.cmd_wait(argparse.Namespace(seconds=60, hi=False))
 r, step = replies[-1], last_step()
-check(r.get("screen") == "dimmed" and any("next tap will fail" in w for w in r.get("warnings", []))
-      and step.get("screen") == "dimmed", "wait on a dimmed screen says the next tap will fail")
+check(r.get("screen") == "dimmed" and r.get("touch_blocked") is True
+      and any("every tap is refused" in w and "end --status blocked" in w for w in r.get("warnings", []))
+      and step.get("screen") == "dimmed" and step.get("touch_blocked") is True,
+      "wait on a dimmed screen with touch protection up says taps are refused and how to end")
+S.update(touch=False)
+swm.cmd_wait(argparse.Namespace(seconds=60, hi=False))
+r, step = replies[-1], last_step()
+check(r.get("screen") == "dimmed" and "touch_blocked" not in r and "touch_blocked" not in step
+      and any("harmless" in w for w in r.get("warnings", [])),
+      "wait on a dimmed screen without the protection says to tap something harmless")
 S.update(touch=False, summary="0x1")
 swm.cmd_wait(argparse.Namespace(seconds=60, hi=False))
 check("screen" not in replies[-1], "wait on a bright screen says nothing")

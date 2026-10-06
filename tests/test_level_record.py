@@ -94,6 +94,7 @@ check(not warned(r, "no level is open"), "no mechanics yet: taps outside a level
 r = sw("level", "start", "level 1", "--mechanic", "pins", "--plan", "x", "--value", "1")
 check("moves_before" not in r, "the menu taps before the first mechanic are not a late start")
 sw("taps", "10,10 20,20", "--why", "pins")
+session(fake_i=session().get("fake_i", 0) + 1)  # the screen moves on after the move (2026-10-06: an unchanged one is accepted)
 r = sw("level", "end", "won", "--note", "x", expect_ok=False)
 check("take a frame of the win screen first" in json.dumps(r), "level end won right after the moves is refused")
 sw("shot")

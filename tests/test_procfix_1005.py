@@ -125,6 +125,7 @@ check(r["note"] == "mode gameover", "--board with a file path works as before")
 sw("level", "start", "level 1", "--mechanic", "pins", "--plan", "x", "--value", "1")
 first = session()["level"]["shot0"]
 sw("taps", "10,10 20,20", "--why", "pins")
+session(fake_i=session().get("fake_i", 0) + 1)  # the screen moves on after the move (2026-10-06: an unchanged one is accepted)
 r = sw("level", "end", "won", "--note", "x", expect_ok=False)
 check("--shot N" in json.dumps(r) and r.get("shot_n"), f"the refusal takes the frame and names --shot as the way out: {r.get('shot_n')}")
 win_shot = r["shot_n"]
