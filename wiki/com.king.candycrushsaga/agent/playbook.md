@@ -85,3 +85,22 @@ many plain matches on meringue (level 3) and repeated moves on stale frames (lev
 
 ## Dispenser (L4)
 - The cap above column 4 refills the cell under it; a 5-line there gave a colour bomb, later refills were plain. Swap the bomb with green: 65 to 23 meringue in one move.
+
+## Level times by mechanic (dream 2026-10-06)
+
+```yaml
+---
+mechanics:
+- id: core-match
+  name: core-match
+  status: mastered
+  method: manual
+  levels:
+    won: 5
+    lost: 0
+    quit: 7
+  typical_min: 3.9
+  best_min: 1.5
+  solver_file: ''
+level_budget_min: 5
+```

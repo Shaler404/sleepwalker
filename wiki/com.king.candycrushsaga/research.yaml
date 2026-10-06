@@ -2,32 +2,28 @@
 game: com.king.candycrushsaga
 version: 1.337.0.2
 play_version: 1.337.0.2
-play_checked: '2026-10-05T00:13:01'
+play_checked: '2026-10-05T22:05:43'
 phone_version: 1.337.0.2
 discovery: open
 ftue_verified: null
 progress:
-  text: level 4 reached, on map
-  value: 4.0
-  at: '2026-10-03T23:09:04'
-  session: 20261003-225003-chrono-2FYKPJ
+  text: level 1
+  value: 1.0
+  at: '2026-10-05T07:31:40'
+  session: 20261005-072135-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-05T02:00:53'
+  chrono: '2026-10-06T04:02:50'
 mechanics:
 - id: core-match
   name: core-match
   status: mastered
   method: manual
   levels:
-    won: 3
+    won: 4
     lost: 0
-    quit: 3
+    quit: 7
   recent:
-  - level: level 1
-    result: won
-    seconds: 92
-    model: sonnet
   - level: level 2
     result: won
     seconds: 294
@@ -47,6 +43,26 @@ mechanics:
   - level: level 4
     result: quit
     seconds: 111
+    model: sonnet
+  - level: level 4
+    result: quit
+    seconds: 35
+    model: sonnet
+  - level: level 3
+    result: quit
+    seconds: 35
+    model: sonnet
+  - level: level 1
+    result: won
+    seconds: 231
+    model: sonnet
+  - level: level 4
+    result: quit
+    seconds: 68
+    model: sonnet
+  - level: level 1 striped study
+    result: quit
+    seconds: 87
     model: sonnet
   note: carried over from the study before the 2026-10-02 restart (playbook and solver
     kept)
@@ -249,9 +265,11 @@ features:
     done: true
     source: 20261003-194350-chrono-2FYKPJ#12
   - id: chk-progress
-    text: 'The progress: the bar, the album or the counter, what fills it and where
-      it is now'
-    done: false
+    text: Collection shows no bar or counter at level 4, only the text Keep passing
+      levels to unlock pins; Awards tab says Awards coming soon
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#2
+    version: 1.337.0.2
   - id: chk-items
     text: 'The items: every set, skin or tier, which are owned and which are locked,
       with their condition'
@@ -292,34 +310,44 @@ features:
     done: true
     source: 20261003-194350-chrono-2FYKPJ#14
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Bottom bar fifth tab Shop; also the top bar gold counter (530,110) opens
+      the Shop tab (frame 3)
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#2
   - id: chk-screen
     text: 'Shop tab screen: Weekly Deal, Daily Deal (Popular) with a timer, 10 and
       50 gold-bar packs, More Offers (frame 3)'
     done: true
     source: 20261005-001914-chrono-2FYKPJ#2
   - id: chk-contents
-    text: Contents and price of every pack or tier
-    done: false
-  - id: chk-frequency
-    text: How often it comes up by itself (after a level, a loss, a session start)
-      and whether it comes back
-    done: false
-  - id: chk-timer
-    text: 'Daily Deal timer ends near 02:00 local each day: 06h12m at 2026-10-03 19:50
-      (ends ~02:02), 01h40m at 2026-10-05 00:20 (ends ~02:00); the deal rotated (contents
-      changed). Weekly Deal shows no timer'
+    text: Gold packs 10/50/100/250/500/1000 for RSD 299/1299/2499/4899/8499/13999;
+      Weekly Deal 10 gold RSD 149; bundles Basic 1399, Mega 3199, Legendary 12999,
+      Divine 13999 incl unlimited lives 1h-18h (frames 4,5)
     done: true
-    source: 20261005-001914-chrono-2FYKPJ#2
+    source: 20261005-072135-chrono-2FYKPJ#4
+  - id: chk-frequency
+    text: Shop did not open by itself at launch on 10-06 (frames 1-2) or earlier sessions;
+      only via the bottom tab or gold counter
+    done: true
+    source: 20261006-020945-chrono-2FYKPJ#2
+    version: 1.337.0.2
+  - id: chk-timer
+    text: 'Daily Deal 23h49m at 02:10 on 10-06: rotation at about 02:00 confirmed
+      a third day (frame 3)'
+    done: true
+    source: 20261006-020945-chrono-2FYKPJ#1
+    version: 1.337.0.2
   - id: chk-buy-path
-    text: 'The way to buy: the game''s own screens up to the price button; do not
-      tap the price (it opens the payment sheet), never pay'
-    done: false
+    text: 'No screens between the tab and the price: Shop tab (and More Offers, which
+      only expands the list in place) shows each offer with its green RSD price button;
+      the price button opens the payment sheet and was never tapped (frames 3-4)'
+    done: true
+    source: 20261006-020945-chrono-2FYKPJ#2
   - id: chk-close
-    text: 'Closing it: the close button and what comes up after'
-    done: false
+    text: 'Shop is a tab: the Map tab (73,1500) returns to the level map (frame 5)'
+    done: true
+    source: 20261006-020945-chrono-2FYKPJ#3
+    version: 1.337.0.2
   - id: daily-deal-rotation
     text: 'Daily Deal contents change on rotation: 2026-10-03 10 bars + 1 lollipop
       + 30m unlimited lives RSD 549; 2026-10-05 10 bars + x1 pink disc booster + 15m
@@ -358,29 +386,40 @@ features:
     done: true
     source: 20261003-194350-chrono-2FYKPJ#16
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Map top bar heart (200,110) opens the Refill Lives popup (frame 6)
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#5
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Refill Lives popup: 6h unlimited lives for 69 gold, Ask friends, paid bundle
+      10m unlimited lives + 5m colour bomb RSD 149 (frame 6); top bar heart shows
+      count and next-life timer (frame 25)'
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#19
   - id: chk-effect
-    text: 'What it does: the effect of one unit or one use'
-    done: false
+    text: One life = one level attempt; a quit (confirmed) or a fail costs 1 life,
+      a win costs none (L1 replay won, lives stayed 3)
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#31
   - id: chk-sources
-    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
-      and how much'
-    done: false
+    text: Timer regen 1 life per ~30 min; Sweet gift 2h unlimited; Ask friends; 69
+      gold = 6h unlimited; paid bundles (10m/15m/30m unlimited) (frame 6)
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#5
   - id: chk-sinks
-    text: 'Sinks: every way it is spent and the price'
-    done: false
+    text: Quit level costs 1 life (5->4->3 in two quits), force-stop mid level costs
+      1, a fail costs 1
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#18
   - id: chk-empty
     text: 'At zero: what happens and the offers to refill it (never spend premium
       currency to get there)'
     done: false
   - id: chk-refill
-    text: 'Refill timer, if any: how long one unit takes and the maximum'
-    done: false
+    text: About 30 min per life (timer 29:07 after a quit, 27:42 on 3 lives), counts
+      to the next life only; cap 5 shown as Full; full refill to 5 not yet watched
+      (lives-cap-check)
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#19
   - id: source-sweet-gift
     text: 'Sweet gift at launch: 2h Unlimited Lives (heart shows infinity 02:00);
       level HUD shows 4/heart-infinity'
@@ -391,6 +430,16 @@ features:
       2026-10-05), paid
     done: true
     source: 20261005-001914-chrono-2FYKPJ#2
+  - id: chk-cap
+    text: Lives capped at 5, shows Full 5h after 3/5
+    done: true
+    source: 20261005-133157-chrono-2FYKPJ#1
+    version: 1.337.0.2
+  - id: refill-popup-offers
+    text: 'Refill Lives popup also opens at 5/Full: 6h unlimited lives for 69 gold,
+      Ask friends, and a paid bundle (10m unlimited lives + 5m colour bomb, RSD 149)'
+    done: true
+    source: 20261005-133157-chrono-2FYKPJ#1
   found_at:
     text: level 1
     value: 1.0
@@ -404,7 +453,7 @@ features:
   page: features/lives.md
 - id: profile
   name: Profile and inventory
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -413,22 +462,49 @@ features:
     done: true
     source: 20261003-194350-chrono-2FYKPJ#18
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Map top bar avatar (365,110) opens Profile popup (frame 5-6)
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#17
+    version: 1.337.0.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Profile popup: avatar, name, level 4, 11-slot Inventory; avatar tap opens
+      card with Edit and stats (frames 6, 13, 19)'
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#17
+    version: 1.337.0.2
   - id: chk-entries
-    text: 'Every entry point on it: open (a feature), locked (feature --locked with
-      its condition) or unclear (an experiment)'
-    done: false
+    text: Pencil opens name prompt; avatar opens card > Edit (Avatars, Frames); locked
+      inventory slots show Unlocks at level 7, 10, 20 tooltips; frame 20000 locked
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#17
+    version: 1.337.0.2
   - id: chk-badges
-    text: Badges, timers and counters on it and what each points to
-    done: false
+    text: Level count 4 beside name; each inventory slot has a count (0) and padlock
+      for locked; Frames lock badge 20000; login streak 0
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#17
+    version: 1.337.0.2
   - id: chk-changes
-    text: What changes on it with progress (new buttons, a moving map, a theme)
+    text: Level count beside the name grew from 2 (first look) to 4 now; inventory
+      slots still locked until level 7/10/20
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#18
+    version: 1.337.0.2
+  - id: inventory-locks
+    text: 'Inventory tooltips (frames 9-12): row 1 #2 colour bomb level 10, #3 lollipop
+      hammer level 7, #4 striped+wrapped level 20, row 2 #1 round candy level 65 (the
+      session note missed this one); row 2 #2-4 and row 3 not tapped'
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#10
+  - id: inventory-locks-rest
+    text: 'Tap the 6 untapped inventory slots (row 2 #2-4: hand, carrot-like, tick;
+      row 3: three items) and record each Unlocks at level N tooltip'
     done: false
+  - id: auto-rename
+    text: The first-time profile-card tutorial (Next, Next) renamed the player from
+      Me to Otter without Save; Edit says Since you're a new player update your name
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#17
   found_at:
     text: level 1
     value: 1.0
@@ -481,13 +557,20 @@ features:
   - id: chk-refill
     text: 'Refill timer, if any: how long one unit takes and the maximum'
     done: false
+  - id: shop-sources
+    text: 'Shop sources: Daily Deal 10 bars + 1 lollipop hammer + 30m unlimited lives
+      RSD 549; Basic Bundle 50 bars + 2 of each booster (hammer, colour bomb, fish,
+      striped+wrapped, free switch) RSD 1399; Mega Bundle 100 bars + 2 boosters each
+      + 1h unlimited lives + 12h unlimited boosters RSD 3199'
+    done: true
+    source: 20261006-020945-chrono-2FYKPJ#2
   found_at:
     text: level 1
     value: 1.0
   type: currency-booster
   locked:
-    text: not shown on screen; slots still locked at level 4
-    value: null
+    text: level 7 (first inventory slot, lollipop hammer; others 10, 20, 65)
+    value: 7.0
   appeared:
     text: 'first launch: the in-level bottom bar of level 1 shows 5 boosters (hand,
       UFO, lollipop, striped+wrapped, party popper), all with lock icons; later the
@@ -500,9 +583,13 @@ features:
   status: in_progress
   cases:
   - id: entries-seen
-    text: 'General tab: Music and Sound effects toggles with sliders, More Audio,
-      Features, Account and Help; Accessibility tab; each sub-page still to open'
-    done: false
+    text: 'General: Music, Sound effects toggles+sliders, More Audio (voice over,
+      mono, balance, bass, high-pitched), Features (4 privacy toggles), Account &
+      Help (user id, Help center, Help deleting account, Forum, My Account); Accessibility:
+      Hints, Grayscale board, Vibration, Flashing'
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#29
+    version: 1.337.0.2
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
@@ -510,19 +597,27 @@ features:
     done: true
     source: 20261003-194350-chrono-2FYKPJ#20
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Map top bar gear (677,108)
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#29
+    version: 1.337.0.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Settings popup with General and Accessibility tabs (frames 22, 29)
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#29
+    version: 1.337.0.2
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: 'Music toggle tapped off (slider greyed, strike) and back on (frames 23,
+      26); other toggles read, not changed: Sound, Voice over, Mono, 4 Features, Hints,
+      Grayscale, Vibration, Flashing'
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#29
+    version: 1.337.0.2
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: Settings has no prompt or consent dialogs; toggles only
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#29
+    version: 1.337.0.2
   - id: chk-links
     text: 'Links out (privacy, terms, help): where they lead (back to the game at
       once)'
@@ -539,7 +634,7 @@ features:
   page: features/settings.md
 - id: mailbox
   name: Mailbox icon
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -547,22 +642,31 @@ features:
       test'
     done: false
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Top bar envelope (70,110) on the map
+    done: true
+    source: 20261005-133157-chrono-2FYKPJ#3
+    version: 1.337.0.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Tap opens no screen (frame 4 equals the map, 1.4% change); icon greyed,
+      inbox empty or disabled
+    done: true
+    source: 20261005-133157-chrono-2FYKPJ#3
+    version: 1.337.0.2
   - id: chk-entries
-    text: 'Every entry point on it: open (a feature), locked (feature --locked with
-      its condition) or unclear (an experiment)'
-    done: false
+    text: 'No entry points: nothing opens'
+    done: true
+    source: 20261005-133157-chrono-2FYKPJ#3
+    version: 1.337.0.2
   - id: chk-badges
-    text: Badges, timers and counters on it and what each points to
-    done: false
+    text: No badge or timer on the envelope in frames 1 and 4
+    done: true
+    source: 20261005-133157-chrono-2FYKPJ#3
+    version: 1.337.0.2
   - id: chk-changes
-    text: What changes on it with progress (new buttons, a moving map, a theme)
-    done: false
+    text: Unchanged at level 4 versus level 1; later progress not tested (task mailbox-exp)
+    done: true
+    source: 20261005-133157-chrono-2FYKPJ#3
+    version: 1.337.0.2
   found_at:
     text: level 1
     value: 1.0
@@ -575,7 +679,7 @@ features:
   page: features/mailbox.md
 - id: map
   name: Level map
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -584,22 +688,37 @@ features:
     done: true
     source: 20261003-194350-chrono-2FYKPJ#23
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Bottom bar Map tab (73,1500); map is the home screen after level 1 (frame
+      2)
+    done: true
+    source: 20261005-220615-chrono-2FYKPJ#11
+    version: 1.337.0.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Vertical winding path, nodes 1-3 crowned with 3 stars, node 4 current with
+      avatar, unplayed pink nodes above (frames 2,5)
+    done: true
+    source: 20261005-220615-chrono-2FYKPJ#11
+    version: 1.337.0.2
   - id: chk-entries
-    text: 'Every entry point on it: open (a feature), locked (feature --locked with
-      its condition) or unclear (an experiment)'
-    done: false
+    text: 'Top bar: mail, lives, avatar, gold bars, gear; bottom bar: Map, Events,
+      Social, Pins, Shop; each is its own feature already; no locked gates seen on
+      the path'
+    done: true
+    source: 20261005-220615-chrono-2FYKPJ#11
+    version: 1.337.0.2
   - id: chk-badges
-    text: Badges, timers and counters on it and what each points to
-    done: false
+    text: Lives counter shows 5 Full, after quitting L4 shows 4 with a 28:32 refill
+      timer (frame 16); gold 0; no red badges on tabs
+    done: true
+    source: 20261005-220615-chrono-2FYKPJ#11
+    version: 1.337.0.2
   - id: chk-changes
-    text: What changes on it with progress (new buttons, a moving map, a theme)
-    done: false
+    text: Won nodes get a crown and stars; current node gets the avatar; lives timer
+      appears after a loss (frames 5, 16); scrolling the map shows more nodes and
+      scenery (frame 3)
+    done: true
+    source: 20261005-220615-chrono-2FYKPJ#11
+    version: 1.337.0.2
   found_at:
     text: level 1
     value: 1.0
@@ -712,11 +831,13 @@ features:
   page: features/core-level.md
 - id: gold-bars
   name: Gold bars
-  status: in_progress
+  status: documented
   cases:
   - id: sinks-seen
-    text: 'Sinks seen: 69 gold bars for 6h unlimited lives in the lives popup'
-    done: false
+    text: 69 gold for 6h unlimited lives (frame 6)
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#5
+    version: 1.337.0.2
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
@@ -724,32 +845,51 @@ features:
     done: true
     source: 20261003-194350-chrono-2FYKPJ#23
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Map top bar gold counter (530,110) opens the Shop tab (frame 3)
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#4
+    version: 1.337.0.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'No own screen: tapping the counter opens Shop; gold packs 10/50/100/250/500/1000
+      and bundles (frames 4,5)'
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#4
+    version: 1.337.0.2
   - id: chk-effect
-    text: 'What it does: the effect of one unit or one use'
-    done: false
+    text: 1 gold bar is premium currency; spent on unlimited lives (6h = 69) and bought
+      in the shop (frame 6)
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#5
+    version: 1.337.0.2
   - id: chk-balance
-    text: 'The balance: where it shows and the starting amount'
-    done: false
+    text: Top bar next to the gold icon, starting balance 0 (frame 2)
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#4
+    version: 1.337.0.2
   - id: chk-sources
-    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
-      and how much'
-    done: false
+    text: 'Seen: real-money packs (RSD 299 for 10 up to 13999 for 1000) and bundles;
+      no free source seen at level 4'
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#4
+    version: 1.337.0.2
   - id: chk-sinks
-    text: 'Sinks: every way it is spent and the price'
-    done: false
+    text: 'Seen: 69 gold for 6h unlimited lives (lives popup, earlier); packs in shop
+      only buy gold'
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#4
+    version: 1.337.0.2
   - id: chk-empty
-    text: 'At zero: what happens and the offers to refill it (never spend premium
-      currency to get there)'
-    done: false
+    text: At 0 gold the 69 button stays shown; popup counter gets a green plus that
+      leads to purchase packs (plus not tapped); no free refill seen
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#5
+    version: 1.337.0.2
   - id: chk-refill
-    text: 'Refill timer, if any: how long one unit takes and the maximum'
-    done: false
+    text: 'Not a timed currency: no refill timer, balance stays 0 at level 4 (frames
+      2,6)'
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#5
+    version: 1.337.0.2
   found_at:
     text: level 1 won, on map before level 2
     value: 2.0
@@ -760,6 +900,7 @@ features:
       the Shop tab was open, so 'does nothing' is not proven
     certainty: fact
     source: 20261003-194350-chrono-2FYKPJ#23
+  version_seen: 1.337.0.2
 - id: color-bomb
   name: Colour bomb
   status: documented
@@ -820,7 +961,7 @@ features:
   page: features/color-bomb.md
 - id: striped-candy
   name: Striped candy
-  status: in_progress
+  status: documented
   cases:
   - id: chk-rules
     text: Made by a 4-in-a-line match; matching it with two of its colour fires a
@@ -835,22 +976,35 @@ features:
     done: true
     source: 20261003-194350-chrono-2FYKPJ#5
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'No menu entry: appears in levels; first made on L1 replay by swapping to
+      a 4-in-a-row (frames 10-12), map node 1 opens it'
+    done: true
+    source: 20261006-020945-chrono-2FYKPJ#9
+    version: 1.337.0.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Candy with white stripes in its colour; a 4-line makes one, stripes horizontal
+      here (frame 12)
+    done: true
+    source: 20261006-020945-chrono-2FYKPJ#9
+    version: 1.337.0.2
   - id: chk-first-level
-    text: The first level it shows on and how the game introduces it
-    done: false
+    text: Seen on level 1 (cascade after the first 5-line, per 10-03 session); no
+      tutorial popup on this replay of L1
+    done: true
+    source: 20261006-020945-chrono-2FYKPJ#9
+    version: 1.337.0.2
   - id: chk-interactions
-    text: How it interacts with the other pieces
-    done: false
+    text: 'Swapped into a 3-match with two blue candies it fires its row: blue order
+      32 -> 18 in one move (frames 12-15). Combos with fish, wrapped, bomb not tested
+      (colorbomb-combos)'
+    done: true
+    source: 20261006-020945-chrono-2FYKPJ#9
+    version: 1.337.0.2
   - id: chk-loss
-    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
-      level (case <base> <kind> "..." --outcome)'
-    done: false
+    text: No extra way to lose; it only helps clear the order (frames 12-15)
+    done: true
+    source: 20261006-020945-chrono-2FYKPJ#9
+    version: 1.337.0.2
   found_at:
     text: level 1 won, on map before level 2
     value: 2.0
@@ -860,6 +1014,7 @@ features:
       bomb (from the cascade)
     certainty: fact
     source: 20261003-194350-chrono-2FYKPJ#5
+  version_seen: 1.337.0.2
 - id: terms-consent
   name: Terms of Use consent
   status: seen
@@ -1027,26 +1182,39 @@ features:
     source: 20261003-225003-chrono-2FYKPJ#14
 - id: fish
   name: Fish candy
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
-    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
-      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
-      test'
-    done: false
+    text: 'Made by me on level 1 (frames 35): 2x2 square of green candies, formed
+      by one swap, no 3-line'
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#28
+    version: 1.337.0.2
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Not a menu feature: appears in levels from a 2x2 same-colour square (frame
+      35)'
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#28
+    version: 1.337.0.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Fish candy looks like a small green fish over a candy cell in the colour
+      of the square (frame 35)
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#28
+    version: 1.337.0.2
   - id: chk-first-level
-    text: The first level it shows on and how the game introduces it
-    done: false
+    text: Seen on level 1 board when I built it (level 1 has plain candies only; levels
+      3-4 have meringue blocking 2x2)
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#28
+    version: 1.337.0.2
   - id: chk-rules
-    text: What it does and how it is used
-    done: false
+    text: 'Fish alone swapped with a plain candy: no activation, only moves and costs
+      a move (frame 37). Included in a 3-match (row with two greens) it fires: flies
+      to a target and clears it (frame 38)'
+    done: true
+    source: 20261005-072135-chrono-2FYKPJ#28
+    version: 1.337.0.2
   - id: chk-interactions
     text: How it interacts with the other pieces
     done: false
@@ -1059,12 +1227,13 @@ features:
     value: 4.0
   type: level-element
   appeared:
-    text: made by a 2x2 square match; first seen on level 3 board (shot 80)
-    certainty: hypothesis
-    source: review-20261003
+    text: 'made by the player: one swap that puts 4 same-colour candies in a 2x2 square
+      with no 3-line (L1 replay, frame 35)'
+    certainty: fact
+    source: 20261005-072135-chrono-2FYKPJ#26
 - id: meringue
   name: Meringue blocker
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1073,25 +1242,42 @@ features:
     done: true
     source: 20261003-225003-chrono-2FYKPJ#13
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Level 4 map node > start popup shows white meringue icon in the order, then
+      Play (frame 6)
+    done: true
+    source: 20261005-220615-chrono-2FYKPJ#7
+    version: 1.337.0.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Level 4 board (frame 8): white 1-layer and pink 2-layer swirl meringue
+      fill most of the 9x8 grid'
+    done: true
+    source: 20261005-220615-chrono-2FYKPJ#7
+    version: 1.337.0.2
   - id: chk-first-level
-    text: The first level it shows on and how the game introduces it
-    done: false
+    text: Shown as an order from level 2 (65 layers on L4); no tutorial text seen
+      on L4 start, order icon only (frame 6)
+    done: true
+    source: 20261005-220615-chrono-2FYKPJ#7
+    version: 1.337.0.2
   - id: chk-rules
-    text: What it does and how it is used
-    done: false
+    text: Blocks a cell; pink has two layers, white one; order counts layers removed
+      (65 on L4 start, 59 after the first move, frame 10). Cleared by matches/blasts
+      next to it
+    done: true
+    source: 20261005-220615-chrono-2FYKPJ#7
+    version: 1.337.0.2
   - id: chk-interactions
-    text: How it interacts with the other pieces
-    done: false
+    text: 'Colour bomb swapped with green: 59 to 21 layers in one move, pink became
+      white (frames 10-12); also dropped 25 to 23 moves'
+    done: true
+    source: 20261005-220615-chrono-2FYKPJ#7
+    version: 1.337.0.2
   - id: chk-loss
-    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
-      level (case <base> <kind> "..." --outcome)'
-    done: false
+    text: 'No extra loss: only the move limit (L4 has 25 moves, order not met at 0
+      would be out-of-moves); no timer or spread seen'
+    done: true
+    source: 20261005-220615-chrono-2FYKPJ#7
+    version: 1.337.0.2
   found_at:
     text: level 4 reached, on map
     value: 4.0
@@ -1207,11 +1393,207 @@ features:
     value: 4.0
   type: daily
   appeared:
-    text: 'popup on the first launch after about 25 h away (last session 2026-10-03
-      23:09, this launch 2026-10-05 00:19): a daily or comeback gift; not seen at
-      the earlier launches of 2026-10-03'
+    text: comeback gift on the first launch after a long absence (about 25 h away
+      before the 10-05 00:19 gift); not shown at 10-06 02:09 when the previous session
+      ended about 2 h earlier, so not a fixed daily calendar
     certainty: hypothesis
-    source: 20261005-001914-chrono-2FYKPJ#0
+    source: 20261006-020945-chrono-2FYKPJ#1
+- id: booster-lollipop-hammer
+  name: Lollipop hammer booster
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#8
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: currency-booster
+  appeared:
+    text: 'padlocked slot in the Profile inventory (row 1 #3); tooltip Unlocks at
+      level 7 read at level 4'
+    certainty: fact
+    source: 20261006-000939-chrono-2FYKPJ#8
+  locked:
+    text: level 7
+    value: 7.0
+- id: booster-colour-bomb
+  name: Colour bomb booster (inventory)
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#7
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: currency-booster
+  appeared:
+    text: 'padlocked slot in the Profile inventory (row 1 #2); tooltip Unlocks at
+      level 10 read at level 4'
+    certainty: fact
+    source: 20261006-000939-chrono-2FYKPJ#7
+  locked:
+    text: level 10
+    value: 10.0
+- id: booster-striped-wrapped
+  name: Striped + wrapped booster
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#9
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: currency-booster
+  appeared:
+    text: 'padlocked slot in the Profile inventory (row 1 #4); tooltip Unlocks at
+      level 20 read at level 4'
+    certainty: fact
+    source: 20261006-000939-chrono-2FYKPJ#9
+  locked:
+    text: level 20
+    value: 20.0
+- id: booster-slot-l65
+  name: 'Round candy booster (inventory row 2 #1)'
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-000939-chrono-2FYKPJ#10
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 1
+    value: 1.0
+  type: currency-booster
+  appeared:
+    text: 'padlocked slot in the Profile inventory (row 2 #1); tooltip Unlocks at
+      level 65 read at level 4'
+    certainty: fact
+    source: 20261006-000939-chrono-2FYKPJ#10
+  locked:
+    text: level 65
+    value: 65.0
 tasks:
 - id: analyze
   title: Analyze the game
@@ -1277,11 +1659,17 @@ tasks:
     level not shown'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:48:37'
   feature: boosters
   source: session
   plan: play levels, watch when lock icons disappear in the level bottom bar
+  closed: '2026-10-06T00:17:13'
+  closed_by: 20261006-000939-chrono-2FYKPJ#10
+  note: 'Profile inventory tooltips give the unlock levels: lollipop hammer 7, colour
+    bomb 10, striped+wrapped 20, row 2 #1 round candy 65; 6 slots not tapped (inventory-tooltips-rest).
+    Each slot is its own feature with an unlock goal'
+  result: confirmed
 - id: appeared-mailbox
   title: 'Find why Mailbox icon appeared: envelope icon in the top bar of the map
     from the start; tap did nothing (inbox empty or needs account)'
@@ -1334,59 +1722,84 @@ tasks:
   title: 'Study Pins collection: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:50:27'
   feature: pins
   source: external
+  closed: '2026-10-06T00:14:23'
+  closed_by: 20261006-000939-chrono-2FYKPJ#31
+  note: Collection empty (keep passing levels), Awards coming soon; items/earn/use/complete
+    need later levels (task pins-unlock-items)
 - id: study-shop
   title: 'Study Shop: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:50:27'
   feature: shop
   source: external
+  closed: '2026-10-06T02:11:05'
+  closed_by: 20261006-020945-chrono-2FYKPJ#3
+  note: 'Walked tab, More Offers; frequency, close, timer closed. chk-buy-path left
+    open: price buttons open a payment sheet, never tapped.'
 - id: study-lives
   title: 'Study Lives: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:50:27'
   feature: lives
   source: external
+  closed: '2026-10-05T13:32:39'
+  closed_by: 20261005-133157-chrono-2FYKPJ#2
+  note: Popup walked at 5/Full; all cases closed except chk-empty (task lives-zero)
 - id: study-profile
   title: 'Study Profile and inventory: open it, walk its screens and tabs, verify
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:50:27'
   feature: profile
   source: external
+  closed: '2026-10-06T00:14:23'
+  closed_by: 20261006-000939-chrono-2FYKPJ#31
+  note: Profile popup, name prompt, avatar card, Edit Avatars/Frames, inventory lock
+    tooltips levels 7/10/20 checked
 - id: study-settings
   title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:50:27'
   feature: settings
   source: external
+  closed: '2026-10-06T00:14:24'
+  closed_by: 20261006-000939-chrono-2FYKPJ#31
+  note: General, More Audio, Features, Accessibility, Account & Help walked; links
+    left to settings-links
 - id: study-mailbox
   title: 'Study Mailbox icon: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:50:27'
   feature: mailbox
   source: external
+  closed: '2026-10-05T13:32:56'
+  closed_by: 20261005-133157-chrono-2FYKPJ#3
+  note: Envelope inert and greyed on map at L4; no screens
 - id: study-map
   title: 'Study Level map: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:50:27'
   feature: map
   source: external
+  closed: '2026-10-05T22:10:06'
+  closed_by: 20261005-220615-chrono-2FYKPJ#12
+  note: 'Map walked: scrolled both ends, node popup, lives timer; all 5 cases closed'
 - id: outcomes-events-tab
   title: 'Run each outcome once under Events tab: Order done, Gear > Settings > Quit
     level > confirm ''Play on'' / ''Quit -1 heart''; shows Level failed with Score
@@ -1422,10 +1835,13 @@ tasks:
   title: 'Study Gold bars: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:52:00'
   feature: gold-bars
   source: external
+  closed: '2026-10-05T07:23:50'
+  closed_by: 20261005-072135-chrono-2FYKPJ#5
+  note: Gold counter opens Shop; packs, bundles, 69-gold sink marked
 - id: study-color-bomb
   title: 'Study Colour bomb: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -1442,10 +1858,14 @@ tasks:
   title: 'Study Striped candy: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:52:00'
   feature: striped-candy
   source: external
+  closed: '2026-10-06T02:13:23'
+  closed_by: 20261006-020945-chrono-2FYKPJ#9
+  note: 'Made striped via 4-line swap on L1, fired by matching with 2 blue: row cleared
+    (32->18). Combos untested.'
 - id: study-terms-consent
   title: 'Study Terms of Use consent: open it, walk its screens and tabs, verify its
     cases'
@@ -1460,10 +1880,14 @@ tasks:
     verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:52:00'
   feature: notifications-prompt
   source: external
+  closed: '2026-10-05T22:10:07'
+  closed_by: 20261005-220615-chrono-2FYKPJ#12
+  note: Prompt cannot be opened on a progressed install (no return after relaunch);
+    cases left open, moved to fresh-install task notif-prompt-fresh
 - id: study-account
   title: 'Study Account and Retrieve My Progress: open it, walk its screens and tabs,
     verify its cases'
@@ -1583,7 +2007,7 @@ tasks:
     level 3 board (shot 80)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:13:31'
   feature: fish
   source: session
@@ -1591,6 +2015,10 @@ tasks:
     a 2x2 square match; first seen on level 3 board (shot 80)); confirmed when a frame
     shows the trigger. Record it with feature fish --appeared "...": the goal closes
     by itself'
+  closed: '2026-10-05T07:34:28'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: made by the player: one swap that puts
+    4 same-colour candies in a 2x2 square with no 3-line (L1 replay, frame 35) [20261005-072135-chrono-2FYKPJ#26]'
 - id: study-wrapped-candy
   title: 'Study Wrapped candy: make or meet it in a level, mark it, verify its cases'
   kind: study
@@ -1603,19 +2031,26 @@ tasks:
   title: 'Study Fish candy: make or meet it in a level, mark it, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:13:44'
   feature: fish
   source: session
+  closed: '2026-10-05T07:31:53'
+  closed_by: 20261005-072135-chrono-2FYKPJ#31
+  note: Made fish on L1 (2x2 swap), activated via match; rules recorded; interactions/loss
+    left as experiment fish-interactions
 - id: study-meringue
   title: 'Study Meringue blocker: make or meet it in a level, mark it, verify its
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:13:45'
   feature: meringue
   source: session
+  closed: '2026-10-05T22:10:07'
+  closed_by: 20261005-220615-chrono-2FYKPJ#12
+  note: 'L4 meringue: bomb+green took 59 to 21 layers; cases closed'
 - id: study-bomb-dispenser
   title: 'Study Candy dispenser: make or meet it in a level, mark it, verify its cases'
   kind: study
@@ -1668,15 +2103,21 @@ tasks:
     per life, cap)
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:20:02'
   feature: lives
   not_before: '2026-10-05T02:20:02'
   source: game
+  closed: '2026-10-05T07:31:53'
+  closed_by: 20261005-072135-chrono-2FYKPJ#31
+  note: 'Gift ended: lives 5 Full. Two quits: 5->4->3, timer starts 29:07 (about 30
+    min per life, counts to next life only). 07:31 timer 22:50 on 3 lives. Full refill
+    to 5 not watched (needs about 1h): task lives-cap-check'
 - id: appeared-sweet-gift
-  title: 'Find why Sweet gift (launch gift) appeared: popup on the first launch after
-    about 25 h away (last session 2026-10-03 23:09, this launch 2026-10-05 00:19):
-    a daily or comeback gift; not seen at the earlier launches of 2026-10-03'
+  title: 'Find why Sweet gift (launch gift) appeared: comeback gift on the first launch
+    after a long absence (about 25 h away before the 10-05 00:19 gift); not shown
+    at 10-06 02:09 when the previous session ended about 2 h earlier, so not a fixed
+    daily calendar'
   kind: experiment
   requires: any
   status: open
@@ -1684,10 +2125,11 @@ tasks:
   feature: sweet-gift
   source: session
   plan: 'find the moment Sweet gift (launch gift) shows up and what comes just before
-    it (popup on the first launch after about 25 h away (last session 2026-10-03 23:09,
-    this launch 2026-10-05 00:19): a daily or comeback gift; not seen at the earlier
-    launches of 2026-10-03); confirmed when a frame shows the trigger. Record it with
-    feature sweet-gift --appeared "...": the goal closes by itself'
+    it (comeback gift on the first launch after a long absence (about 25 h away before
+    the 10-05 00:19 gift); not shown at 10-06 02:09 when the previous session ended
+    about 2 h earlier, so not a fixed daily calendar); confirmed when a frame shows
+    the trigger. Record it with feature sweet-gift --appeared "...": the goal closes
+    by itself'
 - id: dispenser-rule-exp
   title: Find what the level 4 cap (colour-bomb icon) releases and when
   kind: experiment
@@ -1707,11 +2149,16 @@ tasks:
     it gives and at what hour (calendar or one-off)'
   kind: followup
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:25:33'
   feature: sweet-gift
   not_before: '2026-10-06T00:30:00'
   source: game
+  closed: '2026-10-06T02:10:33'
+  closed_by: 20261006-020945-chrono-2FYKPJ#1
+  note: 'Launch 2026-10-06 02:09: no Sweet gift popup (frames 1-2), lives 5 Full.
+    Not a daily calendar at this hour; trigger likely a comeback after a long absence
+    or lives not full. Gift at 10-05 was 00:19.'
 - id: study-sweet-gift
   title: 'Study Sweet gift (launch gift): open it, walk its screens and tabs, verify
     its cases'
@@ -1721,3 +2168,162 @@ tasks:
   created: '2026-10-05T00:29:17'
   feature: sweet-gift
   source: external
+- id: fish-interactions
+  title: 'Fish combos: swap fish with striped/wrapped/colour bomb, fish as an order,
+    fish in a loss'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T07:31:52'
+  feature: fish
+  source: session
+  plan: 'build a fish on an open board (L1 replay: swap to make 2x2), swap it with
+    another special, watch effect'
+- id: lives-cap-check
+  title: 'Check lives at 5 again: 3 lives at 07:26 with timer 30 min per life; expect
+    5/Full about 08:30'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-05T07:31:52'
+  feature: lives
+  not_before: '2026-10-05T08:31:52'
+  source: game
+  closed: '2026-10-05T13:32:15'
+  closed_by: 20261005-133157-chrono-2FYKPJ#0
+  note: Lives 5/Full on map at 13:32 (frame 1), cap is 5
+- id: lives-zero
+  title: Reach 0 lives and record the out-of-lives screen and its refill offers
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T13:32:39'
+  feature: lives
+  source: session
+  plan: 'Do not burn lives on purpose: push forward from level 4 with real attempts;
+    when a loss takes the last life, mark the 0-lives heart and tap the next level
+    node to mark the out-of-lives popup and its offers (gold, Ask friends, paid bundle),
+    never pay or spend gold. Confirmed when chk-empty is closed with that frame.'
+- id: notif-prompt-fresh
+  title: 'Study the notification permission prompt on a fresh install: screen, both
+    answers, whether it returns'
+  kind: replay
+  requires: fresh
+  status: open
+  created: '2026-10-05T22:10:05'
+  feature: notifications-prompt
+  source: session
+- id: push-to-l10
+  title: 'Win level 4 and keep winning up to level 10: progress recorded past level
+    3, boosters lock watched'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T22:11:50'
+  feature: core-level
+  source: session
+  note: 'Progress stuck: 6 quits on L4 across sessions 20261003-225003..20261005-220615,
+    no win since L3; unlock-candy-teams (L20), unlock-boosters, boosters-lock-exp,
+    lives-zero and look-genre-features all wait on it'
+  plan: 'Play L4 for the win (bomb route: blue up at 365,598>365,515 for a colour
+    bomb, swap with green, then clear the bottom meringue rows), then levels 5-10
+    one after another; after each win run progress "level N" and shot the start popup
+    and the in-level booster bar. Confirmed when level 10 is won or a level blocks
+    after 3 real attempts (then name the level and its blocker).'
+- id: pins-unlock-items
+  title: 'Pins: win more levels and re-open Pins to see when the first pin appears
+    and what earns it'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T00:10:23'
+  feature: pins
+  source: session
+  plan: after wins past level 4 open Pins Collection and check for pins, sets, earn
+    rule
+- id: profile-unlock-slots
+  title: 'Profile inventory slots unlock at levels 7, 10, 20: re-check profile after
+    reaching them'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T00:12:44'
+  feature: profile
+  source: session
+  plan: after level 7/10/20 open Profile and see which slots lose the padlock
+- id: settings-links
+  title: 'Settings > Account & Help: open Help center and Forum links and see where
+    they lead (launch back at once)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T00:14:07'
+  feature: settings
+  source: session
+  plan: tap Help center, Forum, record destination, launch back
+- id: unlock-booster-lollipop-hammer
+  title: 'Unlock Lollipop hammer booster: level 7'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-06T00:16:42'
+  feature: booster-lollipop-hammer
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 7
+  target_value: 7.0
+- id: unlock-booster-colour-bomb
+  title: 'Unlock Colour bomb booster (inventory): level 10'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-06T00:16:42'
+  feature: booster-colour-bomb
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 10
+  target_value: 10.0
+- id: unlock-booster-striped-wrapped
+  title: 'Unlock Striped + wrapped booster: level 20'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-06T00:16:43'
+  feature: booster-striped-wrapped
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 20
+  target_value: 20.0
+- id: unlock-booster-slot-l65
+  title: 'Unlock Round candy booster (inventory row 2 #1): level 65'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-06T00:16:43'
+  feature: booster-slot-l65
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 65
+  target_value: 65.0
+- id: inventory-tooltips-rest
+  title: 'Profile inventory: read the Unlocks at level N tooltip of the 6 slots not
+    tapped yet (row 2 #2-4, row 3 #1-3)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T00:17:13'
+  feature: profile
+  source: session
+  plan: Map avatar (365,110) > Profile; tap each untapped slot once, shot the tooltip;
+    done when all 6 levels are recorded, each as feature --locked with its value
+- id: profile-frame-20000
+  title: 'Profile Edit > Frames: find what the locked frame with the 20000 badge needs
+    (tap it and read the tooltip)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T00:17:14'
+  feature: profile
+  source: session
+  plan: Map avatar > tap avatar > Edit > Frames; tap the locked 7th frame once; the
+    tooltip or popup names the condition (score, points, purchase); never buy

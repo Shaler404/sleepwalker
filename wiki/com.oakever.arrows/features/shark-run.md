@@ -45,6 +45,7 @@ Each way a level ends while the event runs, against the base level. The event is
 | Restart <!-- case:under-restart --> | not verified: locked | — |
 | Quit <!-- case:under-quit --> | not verified: locked | — |
 | Exit the app <!-- case:under-exit-app --> | not verified: locked | — |
+| Restart from the gear popup <!-- case:under-restart-gear --> | not verified: locked | — |
 | Out of lives <!-- case:under-out-of-lives --> | not verified: locked | — |
 
 ## Cases
@@ -52,7 +53,7 @@ Each way a level ends while the event runs, against the base level. The event is
 | Case | What was done | Result | Source |
 |---|---|---|---|
 | Why it appeared <!-- case:chk-appeared --> | — | not verified: locked; the card is on Home from the first launch | [^s1] |
-| Where to find it: the screen and the button that open it <!-- case:chk-entry --> | Looked at the Home carousel | ✅ The second card, "Unlock Lv.70"; not tapped | [^s1] |
+| Where to find it: the screen and the button that open it <!-- case:chk-entry --> | Looked at the Home carousel | not verified: open in the map (see Not verified) | [^s1] |
 | What it looks like: its screen <!-- case:chk-screen --> | — | not verified: locked |  |
 | Rules: what earns points or items and what the goal is <!-- case:chk-rules --> | — | not verified |  |
 | Its timer and schedule <!-- case:chk-timer --> | — | not verified: no timer on the card | [^s1] |
@@ -64,6 +65,11 @@ Each way a level ends while the event runs, against the base level. The event is
 ## Not verified
 
 - Why it appeared: whether reaching level 70 opens it <!-- case:chk-appeared -->
+- Where to find it: the map keeps this item open (the card was never tapped, no entry frame marked) <!-- case:chk-entry -->
+
+  > ⚠️ Previously (1.33.0, 2026-10-03): the page showed it done: "The second card, 'Unlock Lv.70'; not
+  > tapped" [^s1].
+
 - Its screen <!-- case:chk-screen -->
 - Rules: what earns points or items and what the goal is <!-- case:chk-rules -->
 - Its timer and schedule <!-- case:chk-timer -->
@@ -73,5 +79,6 @@ Each way a level ends while the event runs, against the base level. The event is
 - The end: the results screen and the reward paid <!-- case:chk-end -->
 - What tapping the locked card does
 - Win, Out of lives, Restart, Quit and Exit the app during a level while the event runs: as the base or what differs <!-- case:under-win --> <!-- case:under-restart --> <!-- case:under-quit --> <!-- case:under-exit-app --> <!-- case:under-out-of-lives -->
+- Restart from the in-level gear popup during a level while the event runs: as the base or what differs <!-- case:under-restart-gear -->
 
 [^s1]: session 20261003-200141-chrono-2FYKPJ, step 2 — [video at 0:39](https://youtu.be/l44HK-PZ5-o?t=39)

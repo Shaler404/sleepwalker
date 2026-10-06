@@ -5,7 +5,7 @@ type: feature
 feature: boosters
 version_seen: 1.337.0.2
 verified_at: 2026-10-03
-sources: [20261003-194350-chrono-2FYKPJ]
+sources: [20261003-194350-chrono-2FYKPJ, 20261006-020945-chrono-2FYKPJ]
 ---
 
 # Boosters (hand, lollipop hammer etc.)
@@ -68,7 +68,9 @@ colour bomb, a lollipop, a striped and wrapped pair, a hand, a fish [^s3].
 
 Version 1.337.0.2. At level 2 every booster count is 0 and the in-level and inventory slots are locked [^s1]
 [^s3]. The start popup's three slots show no padlock [^s2]; what they do at a count of 0 was not tried. The
-Shop's Daily Deal includes one lollipop (see [Shop](shop.md)) [^s4].
+Shop's Daily Deal includes one lollipop (see [Shop](shop.md)) [^s4]. Under the Shop's More Offers, the Basic
+Bundle holds two of each booster (lollipop hammer, colour bomb, fish, striped and wrapped pair, free
+switch) and the Mega Bundle two of each plus 12 hours of unlimited boosters, all for real money [^s5].
 
 ## Cases
 
@@ -76,17 +78,20 @@ Shop's Daily Deal includes one lollipop (see [Shop](shop.md)) [^s4].
 |---|---|---|---|
 | The Level 2 start popup shows Select boosters with 3 slots (colour bomb, striped+wrapped, a third with a tick) and no lock icons, while the profile inventory shows them locked at 0: find what the slots do at 0 balance and whether they are free or for gold bars <!-- case:pre-level-select --> | — | not verified: the slots were not tapped | [^s2] |
 | Why it appeared <!-- case:chk-appeared --> | Played level 1 | ✅ The locked bar under the board from level 1 | [^s1] |
-| Where to find it <!-- case:chk-entry --> | Level 1, the Level 2 popup, Profile | ✅ Three places, as above | [^s2] |
-| What it looks like <!-- case:chk-screen --> | Looked at the in-level bar | ✅ Five locked boosters | [^s1] |
+| Where to find it <!-- case:chk-entry --> | Level 1, the Level 2 popup, Profile | Open in the map; seen in three places, as above | [^s2] |
+| What it looks like <!-- case:chk-screen --> | Looked at the in-level bar | Open in the map; five locked boosters seen | [^s1] |
 | What it does <!-- case:chk-effect --> | — | not verified: all locked |  |
-| The balance <!-- case:chk-balance --> | Read the inventory | ✅ All 0, shown in the Profile inventory | [^s3] |
-| Sources <!-- case:chk-sources --> | Read the Shop | ✅ partly: a lollipop in the Daily Deal; other sources not seen | [^s4] |
+| The balance <!-- case:chk-balance --> | Read the inventory | Open in the map; all 0 in the Profile inventory | [^s3] |
+| Sources <!-- case:chk-sources --> | Read the Shop | Open in the map; partly: a lollipop in the Daily Deal, the Shop bundles; other sources not seen | [^s4] [^s5] |
+| Shop sources <!-- case:shop-sources --> | Opened More Offers in the Shop | ✅ Daily Deal: 1 lollipop hammer; Basic Bundle: 2 of each booster; Mega Bundle: 2 of each booster and 12 h of unlimited boosters | [^s5] |
 | Sinks <!-- case:chk-sinks --> | — | not verified |  |
 | At zero <!-- case:chk-empty --> | — | not verified |  |
 | Refill timer <!-- case:chk-refill --> | — | not verified |  |
 
 ## Not verified
 
+- ⚠️ Previously this page showed as done: the entry (three places), the look (five locked boosters) and the
+  balance (all 0). The map keeps them open: chk-entry, chk-screen, chk-balance.
 - What the start popup's three slots do at a count of 0, and their price <!-- case:pre-level-select -->
 - The level at which each booster unlocks (the hypothesis above)
 - The effect of each booster <!-- case:chk-effect -->
@@ -99,3 +104,4 @@ Shop's Daily Deal includes one lollipop (see [Shop](shop.md)) [^s4].
 [^s2]: session 20261003-194350-chrono-2FYKPJ, step 6 — [video at 1:33](https://youtu.be/OjVVcEHXMyI?t=93)
 [^s3]: session 20261003-194350-chrono-2FYKPJ, step 18 — [video at 4:08](https://youtu.be/OjVVcEHXMyI?t=248)
 [^s4]: session 20261003-194350-chrono-2FYKPJ, step 14 — [video at 3:34](https://youtu.be/OjVVcEHXMyI?t=214)
+[^s5]: session 20261006-020945-chrono-2FYKPJ, step 2 — [video at 0:47](https://youtu.be/bLHRGXNqFXM?t=47)

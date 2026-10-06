@@ -72,16 +72,20 @@ they give was not seen.
 |---|---|---|---|
 | Why it appeared <!-- case:chk-appeared --> | Opened the Social tab at level 2 | ✅ Locked screen, unlock at level 20 | [^s1] |
 | Where to find it <!-- case:chk-entry --> | Tapped the two-figure tab | ✅ Social opens on Team | [^s1] |
-| What it looks like <!-- case:chk-screen --> | Looked at Team | ✅ partly: the locked screen only | [^s1] |
 | The board <!-- case:chk-board --> | — | not verified: locked |  |
 | What earns points <!-- case:chk-points --> | — | not verified: locked |  |
 | The period and its timer <!-- case:chk-period --> | — | not verified: locked |  |
 | Rewards per rank <!-- case:chk-rewards --> | — | not verified: locked |  |
 | The end of a period <!-- case:chk-end --> | — | not verified: locked |  |
 
+> ⚠️ **Previously** (corrected 2026-10-06): this page listed the screen case as verified.
+> "What it looks like: looked at Team; partly: the locked screen only" [^s1]. Only the locked notice
+> was seen, not the feature's own screen.
+
 ## Not verified
 
-- The unlocked Team screen (from level 20) <!-- case:chk-screen -->
+- The unlocked Team screen (from level 20) <!-- case:chk-screen -->: only the locked Team sub-tab with
+  its level 20 notice was seen [^s1].
 - The team board, points, period, rewards and the end of a period <!-- case:chk-board --> <!-- case:chk-points --> <!-- case:chk-period --> <!-- case:chk-rewards --> <!-- case:chk-end -->
 
 [^s1]: session 20261003-194350-chrono-2FYKPJ, step 9 — [video at 2:50](https://youtu.be/OjVVcEHXMyI?t=170)

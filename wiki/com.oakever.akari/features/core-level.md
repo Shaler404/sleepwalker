@@ -4,8 +4,8 @@ title: "Akari level"
 type: feature
 feature: core-level
 version_seen: 1.0.2
-verified_at: 2026-10-03
-sources: [20261003-200925-chrono-2FYKPJ, 20261003-232850-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-200925-chrono-2FYKPJ, 20261003-232850-chrono-2FYKPJ, 20261006-002027-chrono-2FYKPJ, 20261006-023308-chrono-2FYKPJ]
 ---
 
 # Akari level
@@ -43,8 +43,8 @@ Grids seen: Level 1 is a 4x4 grid without its four corner cells, with two cells 
 | Tab or button | What it does |
 |---|---|
 | [Grid cell](#grid-cell) | A double tap places a cat; a wrong cat costs a heart |
-| [Back arrow](#back-arrow) | Leads to the Home screen at once |
-| [Settings gear](#settings-gear) | Opens Settings |
+| [Back arrow](#back-arrow) | Leads to the Home screen at once; the board is kept |
+| [Settings gear](#settings-gear) | Opens Settings, with a Restart button that resets the level after an interstitial ad |
 | [Boosters](#boosters) | Cat and bulb boosters under the grid |
 | [Result](#result) | The win screen, or "Almost!" when the hearts run out |
 
@@ -61,13 +61,21 @@ A wrong cat is drawn with an angry mark on a red cell, one heart turns grey and 
 
 <!-- no-frame: the back arrow is on the level frame above (top left) -->
 
-Top left. On Level 2 before any move and on Level 4 right after a Restart it led straight to the [Home screen](home.md); no confirmation was shown, and Home still offered the same level [^s7] [^s9]. Whether leaving mid-level costs anything was not checked.
+Top left. On Level 2 before any move and on Level 4 right after a Restart it led straight to the [Home screen](home.md); no confirmation was shown, and Home still offered the same level [^s7] [^s9]. On Level 26, left with one wrong cat and 2 of 3 hearts, the back arrow went to Home at once and reopening the level showed the board as it was left: the red X of the wrong cat and 2 hearts; nothing was charged [^s19]. Sending the game to the background for 30 s and returning kept the board the same way [^s19].
+
+![Level 26 reopened after the back arrow: the red X of the wrong cat (top left) and 2 of 3 hearts kept](../img/20261006-core-level-tab-back-arrow-e946b036.webp) [^s19]
+*Level 26 reopened from Home: the board as it was left*
+
+**Closing the game.** After a force-stop and relaunch mid-level (Level 26, one cat placed by the cat booster, one wrong cat, 2 hearts), the game opened on Home with the same Level N button, and the level reopened reset: empty board, 3 hearts. The cat booster used before the exit was not given back (it still showed AD) [^s19].
 
 ### Settings gear
 
-<!-- no-frame: the gear is on the level frame above (top right) -->
+Top right; opens the [Settings](settings.md) sheet [^s8]. From a level the sheet has one more button, a green Restart under Help Center, which the Home sheet lacks [^s20]. The Help Center says it restarts the level and clears its progress [^s21].
 
-Top right; opens the [Settings](settings.md) sheet. It was opened from Home, not from a level [^s8].
+![Settings opened over Level 30 (2 of 3 hearts, counter 1/17): sound and vibration toggles, Help Center, the green Restart button, Privacy Policy and Terms of Service; the user ID line is blacked out](../img/20261006-core-level-popup-840b7af9.webp) [^s23]
+*The in-level Settings sheet: the green Restart button under Help Center*
+
+**Restart, tested on Level 30** (one correct cat, one wrong cat, 2 of 3 hearts, counter 1/17, cat booster at AD, bulb booster at 1): tapping Restart showed no confirmation and went straight to a full-screen interstitial video ad ([Interstitial ads](interstitial-ad.md)). The ad ended by itself in the Play Store; opening the game again showed Level 30 reset: an empty board, 3 hearts, counter 0/17, and the boosters unchanged (cat AD, bulb 1) [^s23] [^s24]. Level 30 itself had been opened from Home without an ad, so the ad came with the Restart [^s24].
 
 ### Boosters
 
@@ -102,7 +110,9 @@ Version 1.0.2:
 - The cat counter shows cats placed and cats needed: 6 on Levels 1, 2 and 4, 9 on Level 3. Wrong cats are not counted [^s4] [^s13] [^s14].
 - Hearts: 3 per attempt. Each wrong cat costs one; at zero the level ends on "Almost!" [^s11] [^s18].
 - After a loss: Restart is free and gives the same board with 3 hearts; Revive carries an AD icon (inferred: a rewarded video; not tapped) [^s10] [^s11].
-- There is no restart button on the level screen; Restart is only on the "Almost!" screen [^s7].
+- Restart: on the "Almost!" screen (free, same board, 3 hearts) [^s10], and in the Settings sheet opened from a level: no confirmation, an interstitial ad first, then an empty board with 3 hearts and the boosters unchanged [^s24]; there is no restart button on the level screen itself [^s7].
+- Leaving: the back arrow and the background keep the board; a force-stop resets it, and a booster spent before it is lost [^s19].
+- Cat colour: the cats change colour with the level number in a cycle of five: purple on Levels 20, 25 and 30; blue on 21 and 26; pink on 22 and 27; grey-blue on 23 and 28; yellow on 24 and 29. The colour shows on the cats on the board, the counter, the cat booster and the cats in the win box. A relaunch did not change it. There is no collection or album of cats on Home, the level screen or the win screens [^s22].
 - Win: no reward shown; the only button leads to the next level [^s1] [^s12].
 - Times: Levels 1 and 2 about 30 s each with six cats and no heart lost [^s1] [^s6]; Level 3 about 2 min 13 s with both boosters used [^s12].
 - Levels are played in order from a single "Level N" button on Home; no level map was seen through Level 4 [^s2] [^s9].
@@ -126,16 +136,15 @@ Version 1.0.2:
 | Out of hearts <!-- case:out-of-hearts --> | Three wrong cats on Level 4 | "Almost!" with Revive (video) and Restart | ✅ [^s11] |
 | Each loss <!-- case:chk-loss --> | Deliberate wrong double taps on Level 4 | Loss after 3 wrong cats; red X on the wrong cells; the counter keeps the correct cats | ✅ [^s11] |
 | After a loss: the retry and continue offers <!-- case:chk-retry --> | Tapped Restart on "Almost!" | Revive (rewarded video) and Restart (free, same board, hearts back to 3) | ✅ [^s10] |
-| Restart <!-- case:chk-restart --> | Looked for a restart control on the level screen | None; only Restart on "Almost!" (free). The back arrow quits without confirmation | ✅ [^s7] |
+| Restart <!-- case:chk-restart --> | Looked for a restart control on the level screen; on Level 30 placed one correct and one wrong cat, then tapped Restart in the in-level Settings sheet | No button on the level screen. In-level Restart: no confirmation; an interstitial video ad played first (ended in the Play Store, the game reopened on the level); then an empty board, 3 hearts, boosters unchanged (cat AD, bulb 1). The Restart on "Almost!" is free | ✅ [^s7] [^s23] [^s24] |
+| Cat colours <!-- case:cat-skins --> | Played Levels 20 to 30, noted the cats' colour | A cycle of five by level number (purple, blue, pink, grey-blue, yellow), on the board, counter, booster and win box; no collection | ✅ [^s22] |
 | Rules: the goal, the controls, what blocks a move and how the level is lost <!-- case:chk-rules --> | Played Levels 1 to 4 | A wrong cat costs a heart; 3 hearts lost ends the level on "Almost!" | ✅ [^s18] |
 | Level elements <!-- case:chk-elements --> | Played Levels 1 to 4 | Plain and numbered cells only; no other element met yet | ✅ [^s18] |
-| Quit <!-- case:chk-quit --> | Back arrow on Level 2 before any move and on Level 4 after Restart | Home at once, no confirmation, the same level offered; cost mid-level not checked | not verified |
-| Exit the app <!-- case:chk-exit-app --> | One cat placed on Level 4, then the game was force-stopped and started again | The game opened on Home with "Level 4"; the level was not reopened, so whether the cat was kept is not known | not verified |
+| Quit <!-- case:chk-quit --> | Back arrow on Level 2 before any move, on Level 4 after Restart, and on Level 26 with a wrong cat and 2 hearts | Home at once, no confirmation, no cost; reopening the level keeps the board (the X and 2 hearts) | ✅ [^s7] [^s19] |
+| Exit the app <!-- case:chk-exit-app --> | Force-stopped mid-level on Level 4 and on Level 26 (a booster cat, a wrong cat, 2 hearts), relaunched, reopened the level; also sent the game to the background for 30 s | After a force-stop: Home with the same Level N; the board reset (empty, 3 hearts), the spent booster not returned. After the background: the board kept | ✅ [^s19] |
 
 ## Not verified
 
-- Quit: leaving mid-level with cats placed or hearts lost, and whether it costs anything; the session saw no confirmation and no cost, but the case was not closed in the map <!-- case:chk-quit -->
-- Exit the app mid-level and come back: after a relaunch the game opened on Home with the same level; whether the board was kept was not checked <!-- case:chk-exit-app -->
 - What Revive gives (hearts back, the board kept) and whether it is a rewarded video.
 - How a placed cat is removed, and why three guesses on Level 4 placed no cat and cost no heart.
 
@@ -157,3 +166,10 @@ Version 1.0.2:
 [^s16]: session 20261003-232850-chrono-2FYKPJ, step 5 — [video at 0:57](https://youtu.be/94hgW4CXmbg?t=57)
 [^s17]: session 20261003-200925-chrono-2FYKPJ, step 8 — [video at 0:22](https://youtu.be/JOMuD_cF8gM?t=22)
 [^s18]: session 20261003-232850-chrono-2FYKPJ, step 26 — [video at 5:16](https://youtu.be/94hgW4CXmbg?t=316)
+
+[^s19]: session 20261006-002027-chrono-2FYKPJ, step 10 — [video at 2:21](https://youtu.be/u0n3VnemzrQ?t=141)
+[^s20]: session 20261006-002027-chrono-2FYKPJ, step 47 — [video at 9:42](https://youtu.be/u0n3VnemzrQ?t=582)
+[^s21]: session 20261006-002027-chrono-2FYKPJ, step 41 — [video at 8:53](https://youtu.be/u0n3VnemzrQ?t=533)
+[^s22]: session 20261006-002027-chrono-2FYKPJ, step 20 — [video at 6:15](https://youtu.be/u0n3VnemzrQ?t=375)
+[^s23]: session 20261006-023308-chrono-2FYKPJ, step 4 — [video at 1:01](https://youtu.be/bbcco3ENaxU?t=61)
+[^s24]: session 20261006-023308-chrono-2FYKPJ, step 5 — [video at 2:39](https://youtu.be/bbcco3ENaxU?t=159)

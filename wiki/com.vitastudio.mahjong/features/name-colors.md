@@ -48,8 +48,8 @@ verified.
 | Case | What was done | Result | Source |
 |---|---|---|---|
 | Why it appeared: the trigger that brought it up (the first launch, a level won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to test <!-- case:chk-appeared --> | Tapped the (i) in Achievements | ✅ Colour 1 owned from the start | [^s1] |
-| Where to find it: the screen and the button that open it <!-- case:chk-entry --> | Tapped the (i) | ✅ Achievements > (i) | [^s2] |
-| What it looks like: its screen <!-- case:chk-screen --> | Opened the popup | ✅ | [^s1] |
+| Where to find it: the screen and the button that open it <!-- case:chk-entry --> | Tapped the (i) | not verified in the map: Achievements > (i) | [^s2] |
+| What it looks like: its screen <!-- case:chk-screen --> | Opened the popup | not verified in the map: the Name Colors popup above | [^s1] |
 | The progress: the bar, the album or the counter, what fills it and where it is now <!-- case:chk-progress --> | Opened the popup | partly: empty bar, next colour at 8 points | [^s1] |
 | The items: every set, skin or tier, which are owned and which are locked, with their condition <!-- case:chk-items --> | Opened the popup | partly: 5 colours, 1 owned; only colour 2's condition shown | [^s1] |
 | How an item or a step is earned (wins, keys, a spin, a pack) <!-- case:chk-earn --> | — | partly: Achievement Points; points per achievement not seen | [^s1] |
@@ -57,6 +57,14 @@ verified.
 | Completing a set or the bar: the reward <!-- case:chk-complete --> | — | not verified |  |
 
 ## Not verified
+
+- Where to find it <!-- case:chk-entry -->: the frames show Achievements > (i) opening the popup [^s2] [^s1],
+  but no frame was marked for this feature as its entry, and the map keeps the case open.
+- What it looks like <!-- case:chk-screen -->: the popup frame above [^s1] was marked for Achievements, not
+  as this feature's screen; the map keeps the case open.
+
+  > ⚠️ **Previously** (corrected 2026-10-06): the Cases table showed both cases as verified (✅
+  > "Achievements > (i)" and the popup). The map has no source closing them.
 
 - The progress: the points for colours 3 to 5 <!-- case:chk-progress -->
 - The items: the condition of each locked colour <!-- case:chk-items -->

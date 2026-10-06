@@ -70,9 +70,9 @@ restore was on it [^s1].
 | Case | What was done | Result | Source |
 |---|---|---|---|
 | Why it appeared <!-- case:chk-appeared --> | Fresh install, first launch | ✅ The consent screen came first | [^s2] |
-| Where to find it <!-- case:chk-entry --> | — | ✅ Opens by itself on the first launch; no control leads to it | [^s2] |
-| What it looks like: its screen <!-- case:chk-screen --> | Looked at it | ✅ Welcome text, two links, Accept | [^s2] |
-| Every option or button and what it changes <!-- case:chk-options --> | Tapped Accept | ✅ Accept is the only button; it led to the restore popup, then Home | [^s1] |
+| Where to find it <!-- case:chk-entry --> | — | not verified: open in the map (see Not verified) | [^s2] |
+| What it looks like: its screen <!-- case:chk-screen --> | Looked at it | not verified: open in the map (see Not verified) | [^s2] |
+| Every option or button and what it changes <!-- case:chk-options --> | Tapped Accept | not verified: open in the map (see Not verified) | [^s1] |
 | What each answer does and whether it comes back <!-- case:chk-answers --> | Tapped Accept | Accept continues; whether the screen comes back on a later launch is not verified | [^s1] |
 | Links out (privacy, terms): where they lead <!-- case:chk-links --> | — | not verified: not opened |  |
 
@@ -80,6 +80,13 @@ restore was on it [^s1].
 
 - Whether the consent screen comes back on a later launch <!-- case:chk-answers -->
 - Where the Terms of Service and Privacy Policy links lead <!-- case:chk-links -->
+- Where to find it: the map keeps this item open (no entry frame marked for the feature) <!-- case:chk-entry -->
+- Its screen: the map keeps this item open (no screen frame marked for the feature) <!-- case:chk-screen -->
+- Every option or button and what it changes: open in the map; the links were never opened <!-- case:chk-options -->
+
+> ⚠️ Previously (1.33.0, 2026-10-03): the page showed these three as done. Where to find it: "Opens by itself
+> on the first launch; no control leads to it" [^s2]. Its screen: "Welcome text, two links, Accept" [^s2].
+> Options: "Accept is the only button; it led to the restore popup, then Home" [^s1].
 
 [^s1]: session 20261003-200141-chrono-2FYKPJ, step 1 — [video at 0:12](https://youtu.be/l44HK-PZ5-o?t=12)
 [^s2]: session 20261003-200141-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/l44HK-PZ5-o?t=0)

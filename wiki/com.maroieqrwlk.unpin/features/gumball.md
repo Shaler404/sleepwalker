@@ -106,7 +106,8 @@ Version 241.5.1.
 ![The first gumball spin: the machine turns, a capsule drops, confetti, then Congrats!](../clips/20261003-gumball-first-spin.webp) [^s4]
 *Clip 3 s · [original on YouTube from 21:46](https://youtu.be/cirqlD7KGWI?t=1306); the free first spin*
 
-*Video (not embedded: clip limit of this dream): The video spin: the Reward granted sheet is closed, the machine turns, a capsule drops into the tray, confetti · [original on YouTube from 1:39](https://youtu.be/KwWbRYgzFFk?t=99); the video spin after the "Reward granted" sheet* [^s10]
+![The video spin: the Reward granted sheet is closed, the machine turns, a capsule drops into the tray, confetti](../clips/20261004-gumball-video-spin-skin.webp) [^s10]
+*Clip 4.2 s · [original on YouTube from 1:39](https://youtu.be/KwWbRYgzFFk?t=99); the video spin after the "Reward granted" sheet*
 
 ## Cases
 

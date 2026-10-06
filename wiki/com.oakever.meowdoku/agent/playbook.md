@@ -20,12 +20,18 @@ the dream merges it here. Level times: `sw.py playbook`.
 - Rules: a wrong cat costs 1 of 3 fish (orange X); at 0 fish "Out of Fishes" [s:20261001-013526-chrono-2FYKPJ#81] [s:20261001-022624-chrono-2FYKPJ#40].
 - Method: solver [`solvers/com.oakever.meowdoku/queens.py`](../../../solvers/com.oakever.meowdoku/queens.py): reads the board from the
   screenshot (saturation bands, colours clustered by hue down to N groups), backtracks, and since the lab of
-  2026-10-03 returns a double tap ([x, y, 2]) for EVERY missing cat in one round, with `rescan`. It
+  2026-10-03 returns a double tap ([x, y, 2]) for EVERY missing cat in one round. Since the lab of
+  2026-10-06 that round also says `done` (the board has one solution and the moves place every missing
+  cat), so the run stops after it: "the solver says these moves finish the level". It
   skips cats already on the board (hint/cat booster cats too). It returns no moves (see its note) when
   the grid size, the regions or the cat count look wrong or the board has several solutions.
 - **Play every level with `solve queens --run --rounds 3`** (after `launch` has closed the interstitial):
-  round 1 places all cats, round 2 sees the full board and stops with "solved" (if a double tap was lost,
-  round 2 places the missing cat and round 3 confirms). Do NOT copy the solution into a hand `taps` batch:
+  one round places all cats and the run ends with "these moves finish the level". Then take a `shot`: the
+  win screen, the leaderboard or a Daily popup ("New trial skin", "Pure logic. No hesitation.") means won;
+  if the board is still there with a cat missing (a lost double tap), run `solve --run` again, it places
+  only the missing cats. Before 2026-10-06 a second round looked at the screen after the last cat and, on
+  the Daily popups, ended the run as "no moves" (the lab counted 3 of 5 winning runs as given up). Do NOT
+  copy the solution into a hand `taps` batch:
   that was the old work-around for the 3-cats-per-round limit (`solve --run` needed 4-5 rounds, L129 111 s)
   and the lab counts it as a bypassed solver. Lab check 2026-10-03: L127 9x9, L128/L129/L130 10x10 and the
   Daily 10/03 board each get all 9-10 cats in one round, the same cells as the winning hand batches.
@@ -75,6 +81,10 @@ the dream merges it here. Level times: `sw.py playbook`.
   - The solver refuses frames that are not a clean board: the fade-in of a Daily board (squares still
     growing), the hint popup (reads "35 cats"), Home, ads ("1x1"/"2x2"/"3x3" or "list index out of
     range"). Wait 1-2 s and run `solve` again before reading the board by hand (lab 2026-10-03).
+  - Golden Fish board: it opens under a dark veil with the tooltip "Only Golden Fish - Be careful!"; the
+    solver says "the board is dimmed by an overlay" (before 2026-10-06: "read 49 cats"). Tap a neutral
+    area (365,1250), then "tap to continue" (365,1394) if a card shows, look at the frame, then `solve --run`
+    [s:20261006-021434-chrono-2FYKPJ#19] [s:20261006-021434-chrono-2FYKPJ#21].
   - Never press Android Back on Home: it opens a Quit popup; close it with the X (621,535)
     [s:20261001-185238-chrono-2FYKPJ#7] [s:20261001-185238-chrono-2FYKPJ#9].
   - A "1x1" solver read means a popup, an ad or Home is on screen, not a board: look at the frame and
@@ -139,3 +149,25 @@ The times above come from the transcripts. Every level is far under the 5-minute
 | 127 | won, 3 fish | 121 | [s:20261003-201915-chrono-2FYKPJ#3] |
 | 128 | won, 2 fish (booster study, includes about 80 s of popups and ad) | 194 | [s:20261003-201915-chrono-2FYKPJ#17] |
 | 129 | won, Immaculate (solve about 36 s) | 111 | [s:20261003-202631-chrono-2FYKPJ#5] |
+
+## Level times by mechanic (dream 2026-10-06)
+
+```yaml
+---
+mechanics:
+- id: queens
+  name: Cat placement on color regions (Queens-like)
+  status: mastered
+  method: solver
+  solver: solvers/com.oakever.meowdoku/queens.py
+  levels:
+    won: 16
+    lost: 1
+    quit: 2
+  typical_min: 1.0
+  best_min: 0.5
+  solver_file: solvers/com.oakever.meowdoku/queens.py
+  solver_sign: solver gave up in 3 of 5 levels (no moves, the same moves, or no change
+    on screen)
+level_budget_min: 5
+```

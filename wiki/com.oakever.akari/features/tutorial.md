@@ -4,13 +4,13 @@ title: "Tutorial"
 type: feature
 feature: tutorial
 version_seen: 1.0.2
-verified_at: 2026-10-03
-sources: [20261003-200925-chrono-2FYKPJ]
+verified_at: 2026-10-05
+sources: [20261003-200925-chrono-2FYKPJ, 20261005-080420-chrono-2FYKPJ, 20261005-221436-chrono-2FYKPJ]
 ---
 
 # Tutorial
 
-Two scripted boards that teach the rules of the puzzle before level 1: a double tap places a cat, the cats must cover the whole grid, and a number counts the cats in the cells next to it. A text card above each board says what to do; two dots at the top show which of the two boards is on screen [^s1] [^s5].
+Two scripted boards that teach the rules of the puzzle before level 1: a double tap places a cat, the cats must cover the whole grid, and a number counts the cats in the cells next to it. A text card above each board says what to do; two dots at the top show which of the two boards is on screen [^s1] [^s5]. Later, the first level with a new element opens a tip card over the board before play: Level 6 (marking cells with X, shown with a 0 tile) and Level 11 (boxes) [^s8] [^s9].
 
 ## Why it appeared
 
@@ -18,7 +18,12 @@ Right after the Terms consent and the notification prompt on the first launch [^
 
 ## Where to find it
 
-It opens by itself on the first launch, after the [Terms consent](consent.md) and the [Notification permission prompt](notifications.md). No control that opens it again was seen: the level screen and Settings have no How to play button [^s7].
+It opens by itself on the first launch, after the [Terms consent](consent.md) and the [Notification permission prompt](notifications.md), and only then. No control opens it again on a progressed install (Level 25): [Home](home.md) has only the gear at the top right and the Level button at the bottom, and the [Settings](settings.md) sheet has the sound and vibration buttons, Help Center, Privacy Policy and Terms of Service, with no How to play or tutorial button [^s7] [^s11]. The Settings frame of this check shows the account's user ID, so it is not on this page.
+
+![Home on Level 25: the MeowTrail logo, the gear top right and the orange Level 25 button at the bottom; no tutorial or How to play button](../img/20261005-tutorial-entry-be3e90d1.webp) [^s12]
+*Home: the gear top right and the Level 25 button are the only controls*
+
+What stays of the tutorial on every level screen is a pair of rule cards above the board: "Place cats and occupy the whole grid" and "Numbers show cats in adjacent cells", each with a small picture [^s13].
 
 <!-- no-entry: shown by itself on the first launch; no control leads to it -->
 
@@ -39,6 +44,8 @@ The hand is animated; the recording of this session starts later in the tutorial
 | [Board 2](#board-2) | Numbered cells: "4" means four cats in the adjacent cells |
 | [Board 2 hint](#board-2-hint) | The board dims and points to the last cell to fill |
 | [Result](#result) | "You've mastered the game rules." and a summary of the two rules |
+| [Level 6 tip](#level-6-tip) | A tap marks X on a cell that holds no cat |
+| [Level 11 tip](#level-11-tip) | Boxes block cats from spreading |
 
 ### Board 1
 
@@ -68,6 +75,22 @@ The fifth cat on the bottom-right cell finished the board. The card read "You've
 ![Tutorial complete: five cats on board 2, the rule summary and the Got it! button](../img/20261003-tutorial-result-bb84c4cb.webp) [^s5]
 *The end of the tutorial: Got it! opens Level 1*
 
+### Level 6 tip
+
+Before the first play of Level 6, the first level with a 0 tile, a white card rises over the dimmed board: the title "Tap to mark "X" on non-cat cells" ("Tap" in orange), a small 3x5 demo board with a 0 tile in the middle, and an orange OK button. In the demo a white hand taps the cells around the 0 one by one and each gets a beige X. The board stays blocked until OK is tapped [^s10] [^s8].
+
+![Level 6 tip card: "Tap to mark X on non-cat cells", a demo board with a 0 tile, the hand marking X around it, and the OK button](../img/20261005-tutorial-popup-c03a3fc4.webp) [^s8]
+*The Level 6 tip; OK at the bottom closes it*
+
+The demo is animated; the session has no span short enough to cut as a clip (the card stayed up for about a minute): the moment is in the original from the step 14 link above.
+
+### Level 11 tip
+
+Before Level 11, the first level with boxes, the same kind of card: the title "Boxes block cats from spreading", a 3x5 demo board with one box tile, and OK. In the demo a cat is placed in the left column and its row and column turn purple with paw prints up to the box, which stops the row [^s9].
+
+![Level 11 tip card: "Boxes block cats from spreading", a demo board where a cat's row stops at a box, and the OK button](../img/20261005-tutorial-popup-956a6a8f.webp) [^s9]
+*The Level 11 tip; OK at the bottom closes it*
+
 ## How it works
 
 - Two boards, 3x3 and 4x4, in a fixed order (version 1.0.2) [^s1] [^s3].
@@ -75,6 +98,7 @@ The fifth cat on the bottom-right cell finished the board. The card read "You've
 - No Skip button is on any of the tutorial frames [^s1] [^s2] [^s3] [^s5].
 - It ends with Got it!, which opens [Level 1](core-level.md) directly [^s6].
 - Cat placements on the boards: board 1 three cats, board 2 five cats [^s5].
+- Tip cards: at Level 6 (X marks, with the first 0 tile) and Level 11 (boxes); each is shown before the board can be played and closes with OK (version 1.0.2) [^s8] [^s9].
 
 ## Cases
 
@@ -84,15 +108,14 @@ The fifth cat on the bottom-right cell finished the board. The card read "You've
 | Two scripted boards: 3x3 teaches double tap to place a cat; 4x4 with clues 4 and 1 teaches that numbers count adjacent cats and that cats must cover the whole grid; ends with 'You've mastered the game rules' <!-- case:chk-steps --> | Played both boards as the hints asked | Both boards done, the final card shown | ✅ [^s5] |
 | Ends on 'You've mastered the game rules' + Got it; Got it opens Level 1 directly (no home first) <!-- case:chk-end --> | Tapped Got it! | Level 1 opened | ✅ [^s6] |
 | Why it appeared: the trigger that brought it up <!-- case:chk-appeared --> | First launch | Shown after the consent and notification prompt | ✅ [^s1] |
-| Where to find it: the screen and the button that open it <!-- case:chk-entry --> | — | not verified: opens by itself |  |
+| Only reachable on a fresh install: first launch after consent opens the scripted board; no Home or Settings entry later <!-- case:chk-entry --> | Looked at Home and Settings on Level 25 | Opens by itself on the first launch only; no control on Home or in Settings leads to it | ✅ [^s11] |
 | Whether it can be skipped, and what happens when the app is left in the middle of it <!-- case:chk-skip --> | — | not verified: no Skip button seen; leaving the app mid-tutorial not tried |  |
-| Whether it can be seen again (How to play, a help button) <!-- case:chk-replay --> | Looked at the level screen and Settings | not verified: no How to play button seen; Help Center not opened |  |
+| Whether it can be seen again (How to play, a help button) <!-- case:chk-replay --> | Opened Settings from Home on Level 25 | No replay: Settings has sound, vibration, Help Center, Privacy Policy and Terms of Service, no How to play; Home has only the gear and the Level button | ✅ [^s11] |
+| In-level tip cards after the scripted tutorial <!-- case:level-tips --> | Played Levels 4 to 20 | Level 6: "Tap to mark X on non-cat cells" with a 0 tile; Level 11: "Boxes block cats from spreading"; each animated, closed with OK before the board | ✅ [^s8] [^s9] |
 
 ## Not verified
 
-- Where to find it: whether any control opens it again <!-- case:chk-entry -->
-- Skipping: no Skip button on the frames; what happens when the app is left in the middle of the tutorial was not tried <!-- case:chk-skip -->
-- Replay: whether the Help Center or anything else shows the rules again <!-- case:chk-replay -->
+- Skipping: no Skip button on the frames; what happens when the app is left in the middle of the tutorial was not tried. It needs a fresh install (task tutorial-skip-fresh) <!-- case:chk-skip -->
 
 [^s1]: session 20261003-200925-chrono-2FYKPJ, step 2 — [video at 0:00](https://youtu.be/JOMuD_cF8gM?t=0)
 [^s2]: session 20261003-200925-chrono-2FYKPJ, step 5 — [video at 0:00](https://youtu.be/JOMuD_cF8gM?t=0)
@@ -102,3 +125,11 @@ The fifth cat on the bottom-right cell finished the board. The card read "You've
 [^s6]: session 20261003-200925-chrono-2FYKPJ, step 9 — [video at 0:36](https://youtu.be/JOMuD_cF8gM?t=36)
 
 [^s7]: session 20261003-200925-chrono-2FYKPJ, step 13 — [video at 1:42](https://youtu.be/JOMuD_cF8gM?t=102)
+
+[^s8]: session 20261005-080420-chrono-2FYKPJ, step 17 — [video at 3:46](https://youtu.be/bJ144EFaJEE?t=226)
+[^s9]: session 20261005-080420-chrono-2FYKPJ, step 30 — [video at 9:23](https://youtu.be/bJ144EFaJEE?t=563)
+[^s10]: session 20261005-080420-chrono-2FYKPJ, step 14 — [video at 3:00](https://youtu.be/bJ144EFaJEE?t=180)
+
+[^s11]: session 20261005-221436-chrono-2FYKPJ, step 1 — [video at 0:11](https://youtu.be/w-eepdKQSUc?t=11)
+[^s12]: session 20261005-221436-chrono-2FYKPJ, step 2 — [video at 0:21](https://youtu.be/w-eepdKQSUc?t=21)
+[^s13]: session 20261005-221436-chrono-2FYKPJ, step 15 — [video at 2:06](https://youtu.be/w-eepdKQSUc?t=126)

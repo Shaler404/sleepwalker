@@ -41,7 +41,16 @@ the dream merges it here. Level times: `sw.py playbook`.
   selected; L19 also has zodiac tiles (Pisces, Gemini, Aries, Capricorn, ...), ordinary pairs. Sessions 231301 and
   231804 (same day, same L19) showed a THIRD set: pink-cream faces, pink and dark red side bands, RED face-down backs
   with a lotus or a lattice medallion; the L19 layout changed between launches. Do NOT switch the theme to get the
-  old look: the solver reads all three sets (its note starts "cream", "purple" or "red tile set").
+  old look: the solver reads all three sets (its note starts "cream", "purple" or "red tile set"). A FOURTH set
+  (sessions 20261005-002327, L19, and 073804, L20 Hard): mint faces (234,248,222) with light and mid green side
+  bands, GREEN backs with a flower or lattice medallion; the solver reads it too (note "green tile set"). The set
+  changes between launches and levels: never assume one. A FIFTH set (session 20261005-133525, Hard L20): white faces
+  (230,241,247), light and dark blue side bands, BLUE backs (72,96,222) with corner ornaments; until lab 2026-10-05
+  (2nd) the solver took it for purple and read no pair; it now reads it (note "blue tile set"). A SIXTH set (session 20261005-221108, L21):
+  warm cream faces (251,244,225) with tan and orange-brown side bands, ORANGE backs with a light flower; until lab
+  2026-10-05 (3rd) the solver called it "cream", missed the rabbit pair and took the 8 orange backs for 4 art pairs
+  (an 8-tap line of back flips); it now reads it (note "orange tile set"). A set it does not know yet whose backs
+  read as one-colour faces is refused ("unknown tile set"): play by hand and leave the frames for the lab.
 - Face-down greens (from L11) — the rule is settled [s:20261001-110957-chrono-2FYKPJ#32]:
   - a tap on a FREE unseen green flips it face up in place and takes NO tray slot [s:20261001-110957-chrono-2FYKPJ#12];
   - only one green is face up at a time: flipping another turns the earlier one face down again [s:20261001-083725-chrono-2FYKPJ#43];
@@ -101,6 +110,60 @@ the dream merges it here. Level times: `sw.py playbook`.
   - tray tiles: a tray face that reads "?" is only a single the solver will not pair: look at the tray.
   Earlier: stalled on the L18 resume frame [s:20261001-205148-chrono-2FYKPJ#1]; missed a blank-card pair on the
   cream L19 [s:20261001-211823-chrono-2FYKPJ#3]. Task `core-match-fast`.
+  Lab 2026-10-05 (frames of 002327, 073409, 073804), fixed in the solver:
+  - the green set read nothing ("no open tile face"): now mapped like the others; L19 and L20 frames read with
+    their backs, the flipped back (face-up green) and its twin;
+  - purple backs were missed (box 3 px taller than the cream rule), so a tile between two backs read FREE (073804
+    step 20: the 八 between two backs, the twin went alone into the tray): backs now read, the 八 reads locked;
+  - the purple Hint (cyan faces, BLUE backs) was not read: 5 hand-tapped Hint pairs on L19. Now read, also the
+    pale phase and a lit tile showing only its top strip above its lit twin (cascade: the lower drawn one first);
+    a lit ART pair (wood frame turns cyan-white) is read by comparing with the frame before the Hint tap;
+  - two lions (red set) and two 9-bamboos (purple) were read as different kinds (shade correction, a 2 px box
+    offset): fixed, the 9-bamboo pair cost a Hint on L19;
+  - the "Watch out! Don't let the holder get full!" bubble (tray at 3, first time after a launch) refused the
+    frame: the solver now taps the bubble to close it. A tile tap sent while it shows is lost.
+  Run the solver for the whole level: `solve --run --rounds 40 --settle 2`, and run it again after anything you
+  tap yourself. Hand taps only for what its note asks (a video offer, Shuffle).
+  Lab 2026-10-05 (2nd, frames of 133525, Hard L20 blue set), fixed in the solver:
+  - the blue set read as "purple" (its white face lies within 16 of lavender) and no face was mapped: 10 open tiles,
+    no pair on a board with the 4-circle pair free. Now its own set (`_blue_to_cream`): 133525/00006 reads 13 open
+    tiles and the 4-circle pair; backs read with their 157x195 box, including a back shaded at the top;
+  - a back (or face) cut at the bottom by the next row from the right with a deeper notch at the very corner was
+    refused (133525/00024, the back over the bird): the notch now counts as part of the cut.
+  Not seen on any blue frame: the Hint tint on white faces and blue backs (if "no lit pair read after the Hint",
+  tap the lit pair from the frame and run again). Seen on 133525/00006: the top-right tulip, its lower left
+  covered in drawing order by the next row, reads as not open (the session played it): harmless, it waits.
+  Lab 2026-10-05 (3rd, frames of 221108, L21 orange set): new `_orange_to_cream`; 221108/00010 and 00014 read 15 open
+  tiles (7 faces, 8 free backs) and play the rabbit pair, then flip the top-left back. Not on any frame: a back
+  shaded by a higher tile (the back rule needs r >= 190: a shaded back may read as nothing and its neighbour as
+  free), the Hint tint, the tray in this set, the red "x2" corner badges (read as ordinary faces) and the L21
+  spinning tiles ("Clear every tile to stop the spin!"): if the board moves between frames, the solver's taps miss;
+  look at two frames 1 s apart before the first batch.
+  Still open (check on the phone): the Hint tint in the green and red sets on backs; a lit art tile that is
+  also partly covered.
+  Lab 2026-10-06 (frames of 073804, 133525, 001538): Hints are at 0 ("+" badge) on every board since 073804/00044
+  (L20, L21 too). Before, a dead end tapped Hint, the "Free Hint" video offer came up and `solve --run` stopped
+  ("gave up", 073804 step 53, L20 quit). Now the solver reads the booster badges: Hint "+" and a count on Shuffle ->
+  it taps SHUFFLE itself (note "Hint at 0: tap Shuffle"); the Free Hint offer on screen -> it taps the X. Both at 0
+  or a Shuffle that changed nothing -> no moves, note "Hint at 0 and ...": take the Get Two video by hand (or Undo a
+  tray single) and run again. Pitfalls:
+  - start `solve --run` from a SETTLED frame: on the very first look the solver cannot tell a match/Combo animation
+    from a dead end and may spend the Shuffle on it (133525/00043-45, stateless). Inside a run it compares with the
+    last frame and waits ("not spent on a moving board": just run again);
+  - it shuffles with 3 in the tray too (073804/00047); the session Undid one first: either works, the next round
+    plays only tray matches.
+  - L21 (orange set, 001538/00015): the solver plays the fox pair the session tapped by hand, then flips the
+    top-left back. Do not tap pairs by hand to "look": `solve --run` does it as fast and the lab counts hand taps.
+  Lab 2026-10-06 (2nd, frames of 022624): L21 came back in the PURPLE set with the same layout as the orange one
+  (faces dealt differently). The solver reads it (14 open tiles, 8 free backs; red fan pair, then the top-left back),
+  but missed the free "book" picture tile (cat in an armchair, wood frame with page edges on its right): such tiles
+  are drawn ~6 px wider and ~5 px taller than a face. It now reads them in every set but cream (also the rabbit card
+  of the green set, 002327/00009). Pitfalls:
+  - a book tile in the TRAY with its twin free on the board is not on any frame: if the note shows the tray as "?"
+    while the twin is free, tap the twin by hand and run again;
+  - a level opened only to study menus (Options, Theme) is still a level: every Options tap counted as a hand-placed
+    move (022624, 24 taps) and kept core-match flagged "bypassed". Open menus from Home where possible, or end the
+    level with a note "menus only, no tiles played".
 
 ### Level times
 | Level | Result | Minutes | Model | What decided it | Source |
@@ -140,3 +203,54 @@ as one call.
 - Every relaunch so far showed Level 1, the age popup and the saved-game offer: Start Over leads to a No/Yes confirm, and Yes may delete the cloud save. Take Sync Data; never tap Start Over [s:20261003-231301-chrono-2FYKPJ#1-4].
 - Android Back does nothing in a level and on the medal detail: use the on-screen back arrow (50,110) or tap outside [s:20261003-231301-chrono-2FYKPJ#12-13] [s:20261003-231301-chrono-2FYKPJ#21].
 - Boosters at L19: Shuffle 3, Hint 5 (lights a pair in cyan), Undo 10 (returns the tray tile); Shuffle seems to reveal backs [s:20261003-231804-chrono-2FYKPJ#4-8].
+## Session 20261005-073409 (sonnet play): L19 opened again: dense red-set board (lotus, scorpio, lion, picture tiles), layout new again. Not played: mechanic is broken. Study core-level (chk-win) and hard-level need a won level: handoff to core-match.
+
+## Session 20261005-073804 (opus study): L19 won in 14.2 min, Hard L20 started
+- L19 (purple set) won: solver played 38 moves in 11 rounds (2 min), then stalled on Hint-lit pairs it does not read
+  (picture cards, a back lit with its twin, two stacked 3-circles); tapping the lit pair by hand from the frame worked every time.
+- Solver errors on the purple set: (1) it took a tile flanked by same-layer purple BACKS as free (八 "Locked by left
+  and right") and put singles in the tray; (2) it paired a vertical blue 8-circle with a 9-circle (look-alikes). Fix:
+  count backs as same-layer side blockers; separate 8- and 9-circle by the column count.
+- Manual loop that was fast on the endgame: one frame, 5-8 taps per batch at row ENDS (left/right edge tiles are free),
+  tray twins first; a flipped back + its free twin = one batch ("flip, then twin" clears both, no tray).
+- Flipping a back whose twin is already in the tray cleared both at once (bird, step ~38).
+- Hint lights a back in cyan together with its twin: flip the back, then tap the twin.
+- Shuffle with 2 tray singles gave both twins free at row ends right away.
+- Hard L20 (green set, cream faces): solver read it well (13 moves in 3 rounds, 0 errors); it stopped at the Free Hint
+  video offer (Hint at 0). The back arrow keeps the board and IQ.
+
+## Session 20261005-133525 (opus study): Hard L20 won by hand (~15 min session time)
+- A FIFTH tile set: white faces, BLUE backs with a white scroll border (Hard L20 after the league matchmaking).
+  The solver called it "purple" and found no pair on a board with 4+ certain pairs: play by hand (task solver-white-blue).
+  Fixed by the lab the same day: the solver reads the blue set; use `solve --run` on it like the others.
+- Fast loop that won it: one frame, then batches of 4-12 taps of certain pairs at row ENDS and on top tiles; flip a
+  free back as the last tap of a batch, then its twin. All 8 back flips in the endgame were followed by a free twin.
+- A seen back (face shown earlier, now down again) + the same kind face up elsewhere: tapping the seen back clears
+  both, no tray (red wheel pair, frame 00039).
+- Errors that cost two Out of space: (1) a 9-circle at the board edge taken for a 7-circle - count the dot rows;
+  (2) a tap on a tile next to a RAISED tile (drawn larger, with a deep shadow) hit the raised one: aim at the far
+  side of the lower tile or skip it. "-4 to revive" spends 4 Undos and returns the 4 tray tiles to their places.
+- Shuffle with 2 tray singles and no free twin opened 10 pairs at once (again).
+- The game clock on the win screen counts the time across sessions (15:31 for L20 across two sessions).
+- L21 adds spinning tiles ("Clear every tile to stop the spin!"): unknown mechanic, read its rules before playing.
+
+## Level times by mechanic (dream 2026-10-06)
+
+```yaml
+---
+mechanics:
+- id: core-match
+  name: core-match
+  status: broken
+  method: solver
+  solver: solvers/com.vitastudio.mahjong/core-match.py
+  levels:
+    won: 2
+    lost: 1
+    quit: 7
+  typical_min: 16.2
+  best_min: 14.9
+  solver_file: solvers/com.vitastudio.mahjong/core-match.py
+  solver_sign: 'solver bypassed: 4 of 5 levels placed by hand'
+level_budget_min: 5
+```

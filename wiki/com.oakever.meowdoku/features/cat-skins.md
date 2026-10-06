@@ -4,8 +4,8 @@ title: "Cat skins (7 locked)"
 type: feature
 feature: cat-skins
 version_seen: 1.19.1
-verified_at: 2026-10-03
-sources: [20261003-200440-chrono-2FYKPJ]
+verified_at: 2026-10-05
+sources: [20261003-200440-chrono-2FYKPJ, 20261005-143752-chrono-2FYKPJ, 20261005-223641-chrono-2FYKPJ]
 ---
 
 # Cat skins (7 locked)
@@ -20,7 +20,8 @@ Skins tab of Profile: 1 owned cat skin, 7 locked silhouettes [^s1].
 ## Where to find it
 
 On [Home](home.md), the avatar top left opens Profile; in Profile, the Skins tab left of Avatar shows the
-skins [^s2].
+skins [^s2]. On 5 October the avatar on Home and the Skins tab both carried a red dot; opening the Skins tab
+cleared both [^s9] [^s10]. No other way to the skins was seen.
 
 ![Profile popup: the Skins tab left of Avatar opens the cat skins](../img/20261003-cat-skins-entry-84977b68.webp) [^s2]
 *Profile popup: the Skins tab left of Avatar (the name field is blacked out)*
@@ -33,6 +34,10 @@ skins [^s2].
 - Slot 1: the black-and-white cat, with a green check mark (in use) [^s1].
 - Slots 2 to 8: greyed cat silhouettes, each with a different head shape; no price, lock icon or condition is
   written on them [^s1].
+- Under the grid, the Profile's Confirm button. No counter or bar: 1 of 8 slots filled [^s9].
+
+![Skins tab on 5 October (the name field blacked out): still the black-and-white cat and seven silhouettes; the bow cat is not among them](../img/20261005-profile-tab-skins-94976b69.webp) [^s9]
+*Skins tab on 5 October, with the trial skin still in use on the board: the same eight slots, no bow cat*
 
 ## How it works
 
@@ -40,8 +45,23 @@ skins [^s2].
 - When the [Daily Challenge](daily-challenge.md) board opens, a tooltip under its three fish reads
   "3-Fish clear unlocks a trial skin." [^s4]. Inferred: a trial skin is one
   of these locked skins lent for a time; not verified.
+- A 3-fish clear of the Daily Challenge (5 October, 18 s) brought "New trial skin unlocked! Beat 99.0% of
+  players!": a black and white cat with a red polka-dot bow, a purple "Trial" ribbon with 23:59, and Equip or
+  Later [^s5]. After Equip, the cats placed on the next main level (Level 132) wore the bow
+  [^s6]. The profile picture on Home then carried a red dot it did not have before [^s7]; what it
+  marks (inferred: the new skin in Profile) is not verified.
+- On 5 October at about 22:47, the bow cat was still the cat of the main level (on Level 133's pre-placed cat
+  and first in its cat row) [^s11], but the Skins tab did not list it: only the black-and-white cat was owned,
+  the seven silhouettes unchanged [^s9]. The red dot on the avatar and on the Skins tab cleared once the tab
+  was opened [^s10]. Inferred: a trial skin is applied outside the Skins tab and is not one of its eight slots.
+- Tapping a locked silhouette on 5 October again changed nothing [^s12].
+- The same bow cat is the picture on the Daily Challenge button on Home, before and after the clear
+  [^s8] [^s7].
 - Hypothesis: the locked skins are earned through the Daily Challenge (a 3-fish clear) or the event rewards,
   not verified.
+
+![Trial skin popup after a 3-fish Daily Challenge clear: the cat with a red polka-dot bow, Trial, 23:59, Equip and Later](../img/20261005-daily-challenge-tab-trial-skin-953b725c.webp) [^s5]
+*The trial skin offered after a 3-fish Daily Challenge clear: the bow cat, "Trial" and 23:59, Equip and Later*
 
 Version 1.19.1.
 
@@ -50,22 +70,24 @@ Version 1.19.1.
 | Case | What was done | Result | Source |
 |---|---|---|---|
 | Why it appeared: the trigger that brought it up (the first launch, a level won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to test <!-- case:chk-appeared --> | Skins tab opened in Profile | ✅ | [^s1] |
-| Where to find it: the screen and the button that open it (mark --as entry --at X,Y) <!-- case:chk-entry --> | Skins tab tapped; frame marked | not verified | [^s2] |
-| What it looks like: its screen (mark --as screen) <!-- case:chk-screen --> | Skins tab frame marked | not verified | [^s1] |
-| The progress: the bar, the album or the counter, what fills it and where it is now <!-- case:chk-progress --> | No counter on the tab; 1 of 8 owned | not verified | [^s1] |
+| Home avatar, then the Skins tab of Profile; the tab carries a red dot that clears once opened <!-- case:chk-entry --> | Avatar tapped, Skins tab tapped, Home checked after closing | ✅ | [^s9] |
+| Skins tab: a 4 by 2 grid, one owned skin (the black-and-white cat) and 7 beige silhouettes, Confirm below <!-- case:chk-screen --> | Skins tab opened | ✅ | [^s9] |
+| No bar or counter: 1 of 8 slots filled <!-- case:chk-progress --> | Skins tab opened | ✅ | [^s9] |
+| The Daily Challenge trial skin (the bow cat) is in use on the Level 133 board but not among the Skins tab's slots: only the black-and-white cat is owned there <!-- case:trial-not-listed --> | Level 133 board and the Skins tab compared | ✅ | [^s9] |
 | The items: every set, skin or tier, which are owned and which are locked, with their condition <!-- case:chk-items --> | 1 owned, 7 locked, no condition shown | not verified | [^s1] |
 | How an item or a step is earned (wins, keys, a spin, a pack) <!-- case:chk-earn --> | A locked skin tapped: nothing shown | not verified | [^s3] |
 | Using an item: equip a skin, open a chest, spin; what changes <!-- case:chk-use --> | Only one skin owned | not verified |  |
 | Completing a set or the bar: the reward <!-- case:chk-complete --> | Not reached | not verified |  |
+| A 3-fish Daily Challenge clear gives a trial skin (the bow cat, Trial 23:59, Equip or Later); after Equip the board's cats wear it <!-- case:trial-from-daily --> | 10/05 daily cleared in 18 s with 3 fish; Equip tapped; Level 132 played | ✅ | [^s5] |
 
 ## Not verified
 
-- Where to find it: any other way to the skins (a shop, a reward screen) <!-- case:chk-entry -->
-- What it looks like: a skin's own preview <!-- case:chk-screen -->
-- The progress: whether a counter tracks the skins <!-- case:chk-progress -->
+- Where to find it: any other way to the skins (a shop, a reward screen)
+- What it looks like: a skin's own preview
 - The items: the unlock condition of each of the seven locked skins <!-- case:chk-items -->
 - How a skin is earned: the Daily Challenge trial skin after a 3-fish clear <!-- case:chk-earn -->
-- Using a skin: how it changes the cat on the board <!-- case:chk-use -->
+- Using a skin: how it changes the cat on the board (the equipped trial skin showed on the cats of Levels 132 and 133 but not in the Skins tab) <!-- case:chk-use -->
+- What happens when the trial's 23:59 runs out, and what Later does
 - Completing the set: any reward <!-- case:chk-complete -->
 
 [^s1]: session 20261003-200440-chrono-2FYKPJ, step 8 — [video at 1:49](https://youtu.be/Pqx4QY-FpBA?t=109)
@@ -73,3 +95,13 @@ Version 1.19.1.
 
 [^s3]: session 20261003-200440-chrono-2FYKPJ, step 9 — [video at 1:57](https://youtu.be/Pqx4QY-FpBA?t=117)
 [^s4]: session 20261003-200440-chrono-2FYKPJ, step 16 — [video at 2:52](https://youtu.be/Pqx4QY-FpBA?t=172)
+
+[^s5]: session 20261005-143752-chrono-2FYKPJ, step 2 — [video at 0:47](https://youtu.be/K_i7fJ2MDQo?t=47)
+[^s6]: session 20261005-143752-chrono-2FYKPJ, step 5 — [video at 1:55](https://youtu.be/K_i7fJ2MDQo?t=115)
+[^s7]: session 20261005-143752-chrono-2FYKPJ, step 10 — [video at 3:00](https://youtu.be/K_i7fJ2MDQo?t=180)
+[^s8]: session 20261005-143752-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/K_i7fJ2MDQo?t=0)
+
+[^s9]: session 20261005-223641-chrono-2FYKPJ, step 13 — [video at 2:27](https://youtu.be/VXzhl0TX66c?t=147)
+[^s10]: session 20261005-223641-chrono-2FYKPJ, step 21 — [video at 3:43](https://youtu.be/VXzhl0TX66c?t=223)
+[^s11]: session 20261005-223641-chrono-2FYKPJ, step 6 — [video at 1:17](https://youtu.be/VXzhl0TX66c?t=77)
+[^s12]: session 20261005-223641-chrono-2FYKPJ, step 14 — [video at 2:38](https://youtu.be/VXzhl0TX66c?t=158)

@@ -2,74 +2,75 @@
 game: com.maroieqrwlk.unpin
 version: 241.5.2
 play_version: 241.5.2
-play_checked: '2026-10-05T00:13:01'
+play_checked: '2026-10-05T22:05:43'
 phone_version: 241.5.2
 discovery: open
 ftue_verified: '2026-10-03'
 progress:
-  text: level 15
-  value: 15.0
-  at: '2026-10-05T01:50:21'
-  session: 20261005-014031-chrono-2FYKPJ
+  text: level 24
+  value: 24.0
+  at: '2026-10-06T03:57:01'
+  session: 20261006-033538-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-05T02:00:53'
+  chrono: '2026-10-06T04:02:50'
 mechanics:
 - id: pin-pull
   name: pin-pull
   status: mastered
   method: solver
   levels:
-    won: 16
-    lost: 3
-    quit: 3
+    won: 29
+    lost: 9
+    quit: 6
   recent:
-  - level: level 10
-    result: quit
+  - level: sketchman 1 try again
+    result: lost
+    seconds: 63
+    model: opus
+    deliberate: true
+  - level: level 20
+    result: won
     seconds: 62
     model: opus
-  - level: level 10
-    result: quit
-    seconds: 34
-    model: opus
-  - level: level 10
-    result: won
-    seconds: 25
-    model: opus
-  - level: level 11
+  - level: challenge 1
     result: lost
-    seconds: 66
+    seconds: 344
     model: opus
-  - level: level 11
+  - level: challenge 1 try 2
     result: lost
-    seconds: 112
+    seconds: 143
     model: opus
-  - level: level 11
-    result: won
-    seconds: 72
-    model: opus
-  - level: level 12
-    result: won
-    seconds: 97
-    model: opus
-  - level: level 13
-    result: won
-    seconds: 60
-    model: opus
-    note: won (league board shot 37), post-win flow cut by the owner taking the phone;
-      whether the win was saved is open
-  - level: level 14
+  - level: challenge 1 try 3
     result: lost
-    seconds: 71
+    seconds: 127
     model: opus
-  - level: level 14
+  - level: level 21
     result: won
-    seconds: 129
+    seconds: 51
+    model: opus
+  - level: level 21
+    result: won
+    seconds: 49
+    model: opus
+  - level: level 22
+    result: won
+    seconds: 63
+    model: opus
+  - level: level 23
+    result: won
+    seconds: 296
+    model: opus
+  - level: challenge 1
+    result: won
+    seconds: 117
     model: opus
   solver: solvers/com.maroieqrwlk.unpin/pin-pull.py
-  note: 'solver: one pull per round; library of levels 3-26 recognised from rings
-    and golden star pins (2026-10-04: L12 B is a star); keeps the level across rounds
-    when a frame fits no board by rings alone (unsent pins checked on the frame)'
+  note: 'Solver plays scrolling levels: Challenge 1 is library board C1 in level pixels;
+    each frame is placed in the level by its rings, frames taken while the camera
+    moves give no move, one pin per round (T+D1 together), TD tapped on its ring''s
+    far edge (a centre tap pulled TV). Run: solve pin-pull --run --rounds 12 --gap
+    0.4 --settle 7.'
   best_s: 17
 features:
 - id: core-level
@@ -174,6 +175,14 @@ features:
     done: true
     source: 20261005-013818-chrono-2FYKPJ#1
     version: 241.5.2
+  - id: colour-mix
+    text: 'Colours mixed on a colour-bucket board: balls reach a cup of another colour
+      (splash of grey above the yellow cup, blue cup 93%) -> ''So Close! Level failed!''
+      tip ''Grey balls can''t be collected! Use colored balls to spread the paint'';
+      Skip (video) / Retry; a win streak first shows ''Watch your streak!'''
+    done: true
+    outcome: true
+    source: 20261005-235042-chrono-2FYKPJ#39
   type: core-level
   appeared:
     text: 'first launch, after the intro comic: level 1 opens with a tutorial hand'
@@ -401,7 +410,7 @@ features:
   page: features/no-ads.md
 - id: level-path
   name: Level path header
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: Always shown in the level screen header
@@ -418,15 +427,23 @@ features:
     done: true
     source: 20261003-193015-chrono-2FYKPJ#5
   - id: chk-entries
-    text: 'Every entry point on it: open (a feature), locked (feature --locked with
-      its condition) or unclear (an experiment)'
-    done: false
+    text: 'No entry points: header circles and their badges are not tappable (shot
+      16); map nodes and their ! not tappable either (shot 14)'
+    done: true
+    source: 20261005-125008-chrono-2FYKPJ#12
+    version: 241.5.2
   - id: chk-badges
-    text: Badges, timers and counters on it and what each points to
-    done: false
+    text: Green check on the previous (won) level; purple ! on special levels (L15
+      multi-stage now, L16, map nodes 21-22); skull on hard levels on the map (L17)
+    done: true
+    source: 20261005-125008-chrono-2FYKPJ#12
+    version: 241.5.2
   - id: chk-changes
-    text: What changes on it with progress (new buttons, a moving map, a theme)
-    done: false
+    text: 'The header shifts by one level per win: previous gets the green check,
+      current is the big yellow ring; badge reflects the level type'
+    done: true
+    source: 20261005-125008-chrono-2FYKPJ#12
+    version: 241.5.2
   found_at:
     text: level 1
     value: 1.0
@@ -436,6 +453,7 @@ features:
     certainty: fact
     source: 20261003-193015-chrono-2FYKPJ#5
   page: features/level-path.md
+  version_seen: 241.5.2
 - id: intro-tutorial
   name: Intro comic and tutorial hand
   status: in_progress
@@ -615,8 +633,11 @@ features:
       middle of it
     done: false
   - id: chk-replay
-    text: Whether it can be seen again (How to play, a help button)
-    done: false
+    text: 'No replay: Settings has only Sound, Vibration, Rate us, Privacy; no help
+      or How to play button; the map has no help icon'
+    done: true
+    source: 20261005-141756-chrono-2FYKPJ#2
+    version: 241.5.2
   found_at:
     text: level 4 (map shown after L3)
     value: 4.0
@@ -666,8 +687,11 @@ features:
     done: true
     source: 20261003-203702-chrono-2FYKPJ#8
   - id: chk-next-day
-    text: 'The next day: what renews and when (a daily follow-up)'
-    done: false
+    text: 'Next calendar day the popup opens by itself on the first map visit with
+      the next day''s reward: day 4 +150 on 2026-10-06 03:09 after day 3 on 10-05
+      (coins 2087 -> 2237); exact reset hour is exp-daily-rewards-utc-reset'
+    done: true
+    source: 20261006-030951-chrono-2FYKPJ#1
   - id: chk-missed
     text: 'A missed day: what is lost or reset'
     done: false
@@ -814,6 +838,12 @@ features:
       was merged here
     done: true
     source: 20261003-211035-chrono-2FYKPJ#15
+  - id: promoted-silver
+    text: 'After the L17 win: LEAGUES ladder reward 1000 coins (top 91%), then the
+      map banner turned SILVER LEAGUE, rank 999'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#37
+    version: 241.5.2
   found_at:
     text: level 5
     value: 5.0
@@ -840,25 +870,81 @@ features:
     done: true
     source: 20261003-203702-chrono-2FYKPJ#19
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Tap on OPEN chest: grey screen ''Congrats! You collected a chest, open
+      it!'' with a chest; tap the chest to open'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#3
+    version: 241.5.2
   - id: chk-progress
-    text: 'The progress: the bar, the album or the counter, what fills it and where
-      it is now'
-    done: false
+    text: 'Progress is only the timer: 15 min of map time, then OPEN; restarts at
+      15:00 after opening'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#5
+    version: 241.5.2
   - id: chk-items
-    text: 'The items: every set, skin or tier, which are owned and which are locked,
-      with their condition'
-    done: false
+    text: 'No items or tiers seen: one wooden chest, coin prize (241 this time)'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#4
+    version: 241.5.2
   - id: chk-earn
-    text: How an item or a step is earned (wins, keys, a spin, a pack)
-    done: false
+    text: 'Earned by time only: 15 min timer; it ran on the map and (this session)
+      also during levels, but not while the app was closed'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#17
+    version: 241.5.2
   - id: chk-use
-    text: 'Using an item: equip a skin, open a chest, spin; what changes'
-    done: false
+    text: Tapping the opened chest shows 'Amazing, You won a prize!' x241 coins; Get
+      241 or video Get xN on a moving x2-x5 bar
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#4
+    version: 241.5.2
   - id: chk-complete
-    text: 'Completing a set or the bar: the reward'
+    text: Reward 241 coins (plain Get); coins 489 -> 707+ on the map; the chest timer
+      restarts at 14m59s
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#5
+    version: 241.5.2
+  - id: closed-tap
+    text: 'Tapping the chest while its timer runs (11m15s) does nothing: no popup,
+      no info'
+    done: true
+    source: 20261005-141756-chrono-2FYKPJ#1
+    version: 241.5.2
+  - id: timer-map-only
+    text: 'The chest timer runs only while the map is on screen: 283 s on the map
+      took 283 s off it (8m24s -> 3m41s); 416 s mostly in L15, ads and restarts took
+      only 183 s (11m27s -> 8m24s)'
+    done: true
+    source: 20261005-141756-chrono-2FYKPJ#23
+  - id: timer-wall-speed-map
+    text: 'Map-only wait: 3m16s (shot 2) -> 1m2s (shot 4) over 135 s wall clock =
+      134 s of timer; the chest showed OPEN by shot 5 (~200 s): on the map the timer
+      runs at wall speed and ends in OPEN'
+    done: true
+    source: 20261005-145445-chrono-2FYKPJ#0
+  - id: timer-stops-app-closed
+    text: 'The timer stood still while the game was closed: 3m41s at the end of 20261005-141756
+      (14:33) and 3m16s at the start of this session (14:55), only 25 s off in about
+      22 min'
+    done: true
+    source: 20261005-145445-chrono-2FYKPJ#0
+  - id: video-multiplier
+    text: 'Video Get xN with the moving x2-x5 bar on the chest prize: what multiplier
+      lands and the reward'
     done: false
+  - id: timer-in-level
+    text: 'Chest timer 14m59s (step 5, map) -> 11m03s after playing L15 stages 2-4
+      with an interstitial (about 4 min): this time it ran during the level too; recheck
+      exp-chest-timer-pause'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#17
+    version: 241.5.2
+  - id: prize-varies
+    text: Second chest (L18) gave a puzzle piece ('Puzzle Piece Found!', centre piece
+      of a 3x3 pancake picture) instead of coins; Get Another (video) or Tap to continue;
+      coins unchanged 1781; timer restarted (14m29s seen)
+    done: true
+    source: 20261005-230946-chrono-2FYKPJ#9
   found_at:
     text: level 4 (map shown after L3)
     value: 4.0
@@ -954,9 +1040,11 @@ features:
     done: true
     source: 20261003-211035-chrono-2FYKPJ#14
   - id: chk-frequency
-    text: 'Multi stage levels seen at L5 and L10: hypothesis every 5th level; check
-      L15 and L20'
-    done: false
+    text: 'Not every 5th level: multi stage at L5, L10, L15, then the next map label
+      is on L23 (L20 is a Color Bucket level)'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#30
+    version: 241.5.2
   - id: under-restart
     text: 'Restart on L10 stage 4: ''You can do better!'' then an interstitial, then
       only the current stage reloads; stages 1-3 stay ticked'
@@ -1004,6 +1092,36 @@ features:
   - id: under-balls-out
     text: 'Balls fell out under Multi Stage Level: as the base, or what differs'
     done: false
+  - id: l15-four-stages
+    text: 'L15 is a multi stage level with 4 stages (Stage column: 4 slots, stage
+      2 with a person icon, 3-4 locked); library boards L15-s1 and L15-s2 won by the
+      solver'
+    done: true
+    source: 20261005-141756-chrono-2FYKPJ#17
+  - id: stage-lost-in-ad
+    text: 'Stage progress is lost when the app is force-stopped during the between-stage
+      interstitial: twice L15 stage 1 (and stage 2) won, the ad became a dead playable,
+      restart reopened L15 at stage 1; golden pins earned were kept (64->68). Unlike
+      a plain app exit at a stage (L10), the stage win is saved only after its ad
+      flow ends'
+    done: true
+    source: 20261005-141756-chrono-2FYKPJ#13
+  - id: win-all-stages
+    text: 'L23: four stages in a row, stage column checks each; after stage 4 the
+      normal league board / Next Level win flow (pins 157->173, golden 7->8)'
+    done: true
+    source: 20261006-033538-chrono-2FYKPJ#49
+    version: 241.5.2
+  - id: between-stage-ad
+    text: An interstitial video can play between stages (after stage 2 on L23); Back
+      on its frozen end card returns to the next stage
+    done: true
+    source: 20261006-033538-chrono-2FYKPJ#49
+    version: 241.5.2
+  - id: under-colour-mix
+    text: 'Colours mixed on a colour-bucket board under Multi Stage Level: as the
+      base, or what differs'
+    done: false
   found_at:
     text: level 5
     value: 5.0
@@ -1015,7 +1133,7 @@ features:
   page: features/multi-stage.md
 - id: map-keys
   name: Keys on the map (key nodes, 3-key gate at L11-12)
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1024,22 +1142,30 @@ features:
     done: true
     source: 20261003-203702-chrono-2FYKPJ#52
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'No own screen: the map shows a key row pinned at its top (3 slots, ''Unlock
+      New Mode'') and key nodes beside levels (L9 taken, L17 next, orange key icon)'
+    done: true
+    source: 20261005-141756-chrono-2FYKPJ#0
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'No own screen: the key bar pinned at the top of the map; after the L17
+      win it shows 2 of 3 gold (shot 60)'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#37
+    version: 241.5.2
   - id: chk-effect
     text: 'What it does: the effect of one unit or one use'
     done: false
   - id: chk-balance
-    text: 'The balance: where it shows and the starting amount'
-    done: false
+    text: 'Balance = the 3 key slots at the top of the map: 1 gold (from the L9 key
+      node), 2 empty, at progress L15'
+    done: true
+    source: 20261005-141756-chrono-2FYKPJ#0
   - id: chk-sources
-    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
-      and how much'
-    done: false
+    text: 'Key nodes beside map levels: L9 and L17 (hard skull level) each gave 1
+      key on winning that level; no other node visible up to L25'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#37
+    version: 241.5.2
   - id: chk-sinks
     text: 'Sinks: every way it is spent and the price'
     done: false
@@ -1048,8 +1174,31 @@ features:
       currency to get there)'
     done: false
   - id: chk-refill
-    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    text: 'No refill timer: keys come only from key nodes on map levels'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#37
+    version: 241.5.2
+  - id: third-key
+    text: Find the third key node (beyond L25) and record what 3 keys open ('Unlock
+      New Mode' label on the bar earlier)
     done: false
+  - id: l27-guess
+    text: '2026-10-06 map at L21: key bar 2/3; nodes beside L21-L28 are Jump to Level
+      (L22), Sketchman (L26-27), a ! node (L27-28) and a puzzle node (L28); no key
+      icon visible up to L28'
+    done: false
+  - id: no-key-to-l29
+    text: 'Map after L21: nodes up to L29 shown, none is a key node; key bar still
+      2/3'
+    done: true
+    source: 20261006-033538-chrono-2FYKPJ#20
+    version: 241.5.2
+  - id: no-key-to-l31
+    text: 'Map at L24 shows nodes to L31 (L31 next Multi Stage): no key node; keys
+      still 2/3'
+    done: true
+    source: 20261006-033538-chrono-2FYKPJ#55
+    version: 241.5.2
   found_at:
     text: level 5
     value: 5.0
@@ -1099,6 +1248,11 @@ features:
   - id: chk-complete
     text: 'Completing a set or the bar: the reward'
     done: false
+  - id: chest-source
+    text: 'The map chest is a second source of pieces: chest 2 gave the centre piece
+      of a 3x3 pancake picture (only that piece shown filled), with Get Another (video)'
+    done: true
+    source: 20261005-230946-chrono-2FYKPJ#9
   found_at:
     text: level 6
     value: 6.0
@@ -1199,6 +1353,12 @@ features:
       test'
     done: true
     source: 20261003-203702-chrono-2FYKPJ#27
+  - id: dead-playable
+    text: 'Between-stage interstitials on L15 (241.5.2) twice turned into a playable
+      ad (Mahjong Blast; ring IQ puzzle) after a store sheet: its ''Next'' label and
+      Back did nothing, no close appeared within 35 s; only a restart got out'
+    done: true
+    source: 20261005-141756-chrono-2FYKPJ#22
   found_at:
     text: level 6
     value: 6.0
@@ -1320,11 +1480,19 @@ features:
       its condition) or unclear (an experiment)'
     done: false
   - id: chk-badges
-    text: Badges, timers and counters on it and what each points to
-    done: false
+    text: The jar shows a NEW badge on the map when a mode unlocks (after the L20
+      win, Challenge); the new mode's card in the list carries NEW too (shots 32-33)
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#19
   - id: chk-changes
     text: What changes on it with progress (new buttons, a moving map, a theme)
     done: false
+  - id: iq-test-unlocked
+    text: After the L15 win the 'Play more modes!' tooltip points at the jar button;
+      the menu now shows Sketchman IQ Test (NEW, Level 1) on top and 4 Upcoming Modes
+      (Challenge L21, Merge Balls L22, Protect The Balloon L30, Dark Levels L50)
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
   found_at:
     text: level 9
     value: 9.0
@@ -1422,6 +1590,10 @@ features:
       counted (49 -> 57)'
     done: true
     source: 20261005-014031-chrono-2FYKPJ#10
+  - id: under-colour-mix
+    text: 'Colours mixed on a colour-bucket board under Hard levels (skull node):
+      as the base, or what differs'
+    done: false
   found_at:
     text: level 10
     value: 10.0
@@ -1501,6 +1673,25 @@ features:
     text: 'Balls fell out under Bonus levels (character node): as the base, or what
       differs'
     done: false
+  - id: sketchman-node-was-mode
+    text: 'The character node between L16 and L17 was the Sketchman face of the Sketchman
+      IQ Test mode: it vanished from the map when the mode unlocked after the L15
+      win (shot 2 vs shot 26/44), no bonus level was offered. Character nodes look
+      like mode-unlock markers; the next one (granny) sits at L21-22 beside an ''Unlock
+      New Mode'' bubble'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#17
+  - id: granny-node-was-mode
+    text: 'The granny character node between L21 and L22 (shot 2, map at L20) vanished
+      from the map after the L20 win, when Challenge unlocked (shot 32); no bonus
+      level was offered. Second character node that was a mode marker. Next character
+      node: an angry stickman between L26 and L27'
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#18
+  - id: under-colour-mix
+    text: 'Colours mixed on a colour-bucket board under Bonus levels (character node):
+      as the base, or what differs'
+    done: false
   found_at:
     text: level 10
     value: 10.0
@@ -1511,12 +1702,12 @@ features:
     certainty: fact
     source: 20261003-203702-chrono-2FYKPJ#6
   locked:
-    text: reach the node after level 16
-    value: 16.0
+    text: reach the stickman character node between level 26 and level 27
+    value: 27.0
   page: features/bonus-levels.md
 - id: new-mode
   name: New Mode (key gate at level 17)
-  status: seen
+  status: documented
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1525,27 +1716,41 @@ features:
     done: true
     source: 20261003-203702-chrono-2FYKPJ#52
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Does not apply: duplicate of mode-iq-test, studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Does not apply: duplicate of mode-iq-test, studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
   - id: chk-rules
-    text: 'Rules: the goal and how it differs from the core game'
-    done: false
+    text: 'Does not apply: duplicate of mode-iq-test, studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
   - id: chk-win
-    text: 'A win: its screen and what it pays'
-    done: false
+    text: 'Does not apply: duplicate of mode-iq-test, studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
   - id: chk-loss
-    text: 'A loss: its screen, what it costs and the retry offers'
-    done: false
+    text: 'Does not apply: duplicate of mode-iq-test, studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
   - id: chk-progression
-    text: 'Progression inside the mode: stages, stars, a best score'
-    done: false
+    text: 'Does not apply: duplicate of mode-iq-test, studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
   - id: chk-limits
-    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
-    done: false
+    text: 'Does not apply: duplicate of mode-iq-test, studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
+  - id: duplicate-of-iq-test
+    text: 'Duplicate of mode-iq-test: new-mode is the same thing as mode-iq-test:
+      the ''Unlock New Mode'' text beside the key bar is a map step bubble scrolled
+      under the bar, not a 3-key gate; the bubble between L16 and L17 vanished when
+      IQ Test unlocked after the L15 win (keys still 1/3), and the next bubbles sit
+      at L21/L22 = Challenge/Merge Balls'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#17
   found_at:
     text: level 10
     value: 10.0
@@ -1555,12 +1760,16 @@ features:
       node the label ''Unlock New Mode'' at the L17 key node'
     certainty: fact
     source: 20261003-203702-chrono-2FYKPJ#52
-  locked:
-    text: '3 keys: the 3-key gate at the level 17 key node, ''Unlock New Mode'''
+  source: 20261005-151039-chrono-2FYKPJ#20
+  unlocked_at:
+    text: level 17
     value: 17.0
+    source: 20261005-151039-chrono-2FYKPJ#20
+    lock: '3 keys: the 3-key gate at the level 17 key node, ''Unlock New Mode'''
+  version_seen: 241.5.2
 - id: mode-iq-test
   name: Sketchman IQ Test
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1569,42 +1778,113 @@ features:
     done: true
     source: 20261003-211035-chrono-2FYKPJ#1
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Map top-left jar button (All You Can Play!), first card 'Sketchman IQ Test'
+      with NEW badge, Level 1, IQ Level ??? gauge; also reached by Show Me! on the
+      unlock popup
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'All You Can Play > Sketchman IQ Test card opens a grid of numbered levels:
+      L1 open with Reward 250 coins and PLAY; L2+ locked, ''Keep playing to unlock
+      free!'' or UNLOCK & PLAY with a video; coins shown top right'
+    done: true
+    source: 20261005-230946-chrono-2FYKPJ#2
   - id: chk-rules
-    text: 'Rules: the goal and how it differs from the core game'
-    done: false
+    text: Same pin-pull rules (fill the cup); IQ Score gauge on the board starts at
+      10 and the win screen shows the IQ reached (150 on L1)
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#17
+    version: 241.5.2
   - id: chk-win
-    text: 'A win: its screen and what it pays'
-    done: false
+    text: 'Win screen ''Amazing!'': IQ gauge to 150, Get 250 coins or Try again! by
+      video to raise IQ'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#17
+    version: 241.5.2
   - id: chk-loss
-    text: 'A loss: its screen, what it costs and the retry offers'
-    done: false
+    text: 'Does not apply as a loss: a Sketchman level never fails; a poor result
+      is still a result screen with a lower IQ and fewer coins (0% -> IQ 50, Get 0),
+      Try again by video'
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#13
+    version: 241.5.2
   - id: chk-progression
-    text: 'Progression inside the mode: stages, stars, a best score'
-    done: false
+    text: 'Levels unlock one by one on a grid; a won level gets a trophy and an IQ
+      gauge at MAX (L1: 150); replay is PLAY AGAIN by video'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#21
+    version: 241.5.2
   - id: chk-limits
-    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
-    done: false
+    text: Each level is played free once when unlocked; replay costs a video (PLAY
+      AGAIN), the next level opens free with main-level progress or at once by video
+      (UNLOCK & PLAY); L2 not free yet right after the L1 win at main L19
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#21
+    version: 241.5.2
+  - id: leave
+    text: X in a Sketchman level asks 'Leave Sketchman? You will lose your progress
+      in this level' (Stay / Leave); Leave plays an interstitial and lands on the
+      main level (L18), not the modes menu; no coin cost
+    done: true
+    source: 20261005-230946-chrono-2FYKPJ#6
+  - id: board
+    text: 'Level board: a pin-pull board (hourglass, top pin and 6 crossing pins,
+      one cup with fill %) with an IQ Score gauge starting at 25; same pin-pull rules
+      expected, not played yet'
+    done: true
+    source: 20261005-230946-chrono-2FYKPJ#3
+  - id: after-win
+    text: Get 250 (coins 1802 -> 2036 with the animation) jumps straight into main
+      level L19, not back to the Sketchman grid; league pins +4 (100 -> 104)
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#18
+    version: 241.5.2
+  - id: no-fail
+    text: 'A Sketchman level cannot be lost: balls that miss the cup only lower the
+      score. 71% in the cup: ''Amazing!'', IQ 122, Get 179 coins; 0%: ''Phenomenal!'',
+      IQ 50 (minimum), Get 0; a full cup: IQ 150 MAX, 250 coins'
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#9
+    version: 241.5.2
+  - id: retry-offer
+    text: Result screen offers Try again! (rewarded video, replays the same level
+      from the start) and Get N coins; Get, even Get 0, leaves for the main map level
+      (L20 board), not the mode grid
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#14
+    version: 241.5.2
+  - id: replay-video
+    text: PLAY AGAIN on a MAX level costs a rewarded video (about 60 s; its end opened
+      the Play Store by itself, launch returned to the level)
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#7
+    version: 241.5.2
+  - id: race-counts
+    text: Sketchman results move the race marker (You moved right after each Sketchman
+      result)
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#14
+    version: 241.5.2
   found_at:
     text: level 10
     value: 10.0
   type: mode
   appeared:
-    text: listed in All You Can Play! modes menu
+    text: 'unlocked by winning L15 (progress 16): ''You unlocked a new Game Mode!''
+      popup on the next Play, Show Me! opens All You Can Play with Sketchman IQ Test
+      NEW, Level 1'
     certainty: fact
-    source: 20261003-211035-chrono-2FYKPJ#1
-  locked:
-    text: level 16
-    value: 16.0
+    source: 20261005-151039-chrono-2FYKPJ#20
   page: features/mode-iq-test.md
+  source: 20261005-151039-chrono-2FYKPJ#20
+  unlocked_at:
+    text: level 15
+    value: 15.0
+    source: 20261005-151039-chrono-2FYKPJ#20
+    lock: level 16
 - id: mode-challenge
   name: Challenge
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1613,27 +1893,68 @@ features:
     done: true
     source: 20261003-211035-chrono-2FYKPJ#1
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Modes jar (60,268) on the map shows NEW after the L20 win; All You Can Play
+      lists a Challenge card with NEW, Level 1, Reward 300 coins (365,488)
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#19
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Grid of 9 challenge cards: 1-8 locked ''New Challenge!'' with a flame badge,
+      Unlock for 100/200/400/600/700/800/900/1100 coins; card 9 ''Reach Level 31'';
+      coin balance top right, back arrow top left'
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#20
   - id: chk-rules
-    text: 'Rules: the goal and how it differs from the core game'
-    done: false
+    text: 'Rules: pin-pull board taller than the screen, the camera follows the falling
+      balls (pin positions shift after each pull, so batch taps miss); 10-move limit
+      counted down in the header; colored balls paint gray ones; two bombs meeting
+      explode; race bar at the bottom (You 5th vs 4 rivals to a flag)'
+    done: true
+    source: 20261006-030951-chrono-2FYKPJ#19
+    version: 241.5.2
   - id: chk-win
     text: 'A win: its screen and what it pays'
     done: false
   - id: chk-loss
-    text: 'A loss: its screen, what it costs and the retry offers'
-    done: false
+    text: 'Loss: ''Challenge failed!'' screen with a TIP naming the cause (balls fell
+      out of the level), Retry only with a rewarded video; back on the grid the card
+      is red ''Failed'', Reward 300 kept, PLAY AGAIN with video; 100-coin unlock not
+      refunded. An interstitial can play first and hide the fail screen'
+    done: true
+    source: 20261006-030951-chrono-2FYKPJ#19
+    version: 241.5.2
   - id: chk-progression
     text: 'Progression inside the mode: stages, stars, a best score'
     done: false
   - id: chk-limits
-    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
-    done: false
+    text: Retry after a loss costs a rewarded video (Retry on the fail screen, PLAY
+      AGAIN on the grid); unlock price paid once
+    done: true
+    source: 20261006-030951-chrono-2FYKPJ#19
+    version: 241.5.2
+  - id: unlock-paid
+    text: 'Unlock 100 on card 1: instant, no confirm; coins 2240 -> 2140; card shows
+      open lock, Reward 300, PLAY; flame badge gone'
+    done: true
+    source: 20261006-030951-chrono-2FYKPJ#4
+    version: 241.5.2
+  - id: retry-free-later
+    text: Retry of a failed Challenge 1 became FREE later (FREE badge on the card,
+      ~25 min after the previous session's video retries); PLAY AGAIN started the
+      board with no video
+    done: true
+    source: 20261006-033538-chrono-2FYKPJ#58
+    version: 241.5.2
+  - id: win
+    text: 'Challenge 1 won in 2 moves (solver + floor pin): Epic! Challenge completed!,
+      300 coins, x2-x5 roulette multiplier by video or Get 300'
+    done: true
+    source: 20261006-033538-chrono-2FYKPJ#67
+    version: 241.5.2
+  - id: reward-300
+    text: 'Get 300 credited: 3161 -> 3461; card shows trophy Best, PLAY AGAIN (video)'
+    done: true
+    source: 20261006-033538-chrono-2FYKPJ#68
+    version: 241.5.2
   found_at:
     text: level 10
     value: 10.0
@@ -1642,10 +1963,13 @@ features:
     text: listed in All You Can Play! modes menu
     certainty: fact
     source: 20261003-211035-chrono-2FYKPJ#1
-  locked:
+  page: features/mode-challenge.md
+  source: 20261006-012240-chrono-2FYKPJ#19
+  unlocked_at:
     text: level 21
     value: 21.0
-  page: features/mode-challenge.md
+    source: 20261006-012240-chrono-2FYKPJ#19
+    lock: level 21
 - id: mode-merge-balls
   name: Merge Balls
   status: seen
@@ -1686,10 +2010,13 @@ features:
     text: listed in All You Can Play! modes menu
     certainty: fact
     source: 20261003-211035-chrono-2FYKPJ#1
-  locked:
-    text: level 22
-    value: 22.0
   page: features/mode-merge-balls.md
+  source: 20261006-033538-chrono-2FYKPJ#22
+  unlocked_at:
+    text: level 21
+    value: 21.0
+    source: 20261006-033538-chrono-2FYKPJ#22
+    lock: level 22
 - id: mode-protect-balloon
   name: Protect The Balloon
   status: seen
@@ -1934,9 +2261,10 @@ features:
     done: true
     source: 20261004-004411-chrono-2FYKPJ#17
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Map: race flag button on the right with its timer (5h59m), tooltip ''Go
+      go! Daily race!'''
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#33
   - id: chk-screen
     text: 'What it looks like: its screen (mark --as screen)'
     done: false
@@ -1944,8 +2272,10 @@ features:
     text: 'Its timer and schedule: how long it runs and when it comes back'
     done: false
   - id: chk-in-level
-    text: What shows during a level while it runs (a bar, a counter, collectibles)
-    done: false
+    text: 'A race bar under the board: racers'' avatars from start to a checkered
+      finish, You marker (1st at L20)'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#35
   - id: chk-progress
     text: 'Progress per level: the points or items after a win, and after a loss'
     done: false
@@ -1957,8 +2287,10 @@ features:
       end)'
     done: false
   - id: under-win
-    text: 'Win screen under Level race: as the base, or what differs'
-    done: false
+    text: Race bar under the L20 board during the win (You at 4th); the win flow went
+      straight to the league board, no race screen in between
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#16
   - id: under-restart
     text: 'Restart icon opens ''You can do better!'' (Restart / Continue); Continue
       closes it; Restart plays an interstitial (skip control opened the Play Store,
@@ -1966,10 +2298,10 @@ features:
       no coin cost under Level race: as the base, or what differs'
     done: false
   - id: under-quit
-    text: 'Back arrow returns to the map at once, no confirmation, no cost; reopening
-      via Play keeps the multi-stage progress (stage 4 of 4) under Level race: as
-      the base, or what differs'
-    done: false
+    text: 'As the base: quitting L20 right after joining returned to the map; the
+      race kept running (map flag button 5h59m)'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#33
   - id: under-exit-app
     text: 'The previous session left L10 at stage 4; after the app was closed and
       relaunched this session, L10 opened at stage 4 with stages 1-3 ticked under
@@ -1978,6 +2310,16 @@ features:
   - id: under-balls-out
     text: 'Balls fell out under Level race: as the base, or what differs'
     done: false
+  - id: under-colour-mix
+    text: Fail screen as the base; the race bar under the board stayed at You 1st,
+      no race screen
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#39
+  - id: in-challenge
+    text: 'The race bar (You 5th vs 4 rivals to a checkered flag) also shows under
+      the Challenge 1 board: the level race runs in Challenge mode too'
+    done: true
+    source: 20261006-030951-chrono-2FYKPJ#5
   found_at:
     text: level 11
     value: 11.0
@@ -1990,7 +2332,7 @@ features:
   page: features/race.md
 - id: color-bucket-level
   name: Color Bucket Level
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1999,38 +2341,54 @@ features:
     done: true
     source: 20261005-013818-chrono-2FYKPJ#1
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Map: the L20 node with the ''Color Bucket Level'' bubble; Play (365,1365)
+      opens it'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#30
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Two hoppers (yellow, blue) behind slanted pins, crossing channels with a
+      middle pin, two coloured cups with their own fill %, race bar at the bottom
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#35
   - id: chk-announce
-    text: 'How it is announced: the map node, the badge or the popup before it, and
-      what it says'
-    done: false
+    text: A 'Color Bucket Level' bubble beside the node on the map (seen from L11;
+      the level is L20)
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#30
   - id: chk-differs
-    text: 'What differs in play from the base level: the board, the rules, the limits,
-      stages, a timer'
-    done: false
+    text: Several cups, one per colour, each with its own %; each colour must reach
+      its own cup, balls in the wrong cup fail the level
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#35
   - id: chk-win
-    text: 'Its win: the win screen and the reward, against the base level''s'
-    done: false
+    text: 'Win flow as the base level: Silver League board (pins +1 each), then ''Wonderful!
+      Level completed!'' with the win-streak gauge, then +22 coins with the post-win
+      gift meter (20%) and the x2-x5 video bar (Get x2 44 / Get 22); Get lands on
+      the map at L21'
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#17
+    version: 241.5.2
   - id: chk-loss
-    text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
-      progress)'
-    done: false
+    text: Fail screen as the base ('So Close! Level failed!', Skip video / Retry),
+      tip on grey balls; a running win streak first shows 'Watch your streak!' (Keep
+      it by video); no coin cost
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#39
   - id: chk-retry
-    text: Retry and continue offers after a loss and their price (a video, coins);
-      where a retry sends you (the start, the same stage)
-    done: false
+    text: Retry free, plays an interstitial (a blind tap on it opened the Play Store),
+      reloads L20 from the start; Skip by video not tried
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#42
   - id: chk-frequency
-    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
-      from which level'
-    done: false
+    text: 'Not regular: L20, then L25 and L26 by the map bubbles, one more near L29-30
+      (faded bubble at the top of the map); confirm on reaching L25'
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#18
   - id: under-win
-    text: 'Win screen under Color Bucket Level: as the base, or what differs'
-    done: false
+    text: 'As the base level: league board, ''Wonderful! Level completed!'' with streak
+      gauge, +22 coins with gift meter and x2-x5 video bar'
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#17
   - id: under-restart
     text: 'Restart icon opens ''You can do better!'' (Restart / Continue); Continue
       closes it; Restart plays an interstitial (skip control opened the Play Store,
@@ -2038,10 +2396,10 @@ features:
       no coin cost under Color Bucket Level: as the base, or what differs'
     done: false
   - id: under-quit
-    text: 'Back arrow returns to the map at once, no confirmation, no cost; reopening
-      via Play keeps the multi-stage progress (stage 4 of 4) under Color Bucket Level:
-      as the base, or what differs'
-    done: false
+    text: 'As the base: back arrow on L20 (after the race popup and the back-arrow
+      tooltip) went to the map at once, no cost'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#33
   - id: under-exit-app
     text: 'The previous session left L10 at stage 4; after the app was closed and
       relaunched this session, L10 opened at stage 4 with stages 1-3 ticked under
@@ -2050,6 +2408,25 @@ features:
   - id: under-balls-out
     text: 'Balls fell out under Color Bucket Level: as the base, or what differs'
     done: false
+  - id: under-colour-mix
+    text: 'L20 library order B M Y: blue cup 93%, splash at the yellow cup, then ''Watch
+      your streak!'' and ''So Close! Level failed!'' (tip on grey balls)'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#39
+  - id: later-levels
+    text: 'Later colour-bucket levels by the map bubbles (each bubble sits just above
+      its node): L25 and L26, and one more bubble near the top of the visible map
+      (about L29-30, faded)'
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#18
+    version: 241.5.2
+  - id: timing
+    text: 'L20 needs B, then M only after the blue has all run past the M rod, then
+      Y at least ~5 s after M: Y 0.5 s after M stalled at yellow 98% with no end screen
+      (20261005-235042), B M Y with 6 s gaps won first try in 55 s'
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#16
+    version: 241.5.2
   found_at:
     text: level 11
     value: 11.0
@@ -2059,9 +2436,12 @@ features:
       19, already shown at progress L11-L13 (map screen after relaunch)
     certainty: fact
     source: 20261005-013818-chrono-2FYKPJ#1
-  locked:
-    text: reach the 'Color Bucket Level' node (level 19)
-    value: 19.0
+  source: 20261005-235042-chrono-2FYKPJ#35
+  unlocked_at:
+    text: level 20
+    value: 20.0
+    source: 20261005-235042-chrono-2FYKPJ#35
+    lock: reach the 'Color Bucket Level' node (level 19)
 - id: golden-pins
   name: Golden pins (league score)
   status: in_progress
@@ -2138,7 +2518,7 @@ features:
   page: features/golden-pins.md
 - id: daily-tasks
   name: Daily tasks
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -2147,27 +2527,66 @@ features:
     done: true
     source: 20261005-014031-chrono-2FYKPJ#21
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Map, left column, clipboard-with-star button (60,420) under the modes jar
+    done: true
+    source: 20261005-125008-chrono-2FYKPJ#1
+    version: 241.5.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Daily Tasks screen: back arrow, ''new tasks in'' countdown, star progress
+      bar with 3 gifts (15, 30, 50 stars), 5 task rows with star reward, progress
+      bar and Skip (video) button'
+    done: true
+    source: 20261005-125008-chrono-2FYKPJ#2
+    version: 241.5.2
   - id: chk-today
-    text: 'Today''s claim, task list or challenge: what it gives'
-    done: false
+    text: 'Stars from tasks fill a bar with 3 gifts: 15 stars +74 coins, 30 stars
+      +149 coins, 50 stars a skin; a locked gift says ''Get more stars to unlock''
+      (shots 6-8)'
+    done: true
+    source: 20261005-125008-chrono-2FYKPJ#5
+    version: 241.5.2
   - id: chk-calendar
-    text: 'The calendar or the task list: every day or task and its reward'
-    done: false
+    text: 'Tasks today: Complete levels 0/3 (5 stars), Collect balls 0/20 (5), Break
+      large balls 0/1 (10), Get coins 100/250 (10), Defuse bombs 0/8 (20); total 50
+      stars = all three gifts'
+    done: true
+    source: 20261005-125008-chrono-2FYKPJ#2
+    version: 241.5.2
   - id: chk-next-day
-    text: 'The next day: what renews and when (a daily follow-up)'
-    done: false
+    text: 'At local midnight the whole list renews: 5 new tasks with new targets and
+      star values (10-06: Collect balls 10, Get coins 16/40 5, Defuse bombs 0/4 5,
+      Complete levels 1/10 10, Color balls 0/80 20), the star bar restarts at 0 with
+      the same gifts 15/30/50, countdown to the next 00:00; play after midnight already
+      counts (Collect balls completed, 1 level)'
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#1
+    version: 241.5.2
   - id: chk-missed
     text: 'A missed day: what is lost or reset'
     done: false
   - id: chk-play
-    text: 'If it is a board: play it once, its win and its loss'
-    done: false
+    text: 'Not a board: a task list; tasks fill by normal play (levels, balls, bombs,
+      coins)'
+    done: true
+    source: 20261005-125008-chrono-2FYKPJ#7
+    version: 241.5.2
+  - id: skip-video
+    text: 'Skip (video) on a task: rewarded video, then the task is completed and
+      its stars go to the bar (Collect balls, 5 stars, shot 11)'
+    done: true
+    source: 20261005-125008-chrono-2FYKPJ#7
+    version: 241.5.2
+  - id: counts-all-sources
+    text: 'Get coins task counts coins from any source: the Daily Rewards day 3 claim
+      (+100) showed as 100/250 before any level'
+    done: true
+    source: 20261005-125008-chrono-2FYKPJ#2
+  - id: claim-stars
+    text: 'Collect on a completed task: row turns grey with a check and Claimed, its
+      stars fill the bar (10 of 15)'
+    done: true
+    source: 20261006-012240-chrono-2FYKPJ#2
+    version: 241.5.2
   found_at:
     text: level 15
     value: 15.0
@@ -2177,6 +2596,218 @@ features:
       first shown on the map after the L14 win
     certainty: fact
     source: 20261005-014031-chrono-2FYKPJ#21
+  version_seen: 241.5.2
+- id: new-mode-l15
+  name: Game mode unlocked after L15
+  status: documented
+  cases:
+  - id: chk-entry
+    text: 'Does not apply: duplicate of mode-iq-test (registered by mistake in 20261005-151039-chrono-2FYKPJ),
+      studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
+  - id: chk-screen
+    text: 'Does not apply: duplicate of mode-iq-test (registered by mistake in 20261005-151039-chrono-2FYKPJ),
+      studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
+  - id: chk-rules
+    text: 'Does not apply: duplicate of mode-iq-test (registered by mistake in 20261005-151039-chrono-2FYKPJ),
+      studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
+  - id: chk-win
+    text: 'Does not apply: duplicate of mode-iq-test (registered by mistake in 20261005-151039-chrono-2FYKPJ),
+      studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
+  - id: chk-loss
+    text: 'Does not apply: duplicate of mode-iq-test (registered by mistake in 20261005-151039-chrono-2FYKPJ),
+      studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
+  - id: chk-progression
+    text: 'Does not apply: duplicate of mode-iq-test (registered by mistake in 20261005-151039-chrono-2FYKPJ),
+      studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
+  - id: chk-limits
+    text: 'Does not apply: duplicate of mode-iq-test (registered by mistake in 20261005-151039-chrono-2FYKPJ),
+      studied there'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
+  - id: duplicate-of-iq-test
+    text: Duplicate of mode-iq-test registered by mistake; remove when the feature
+      file is cleaned
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#20
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#19
+  found_at:
+    text: level 15
+    value: 15.0
+  type: mode
+  appeared:
+    text: popup 'Congratulations! You unlocked a new Game Mode!' on tapping Play after
+      winning L15 (map node L16 'Unlock New Mode')
+    certainty: fact
+    source: 20261005-151039-chrono-2FYKPJ#19
+  version_seen: 241.5.2
+- id: win-streak
+  name: Win streak meter
+  status: in_progress
+  cases:
+  - id: counter-after-win
+    text: After the L16 win the streak gauge stayed at 0 (flame 0) on the win screen;
+      +21 coins, no multiplier offer this time
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#27
+    version: 241.5.2
+  - id: chk-screen
+    text: 'Popup ''You are on a streak!'': flame gauge with counter 0, dial rewards
+      +150, +300, puzzle piece, +500 coins and a pin; ''Keep your streak!'' timer
+      7h 59m; Continue'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#25
+  - id: under-win
+    text: 'L16 win with the streak on: the base win screen (+21 coins, no multiplier
+      offer) with the streak gauge at 0'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#27
+  - id: on-loss
+    text: 'A loss with streak 1 shows ''Watch your streak!'' first: Keep it! (video)
+      keeps it, No, thanks goes to the fail screen'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#39
+    version: 241.5.2
+  - id: under-colour-mix
+    text: '''Watch your streak!'' (streak 1, Keep it! by video / No, thanks) comes
+      before the fail screen'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#39
+  - id: streak-complete
+    text: 'Streak completed after 3 straight wins (L21-L23): prize rainbow pin skin,
+      Claim Prize'
+    done: true
+    source: 20261006-033538-chrono-2FYKPJ#50
+    version: 241.5.2
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-151039-chrono-2FYKPJ#25
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-counter
+    text: 'The counter: where it shows and what it counts'
+    done: false
+  - id: chk-rewards
+    text: The reward for each step of the streak
+    done: false
+  - id: chk-in-level
+    text: What shows during a level while the streak runs
+    done: false
+  - id: chk-break
+    text: What breaks it (a loss, a quit, a missed day) and what the break costs
+    done: false
+  - id: chk-save
+    text: Offers to keep it after a break and their price (a video, coins)
+    done: false
+  - id: under-restart
+    text: 'Restart icon opens ''You can do better!'' (Restart / Continue); Continue
+      closes it; Restart plays an interstitial (skip control opened the Play Store,
+      launch returned) then reloads only the current stage, earlier stages stay ticked;
+      no coin cost under Win streak meter: as the base, or what differs'
+    done: false
+  - id: under-quit
+    text: 'Back arrow returns to the map at once, no confirmation, no cost; reopening
+      via Play keeps the multi-stage progress (stage 4 of 4) under Win streak meter:
+      as the base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'The previous session left L10 at stage 4; after the app was closed and
+      relaunched this session, L10 opened at stage 4 with stages 1-3 ticked under
+      Win streak meter: as the base, or what differs'
+    done: false
+  - id: under-balls-out
+    text: 'Balls fell out under Win streak meter: as the base, or what differs'
+    done: false
+  found_at:
+    text: level 15
+    value: 15.0
+  type: streak
+  appeared:
+    text: popup 'You are on a streak!' right after the L16 board was cleared (2nd
+      win this session, L15+L16)
+    certainty: fact
+    source: 20261005-151039-chrono-2FYKPJ#25
+- id: post-win-gift
+  name: Post-win gift meter
+  status: in_progress
+  cases:
+  - id: declined
+    text: 'No Thanks: gift shown as ''Lost'' on the Level completed screen, coins
+      +21 still paid (1789)'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#7
+    version: 241.5.2
+  - id: meter
+    text: 'Gift meter on the Level completed screen restarts after the gift: 12% after
+      the next win (L19); the box comes when it reaches 100%'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#27
+    version: 241.5.2
+  - id: chk-entry
+    text: 'No own entry: the gift silhouette meter sits on the Level completed screen
+      after a main-level win; at 100% the ''Congrats! You won a gift'' box screen
+      follows'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#27
+  - id: chk-screen
+    text: 'Gift screen ''Congrats! You won a gift, open it!'': gift box, Open (video)
+      and No Thanks; banner below'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#6
+  - id: chk-earn
+    text: 'The meter fills with main-level wins (about 12% per win after the reset:
+      L19 = 12%); the box is offered at 100%'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#27
+  - id: chk-progress
+    text: Gift silhouette on the Level completed screen fills with wins; reset after
+      the L18 box, 12% after L19
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#27
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-235042-chrono-2FYKPJ#6
+  - id: chk-items
+    text: 'The items: every set, skin or tier, which are owned and which are locked,
+      with their condition'
+    done: false
+  - id: chk-use
+    text: 'Using an item: equip a skin, open a chest, spin; what changes'
+    done: false
+  - id: chk-complete
+    text: 'Completing a set or the bar: the reward'
+    done: false
+  type: meta-progress
+  appeared:
+    text: 'after the L18 win: the gift meter on the Level completed screen filled
+      and ''Congrats! You won a gift, open it!'' offered a box (Open by video / No
+      Thanks)'
+    certainty: fact
+    source: 20261005-235042-chrono-2FYKPJ#6
 tasks:
 - id: analyze
   title: Analyze the game
@@ -2190,12 +2821,14 @@ tasks:
   title: Recheck the features on version 241.5.2
   kind: update
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:29:30'
   version: 241.5.2
   source: external
-  note: 'a newer version is on Google Play: update the game on the phone, then recheck
-    the documented features and look for new ones'
+  note: Phone already on 241.5.2 (start reply). Map entry points same as 241.5.1 plus
+    the Daily tasks clipboard (shot 4); Daily Rewards day 3 claimed +100 (shot 3)
+  closed: '2026-10-05T12:51:12'
+  closed_by: 20261005-125008-chrono-2FYKPJ#1
 - id: scout-1
   title: 'Map the game: play until the main menu and every entry point is visible;
     list each entry point as open (a study goal), locked with its unlock condition
@@ -2307,10 +2940,14 @@ tasks:
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:33:55'
   feature: level-path
   source: external
+  closed: '2026-10-05T12:54:19'
+  closed_by: 20261005-125008-chrono-2FYKPJ#13
+  note: 'Header and map nodes walked; nothing tappable; badges: check on won, purple
+    ! on special levels (exp-level-path-badge set)'
 - id: exp-loss
   title: Lose a pin-pull level on purpose and record each loss kind as an outcome
     of core-level
@@ -2417,7 +3054,8 @@ tasks:
   closed_by: 20261005-013818-chrono-2FYKPJ#1
   note: Day 2 +50 claimed from launch popup, coins 344
 - id: outcomes-multi-stage
-  title: 'Run each outcome once under Multi Stage Level: Balls fell out'
+  title: 'Run each outcome once under Multi Stage Level: Balls fell out, Colours mixed
+    on a colour-bucket board'
   kind: experiment
   requires: any
   status: open
@@ -2467,10 +3105,14 @@ tasks:
   title: Open the map chest (OPEN after the 15 min timer)
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:59:31'
   feature: map-chest
   source: session
+  closed: '2026-10-05T15:12:30'
+  closed_by: 20261005-151039-chrono-2FYKPJ#3
+  note: Entry, screen, prize marked; 241 coins, x2-x5 video multiplier not taken (case
+    video-multiplier open); timer restarts 15:00
 - id: study-collections
   title: 'Study Collections: trophies chest, puzzle albums, every skin category (Themes,
     Trails, Walls, Pins)'
@@ -2491,7 +3133,7 @@ tasks:
     to the map at once, no confirmation, no cost; reopening via Play keeps the multi-stage
     progress (stage 4 of 4), The previous session left L10 at stage 4; after the app
     was closed and relaunched this session, L10 opened at stage 4 with stages 1-3
-    ticked'
+    ticked, Colours mixed on a colour-bucket board'
   kind: experiment
   requires: any
   status: open
@@ -2524,13 +3166,18 @@ tasks:
     17 key node, ''Unlock New Mode'''
   kind: unlock
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-03T21:08:28'
   feature: new-mode
   source: session
-  note: the lock seen on screen (feature --locked)
+  note: 'new-mode is the same thing as mode-iq-test: the ''Unlock New Mode'' text
+    beside the key bar is a map step bubble scrolled under the bar, not a 3-key gate;
+    the bubble between L16 and L17 vanished when IQ Test unlocked after the L15 win
+    (keys still 1/3), and the next bubbles sit at L21/L22 = Challenge/Merge Balls'
   target_text: '3 keys: the 3-key gate at the level 17 key node, ''Unlock New Mode'''
   target_value: 17.0
+  closed: '2026-10-05T15:40:45'
+  closed_by: 20261005-151039-chrono-2FYKPJ#17
 - id: study-ball-jar
   title: 'Study the jar icon on the map: open it, record what it holds, how it fills
     and what it gives'
@@ -2605,22 +3252,33 @@ tasks:
     level
   kind: experiment
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-03T21:08:45'
   feature: bonus-levels
   source: session
   plan: Reach the character node on the map (now between L16 and L17), tap it; mark
     its entry, board and win/loss screens; confirmed when its rules and reward are
     recorded, refuted if it is only a decoration
+  closed: '2026-10-05T15:41:20'
+  closed_by: 20261005-151039-chrono-2FYKPJ#17
+  note: 'The character node between L16 and L17 was the Sketchman face of the Sketchman
+    IQ Test mode: it vanished from the map when the mode unlocked after the L15 win
+    (shot 2 vs shot 26/44), no bonus level was offered. Character nodes look like
+    mode-unlock markers; the next one (granny) sits at L21-22 beside an ''Unlock New
+    Mode'' bubble; replaced by exp-character-node-is-mode'
 - id: study-map-tutorial
   title: 'Study Map tutorial tooltips: open it, walk its screens and tabs, verify
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:10:02'
   feature: map-tutorial
   source: external
+  closed: '2026-10-05T14:19:09'
+  closed_by: 20261005-141756-chrono-2FYKPJ#3
+  note: 'Settings has no help/replay; tutorial is one-time. chk-skip needs a fresh
+    install: task map-tutorial-skip'
 - id: study-daily-rewards
   title: 'Study Daily Rewards: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -2638,10 +3296,15 @@ tasks:
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:10:02'
   feature: multi-stage
   source: external
+  closed: '2026-10-06T04:00:16'
+  closed_by: 20261006-033538-chrono-2FYKPJ#68
+  note: 'L23 won: 4 stages, stage column with checks, interstitial between stage 2
+    and 3 (Back closes frozen end card), normal win flow. Loss/retry cases moved to
+    experiment multi-stage-loss.'
 - id: study-interstitial
   title: 'Study Interstitial video ad after a win: open it, walk its screens and tabs,
     verify its cases'
@@ -2690,35 +3353,42 @@ tasks:
   title: 'Unlock Sketchman IQ Test: level 16'
   kind: unlock
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:11:33'
   feature: mode-iq-test
   source: session
-  note: the lock seen on screen (feature --locked)
+  note: seen open at level 15
   target_text: level 16
   target_value: 16.0
+  closed: '2026-10-05T15:18:37'
+  closed_by: planner
 - id: unlock-mode-challenge
   title: 'Unlock Challenge: level 21'
   kind: unlock
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:11:34'
   feature: mode-challenge
   source: session
-  note: the lock seen on screen (feature --locked)
+  note: 'Opened with the L20 win (map at L21), as the lock said: NEW Challenge card
+    in All You Can Play (shot 33)'
   target_text: level 21
   target_value: 21.0
+  closed: '2026-10-06T01:34:59'
+  closed_by: 20261006-012240-chrono-2FYKPJ#20
 - id: unlock-mode-merge-balls
   title: 'Unlock Merge Balls: level 22'
   kind: unlock
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:11:34'
   feature: mode-merge-balls
   source: session
-  note: the lock seen on screen (feature --locked)
+  note: seen open at level 21
   target_text: level 22
   target_value: 22.0
+  closed: '2026-10-06T03:44:30'
+  closed_by: planner
 - id: unlock-mode-protect-balloon
   title: 'Unlock Protect The Balloon: level 30'
   kind: unlock
@@ -2745,13 +3415,16 @@ tasks:
   title: 'Unlock Bonus levels (character node): reach the node after level 16'
   kind: unlock
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-03T21:12:23'
   feature: bonus-levels
   source: session
-  note: the lock seen on screen (feature --locked)
+  note: 'Node after L16 passed: it was the IQ Test mode marker; lock moved to the
+    granny node at L21'
   target_text: reach the node after level 16
   target_value: 16.0
+  closed: '2026-10-05T15:41:32'
+  closed_by: 20261005-151039-chrono-2FYKPJ#17
 - id: exp-multiplier-credit
   title: Check the multiplier reward is credited after the video and the plain Get
     N close path
@@ -2781,12 +3454,18 @@ tasks:
   title: Find whether multi stage levels come every 5th level (L15, L20)
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T21:27:06'
   feature: multi-stage
   source: session
   plan: Before playing L15 and L20 read the map node (yellow ring, 'Multi Stage Level'
     bubble) and count stages; confirmed if both are multi stage and L11-L14 are not
+  closed: '2026-10-05T15:40:32'
+  closed_by: 20261005-151039-chrono-2FYKPJ#37
+  note: 'Map (shot 60) puts the ''Multi Stage Level'' bubble at L23, none at L20 (L19-L20
+    carry Color Bucket bubbles): multi stage at L10, L15, L23, not every 5th; recheck
+    when L20 is played'
+  result: refuted
 - id: exp-win-saved-when
   title: 'Find when a win is saved: exit the app on the post-win screens on purpose'
   kind: experiment
@@ -2837,11 +3516,15 @@ tasks:
   title: Skip a day of Daily Rewards and check if the calendar resets
   kind: followup
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-03T21:48:44'
   feature: daily-rewards
   not_before: '2026-10-05T21:48:44'
   source: game
+  closed: '2026-10-05T23:14:37'
+  closed_by: 20261005-230946-chrono-2FYKPJ#10
+  note: cannot skip a day within one session; day 3 claimed today, no popup at launch;
+    replaced by daily-rewards-missed-check (not before 2026-10-07)
 - id: appeared-trophies
   title: 'Find why Weekly trophy chest appeared: present on the Collections trophies
     tab from the first Collections visit (L3+); the first trophy tier was already
@@ -2889,12 +3572,17 @@ tasks:
     streak counter (win screen, map, level HUD) and what breaks it'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T22:24:34'
   feature: collections
   source: session
   plan: Win 3+ levels in a row and watch the win screens and the Trails section for
     a streak count; confirmed when a counter or a streak trail progress is marked
+  closed: '2026-10-05T15:40:31'
+  closed_by: 20261005-151039-chrono-2FYKPJ#25
+  note: 'Win streak found: ''You are on a streak!'' popup after the L16 win (feature
+    win-streak)'
+  result: confirmed
 - id: exp-special-events
   title: 'Look for special events: every skin category has an ''Unlock in special
     events'' section; find whether any event entry shows on the map'
@@ -2974,14 +3662,12 @@ tasks:
   plan: win a level right after a rewarded video and again 3+ min later; compare whether
     the interstitial plays
 - id: outcomes-race
-  title: 'Run each outcome once under Level race: Win screen, Restart icon opens ''You
-    can do better!'' (Restart / Continue); Continue closes it; Restart plays an interstitial
+  title: 'Run each outcome once under Level race: Restart icon opens ''You can do
+    better!'' (Restart / Continue); Continue closes it; Restart plays an interstitial
     (skip control opened the Play Store, launch returned) then reloads only the current
-    stage, earlier stages stay ticked; no coin cost, Back arrow returns to the map
-    at once, no confirmation, no cost; reopening via Play keeps the multi-stage progress
-    (stage 4 of 4), The previous session left L10 at stage 4; after the app was closed
-    and relaunched this session, L10 opened at stage 4 with stages 1-3 ticked, Balls
-    fell out'
+    stage, earlier stages stay ticked; no coin cost, The previous session left L10
+    at stage 4; after the app was closed and relaunched this session, L10 opened at
+    stage 4 with stages 1-3 ticked, Balls fell out'
   kind: experiment
   requires: any
   status: open
@@ -3048,13 +3734,16 @@ tasks:
     19)'
   kind: unlock
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T00:55:52'
   feature: color-bucket-level
   source: session
-  note: the lock seen on screen (feature --locked)
+  note: 'Reached and played: the Color Bucket Level is L20 (map bubble), opened at
+    progress 20'
   target_text: reach the 'Color Bucket Level' node (level 19)
   target_value: 19.0
+  closed: '2026-10-06T00:13:07'
+  closed_by: 20261005-235042-chrono-2FYKPJ#35
 - id: exp-golden-pins
   title: 'Golden pins: what they give in the league and the +5 golden pins video offer'
   kind: experiment
@@ -3185,7 +3874,659 @@ tasks:
   title: 'Study Daily tasks: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T01:53:20'
   feature: daily-tasks
   source: external
+  closed: '2026-10-05T12:53:15'
+  closed_by: 20261005-125008-chrono-2FYKPJ#8
+  note: Screen, 5 tasks, 3 gifts (74 coins, 149 coins, skin at 15/30/50 stars), Skip
+    by video verified; next-day/missed set as followup daily-tasks-next-day
+- id: daily-tasks-next-day
+  title: 'Daily tasks after local midnight: which tasks renew, are unclaimed stars
+    or gifts kept'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-05T12:53:13'
+  feature: daily-tasks
+  not_before: '2026-10-06T00:30:00'
+  source: game
+  closed: '2026-10-06T01:23:49'
+  closed_by: 20261006-012240-chrono-2FYKPJ#2
+  note: 'Reset at 00:00 local (countdown 22:36 at 01:23). New task list with different
+    targets and star values; star bar back at 0 (yesterday''s stars and any unclaimed
+    gift not carried over: bar empty, no gift waiting); gifts stay 15/30/50. Progress
+    made after midnight counts for the new list. Collect claims 10 stars to the bar
+    (shots 3-4).'
+- id: daily-tasks-gift-claim
+  title: Reach 15 stars in Daily tasks and claim the first gift (+74 coins)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T12:53:14'
+  feature: daily-tasks
+  source: session
+  plan: play levels and skip tasks by video until 15 stars, tap the gift, note coins
+- id: exp-level-path-badge
+  title: Purple ! on a level circle means a special level type (multi-stage or new
+    mode)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T12:54:08'
+  feature: level-path
+  source: session
+  plan: open L16 and compare its board type with the ! badge; check a plain level
+    has none
+- id: exp-daily-rewards-utc-reset
+  title: 'Find when the next Daily Rewards day opens: UTC midnight (02:00 local, UTC+2)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T12:56:31'
+  feature: daily-rewards
+  not_before: '2026-10-06T00:20:00'
+  source: session
+  plan: 'Day 4 not claimed before. Launch between 00:20 and 01:50 local on 6 Oct (after
+    local midnight, before UTC midnight): no Daily Rewards popup expected. Launch
+    again after 02:05 local: day 4 popup open confirms the UTC-midnight reset (day
+    2 claimed 4 Oct 23:38 UTC, day 3 open 5 Oct 10:50 UTC). Combine with daily-tasks-next-day
+    (tasks reset at local midnight).'
+- id: daily-tasks-missed
+  title: Skip one whole local day of Daily tasks and see what is lost (unclaimed stars,
+    gifts, task list)
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-05T12:56:31'
+  feature: daily-tasks
+  not_before: '2026-10-07T00:30:00'
+  source: game
+  note: Leave stars below a gift on 6 Oct, do not open the app on 7 Oct, open on 8
+    Oct after local midnight; can share the skipped day with daily-rewards-missed
+- id: map-tutorial-skip
+  title: 'Map tutorial: can it be skipped, and does it come back if the app is left
+    mid-overlay'
+  kind: replay
+  requires: fresh
+  status: open
+  created: '2026-10-05T14:19:08'
+  feature: map-tutorial
+  source: session
+- id: exp-l15-stage-ad
+  title: 'L15: does the between-stage interstitial always become a dead playable?
+    Try waiting 60+ s or tapping Next after the timer'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T14:25:09'
+  feature: interstitial
+  source: session
+  plan: win L15 stage 1, when the ad appears wait up to 3x20 s and tap only labelled
+    controls; record which one closes it
+  closed: '2026-10-05T15:40:30'
+  closed_by: 20261005-151039-chrono-2FYKPJ#9
+  note: 'Not always dead: after stage 2 the ad opened the Play Store, launch returned
+    to L15 stage 3 with stages kept; no dead playable this time'
+  result: refuted
+- id: exp-chest-timer-pause
+  title: Map chest timer pauses outside the map?
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T14:25:35'
+  feature: map-chest
+  source: session
+  plan: read the timer, stay 60 s on the map, read again; then 60 s inside a level,
+    back to map, read; compare with wall clock
+  closed: '2026-10-05T14:33:05'
+  closed_by: 20261005-141756-chrono-2FYKPJ#23
+  note: 'Map-only stretch: 8m24s (shot 38) -> 3m41s (shot 42) over 283 s wall clock
+    = 283 s of timer, runs at wall speed on the map. Mixed stretch with L15 play,
+    ads and two restarts: 11m27s (shot 2) -> 8m24s (shot 38) over 416 s wall = only
+    183 s of timer. The timer pauses in levels/ads/outside the app.'
+  result: confirmed
+- id: chest-open-followup
+  title: 'Open the map chest: about 4 min of map time left at 14:30 (timer runs on
+    the map, seems paused in levels)'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-05T14:30:15'
+  feature: map-chest
+  not_before: '2026-10-05T14:42:15'
+  source: game
+  closed: '2026-10-05T15:12:29'
+  closed_by: 20261005-151039-chrono-2FYKPJ#3
+  note: 'Chest showed OPEN at launch; opened: 241 coins (plain Get), timer restarted
+    14m59s'
+- id: pass-l15
+  title: 'Get past L15: win all 4 stages (or, if the between-stage ad goes dead a
+    third time, use Jump to Level) so the map reaches L16'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T14:33:15'
+  feature: multi-stage
+  source: session
+  plan: Play L15 with the solver; after each stage win, let the ad run, tap only labelled
+    controls and wait up to 3x20 s (tapping something harmless between waits against
+    screen dim); if it stays dead, restart once more, then use the map Jump to Level
+    button (rewarded video counts as a win). Confirmed when the map shows L16 as current;
+    record which path worked and the stage count seen
+  closed: '2026-10-05T15:40:29'
+  closed_by: 20261005-151039-chrono-2FYKPJ#15
+  note: 'L15 won: stages 2-4 by the solver library; the between-stage ad opened the
+    store once, launch returned to stage 3 with progress kept'
+  result: confirmed
+- id: first-look-mode-iq-test
+  title: 'First look at Sketchman IQ Test: open it once, record what it is and decide
+    whether it needs a full study'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T15:18:37'
+  feature: mode-iq-test
+  source: session
+  note: 'Mode in All You Can Play (NEW card, Level 1, IQ Level gauge ???). Grid of
+    numbered Sketchman levels: L1 open, Reward 250 coins; L2+ ''Keep playing to unlock
+    free!'' or UNLOCK & PLAY by video. Board = pin-pull variant (hourglass, 7 pins,
+    one cup with % fill) with an IQ Score gauge starting at 25. X asks Leave/Stay
+    (progress lost); leaving gave an interstitial then main L18. Needs a full study:
+    win flow, IQ score growth, free unlock rule, video unlock.'
+  rank: 0
+  closed: '2026-10-05T23:13:11'
+  closed_by: 20261005-230946-chrono-2FYKPJ#6
+- id: outcomes-win-streak
+  title: 'Run each outcome once under Win streak meter: Restart icon opens ''You can
+    do better!'' (Restart / Continue); Continue closes it; Restart plays an interstitial
+    (skip control opened the Play Store, launch returned) then reloads only the current
+    stage, earlier stages stay ticked; no coin cost, Back arrow returns to the map
+    at once, no confirmation, no cost; reopening via Play keeps the multi-stage progress
+    (stage 4 of 4), The previous session left L10 at stage 4; after the app was closed
+    and relaunched this session, L10 opened at stage 4 with stages 1-3 ticked, Balls
+    fell out'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T15:20:45'
+  feature: win-streak
+  source: session
+  plan: 'while Win streak meter is on, reach each listed outcome of the base level
+    once, one at a time (a deliberate loss is allowed unless it spends premium currency);
+    mark the outcome screen (mark --feature win-streak --as result) and close its
+    cell: case win-streak under-<outcome> "as the base" or "what differs" --done'
+  rank: 7
+- id: study-win-streak
+  title: 'Study the win streak: what fills the gauge, timer 8h, rewards, how it breaks'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T15:20:46'
+  feature: win-streak
+  source: session
+- id: first-look-bonus-levels
+  title: 'First look at Bonus levels (character node): open it once, record what it
+    is and decide whether it needs a full study'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-05T15:21:21'
+  feature: bonus-levels
+  source: session
+  note: 'The character node between L16 and L17 was the Sketchman face of the Sketchman
+    IQ Test mode: it vanished from the map when the mode unlocked after the L15 win
+    (shot 2 vs shot 26/44), no bonus level was offered. Character nodes look like
+    mode-unlock markers; the next one (granny) sits at L21-22 beside an ''Unlock New
+    Mode'' bubble; lock moved to the granny node at L21'
+  rank: 0
+  closed: '2026-10-05T15:41:19'
+  closed_by: 20261005-151039-chrono-2FYKPJ#17
+- id: first-look-new-mode
+  title: 'First look at New Mode (key gate at level 17): open it once, record what
+    it is and decide whether it needs a full study'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-05T15:23:59'
+  feature: new-mode
+  source: session
+  note: 'new-mode is the same thing as mode-iq-test: the ''Unlock New Mode'' text
+    beside the key bar is a map step bubble scrolled under the bar, not a 3-key gate;
+    the bubble between L16 and L17 vanished when IQ Test unlocked after the L15 win
+    (keys still 1/3), and the next bubbles sit at L21/L22 = Challenge/Merge Balls'
+  rank: 0
+  closed: '2026-10-05T15:40:46'
+  closed_by: 20261005-151039-chrono-2FYKPJ#17
+- id: chest-second-open
+  title: 'Open the map chest (showed OPEN at 15:33, second cycle): record the prize,
+    compare with 241 coins'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-05T15:34:35'
+  feature: map-chest
+  source: game
+  closed: '2026-10-05T23:14:29'
+  closed_by: 20261005-230946-chrono-2FYKPJ#10
+  note: 'Second cycle chest: Congrats! You collected a chest > tap > Puzzle Piece
+    Found! (centre piece of a 3x3 pancake puzzle), not coins (first chest: 241 coins).
+    Options: Get Another (video) or Tap to continue. Coins unchanged at 1781. Timer
+    restarted at about 15:00 (14m29s seen). Prize varies between coins and puzzle
+    pieces.'
+- id: exp-win-streak-counter
+  title: 'Win streak gauge stayed 0 after L15+L16 wins: what fills it'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T15:34:35'
+  feature: win-streak
+  source: session
+  plan: win 2-3 levels in a row, read the flame counter after each
+- id: exp-character-node-is-mode
+  title: 'Find whether map character nodes are mode unlocks, not bonus levels: the
+    granny node at L21-22'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T15:41:20'
+  feature: bonus-levels
+  source: session
+  plan: Before L21 tap the granny node (between L21 and L22) and mark what it says;
+    win L21 and L22 and watch whether the node vanishes when Challenge (L21) or Merge
+    Balls (L22) unlocks. Confirmed if the node disappears with a mode-unlock popup
+    and no separate bonus level is played; refuted if tapping it opens a playable
+    bonus level
+  closed: '2026-10-06T01:38:48'
+  closed_by: 20261006-012240-chrono-2FYKPJ#18
+  note: Granny node beside L21-22 (shot 2) vanished when Challenge unlocked after
+    the L20 win (shot 32), no bonus level played; character nodes mark mode unlocks
+    so far
+  result: confirmed
+- id: unlock-bonus-levels-l21
+  title: Reach the granny character node after level 21 and see what it opens
+  kind: unlock
+  requires: any
+  status: cancelled
+  created: '2026-10-05T15:41:38'
+  feature: bonus-levels
+  source: session
+  target_text: level 21
+  target_value: 21.0
+  closed: '2026-10-06T01:39:00'
+  closed_by: 20261006-012240-chrono-2FYKPJ#18
+  note: 'The granny node at L21-22 was the Challenge mode marker: it vanished with
+    the L20 win, no bonus level; lock moved to the stickman node between L26 and L27'
+- id: exp-chest-timer-in-level
+  title: 'Find whether the map chest timer runs during a level: read it before and
+    after a timed level'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T15:42:02'
+  feature: map-chest
+  source: session
+  plan: On the map read the chest timer (mark), play one level for a measured wall-clock
+    time without leaving the app, read the timer on return; confirmed (runs in level)
+    if it dropped by about the wall-clock time, refuted if it stood still. Earlier
+    sessions said map-only (timer-map-only), this session saw 14m59s -> 11m03s across
+    L15
+- id: exp-streak-start
+  title: 'Find what starts the win streak count: it showed 0 after 2 wins (L15, L16);
+    win L18-L20 in a row without a loss or quit and read the gauge after each'
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-05T15:42:03'
+  feature: win-streak
+  source: session
+  plan: Win 3 levels in a row by solver, no restart or quit; after each win screen
+    mark the streak gauge. Confirmed (counts only after the popup) if it reads 1,2,3;
+    if it stays 0 note what else the screen asks for
+  closed: '2026-10-05T15:42:11'
+  closed_by: 20261005-151039-chrono-2FYKPJ#37
+  note: duplicate of exp-win-streak-counter set in the session
+- id: solver-l17
+  title: Add L17 (hard skull level) to the pin-pull solver library from the hand order
+    won in 20261005-151039-chrono-2FYKPJ
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-05T15:42:03'
+  feature: hard-levels
+  source: session
+  plan: 'Hand order that won: TL vertical (316,292), right diagonal (520,824), neck
+    horizontal (124,606), TR vertical (465,280), left diagonal (250,815), bottom pin
+    (295,828); confirmed when the solver recognises the L17 frame (shot 45) and outputs
+    this order'
+  closed: '2026-10-05T15:42:12'
+  closed_by: 20261005-151039-chrono-2FYKPJ#33
+  note: 'lab work, not a play goal: L17 is behind the progress; the inbox handoff
+    already asks to add it to the solver library'
+- id: study-mode-iq-test
+  title: 'Study Sketchman IQ Test: win L1, IQ score, reward 250, how L2 unlocks free
+    vs video'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T23:13:11'
+  feature: mode-iq-test
+  source: session
+  closed: '2026-10-05T23:58:29'
+  closed_by: 20261005-235042-chrono-2FYKPJ#21
+  note: L1 won by solver (library IQ1), board IQ score from 10, win screen IQ 150,
+    Get 250 -> main L19; grid shows L1 MAX + PLAY AGAIN video; L2 still locked after
+    the win (exp-iq-l2-free). Loss case left to iq-loss.
+- id: daily-rewards-missed-check
+  title: 'Daily Rewards: open the game on 2026-10-07 or later without opening it on
+    2026-10-06, check if the calendar resets to day 1 (day 3 claimed 2026-10-05)'
+  kind: followup
+  requires: any
+  status: cancelled
+  created: '2026-10-05T23:14:30'
+  feature: daily-rewards
+  not_before: '2026-10-07T09:00:00'
+  source: game
+  closed: '2026-10-05T23:16:57'
+  closed_by: review-20261005
+  note: conflicts with exp-daily-rewards-utc-reset and daily-tasks-next-day, which
+    need launches on 6 Oct; replaced by daily-rewards-missed-shared, which shares
+    the skipped 7 Oct with daily-tasks-missed
+- id: exp-puzzle-piece-picture
+  title: Find whether chest and level puzzle pieces fill the same 3x3 picture, and
+    what Get Another (video) adds
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T23:16:37'
+  feature: puzzle-pieces
+  source: session
+  plan: 'On the next puzzle-piece screen (map chest or a puzzle node level such as
+    L21) count the filled pieces and note the picture: if pieces from L6, L10 and
+    chest 2 add up on one picture (3+ filled), they share it; if only one piece shows
+    again, each source starts a new picture. Take Get Another (video) once and record
+    the second piece. Look for a puzzle album entry (Collections, map) and mark it.'
+- id: daily-rewards-missed-shared
+  title: 'Daily Rewards after a missed day: with day 4 claimed on 6 Oct, launch no
+    earlier than 8 Oct 02:05 local and see if the calendar resets to day 1 or offers
+    day 5'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-05T23:16:58'
+  feature: daily-rewards
+  not_before: '2026-10-08T02:05:00'
+  source: game
+  note: Do not open the app from 7 Oct 00:00 local until 8 Oct 02:05 local (covers
+    the skipped local day for daily-tasks-missed and the skipped UTC day for Daily
+    Rewards); claim day 4 on 6 Oct first (exp-daily-rewards-utc-reset).
+- id: exp-iq-test-free-unlock
+  title: Find what unlocks Sketchman IQ Test level 2 for free ('Keep playing to unlock
+    free!')
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T23:16:58'
+  feature: mode-iq-test
+  source: session
+  plan: 'Win IQ Test L1 (take the 250 reward), then check the grid: if L2 opens at
+    once, a mode win unlocks the next level; if not, win one main level and look again:
+    L2 open then confirms main-level wins unlock it. Do not use UNLOCK & PLAY (video)
+    for this test; try it once separately and record what it opens.'
+- id: first-look-color-bucket-level
+  title: 'First look at Color Bucket Level: open it once, record what it is and decide
+    whether it needs a full study'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T23:55:13'
+  feature: color-bucket-level
+  source: session
+  note: 'Opened L20 three times: two hoppers and two colour cups, each colour to its
+    own cup; lost by mixing colours (fail screen as the base). Needs a full study:
+    win screen and frequency still open, L20 not won yet (l20-color-bucket-fix)'
+  rank: 0
+  closed: '2026-10-06T00:13:08'
+  closed_by: 20261005-235042-chrono-2FYKPJ#35
+- id: exp-iq-l2-free
+  title: How many main levels until Sketchman L2 unlocks free
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T23:58:22'
+  feature: mode-iq-test
+  source: session
+  plan: 'after each main level win check the Sketchman grid: L2 card turns PLAY without
+    video; L1 was won at main L19'
+- id: iq-loss
+  title: 'Lose a Sketchman level once: fail screen, IQ, retry offers'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T23:58:22'
+  feature: mode-iq-test
+  source: session
+  closed: '2026-10-06T01:30:34'
+  closed_by: 20261006-012240-chrono-2FYKPJ#14
+  note: 'No fail screen in Sketchman: the result screen scales with the share of balls
+    in the cup (71% -> ''Amazing!'' IQ 122, 179 coins; 0% -> ''Phenomenal!'' IQ 50,
+    0 coins). Retry is ''Try again!'' by video; Get leaves to the main level L20.
+    Shots 14, 22, 24.'
+- id: l20-color-bucket-fix
+  title: 'L20 Color Bucket: library order B M Y lost (mixed), B-wait-M-Y stalls at
+    98% yellow'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T00:09:01'
+  feature: color-bucket-level
+  source: session
+  plan: 'strong model: re-read L20 board, find an order that reaches 100% on both
+    cups'
+  closed: '2026-10-06T01:34:20'
+  closed_by: 20261006-012240-chrono-2FYKPJ#18
+  note: 'The library order B M Y is right; it needs time: B, wait until blue is all
+    in its cup, M, then Y 5-6 s later. Won first try (shots 26-28).'
+  result: confirmed
+- id: study-post-win-gift
+  title: 'Study post-win-gift: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-06T00:09:17'
+  feature: post-win-gift
+  source: external
+- id: appeared-post-win-gift
+  title: 'Find why Post-win gift meter appeared: unknown'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T00:12:05'
+  feature: post-win-gift
+  source: session
+  plan: 'find the moment Post-win gift meter shows up and what comes just before it
+    (no hypothesis yet); confirmed when a frame shows the trigger. Record it with
+    feature post-win-gift --appeared "...": the goal closes by itself'
+  closed: '2026-10-06T00:12:05'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: after the L18 win: the gift meter on the
+    Level completed screen filled and ''Congrats! You won a gift, open it!'' offered
+    a box (Open by video / No Thanks) [20261005-235042-chrono-2FYKPJ#6]'
+- id: outcomes-color-bucket-level
+  title: 'Run each outcome once under Color Bucket Level: Restart icon opens ''You
+    can do better!'' (Restart / Continue); Continue closes it; Restart plays an interstitial
+    (skip control opened the Play Store, launch returned) then reloads only the current
+    stage, earlier stages stay ticked; no coin cost, The previous session left L10
+    at stage 4; after the app was closed and relaunched this session, L10 opened at
+    stage 4 with stages 1-3 ticked, Balls fell out'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T00:13:08'
+  feature: color-bucket-level
+  source: session
+  plan: 'while Color Bucket Level is on, reach each listed outcome of the base level
+    once, one at a time (a deliberate loss is allowed unless it spends premium currency);
+    mark the outcome screen (mark --feature color-bucket-level --as result) and close
+    its cell: case color-bucket-level under-<outcome> "as the base" or "what differs"
+    --done'
+  rank: 7
+- id: study-color-bucket-level
+  title: 'Study Color Bucket Level: win L20, record its win screen and reward, and
+    which later levels are colour-bucket'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-06T00:13:29'
+  feature: color-bucket-level
+  source: session
+  closed: '2026-10-06T01:34:19'
+  closed_by: 20261006-012240-chrono-2FYKPJ#18
+  note: 'L20 won first try (55 s) with B, 6 s, M, 6 s, Y. Win flow = base level: league
+    board, ''Wonderful! Level completed!'' with streak gauge, +22 coins with gift
+    meter and x2-x5 video bar. Later colour-bucket levels per map bubbles: L25, L26,
+    and one near L29-30. Shots 28-32.'
+- id: exp-post-win-gift-open
+  title: 'Open the post-win gift by video once: record what the box gives and how
+    many wins refill the meter'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T00:13:30'
+  feature: post-win-gift
+  source: session
+  plan: keep winning main levels and note the gift meter % after each win; when the
+    box comes, tap Open, watch the video, record the reward; confirmed when the reward
+    and the wins per box are known
+- id: exp-l20-stall-98
+  title: Find why L20 stalled at 98% yellow with no end screen
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T00:13:30'
+  feature: color-bucket-level
+  source: session
+  plan: on the next L20 try that empties both hoppers, wait 30 s then look for balls
+    stuck in the channels or fallen out; if the screen stays at 98% try Restart; confirmed
+    when it is known whether a partial cup is a loss, a stall bug or a win after a
+    delay
+  closed: '2026-10-06T01:34:21'
+  closed_by: 20261006-012240-chrono-2FYKPJ#18
+  note: The 98% stall came with Y pulled 0.5 s after M (rod still leaving / yellow
+    arriving early). With 6 s between M and Y the yellow cup filled and the win flow
+    started within 5 s. A partial cup (98%) did not trigger a fail screen within 15
+    s; not re-tested.
+  result: confirmed
+- id: first-look-mode-challenge
+  title: 'First look at Challenge: open it once, record what it is and decide whether
+    it needs a full study'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-06T01:34:06'
+  feature: mode-challenge
+  source: session
+  note: 'A grid of challenges bought with coins (100-1100 for 1-8, 9th at level 31),
+    reward 300 for Level 1; flame badges. Needs a full study: unlock one for 100 coins,
+    play it (10-move challenge boards, see playbook), win/lose screens.'
+  rank: 0
+  closed: '2026-10-06T01:35:00'
+  closed_by: 20261006-012240-chrono-2FYKPJ#20
+- id: study-mode-challenge
+  title: 'Study Challenge mode: unlock Challenge 1 for 100 coins, play it, record
+    win/loss screens and the 300 reward'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-06T01:35:18'
+  feature: mode-challenge
+  source: session
+  closed: '2026-10-06T04:00:15'
+  closed_by: 20261006-033538-chrono-2FYKPJ#68
+  note: 'Challenge 1 retry was FREE this time; won in 2 moves; Epic! screen 300 coins
+    with x2-x5 video roulette; took Get 300 (3161->3461); completed card: trophy,
+    Best, PLAY AGAIN by video. Loss screens recorded last session.'
+- id: exp-iq-partial-coins
+  title: 'Sketchman reward scales with the cup share (71% -> IQ 122 / 179 coins, 0%
+    -> IQ 50 / 0): check one more share to fit the formula'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T01:35:18'
+  feature: mode-iq-test
+  source: session
+  plan: on a Sketchman level, send a known part to the cup, note % vs IQ vs coins
+- id: exp-map-puzzle-node
+  title: 'Find what a map puzzle-piece node gives: the node beside L21 vanished after
+    the L20 win with no piece screen'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T01:39:08'
+  feature: puzzle-pieces
+  source: session
+  plan: Before L27 and L28 open Collections > puzzles and mark the album; win L27
+    and L28 with the full post-win flow, mark every screen, then reopen the album.
+    Confirmed (node = a piece) if a piece is added when the path passes the L28 puzzle
+    node; refuted if the node disappears with no piece in the album
+- id: unlock-bonus-levels-l27
+  title: Reach the stickman character node between L26 and L27 and see whether it
+    opens a bonus level or vanishes as a mode marker
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-06T01:39:15'
+  feature: bonus-levels
+  source: session
+  note: Before passing it, tap the node and mark; the two earlier character nodes
+    (L16-17, L21-22) were mode markers; the next listed mode (Protect The Balloon)
+    is at L30, so this one may be a real bonus level
+  target_text: level 27
+  target_value: 27.0
+- id: challenge1-win
+  title: 'Win Challenge 1 (retry by video): route known to 3 moves left; avoid both
+    triangle-tip rings'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T03:25:06'
+  feature: mode-challenge
+  source: session
+  plan: top shelf, gray diagonal, bomb diagonal (bombs explode), E,F,G empty pins,
+    colored shelf, gray shelf, bottom shelf; one look per moving pull; record win
+    screen and 300 reward
+- id: exp-challenge-race
+  title: 'Does a Challenge win move You on the level race bar: record the bar position
+    before and after the Challenge 1 win'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T03:28:22'
+  feature: race
+  source: session
+  plan: Mark the race bar on the Challenge 1 board before the first pull and on the
+    win; then open the map race flag. Confirmed if You moves up after the Challenge
+    win, refuted if the bar and the race board stay the same
+- id: first-look-mode-merge-balls
+  title: First look at Merge Balls mode (unlocked on tapping Play L22 after winning
+    L21)
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-06T03:44:30'
+  feature: mode-merge-balls
+  source: session
+  note: 'seen open at level 21 (locked: level 22)'
+  rank: 0
+- id: multi-stage-loss
+  title: 'Lose a stage on purpose on the next Multi Stage Level: record the fail screen,
+    retry behaviour (chk-loss, chk-retry, under-balls-out)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T03:53:44'
+  feature: multi-stage
+  source: session
+  plan: on the next multi-stage level, pull a pin that dumps balls out in stage 2;
+    mark fail screen; tap retry and see whether it restarts the stage or stage 1

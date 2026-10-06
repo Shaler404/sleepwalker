@@ -2,27 +2,27 @@
 game: com.vitastudio.mahjong
 version: 3.40.1
 play_version: 3.40.1
-play_checked: '2026-10-05T00:13:01'
+play_checked: '2026-10-05T22:05:43'
 phone_version: 3.40.1
 discovery: open
 ftue_verified: null
 progress:
-  text: level 19 (restored from the cloud save on a fresh install)
-  value: 19.0
-  at: '2026-10-03T19:52:45'
-  session: 20261003-195050-chrono-2FYKPJ
+  text: level 21 (Hard L20 won)
+  value: 21.0
+  at: '2026-10-05T13:56:35'
+  session: 20261005-133525-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-05T02:00:53'
+  chrono: '2026-10-06T04:02:50'
 mechanics:
 - id: core-match
   name: core-match
   status: broken
   method: solver
   levels:
-    won: 0
+    won: 2
     lost: 1
-    quit: 2
+    quit: 7
   recent:
   - level: level 19
     result: quit
@@ -37,10 +37,39 @@ mechanics:
     result: quit
     seconds: 150
     model: sonnet
-  note: 'solver reads the cream, purple and red tile sets (3.40.1 L19 shows purple
-    or red depending on the launch); red set checked on 231301/00022 and 231804/00008-00012
-    incl. Hint, tray twin, Shuffle; dream 2026-10-04: the local solver (solvers/com.vitastudio.mahjong/core-match.py)
-    is not published yet'
+  - level: level 19
+    result: quit
+    seconds: 30
+    model: sonnet
+  - level: level 19
+    result: won
+    seconds: 895
+    model: opus
+  - level: level 20
+    result: quit
+    seconds: 160
+    model: opus
+  - level: level 20
+    result: won
+    seconds: 1048
+    model: opus
+  - level: level 21 look
+    result: quit
+    seconds: 35
+    model: sonnet
+  - level: level 21
+    result: quit
+    seconds: 22
+    model: sonnet
+  - level: level 21
+    result: quit
+    seconds: 170
+    model: sonnet
+  note: solver reads all 6 tile sets, booster badges, Hint-lit pairs and now book
+    picture tiles (186x227) in non-cream sets; run solve --run --rounds 40 --settle
+    2 from a settled frame
+  best_s: 895
+  solver: solvers/com.vitastudio.mahjong/core-match.py
 features:
 - id: consent
   name: Terms consent
@@ -84,7 +113,7 @@ features:
   page: features/consent.md
 - id: loading
   name: Loading screen
-  status: in_progress
+  status: documented
   cases:
   - id: chk-screen
     text: Loading bar, tagline, counters for games today and players now
@@ -118,6 +147,7 @@ features:
     certainty: fact
     source: 20261003-195050-chrono-2FYKPJ#2
   page: features/loading.md
+  version_seen: 3.40.1
 - id: age-select
   name: Age selection
   status: documented
@@ -274,15 +304,24 @@ features:
     done: true
     source: 20261003-195050-chrono-2FYKPJ#4
   - id: chk-entries
-    text: 'Every entry point on it: open (a feature), locked (feature --locked with
-      its condition) or unclear (an experiment)'
-    done: false
+    text: 'Entries: avatar (Profile), leaf counter (Daily Victories, new), thumbs-up
+      (Achievements), palette (Theme), gear (Settings), Level N button; all open,
+      none locked (frames 4-5)'
+    done: true
+    source: 20261005-073409-chrono-2FYKPJ#6
+    version: 3.40.1
   - id: chk-badges
-    text: Badges, timers and counters on it and what each points to
-    done: false
+    text: Red dots on avatar and palette; leaf counter x0 = day streak (Daily Victories,
+      0 day streak); no timers
+    done: true
+    source: 20261005-073409-chrono-2FYKPJ#6
+    version: 3.40.1
   - id: chk-changes
-    text: What changes on it with progress (new buttons, a moving map, a theme)
-    done: false
+    text: 'Level 1 before Sync shows greyed Level 1 and empty avatar; after Sync Data:
+      avatar picture, Level 19 button, red dot on palette (frames 3-4)'
+    done: true
+    source: 20261005-073409-chrono-2FYKPJ#6
+    version: 3.40.1
   type: hub
   appeared:
     text: first launch, after consent, age and sync prompts
@@ -331,47 +370,66 @@ features:
   page: features/profile.md
 - id: level-frames
   name: Level avatar frames
-  status: seen
+  status: documented
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
       test'
-    done: false
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#46
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home avatar button (top left) opens Profile, then the Frame tab
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#6
+    version: 3.40.1
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Frame tab: sections Level (one frame, badge 10) and Default (6 plain colour
+      frames: brown, green, red, blue, yellow, purple)'
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#6
+    version: 3.40.1
   - id: chk-progress
-    text: 'The progress: the bar, the album or the counter, what fills it and where
-      it is now'
-    done: false
+    text: 'No bar or counter: only owned Level frames are listed; owned now: 10 (the
+      Level 20 frame from the L20 chest is not listed, only badge 10 shown)'
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#6
+    version: 3.40.1
   - id: chk-items
-    text: 'The items: every set, skin or tier, which are owned and which are locked,
-      with their condition'
-    done: false
+    text: 'Level section: 10 owned; Default: 6 colour frames, all free, brown selected'
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#6
+    version: 3.40.1
   - id: chk-earn
-    text: How an item or a step is earned (wins, keys, a spin, a pack)
-    done: false
+    text: 'Earned from the level chest: the L20 chest gave a ''Level 20'' avatar frame'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#46
   - id: chk-use
-    text: 'Using an item: equip a skin, open a chest, spin; what changes'
-    done: false
+    text: Tapping a frame previews it on the profile avatar with a checkmark; closing
+      X without Save discards it (home avatar unchanged); Save not tested
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#6
+    version: 3.40.1
   - id: chk-complete
-    text: 'Completing a set or the bar: the reward'
+    text: 'No set or bar: nothing to complete'
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#6
+    version: 3.40.1
+  - id: lvl20-missing
+    text: 'Level 20 frame from the L20 chest is not in the Level section (only 10):
+      check whether it appears later or the chest gave a different item'
     done: false
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
   type: meta-progress
   appeared:
-    text: 'earned at level milestones: a frame badged 10 is owned at level 19, so
-      likely one frame per 10 levels'
-    certainty: hypothesis
-    source: 20261003-195050-chrono-2FYKPJ#6
+    text: 'the level chest at L20 gave a ''Level 20'' avatar frame: frames come from
+      the 10-level chests'
+    certainty: fact
+    source: 20261005-133525-chrono-2FYKPJ#46
   page: features/level-frames.md
+  version_seen: 3.40.1
 - id: theme
   name: Theme (tiles and background)
   status: in_progress
@@ -494,9 +552,14 @@ features:
     done: true
     source: 20261003-195050-chrono-2FYKPJ#17
   - id: chk-win
-    text: 'Win: the win screen, its rewards and what comes next'
-    done: false
+    text: 'Win: the cleared board replays as a fade, then the Daily Victories panel
+      (leaf +1, today checked, OK), then the win screen: Brilliant!, Time 14:12, IQ
+      154.8, Combo 23, a holder-use line, a 10-segment chest bar ''Reach Level 20''
+      (8 of 10 filled), and the next-level button (Level 20 Hard); no coins'
+    done: true
     outcome: true
+    source: 20261005-073804-chrono-2FYKPJ#47
+    version: 3.40.1
   - id: chk-loss
     text: 'Lost by Out of space (4 distinct tiles, frames 8-10): tooltip at 3 tiles,
       no life lost seen, no other loss kind seen'
@@ -536,6 +599,12 @@ features:
     done: true
     outcome: true
     source: 20261005-002327-chrono-2FYKPJ#6
+  - id: restart-menu
+    text: 'Restart row in the in-level Options: mid-level, no confirmation, the board
+      redeals at once behind the IQ intro banner, tray emptied, IQ back to 40'
+    done: true
+    outcome: true
+    source: 20261006-022624-chrono-2FYKPJ#21
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -583,9 +652,11 @@ features:
     source: 20261003-231804-chrono-2FYKPJ#8
     version: 3.40.1
   - id: chk-empty
-    text: 'Open: a booster at 0 not reached yet; booster-refill'
-    done: false
+    text: 'Hint at 0: its badge shows ''+''; a tap opens ''Free Hint: Watch a video
+      to get 2 Hints'', Get Two (video), close X'
+    done: true
     version: 3.40.1
+    source: 20261005-073804-chrono-2FYKPJ#53
   - id: chk-refill
     text: 'Open: no timer or refill seen, not tested; booster-refill'
     done: false
@@ -606,6 +677,11 @@ features:
       test'
     done: true
     source: 20261003-195050-chrono-2FYKPJ#17
+  - id: source-level-chest
+    text: 'The 10-level chest gives Hint x1 and Undo x1 (L20); boosters after: Shuffle
+      1, Hint 1, Undo 2'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#47
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -618,7 +694,7 @@ features:
   page: features/boosters.md
 - id: iq-score
   name: IQ score
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -627,29 +703,44 @@ features:
     done: true
     source: 20261003-195050-chrono-2FYKPJ#17
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: HUD counter top centre of every level (364,107); a tap on it (shot 15) opened
+      nothing
+    done: true
+    source: 20261006-001538-chrono-2FYKPJ#12
+    version: 3.40.1
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Gold 'IQ:' then a decimal number, shot 14 and 16
+    done: true
+    source: 20261006-001538-chrono-2FYKPJ#12
+    version: 3.40.1
   - id: chk-progress
-    text: 'The progress: the bar, the album or the counter, what fills it and where
-      it is now'
-    done: false
+    text: 'Grows per matched pair: 40 -> 41.9 after the first pair on L21 (shots 14,
+      16); no bar, no goal shown'
+    done: true
+    source: 20261006-001538-chrono-2FYKPJ#12
+    version: 3.40.1
   - id: chk-items
-    text: 'The items: every set, skin or tier, which are owned and which are locked,
-      with their condition'
-    done: false
+    text: 'Not applicable: IQ is a single counter, no sets or tiers on screen'
+    done: true
+    source: 20261006-001538-chrono-2FYKPJ#12
+    version: 3.40.1
   - id: chk-earn
-    text: How an item or a step is earned (wins, keys, a spin, a pack)
-    done: false
+    text: Earned by matching pairs (+1.9 for the first pair on L21, shot 16); IQ+N
+      banner tiles give more per earlier notes
+    done: true
+    source: 20261006-001538-chrono-2FYKPJ#12
+    version: 3.40.1
   - id: chk-use
-    text: 'Using an item: equip a skin, open a chest, spin; what changes'
-    done: false
+    text: 'Not applicable: no control, a tap does nothing (shot 15); nothing spent
+      or equipped'
+    done: true
+    source: 20261006-001538-chrono-2FYKPJ#12
+    version: 3.40.1
   - id: chk-complete
-    text: 'Completing a set or the bar: the reward'
-    done: false
+    text: 'Not applicable: no completion or reward seen at any IQ value (40 to 41.9)'
+    done: true
+    source: 20261006-001538-chrono-2FYKPJ#12
+    version: 3.40.1
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -722,7 +813,7 @@ features:
   version_seen: 3.40.1
 - id: level-options
   name: In-level Options
-  status: in_progress
+  status: documented
   cases:
   - id: chk-screen
     text: 'Options: sound toggles, Auto Complete, Colorful Effects, Theme, How to
@@ -740,16 +831,30 @@ features:
     done: true
     source: 20261003-195050-chrono-2FYKPJ#18
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: Six toggles (music, sound, voice, vibration, Auto Complete, Colorful Effects)
+      each flipped ON to OFF and back, state persisted after reopening; Theme opens
+      Tiles/Background popup (red dot gone after), How to Play opens tutorial popup,
+      No Ads opens RSD 849 offer popup, Restart redeals the board with no confirm;
+      closing a sub-popup also closes Options
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#21
+    version: 3.40.1
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: No prompt in Options; Restart has no confirmation, No Ads offer closed with
+      X
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#21
+    version: 3.40.1
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: No links out in the Options menu itself; the only links (Terms of Service,
+      Privacy Policy) are inside the No Ads popup (no-ads)
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#17
+  - id: restart-no-confirm
+    text: Restart row button redeals the same level at once, no confirm, tray emptied
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#21
+    version: 3.40.1
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -759,6 +864,7 @@ features:
     certainty: fact
     source: 20261003-195050-chrono-2FYKPJ#18
   page: features/level-options.md
+  version_seen: 3.40.1
 - id: no-ads
   name: No Ads purchase
   status: in_progress
@@ -774,25 +880,36 @@ features:
     done: true
     source: 20261003-195050-chrono-2FYKPJ#18
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'No Ads popup: ''Forever Super Offer'' price button with crossed AD icon
+      (RSD 849), Restore row, a Google Play subscription-cancellation text, Terms
+      of Service and Privacy Policy links'
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#17
   - id: chk-contents
-    text: Contents and price of every pack or tier
-    done: false
+    text: 'One tier only: remove ads ''Forever'' for RSD 849; the popup text talks
+      about a subscription, which contradicts ''Forever'' (not verified, price not
+      tapped)'
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#17
   - id: chk-frequency
     text: How often it comes up by itself (after a level, a loss, a session start)
       and whether it comes back
     done: false
   - id: chk-timer
-    text: Its timer or limit, if any
-    done: false
+    text: 'No timer, countdown or limit on the popup: a permanent offer in the Options
+      menu'
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#17
   - id: chk-buy-path
-    text: 'The way to buy: the game''s own screens up to the price button; do not
-      tap the price (it opens the payment sheet), never pay'
-    done: false
+    text: 'In a level: Options (top-right menu) > No Ads row > the RSD 849 button
+      (not tapped: it opens the payment sheet)'
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#17
   - id: chk-close
-    text: 'Closing it: the close button and what comes up after'
-    done: false
+    text: X top right closes the popup and the Options menu with it; the level board
+      is under it, next tap lands on the board
+    done: true
+    source: 20261006-022624-chrono-2FYKPJ#18
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -852,7 +969,7 @@ features:
   page: features/auto-complete.md
 - id: how-to-play
   name: How to Play
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: Level Options > How to Play
@@ -870,18 +987,28 @@ features:
     done: true
     source: 20261003-195050-chrono-2FYKPJ#19
   - id: chk-steps
-    text: Each step and what it teaches, with a frame (an animated hand is a clip)
-    done: false
+    text: 'Two pages. Page 1: ''Match the same tiles!'' (a pair into the 4-slot tray)
+      and ''Non-adjacent tiles can be matched''; Next. Page 2: ''Tap the top tiles
+      to unlock other tiles'' and ''Tap left or right tiles to unlock inner tiles'';
+      back arrow and Get it. Static pictures, no animated hand'
+    done: true
+    source: 20261005-221108-chrono-2FYKPJ#7
   - id: chk-skip
-    text: Whether it can be skipped, and what happens when the app is left in the
-      middle of it
-    done: false
+    text: Close X on page 2 closed the popup straight to the level 21 board (step
+      14); reopen from Options works
+    done: true
+    source: 20261005-221108-chrono-2FYKPJ#14
+    version: 3.40.1
   - id: chk-end
-    text: Where it ends and what opens after it
-    done: false
+    text: Ends on page 2 (Get it or the X); the X closes it straight to the paused
+      level board, no reward, nothing else opens
+    done: true
+    source: 20261005-221108-chrono-2FYKPJ#9
   - id: chk-replay
-    text: Whether it can be seen again (How to play, a help button)
-    done: false
+    text: 'Yes: in any level, menu (top right) > Options > How to Play reopens it
+      at page 1, any number of times'
+    done: true
+    source: 20261005-221108-chrono-2FYKPJ#7
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -891,6 +1018,7 @@ features:
     certainty: fact
     source: 20261003-195050-chrono-2FYKPJ#19
   page: features/how-to-play.md
+  version_seen: 3.40.1
 - id: rate-us
   name: Rate us button
   status: in_progress
@@ -921,6 +1049,12 @@ features:
       test'
     done: true
     source: 20261003-195050-chrono-2FYKPJ#22
+  - id: real-prompt
+    text: 'A real Rate Us prompt came after the Hard L20 win screen: ''Are you enjoying
+      Vita Mahjong?'' 5 stars, Rate Us grey until a star is chosen, X. The earlier
+      cases (button = Achievements) stand for the home button only'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#44
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -995,32 +1129,47 @@ features:
   page: features/achievements.md
 - id: leagues
   name: Leagues
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
       test'
-    done: false
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#0
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Home badge at the right (622,820): Bronze League, rank, timer; also comes
+      up by itself after a won level'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#49
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Standing screen: league name, timer, trophy, rank-up bar (''8 away from
+      ranking up''), ranked list with avatar, flag, 福 score, hearts; Continue'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#41
   - id: chk-board
-    text: 'The board: ranks, the player''s place, the number of players'
-    done: false
+    text: Group of 50 (matchmaking 3/49); the player at rank 18 after one win, climbed
+      32 spots
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#41
   - id: chk-points
-    text: What earns points (a level win, a score) and how many
-    done: false
+    text: 'Points are the gold 福 tiles matched in levels (they fly to a counter);
+      the Hard Level button carries x2: 8 福 from Hard L20'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#41
   - id: chk-period
-    text: 'The period and its timer: when it resets'
-    done: false
+    text: 'About one day: 23h43m left right after joining; Bronze is the lowest of
+      5 tiers'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#41
   - id: chk-rewards
-    text: Rewards per rank, promotion and relegation
-    done: false
+    text: 'Rewards per rank are gift boxes: rank 1 red-gold, 2 orange, 3 blue, 4+
+      green (shots 4); info page: top 10 ''To be promoted'' to the next league; Bronze
+      has no demotion; Glory league stars +5/+3/+2/+1 promotion zone, -2 demotion
+      (shot 8); gift contents unseen until a period ends'
+    done: true
+    source: 20261006-001538-chrono-2FYKPJ#8
+    version: 3.40.1
   - id: chk-end
     text: 'The end of a period: the results screen and the reward (a follow-up)'
     done: false
@@ -1029,14 +1178,16 @@ features:
     value: 19.0
   type: social
   appeared:
-    text: not seen on the home screen at level 19; the Achievements screen lists League
-      Reached and 1st-place finishes, so leagues open later, probably at a level threshold
-    certainty: hypothesis
-    source: 20261003-195050-chrono-2FYKPJ#23
-  locked:
-    text: not read on screen
-    value: null
+    text: popup on the first launch after winning L19 (progress level 20 Hard)
+    certainty: fact
+    source: 20261005-133525-chrono-2FYKPJ#0
   page: features/leagues.md
+  source: 20261005-133525-chrono-2FYKPJ#0
+  unlocked_at:
+    text: level 20 (Hard), L19 won
+    value: 20.0
+    source: 20261005-133525-chrono-2FYKPJ#0
+    lock: not read on screen
 - id: name-colors
   name: Name colors
   status: seen
@@ -1085,7 +1236,7 @@ features:
   page: features/name-colors.md
 - id: hard-level
   name: Hard level
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1094,23 +1245,35 @@ features:
     done: true
     source: 20261003-195050-chrono-2FYKPJ#28
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: The red 'Level 20 / Hard' next-level button on the previous win screen (364,1195)
+      and the red home Level button (364,1295)
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#55
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Red intro banner (flame, 'Hard', 'Even pros sweat here.'), then the base
+      HUD and 4-slot tray on a denser 3+ layer board with green face-down backs
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#49
   - id: chk-announce
-    text: 'How it is announced: the map node, the badge or the popup before it, and
-      what it says'
-    done: false
+    text: 'Announced on the previous level''s win screen: the next-level button turns
+      red with the subtitle ''Hard'' (Level 20 Hard)'
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#47
+    version: 3.40.1
   - id: chk-differs
-    text: 'What differs in play from the base level: the board, the rules, the limits,
-      stages, a timer'
-    done: false
+    text: Same rules, HUD, tray and boosters as the base; the board is denser (3+
+      layers, 4 green backs on top), a red Hard banner on the first open; IQ restarts
+      at 40; no timer or move limit
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#59
+    version: 3.40.1
   - id: chk-win
-    text: 'Its win: the win screen and the reward, against the base level''s'
-    done: false
+    text: 'Win: the league standing comes first (Hard counts x2 league tiles), then
+      the Daily Victories panel, then the win screen ''Legendary!'' with ''You cleared
+      HARD level so fast-amazing!'' and Time/IQ/Combo; the reward is the base one
+      (level chest bar), no extra Hard reward seen'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#44
   - id: chk-loss
     text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
       progress)'
@@ -1124,13 +1287,16 @@ features:
       from which level'
     done: false
   - id: under-quit
-    text: 'Back arrow in the level goes straight to the home screen, no confirmation,
-      no cost seen (board kept, per earlier sessions) under Hard level: as the base,
-      or what differs'
-    done: false
+    text: 'As the base: the back arrow goes home with no confirm; reopening Level
+      20 restores the same board and IQ 58.6, without the Hard banner'
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#59
+    version: 3.40.1
   - id: under-win
-    text: 'Win under Hard level: as the base, or what differs'
-    done: false
+    text: 'Differs from the base: extra line ''You cleared HARD level so fast'', league
+      score x2 tag on the Hard Level button; otherwise the same post-win chain'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#44
   - id: under-restart
     text: 'Restart under Hard level: as the base, or what differs'
     done: false
@@ -1138,16 +1304,23 @@ features:
     text: 'Exit the app under Hard level: as the base, or what differs'
     done: false
   - id: under-out-of-space
-    text: 'Out of space under Hard level: as the base, or what differs'
+    text: 'As the base: the same Out of space window (Revive with badge 5, ''-4 to
+      revive'' with Undos, Restart); ''-4 to revive'' used twice, play continued'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#10
+  - id: under-restart-menu
+    text: 'Restart row in the in-level Options under Hard level: as the base, or what
+      differs'
     done: false
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
   type: level-type
   appeared:
-    text: level 10 was marked Hard in earlier sessions on 3.39.1; not reseen on 3.40.1
-    certainty: hypothesis
-    source: 20261003-195050-chrono-2FYKPJ#28
+    text: 'announced on the level 19 win screen: the next-level button turns red ''Level
+      20 / Hard''; the Hard banner shows when Level 20 opens'
+    certainty: fact
+    source: 20261005-073804-chrono-2FYKPJ#47
   page: features/hard-level.md
 - id: iq-bonus-tiles
   name: IQ bonus tiles
@@ -1206,15 +1379,20 @@ features:
     done: true
     source: 20261005-002327-chrono-2FYKPJ#1
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'The leaf counter on the home top bar (267,130) is itself the entry: it
+      opens Daily Victories'
+    done: true
+    source: 20261005-073409-chrono-2FYKPJ#2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Its screen is Daily Victories (feature daily-victories): leaf emblem with
+      the day streak count'
+    done: true
+    source: 20261005-073409-chrono-2FYKPJ#2
   - id: chk-effect
-    text: 'What it does: the effect of one unit or one use'
-    done: false
+    text: 'Not a spendable currency as far as seen: the x0 counter shows the Daily
+      Victories day streak (0 on both screens)'
+    done: true
+    source: 20261005-073409-chrono-2FYKPJ#2
   - id: chk-sources
     text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
       and how much'
@@ -1238,6 +1416,375 @@ features:
       1 before Sync (frame 3) and after (frame 4): leaf icon x0'
     certainty: fact
     source: 20261005-002327-chrono-2FYKPJ#1
+- id: daily-victories
+  name: Daily Victories streak
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: Home leaf counter (267,130) opens the Daily Victories screen; it also comes
+      up by itself after the first win of the day
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#57
+    version: 3.40.1
+  - id: chk-screen
+    text: Title Daily Victories, leaf with 'N day streak!', a month calendar (won
+      days gold), month arrows, a chest bar with chests at 10, 20, 30 days
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#57
+    version: 3.40.1
+  - id: chk-counter
+    text: After the L19 win a full-screen Daily Victories panel shows a leaf with
+      the count 1 and a Mo-Su week row with today's (Monday) circle checked; the home
+      leaf counter is the same count (was x0 before the win)
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#46
+    version: 3.40.1
+  - id: under-win
+    text: 'Win: after the board clears, a Daily Victories panel comes up before anything
+      else: leaf +1 (0 to 1), today''s day checked, OK to continue'
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#46
+    version: 3.40.1
+  - id: chk-in-level
+    text: Nothing about the streak shows inside a level (L19 and L20 HUD unchanged);
+      it appears only after the win
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#57
+    version: 3.40.1
+  - id: under-quit
+    text: 'After the day''s win, quitting Hard L20 with the back arrow leaves the
+      leaf counter at x1: no streak change'
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#55
+  - id: one-leaf-per-day
+    text: 'A second win on the same day does not add a leaf: counter stays x1 after
+      the Hard L20 win (DV panel re-shows day 1, Mo checked)'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#49
+    version: 3.40.1
+  - id: chest-tap-no-preview
+    text: Tapping a locked chest (10) on the Daily Victories bar shows no preview
+      or tooltip; contents only when reached
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#51
+    version: 3.40.1
+  - id: under-out-of-space
+    text: 'As the base: Out of space in Hard L20 with a 1-day streak, ''-4 to revive''
+      continued the level; the streak and leaf counter were unchanged'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#10
+  - id: month-arrows
+    text: 'Month arrows tapped (prev) at streak 1: the calendar stayed on 10/2026,
+      no change'
+    done: true
+    source: 20261005-221108-chrono-2FYKPJ#3
+    version: 3.40.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-073409-chrono-2FYKPJ#2
+  - id: chk-rewards
+    text: The reward for each step of the streak
+    done: false
+  - id: chk-break
+    text: What breaks it (a loss, a quit, a missed day) and what the break costs
+    done: false
+  - id: chk-save
+    text: Offers to keep it after a break and their price (a video, coins)
+    done: false
+  - id: under-restart
+    text: 'Restart in the Out of space window under Daily Victories streak: as the
+      base, or what differs'
+    done: false
+  - id: under-exit-app
+    text: 'Force-stop after one pair cleared (IQ 40.4) under Daily Victories streak:
+      as the base, or what differs'
+    done: false
+  - id: under-restart-menu
+    text: 'Restart row in the in-level Options under Daily Victories streak: as the
+      base, or what differs'
+    done: false
+  found_at:
+    text: level 19 (restored from the cloud save on a fresh install)
+    value: 19.0
+  type: streak
+  appeared:
+    text: opened by tapping the leaf counter on home; day-streak calendar, leaf is
+      the streak counter (x0)
+    certainty: fact
+    source: 20261005-073409-chrono-2FYKPJ#2
+- id: level-chest
+  name: Level progress chest
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'No button: the bar shows on the level win screen only'
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#47
+  - id: chk-screen
+    text: A 10-segment bar ending in a red chest under the win stats, caption 'Reach
+      Level 20'
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#47
+  - id: chk-progress
+    text: 'One segment per won level: 8 of 10 when the L19 win screen opens, animates
+      to 9 of 10; caption ''Reach Level 20'''
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#48
+  - id: chk-earn
+    text: One bar segment per won level; the chest opens on the win of every 10th
+      level (L20; next caption 'Reach Level 30')
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#45
+  - id: chk-use
+    text: The chest flies to the centre after the win screen (after Rate Us); tap
+      opens it; Collect, or Collect x2 with a rewarded video
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#46
+  - id: chk-complete
+    text: 'Full bar at L20: Hint x1 + ''Level 20'' avatar frame + Undo x1; the bar
+      restarts at 0 with ''Reach Level 30'''
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#47
+  - id: chk-items
+    text: 'Chest items seen: Hint, Undo, a level avatar frame (Level 20); later chests
+      (L30+) not seen yet: one chest per 10 levels, no tiers on the bar'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#46
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#47
+  found_at:
+    text: level 19
+    value: 19.0
+  type: meta-progress
+  appeared:
+    text: 'seen on the L19 win screen: a 10-segment bar ending in a red chest, ''Reach
+      Level 20'', 8 of 10 filled'
+    certainty: fact
+    source: 20261005-073804-chrono-2FYKPJ#47
+- id: face-down-backs
+  name: Face-down backs (flip tiles)
+  status: documented
+  cases:
+  - id: chk-entry
+    text: 'Duplicate of face-down-tiles (documented, same mechanic: green/purple/red
+      backs from L11, flip in place, no tray slot); see that feature''s cases'
+    done: true
+    source: 20261005-133404-chrono-2FYKPJ#0
+  - id: chk-screen
+    text: 'Duplicate of face-down-tiles (documented, same mechanic: green/purple/red
+      backs from L11, flip in place, no tray slot); see that feature''s cases'
+    done: true
+    source: 20261005-133404-chrono-2FYKPJ#0
+  - id: chk-first-level
+    text: 'Duplicate of face-down-tiles (documented, same mechanic: green/purple/red
+      backs from L11, flip in place, no tray slot); see that feature''s cases'
+    done: true
+    source: 20261005-133404-chrono-2FYKPJ#0
+  - id: chk-rules
+    text: 'Duplicate of face-down-tiles (documented, same mechanic: green/purple/red
+      backs from L11, flip in place, no tray slot); see that feature''s cases'
+    done: true
+    source: 20261005-133404-chrono-2FYKPJ#0
+  - id: chk-interactions
+    text: 'Duplicate of face-down-tiles (documented, same mechanic: green/purple/red
+      backs from L11, flip in place, no tray slot); see that feature''s cases'
+    done: true
+    source: 20261005-133404-chrono-2FYKPJ#0
+  - id: chk-loss
+    text: 'Duplicate of face-down-tiles (documented, same mechanic: green/purple/red
+      backs from L11, flip in place, no tray slot); see that feature''s cases'
+    done: true
+    source: 20261005-133404-chrono-2FYKPJ#0
+  - id: seen-back-with-faceup-twin
+    text: Tapping a face-down back whose face was seen earlier, while its twin (a
+      flipped back) is face up, clears both with no tray slot (red wheel pair, Hard
+      L20, white/blue set)
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#34
+    version: 3.40.1
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-133404-chrono-2FYKPJ#0
+  found_at:
+    text: level 20 (Hard), L19 won
+    value: 20.0
+  type: level-element
+  appeared:
+    text: 'first seen on level 11: unseen tiles drawn as backs; a free tap flips in
+      place'
+    certainty: fact
+    source: 20261005-133404-chrono-2FYKPJ#0
+  version_seen: 3.40.1
+- id: picture-tiles
+  name: Picture tiles (framed art, zodiac, blank card)
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: false
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-first-level
+    text: The first level it shows on and how the game introduces it
+    done: false
+  - id: chk-rules
+    text: What it does and how it is used
+    done: false
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 20 (Hard), L19 won
+    value: 20.0
+  type: level-element
+  appeared:
+    text: ordinary pairs among tile faces; framed art first noted on L12-L19
+    certainty: hypothesis
+    source: 20261005-133404-chrono-2FYKPJ#0
+- id: spin-tiles
+  name: Spinning tiles
+  status: in_progress
+  cases:
+  - id: chk-first-level
+    text: 'Level 21 (the first after Hard L20): intro banner ''Clear every tile to
+      stop the spin!'' with a 3x3 tile icon and rotate arrows'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#48
+  - id: chk-entry
+    text: On the level board itself (L21 from the Level button); no separate entry
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#48
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#48
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-rules
+    text: What it does and how it is used
+    done: false
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 20
+    value: 20.0
+  type: level-element
+  appeared:
+    text: 'intro banner on opening Level 21 (first level after Hard L20): ''Clear
+      every tile to stop the spin!'' with a 3x3 tile icon and rotate arrows'
+    certainty: fact
+    source: 20261005-133525-chrono-2FYKPJ#48
+- id: combo
+  name: Combo streak
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'On the level board itself: no entry; shows during play when matches follow
+      quickly'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#49
+  - id: chk-screen
+    text: Mascot with 'Good Combo x5', 'Great x10', 'Excellent x15', 'Amazing x20';
+      tray glows green/blue/purple/gold by tier; best Combo on the win screen
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#49
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#49
+  - id: chk-first-level
+    text: The first level it shows on and how the game introduces it
+    done: false
+  - id: chk-rules
+    text: What it does and how it is used
+    done: false
+  - id: chk-interactions
+    text: How it interacts with the other pieces
+    done: false
+  - id: chk-loss
+    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
+      level (case <base> <kind> "..." --outcome)'
+    done: false
+  found_at:
+    text: level 21 (Hard L20 won)
+    value: 21.0
+  type: level-element
+  appeared:
+    text: 'in Hard L20 when matches follow each other quickly: mascot + ''Good Combo
+      x5'', ''Great x10'', ''Excellent x15'', ''Amazing x20''; the tray glows (green,
+      blue, purple, gold by tier); the win screen shows the best Combo (22)'
+    certainty: fact
+    source: 20261005-133525-chrono-2FYKPJ#49
+- id: notifications-prompt
+  name: Notification prompt
+  status: in_progress
+  cases:
+  - id: chk-screen
+    text: 'Popup ''Important Notice'': open app notifications to stay on top of the
+      leaderboard; Continue (to system settings) and X'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#42
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-133525-chrono-2FYKPJ#42
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-options
+    text: Every option or button and what it changes (each toggle once, set back after)
+    done: false
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  - id: chk-links
+    text: 'Links out (privacy, terms, help): where they lead (back to the game at
+      once)'
+    done: false
+  found_at:
+    text: level 21 (Hard L20 won)
+    value: 21.0
+  type: system
+  appeared:
+    text: 'after the first league standing screen (Hard L20 win): ''Important Notice:
+      open app notifications to stay on top of the leaderboard'''
+    certainty: fact
+    source: 20261005-133525-chrono-2FYKPJ#42
 tasks:
 - id: analyze
   title: Analyze the game
@@ -1298,7 +1845,7 @@ tasks:
     badged 10 is owned at level 19, so likely one frame per 10 levels'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:53:00'
   feature: level-frames
   source: session
@@ -1306,6 +1853,10 @@ tasks:
     (earned at level milestones: a frame badged 10 is owned at level 19, so likely
     one frame per 10 levels); confirmed when a frame shows the trigger. Record it
     with feature level-frames --appeared "...": the goal closes by itself'
+  closed: '2026-10-05T14:02:17'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: the level chest at L20 gave a ''Level
+    20'' avatar frame: frames come from the 10-level chests [20261005-133525-chrono-2FYKPJ#46]'
 - id: level-frames-next
   title: A new avatar frame at level 20 or 30?
   kind: experiment
@@ -1336,7 +1887,7 @@ tasks:
     later, probably at a level threshold'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:58:15'
   feature: leagues
   source: session
@@ -1345,6 +1896,10 @@ tasks:
     1st-place finishes, so leagues open later, probably at a level threshold); confirmed
     when a frame shows the trigger. Record it with feature leagues --appeared "...":
     the goal closes by itself'
+  closed: '2026-10-05T13:36:02'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: popup on the first launch after winning
+    L19 (progress level 20 Hard) [20261005-133525-chrono-2FYKPJ#0]'
 - id: unlock-name-colors
   title: 'Unlock Name colors: 8 achievement points for color 2'
   kind: unlock
@@ -1375,13 +1930,15 @@ tasks:
   title: 'Unlock Leagues: not shown; guess about level 30'
   kind: unlock
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:59:32'
   feature: leagues
   source: session
-  note: the lock seen on screen (feature --locked)
+  note: seen open at level 20 (Hard), L19 won
   target_text: not shown; guess about level 30
   target_value: 30.0
+  closed: '2026-10-05T13:36:02'
+  closed_by: planner
 - id: leagues-unlock-guess
   title: Leagues open at some level after 19 (Achievements list League Reached)?
   kind: experiment
@@ -1397,10 +1954,8 @@ tasks:
   note: 'duplicate of appeared-leagues and unlock-leagues (same question: the level
     where Leagues opens)'
 - id: outcomes-hard-level
-  title: 'Run each outcome once under Hard level: Back arrow in the level goes straight
-    to the home screen, no confirmation, no cost seen (board kept, per earlier sessions),
-    Win, Restart in the Out of space window, Force-stop after one pair cleared (IQ
-    40.4), Out of space'
+  title: 'Run each outcome once under Hard level: Restart in the Out of space window,
+    Force-stop after one pair cleared (IQ 40.4), Restart row in the in-level Options'
   kind: experiment
   requires: any
   status: open
@@ -1438,10 +1993,15 @@ tasks:
   title: 'Study Loading screen: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: loading
   source: external
+  closed: '2026-10-06T02:27:18'
+  closed_by: 20261006-022624-chrono-2FYKPJ#0
+  note: 'Loading screen re-verified on 3.40.1: green screen, tagline, bar with tile
+    icon, Games Today and Playing Now counters; all cases were closed earlier, frame
+    marked'
 - id: study-age-select
   title: 'Study Age selection: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -1471,10 +2031,14 @@ tasks:
   title: 'Study Home screen: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: home
   source: external
+  closed: '2026-10-05T07:36:52'
+  closed_by: 20261005-073409-chrono-2FYKPJ#6
+  note: Entries, badges, changes verified; found Daily Victories behind the leaf counter
+    (new feature daily-victories)
 - id: study-profile
   title: 'Study Profile: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -1488,10 +2052,14 @@ tasks:
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: level-frames
   source: external
+  closed: '2026-10-06T02:28:47'
+  closed_by: 20261006-022624-chrono-2FYKPJ#6
+  note: 'Profile Frame tab walked: Level section (10) and Default 6 colours, preview
+    and X-discard verified; Save and L20 frame left as task'
 - id: study-theme
   title: 'Study Theme (tiles and background): open it, walk its screens and tabs,
     verify its cases'
@@ -1514,10 +2082,16 @@ tasks:
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: core-level
   source: external
+  closed: '2026-10-05T08:00:59'
+  closed_by: 20261005-073804-chrono-2FYKPJ#60
+  note: 'chk-win verified: L19 won (14:12, IQ 154.8, combo 23): fade replay, Daily
+    Victories panel (leaf +1), win screen Brilliant! with Time/IQ/Combo, holder line,
+    10-segment chest bar ''Reach Level 20'', next button Level 20 Hard. chk-elements
+    left to task elements-core'
 - id: study-boosters
   title: 'Study Boosters: Shuffle, Hint, Undo: open it, walk its screens and tabs,
     verify its cases'
@@ -1534,10 +2108,14 @@ tasks:
   title: 'Study IQ score: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: iq-score
   source: external
+  closed: '2026-10-06T00:18:59'
+  closed_by: 20261006-001538-chrono-2FYKPJ#12
+  note: 'IQ counter: tap does nothing, +1.9 for first pair on L21 (40 to 41.9); no
+    tiers/rewards seen'
 - id: study-face-down-tiles
   title: 'Study Face-down tiles: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -1553,10 +2131,13 @@ tasks:
   title: 'Study In-level Options: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: level-options
   source: external
+  closed: '2026-10-06T02:31:48'
+  closed_by: 20261006-022624-chrono-2FYKPJ#21
+  note: all rows and toggles walked on L21; toggles restored ON
 - id: study-no-ads
   title: 'Study No Ads purchase: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -1580,10 +2161,14 @@ tasks:
   title: 'Study How to Play: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: how-to-play
   source: external
+  closed: '2026-10-05T22:13:40'
+  closed_by: 20261005-221108-chrono-2FYKPJ#9
+  note: 'Re-walked on 3.40.1 (L21 Options): 2 pages, X closes to level, matches wiki;
+    marked page 1/2.'
 - id: study-rate-us
   title: 'Study Rate us button: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -1613,10 +2198,15 @@ tasks:
   title: 'Study Hard level: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: hard-level
   source: external
+  closed: '2026-10-06T00:19:21'
+  closed_by: 20261006-001538-chrono-2FYKPJ#13
+  note: 'Hard L20 screens/cases were already marked earlier; chk-loss, retry, restart,
+    exit-app, frequency need another Hard level (hard-l30 task, outcomes-hard-level).
+    Today: L21 shows x2 tag but is a normal level'
 - id: tileset-board
   title: 'Tile set vs board: find whether the chosen tile set or the level decides
     the board''s faces and face-down color'
@@ -1655,13 +2245,18 @@ tasks:
     is 0 (rewarded ad, coins, shop)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:03:23'
   feature: boosters
   source: session
   plan: 'Counts at L19: Shuffle 3, Hint 5, Undo 10. Use Shuffle in levels until 0,
     then tap it and mark the popup without paying. Confirms whether the game has a
     rewarded-ad placement or a currency sink'
+  closed: '2026-10-05T08:05:46'
+  closed_by: 20261005-073804-chrono-2FYKPJ#53
+  note: Hint at 0 offers a rewarded video for 2 Hints (Free Hint window); Shuffle
+    and Undo at 0 not reached yet
+  result: confirmed
 - id: look-daily
   title: 'Look for daily rewards or a daily challenge: open the game on a new day
     and check the home and launch popups'
@@ -1774,7 +2369,7 @@ tasks:
     on 3.39.1; not reseen on 3.40.1'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:13:08'
   feature: hard-level
   source: session
@@ -1782,25 +2377,39 @@ tasks:
     10 was marked Hard in earlier sessions on 3.39.1; not reseen on 3.40.1); confirmed
     when a frame shows the trigger. Record it with feature hard-level --appeared "...":
     the goal closes by itself'
+  closed: '2026-10-05T08:05:42'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: announced on the level 19 win screen:
+    the next-level button turns red ''Level 20 / Hard''; the Hard banner shows when
+    Level 20 opens [20261005-073804-chrono-2FYKPJ#47]'
 - id: hard-level-reach
   title: Reach and study a Hard level (L10 was Hard on 3.39.1; reach L20+ on 3.40.1)
   kind: unlock
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:28:30'
   feature: hard-level
   source: session
   target_text: next Hard level
   target_value: 20.0
+  closed: '2026-10-05T08:05:41'
+  closed_by: 20261005-073804-chrono-2FYKPJ#49
+  note: 'Level 20 is Hard on 3.40.1: red Hard banner ''Even pros sweat here.'', board
+    marked'
 - id: win-screen-l19
   title: 'Win a level: win screen, rewards (needs solver for core-match)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:28:31'
   feature: core-level
   source: session
   plan: win L19 and mark the win screen
+  closed: '2026-10-05T08:05:41'
+  closed_by: 20261005-073804-chrono-2FYKPJ#47
+  note: 'L19 won; win screen marked: Brilliant!, Time/IQ/Combo, holder line, 10-segment
+    chest bar ''Reach Level 20'', red Level 20 Hard button; no coins'
+  result: confirmed
 - id: appeared-iq-bonus-tiles
   title: 'Find why IQ bonus tiles appeared: tiles with a blue IQ+N banner (IQ+6, IQ+9
     on L19, frames 6, 19); seen from level 8 in 20260930-225122 (IQ+10), first level
@@ -1821,10 +2430,14 @@ tasks:
     are for'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:31:45'
   feature: leaves
   source: session
+  closed: '2026-10-05T07:38:39'
+  closed_by: 20261005-073409-chrono-2FYKPJ#2
+  note: 'Leaf counter tapped: opens Daily Victories, the counter is the day streak
+    (x0 = 0 day streak); sources and sinks stay with leaves-earn and study-daily-victories'
 - id: study-iq-bonus-tiles
   title: 'Study IQ bonus tiles: match an IQ+N tile pair and record how much the IQ
     score grows'
@@ -1856,10 +2469,343 @@ tasks:
     a won level'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:31:46'
   feature: leaves
   source: session
   plan: Mark the home leaf counter before a level, win the level, mark the win screen
     and the home again. Confirmed level wins give leaves if x0 grows; refuted if it
     stays 0 (then look in the leaf screen for the source)
+  closed: '2026-10-05T08:05:43'
+  closed_by: 20261005-073804-chrono-2FYKPJ#55
+  note: 'home leaf counter x0 before, x1 after the first win of the day (L19); the
+    leaf count is the Daily Victories day streak (panel at #46, calendar ''1 day streak!''
+    at #56)'
+  result: confirmed
+- id: outcomes-daily-victories
+  title: 'Run each outcome once under Daily Victories streak: Restart in the Out of
+    space window, Force-stop after one pair cleared (IQ 40.4), Restart row in the
+    in-level Options'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T07:35:43'
+  feature: daily-victories
+  source: session
+  plan: 'while Daily Victories streak is on, reach each listed outcome of the base
+    level once, one at a time (a deliberate loss is allowed unless it spends premium
+    currency); mark the outcome screen (mark --feature daily-victories --as result)
+    and close its cell: case daily-victories under-<outcome> "as the base" or "what
+    differs" --done'
+  rank: 7
+- id: study-daily-victories
+  title: 'Study Daily Victories: chests at 10/20/30, earn leaves by winning daily'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T07:36:52'
+  feature: daily-victories
+  source: session
+  closed: '2026-10-05T22:12:38'
+  closed_by: 20261005-221108-chrono-2FYKPJ#3
+  note: 'Re-walked screen: streak 1, 10/20/30 chests, chest tap gives no preview,
+    month arrow no change. Rewards/break/save still need days (dv-chest-10, dv-day2).'
+- id: dv-day-marks
+  title: Find what the bright calendar days in Daily Victories mean (01-05 bright
+    at a 0 day streak)
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T07:38:46'
+  feature: daily-victories
+  source: session
+  plan: Open Daily Victories, mark the calendar; win one level today, reopen and mark
+    again. Confirmed 'bright = days the app was opened' if today's cell looks the
+    same as 01-05 and only a win adds a new mark/streak 1; refuted if bright days
+    change after the win (then bright = something else, e.g. past days)
+  closed: '2026-10-05T08:05:44'
+  closed_by: 20261005-073804-chrono-2FYKPJ#56
+  note: 'after the win, 05 turns gold (won day) while 01-04 stay bright though no
+    session ran on 01-02: bright = past days of the month, gold = a won day'
+  result: refuted
+- id: dv-chest-preview
+  title: Find whether a Daily Victories chest (10/20/30) shows its reward before it
+    is reached
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T07:38:47'
+  feature: daily-victories
+  source: session
+  plan: At streak >= 1 tap and long-press the 10-day chest; mark any popup. At streak
+    0 a tap did nothing (step 3). Confirmed if a reward preview appears; refuted if
+    nothing opens at any streak below 10
+  closed: '2026-10-05T08:05:45'
+  closed_by: 20261005-073804-chrono-2FYKPJ#57
+  note: a tap on the 10-day chest at streak 1 (and at 0 earlier) opens nothing; long-press
+    not tried; contents left to dv-chest-10
+  result: refuted
+- id: dv-chest-10
+  title: 'Daily Victories: see what the 10-day chest gives (a tap on the chest shows
+    nothing)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T07:59:09'
+  feature: daily-victories
+  source: session
+  plan: win one level a day; at 10 days open the chest and mark its reward
+- id: dv-day2-d1
+  title: 'Daily Victories: win a level tomorrow and see whether the streak shows 2
+    and how a missed day looks — day 1 of 2'
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-05T07:59:09'
+  feature: daily-victories
+  not_before: '2026-10-06T07:59:09'
+  source: game
+- id: dv-day2-d2
+  title: 'Daily Victories: win a level tomorrow and see whether the streak shows 2
+    and how a missed day looks — day 2 of 2'
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-05T07:59:09'
+  feature: daily-victories
+  not_before: '2026-10-07T07:59:09'
+  source: game
+- id: elements-core
+  title: List the level elements of the tray level (face-down backs, picture tiles,
+    IQ+ tiles) as level-element features with their first level
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T08:00:58'
+  feature: core-level
+  source: session
+  closed: '2026-10-05T13:34:32'
+  closed_by: 20261005-133404-chrono-2FYKPJ#0
+  note: 'Level elements registered: face-down-backs (from L11, flip in place, no tray
+    slot), picture-tiles (framed art, zodiac, blank card; first level unknown, L12-L19
+    notes), iq-bonus-tiles (already registered, IQ+N). Appeared-why for picture tiles
+    left as a task.'
+- id: hard-l20-win
+  title: 'Win Hard Level 20: its win screen and reward vs the base; then L21 and whether
+    Hard repeats every 10 levels'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T08:00:59'
+  feature: hard-level
+  source: session
+  closed: '2026-10-05T13:56:50'
+  closed_by: 20261005-133525-chrono-2FYKPJ#49
+  note: 'Hard L20 won (steps ~5-46): post-win order = league standing (rank 18, +8
+    福 since Hard tag x2) > notification pitch > Daily Victories panel > win screen
+    ''Legendary!'' with ''You cleared HARD level so fast'' (Time/IQ/Combo) > Rate
+    Us > level chest (Hint, L20 avatar frame, Undo; Collect x2 by video). Next chest
+    ''Reach Level 30''. L21 is a normal level (orange button, no Hard) with a new
+    element: spinning tiles. Hard seen at L10 and L20: every 10 levels is likely,
+    L30 to confirm (task hard-l30).'
+- id: study-level-chest
+  title: 'Study Level progress chest: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T08:03:38'
+  feature: level-chest
+  source: external
+  closed: '2026-10-05T14:02:17'
+  closed_by: 20261005-133525-chrono-2FYKPJ#47
+  note: 'All checklist items closed: earned per won level, chest every 10 levels,
+    L20 contents Hint/frame/Undo, Collect x2 by video'
+- id: level-chest-open
+  title: 'Open the level progress chest: win Level 20 and mark what the chest gives
+    and how the bar restarts'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-05T08:06:03'
+  feature: level-chest
+  source: session
+  plan: Bar is 9 of 10 after the L19 win, caption 'Reach Level 20'. Win L20 (Hard),
+    mark the win screen and any chest popup, then the next win screen. Confirmed 'one
+    segment per win, chest at the 10th' if the bar fills and a reward opens at L20;
+    then note the next caption (Reach Level 30?)
+  closed: '2026-10-05T14:02:14'
+  closed_by: 20261005-133525-chrono-2FYKPJ#46
+  note: Bar filled on the L20 win (one segment per won level, chest at the 10th);
+    chest gave Hint x1, Level-20 avatar frame, Undo x1 (Collect x2 by rewarded video);
+    bar resets to 'Reach Level 30' [20261005-133525-chrono-2FYKPJ#45-47]
+  result: confirmed
+- id: booster-zero-shuffle-undo
+  title: 'See what Shuffle and Undo offer at 0 (as Hint: a video for 2?)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T08:06:03'
+  feature: boosters
+  source: session
+  plan: Shuffle is at 2, Undo at 9. Use Shuffle when stuck until 0, then tap it and
+    mark the popup without paying. Confirmed if a video offer like Free Hint appears;
+    else note what opens
+- id: appeared-picture-tiles
+  title: 'Find why Picture tiles (framed art, zodiac, blank card) appeared: ordinary
+    pairs among tile faces; framed art first noted on L12-L19'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T13:34:27'
+  feature: picture-tiles
+  source: session
+  plan: 'find the moment Picture tiles (framed art, zodiac, blank card) shows up and
+    what comes just before it (ordinary pairs among tile faces; framed art first noted
+    on L12-L19); confirmed when a frame shows the trigger. Record it with feature
+    picture-tiles --appeared "...": the goal closes by itself'
+- id: study-face-down-backs
+  title: 'Study Face-down backs (flip tiles): open it, walk its screens and tabs,
+    verify its cases'
+  kind: study
+  requires: any
+  status: cancelled
+  created: '2026-10-05T13:34:55'
+  feature: face-down-backs
+  source: external
+  closed: '2026-10-05T13:35:54'
+  closed_by: review-20261005
+  note: 'Duplicate: face-down-backs is the face-down-tiles feature (documented) registered
+    again by session 20261005-133404-chrono-2FYKPJ#0'
+- id: study-picture-tiles
+  title: 'Study Picture tiles (framed art, zodiac, blank card): open it, walk its
+    screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T13:34:55'
+  feature: picture-tiles
+  source: external
+- id: first-look-leagues
+  title: 'First look at Leagues: open it once, record what it is and decide whether
+    it needs a full study'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T13:36:02'
+  feature: leagues
+  source: session
+  note: 'Leagues: Bronze of 5 tiers, groups of 50, 福 tiles = points (Hard x2), ~24h
+    period, home badge entry; needs a full study (rewards, end of period)'
+  rank: 0
+  closed: '2026-10-05T14:02:36'
+  closed_by: 20261005-133525-chrono-2FYKPJ#41
+- id: hard-l30
+  title: 'Hard every 10 levels: check that Level 30 is Hard (and L22-29 are not)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T13:56:51'
+  feature: hard-level
+  source: session
+  plan: play to L30; the home Level button turns red with 'Hard' on L30 and not before
+    = confirmed
+- id: study-spin-tiles
+  title: 'Study spinning tiles (L21): how the spin works, what stops it'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T13:56:51'
+  feature: spin-tiles
+  source: session
+- id: solver-white-blue
+  title: 'Solver: read the 5th tile set (white faces, blue backs, Hard L20 of session
+    133525) - it read ''purple'' and found no pair on shots 00005-00045'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T13:56:51'
+  feature: core-level
+  source: session
+  plan: run solve --image on 133525 shots 00005, 00019, 00021; correct = pairs found
+    that the hand play used
+- id: study-leagues
+  title: 'Study Leagues: open the home badge, mark the full board and the rewards
+    per rank, promotion and relegation'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-05T14:02:51'
+  feature: leagues
+  source: session
+  closed: '2026-10-06T00:17:57'
+  closed_by: 20261006-001538-chrono-2FYKPJ#8
+  note: Board, info pages, trophy carousel marked; end-of-period contents left to
+    leagues-period-end
+- id: leagues-period-end
+  title: 'Leagues: after the period ends (about 24h from 13:56 on 2026-10-05) mark
+    the results screen, the reward and the new league'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-05T14:02:52'
+  feature: leagues
+  not_before: '2026-10-06T14:00:00'
+  source: game
+- id: study-combo
+  title: 'Study Combo: what breaks the streak (a pause, a tray tile), whether a tier
+    gives anything beyond the win-screen number, its first level'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T14:02:52'
+  feature: combo
+  source: session
+  plan: 'On a level, chain fast pairs to x5, then wait 5 s and match again: the combo
+    restarts = time-based; tap a single into the tray mid-chain: restarts = tray-based;
+    compare IQ and rewards at x5/x10 against a slow level'
+- id: rate-us-return
+  title: 'Rate Us prompt: after closing it with X, does it come back on later wins
+    (which level)?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-05T14:02:54'
+  feature: rate-us
+  source: session
+  plan: Close Rate Us with X (never rate); on each later win note whether it shows
+    again. Confirmed 'once only' if it does not return by L30; else record the levels
+    it returns on
+- id: study-notifications-prompt
+  title: 'Study Notification prompt: open it, walk its screens and tabs, verify its
+    cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-05T14:10:19'
+  feature: notifications-prompt
+  source: external
+- id: x2-tag-normal-level
+  title: 'Find what the x2 league tag on a normal Level button means: win L21 and
+    count the 福 league points it adds'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T00:21:00'
+  feature: leagues
+  source: session
+  plan: Note the league points on the badge/board before L21 (8 now), count the gold
+    福 tiles matched on L21, win it, read the points after. Confirmed (x2 applies to
+    any tagged level) if points rise by 2x the 福 tiles; refuted (x2 = Hard only, tag
+    is decoration or a timed bonus) if they rise by 1x. Also note whether the tag
+    disappears on a later level or after a timer.
+- id: frames-save-lvl20
+  title: Check Level 20 frame in Frame tab and Save of an equipped frame
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T02:28:41'
+  feature: level-frames
+  source: session
+  plan: open Profile Frame tab, look for Level 20 frame, equip Level 10 frame and
+    Save, check home avatar

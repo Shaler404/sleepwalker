@@ -1,6 +1,7 @@
 """Meowdoku (Queens-like): one cat per color region, row and column; no two cats touch (8-neighbourhood).
 Reads the board from the screenshot, solves it by backtracking, returns double taps ([x, y, 2]) for every
-missing cat in ONE round with rescan (the next round re-reads, refills a lost tap and says done). It returns no moves when the read is not plausible: a grid
+missing cat in ONE round with done=True (the moves finish the level, the run stops: no second look at the
+win popup). It returns no moves when the read is not plausible: a grid
 outside 4-12, a colour region that is not connected, more cats than rows, no solution or more than one."""
 import numpy as np
 
@@ -188,6 +189,12 @@ def solve(image, board=None, frame_scale=1.0):
         return none(f"read a {n}x{n} grid: not a board (popup or ad on screen?)")
     fixed = [(r, c) for r in range(n) for c in range(n) if cells[r][c]["cat"]]
     if len(fixed) > n:
+        bright = np.median([max(cells[r][c]["color"]) for r in range(n) for c in range(n)])
+        if bright < 110:
+            # a dark veil over the whole board (Golden Fish "Only Golden Fish - Be careful!" tooltip): the cells
+            # are too dark to tell a cat from a colour, and taps there may only close the tooltip
+            return none(f"{n}x{n}: the board is dimmed by an overlay (tooltip or popup, median brightness "
+                        f"{bright:.0f}): tap a neutral area to close it, then solve")
         return none(f"{n}x{n}: read {len(fixed)} cats, more than {n}: cats misread")
     if len(fixed) == n and all(a[0] != b[0] and a[1] != b[1] and max(abs(a[0] - b[0]), abs(a[1] - b[1])) > 1
                                for i, a in enumerate(fixed) for b in fixed[i + 1:]):
@@ -200,13 +207,12 @@ def solve(image, board=None, frame_scale=1.0):
         return none(f"{n}x{n}, no solution with cats {fixed}; labels={labels}")
     if _count_solutions(n, labels, fixed) > 1:
         return none(f"{n}x{n}: more than one solution, the board was misread; labels={labels}")
-    moves = []
-    for r, c in sorted(placed):
-        if (r, c) in fixed:
-            continue
-        x, y = cells[r][c]["xy"]
-        moves.append([round(x), round(y), 2])
-        if len(moves) >= MAX_CELLS:
-            break
+    missing = [rc for rc in sorted(placed) if rc not in fixed]
+    moves = [[round(cells[r][c]["xy"][0]), round(cells[r][c]["xy"][1]), 2] for r, c in missing[:MAX_CELLS]]
+    # The board has exactly one solution and these moves place every missing cat: they finish the level, so
+    # the run stops after this round without a second look. The second look used to land on whatever the
+    # game shows after the last cat (Daily: "New trial skin" popup, "Pure logic" banner over the board), read
+    # it as no board and end the run as given up (lab 2026-10-06: 3 of 5 such runs, all of them wins).
+    complete = len(moves) == len(missing)
     return {"moves": moves, "note": f"{n}x{n}, {k} colors, given cats {fixed}, solution {sorted(placed)}; "
-                                    f"labels={labels}", "rescan": True, "done": False}
+                                    f"labels={labels}", "rescan": not complete, "done": complete}

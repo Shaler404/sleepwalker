@@ -3,7 +3,7 @@ game: com.vitastudio.mahjong
 title: "Routes"
 type: agent
 version_seen: 3.40.1
-verified_at: 2026-10-04
+verified_at: 2026-10-06
 ---
 
 # Routes: Vita Mahjong
@@ -17,3 +17,6 @@ How to reach each place from the main screen, with tap points in the 730-px mode
 | Settings | Home > gear (678,110) > Save your progress (400,996) / About (400,910) | [s:20261003-195050-chrono-2FYKPJ#12] [s:20261003-195050-chrono-2FYKPJ#15] |
 | Achievements | Home > thumbs-up (522,110) > info (678,214) | [s:20261003-231301-chrono-2FYKPJ#7-11] |
 | Level options | Level (364,1300) > menu (677,108) > Options; leave with the back arrow (50,110) | [s:20261003-195050-chrono-2FYKPJ#19] [s:20261003-231301-chrono-2FYKPJ#16] [s:20261003-231301-chrono-2FYKPJ#21] |
+| Leagues | Home league badge (622,820) > wait 2 s > info (677,112); leaf counter (267,130) opens Daily Victories | [s:20261006-001538-chrono-2FYKPJ#1-6] [s:20261005-221108-chrono-2FYKPJ#1] |
+| Options and How to Play | Home Level (364,1300) > menu (677,108) > Options > How to Play (400,997) | [s:20261005-221108-chrono-2FYKPJ#5-7] |
+| Hard level | Win screen Hard button (364,1195); Home red Level button (364,1295) | [s:20261005-073804-chrono-2FYKPJ#47] [s:20261005-073804-chrono-2FYKPJ#55] |

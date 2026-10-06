@@ -34,6 +34,11 @@ The player writes the level once as a board (JSON, pixels of the 730-px frame th
 - optional: "gap" (seconds between pulls, 5), "max_moves" (challenge and boss levels), "stage": "2/4"
   (multi-stage: look again after the stage), "scrolling": true (the camera moves after pulls: one pin at
   a time), "try": ["E", "W"] (simulate this order instead of searching), "frame_width" (730).
+- scrolling levels taller than the screen (challenge): "scrolling": true with "height" (level pixels, the start
+  view at 0), "views": {place: y} (where the camera rests while the colour is in that place), "together":
+  [["T", "D1"]] (pins pulled in one round), "plan" (an order checked first); a pin may carry "tap": [x, y]
+  (tap there, not on the ring centre, when the centre pulls a neighbour). Such boards in the library are placed
+  in the level frame by frame by their rings (_match_scrolling).
 
 Without a board the solver reads the frame itself, only for the grey stacks of levels 1-8 (_read_stack):
 floor pins one under the other in one container over the cup. Anything else is refused with the reason.
@@ -77,7 +82,9 @@ def _parse(board):
     if errs:
         return None, errs, warns
     fw = float(board.get("frame_width") or 730)
-    fh = fw * 2340 / 1080
+    # a scrolling level (challenge) is written in level pixels from its top view down: "height" lets pins lie
+    # below the first frame
+    fh = max(fw * 2340 / 1080, float(board.get("height") or 0))
     cups = set()
     pin = {}
     for pid, spec in pins.items():
@@ -107,8 +114,16 @@ def _parse(board):
                     errs.append(f"pin {pid}: with needs [x, y] (the second ring pulled together)")
                     continue
                 p["with"] = [float(w[0]), float(w[1])]
+            t = spec.get("tap")
+            if t is not None:
+                # where to tap when the ring centre would pull a neighbour (challenge 1 TD: a tap on its ring
+                # centre pulled TV, whose rod runs 24 px beside it, and the greys fell out, 2026-10-06)
+                if not (isinstance(t, (list, tuple)) and len(t) == 2):
+                    errs.append(f"pin {pid}: tap needs [x, y]")
+                    continue
+                p["tap"] = [float(t[0]), float(t[1])]
         pts = [p["swipe"][:2], p["swipe"][2:]] if "swipe" in p else [p["at"]] + ([p["with"]] if "with" in p else [])
-        for x, y in pts:
+        for x, y in pts + ([p["tap"]] if "tap" in p else []):
             if not (0 < x < fw and 0 < y < fh):
                 errs.append(f"pin {pid}: ({x:.0f},{y:.0f}) is outside the {fw:.0f}-px frame")
         if spec.get("check") is False:
@@ -190,6 +205,43 @@ def _parse(board):
     for r in model["reframe"]:
         if r not in pin:
             errs.append(f"reframe: unknown pin {r}")
+    # scrolling levels (challenge 1, 2026-10-06): "views": {place: y} = the top of the view (level pixels) when
+    # the coloured pile rests in that place (the camera follows it); "together": [["T", "D1"]] = pins pulled in
+    # one round, in that order (the second one leaves the view once the first pile falls); "plan": an order to
+    # check first (not yet won on the phone)
+    model["views"] = {}
+    for pl, v in (board.get("views") or {}).items():
+        if pl not in place:
+            errs.append(f"views: unknown place {pl}")
+            continue
+        try:
+            model["views"][pl] = float(v)
+        except (TypeError, ValueError):
+            errs.append(f"views: {pl} needs a number")
+    model["together"] = []
+    seen_t = set()
+    for g in board.get("together") or []:
+        g = [str(x) for x in (g or [])]
+        if len(g) < 2 or any(x not in pin for x in g) or seen_t & set(g):
+            errs.append(f"together: {g} needs two or more known pins, each in one group")
+            continue
+        seen_t |= set(g)
+        model["together"].append(tuple(g))
+    model["plan"] = [str(x) for x in board.get("plan") or []]
+    for x in model["plan"]:
+        if x not in pin:
+            errs.append(f"plan: unknown pin {x}")
+    # "waits": {"M": 10}: at least that many seconds between the previous pull and this one (a pile still
+    # running over a steering pin, level 20). The solver itself sleeps the rest before it returns the pull.
+    model["waits"] = {}
+    for pid, w in (board.get("waits") or {}).items():
+        if pid not in pin:
+            errs.append(f"waits: unknown pin {pid}")
+            continue
+        try:
+            model["waits"][pid] = max(0.0, min(30.0, float(w)))
+        except (TypeError, ValueError):
+            errs.append(f"waits: {pid} needs seconds")
     return model, errs, warns
 
 
@@ -372,9 +424,45 @@ def _timing(model, prev_passed, pid):
 
 
 # --- search --------------------------------------------------------------------------------------------
+VIS_TOP, VIS_BOTTOM = 275, 1360  # a ring is tappable between the level header and the race bar (challenge)
+
+
+def _steps(model):
+    """what one round may pull: a 'together' group, or one pin outside the groups"""
+    members = {p for g in model["together"] for p in g}
+    return list(model["together"]) + [(p,) for p in model["pins"] if p not in members]
+
+
+def _view(model, st):
+    """the top of the view (level pixels) where the camera rests: on the coloured pile (scrolling boards)"""
+    vs = [model["views"][r] for r, p in sorted(st.piles.items()) if p[0] and r in model["views"]]
+    return vs[0] if vs else None
+
+
+def _in_view(model, pid, view):
+    p = model["pin"][pid]
+    return all(VIS_TOP <= y - view <= VIS_BOTTOM for _x, y in [p["at"]] + ([p["tap"]] if "tap" in p else []))
+
+
+def _step_ok(model, st, step):
+    """(new state, events, loss) after the step, or (None, [], why) when a pin of it is out of the view"""
+    v = _view(model, st) if model["views"] else None
+    if v is not None and not all(_in_view(model, p, v) for p in step):
+        return None, [], "out of the view"
+    ns, evs, loss = st, [], None
+    for p in step:
+        ns, ev, loss, _ = _pull(model, ns, p)
+        evs += ev
+        if loss:
+            break
+    return ns, evs, loss
+
+
 def _search(model, start):
+    if model["views"] or model["together"]:
+        return _search_steps(model, start)
     pins = model["pins"]
-    limit = model["max_moves"] or len(pins)
+    limit = (model["max_moves"] - len(start.pulled)) if model["max_moves"] else len(pins)
     q = deque([(start, ())])
     seen = {start.key()}
     found, best_partial, depth_found = [], None, None
@@ -418,6 +506,72 @@ def _search(model, start):
             seen.add(k)
             q.append((ns, np_))
     return found, best_partial, None
+
+
+def _search_steps(model, start):
+    """the search of a scrolling board: a round pulls a step (a pin or a 'together' group) whose rings are in
+    the view the camera rests at, and the move limit counts from the pins already pulled"""
+    steps = _steps(model)
+    limit = (model["max_moves"] - len(start.pulled)) if model["max_moves"] else len(model["pins"])
+    q = deque([(start, ())])
+    seen = {start.key()}
+    found, best_partial, depth_found = [], None, None
+    n, t0 = 0, time.monotonic()
+    while q:
+        st, path = q.popleft()
+        if time.monotonic() - t0 > TIME_BUDGET_S:
+            return found, best_partial, (None if found else f"no complete order within {TIME_BUDGET_S} s: split the board")
+        if depth_found is not None and len(path) >= depth_found:
+            continue
+        for step in steps:
+            if any(p in st.pulled for p in step) or len(path) + len(step) > limit:
+                continue
+            ns, _, loss = _step_ok(model, st, step)
+            n += 1
+            if n > MAX_STATES:
+                return found, best_partial, "the search is too big: split the board"
+            if loss == "LOOP":
+                return [], None, f"flows loop after pulling {' '.join(step)}: a place pours back into itself"
+            if loss or ns is None:
+                continue
+            np_ = path + step
+            left = _balls_left(ns)
+            if not left:
+                if depth_found is None:
+                    depth_found = len(np_)
+                found.append(np_)
+                if len(found) >= 400:
+                    return found, best_partial, None
+                continue
+            score = (len(left), len(np_))
+            if best_partial is None or score < best_partial[0]:
+                best_partial = (score, np_, left)
+            k = ns.key()
+            if k in seen:
+                continue
+            seen.add(k)
+            q.append((ns, np_))
+    return found, best_partial, None
+
+
+def _split_steps(model, order):
+    """the order cut into rounds: a 'together' group must come whole and in its order, or None"""
+    groups = {g[0]: g for g in model["together"]}
+    members = {p for g in model["together"] for p in g}
+    out, i = [], 0
+    while i < len(order):
+        g = groups.get(order[i])
+        if g:
+            if tuple(order[i:i + len(g)]) != g:
+                return None
+            out.append(g)
+            i += len(g)
+        elif order[i] in members:
+            return None
+        else:
+            out.append((order[i],))
+            i += 1
+    return out
 
 
 def _replay(model, start, order):
@@ -528,20 +682,29 @@ def _small(image, fw=730):
     return a.mean(2).astype(np.float32), (a.max(2) - a.min(2)).astype(np.float32)
 
 
-def _ring_profile(g, ch, cx, cy):
+def _ring_profile(g, ch, cx, cy, away=None):
     """A pin ring seen as concentric circles from its centre, whatever the background: a flat hole (the
     background), a dark circle, a light band, a dark circle. The older test (_ring_score) wants a coloured
     hole, so on the grey levels 1-8 (grey background) it saw no ring at all and refused every board
-    (2026-10-03, levels 1-2: both played by hand). Returns the profile radii or None."""
+    (2026-10-03, levels 1-2: both played by hand). Returns the profile radii or None.
+    away = (x, y) of a neighbour ring that overlaps this one: the profile is then taken only on the side
+    away from it (the sector within AWAY_DEG degrees of the neighbour's direction is left out, the hole
+    included: the neighbour's ring and rod cross it)."""
     h, w = g.shape
     cx, cy = int(round(cx)), int(round(cy))
     if cx < 26 or cy < 26 or cx > w - 27 or cy > h - 27:
         return None
     yy, xx = np.mgrid[cy - 25:cy + 26, cx - 25:cx + 26]
-    d = np.hypot(xx - cx, yy - cy).astype(np.int32)
+    dist = np.hypot(xx - cx, yy - cy)
+    d = dist.astype(np.int32)
     G, C = g[cy - 25:cy + 26, cx - 25:cx + 26].ravel(), ch[cy - 25:cy + 26, cx - 25:cx + 26].ravel()
     d = d.ravel()
     sel = d < 25
+    if away is not None:
+        ax, ay = away[0] - cx, away[1] - cy
+        n = max(1e-6, float(np.hypot(ax, ay)))
+        cosang = ((xx - cx) * ax + (yy - cy) * ay) / (np.maximum(dist, 1e-6) * n)
+        sel = sel & (cosang.ravel() < np.cos(np.radians(AWAY_DEG)))
     cnt = np.bincount(d[sel], minlength=25).astype(np.float64)
     m = np.bincount(d[sel], G[sel], minlength=25) / np.maximum(cnt, 1)
     sq = np.bincount(d[sel], G[sel].astype(np.float64) ** 2, minlength=25) / np.maximum(cnt, 1)
@@ -573,15 +736,47 @@ def _ring_profile(g, ch, cx, cy):
     return None
 
 
-def _profile_near(g, ch, x, y, search=10):
+def _profile_near(g, ch, x, y, search=10, away=None):
     best = None
     for dy in range(-search, search + 1):
         for dx in range(-search, search + 1):
-            if _ring_profile(g, ch, x + dx, y + dy) is not None:
+            if _ring_profile(g, ch, x + dx, y + dy, away=away) is not None:
                 dd = dx * dx + dy * dy
                 if best is None or dd < best[0]:
                     best = (dd, (x + dx, y + dy))
     return best[1] if best else None
+
+
+CLOSE_RINGS = 32  # rings closer than this overlap: the circle search sees neither (level 14 H/LR)
+AWAY_DEG = 80  # half-angle of the sector toward the overlapping ring left out of its profile (60-100 all read L14)
+
+
+def _close_pin(model, pid, x, y):
+    """the centre of another pin's ring that overlaps this one (closer than CLOSE_RINGS), or None"""
+    best = None
+    for q, p in model["pin"].items():
+        if q == pid or "at" not in p or "swipe" in p:
+            continue
+        for qx, qy in [p["at"]] + ([p["with"]] if "with" in p else []):
+            d = ((qx - x) ** 2 + (qy - y) ** 2) ** 0.5
+            if 4 < d < CLOSE_RINGS and (best is None or d < best[0]):
+                best = (d, (qx, qy))
+    return best[1] if best else None
+
+
+HALF_DIRS = ((0, 1), (0, -1), (1, 0), (-1, 0))  # the side a wall may hide: below, above, right, left
+
+
+def _half_ring(g, ch, x, y, search=6):
+    """A ring half hidden behind the container's white wall (level 17 on 241.5.2, 2026-10-05: the rings of the
+    two top pins V1/V2 stand on the top wall, their lower half behind it; neither the circle search nor the
+    full ring profile saw them and the level was played by hand): the ring profile on the visible side only
+    (the sector toward the wall left out, as for overlapping rings). Returns the centre or None."""
+    for dx, dy in HALF_DIRS:
+        at = _profile_near(g, ch, int(round(x)), int(round(y)), search=search, away=(x + 30 * dx, y + 30 * dy))
+        if at is not None:
+            return at
+    return None
 
 
 def _check_rings(image, model, skip=()):
@@ -608,6 +803,14 @@ def _check_rings(image, model, skip=()):
         if small is None:
             small = _small(image, model["fw"])
         at = _profile_near(small[0], small[1], int(round(x)), int(round(y)))
+        if at is None:
+            # two rings that overlap (level 14 H/LR on 241.5.2, 21 px apart, 2026-10-05: neither was seen and
+            # the level was played by hand): read each on its side away from the other
+            nb = _close_pin(model, pid, x, y)
+            if nb is not None:
+                at = _profile_near(small[0], small[1], int(round(x)), int(round(y)), search=6, away=nb)
+        if at is None:
+            at = _half_ring(small[0], small[1], x, y)
         if at is not None:
             if ((at[0] - x) ** 2 + (at[1] - y) ** 2) ** 0.5 > 9:
                 off.append(f"{pid} ring centre ~({at[0]:.0f},{at[1]:.0f})")
@@ -746,7 +949,8 @@ def _taps(model, order):
             s = p["swipe"]
             out.append(f"{s[0]:.0f},{s[1]:.0f}>{s[2]:.0f},{s[3]:.0f}")
         else:
-            out.append(f"{p['at'][0]:.0f},{p['at'][1]:.0f}")
+            at = p.get("tap") or p["at"]
+            out.append(f"{at[0]:.0f},{at[1]:.0f}")
             if "with" in p:
                 out.append(f"{p['with'][0]:.0f},{p['with'][1]:.0f}")
     return " ".join(out)
@@ -759,7 +963,8 @@ def _moves(model, order, k):
         if "swipe" in p:
             mv.append([round(v * k) for v in p["swipe"]])
         else:
-            mv.append([round(p["at"][0] * k), round(p["at"][1] * k)])
+            at = p.get("tap") or p["at"]
+            mv.append([round(at[0] * k), round(at[1] * k)])
             if "with" in p:
                 mv.append([round(p["with"][0] * k), round(p["with"][1] * k)])
     return mv
@@ -802,9 +1007,12 @@ def _match_library(image, state):
     g, ch = _small(image)
     rings = _find_rings(g, ch)
     stars = _find_gold(image)
-    if not rings and not stars:
-        return None, None, None, "no pin ring on this frame"
     mem = state if isinstance(state, dict) else {}
+    if not rings and not stars:
+        kept = _match_remembered(image, rings, mem)
+        if kept:
+            return kept
+        return None, None, None, "no pin ring on this frame"
     cands = list(rings) + list(stars)  # every ring must be a pin of the board; a star may be one
     found = []
     for name, b in LIBRARY.items():
@@ -824,17 +1032,34 @@ def _match_library(image, state):
             continue
         missing = list(dict.fromkeys(missing))
         if not missing:
-            found.append((0, name, (), "every ring seen" + (" (a golden star pin among them)" if used - set(range(len(rings))) else "")))
-            continue
-        model, errs, _ = _parse(b)
-        if errs:
+            why = "every ring seen" + (" (a golden star pin among them)" if used - set(range(len(rings))) else "")
+            shift = _ring_shift(pts, cands, len(rings))
+            if shift:
+                b = _scaled_board(b, 1.0, *shift)
+                why += f"; the view moved {shift[0]:+.0f},{shift[1]:+.0f} px: every pin shifted with it"
+            found.append((0, name, (), why, b))
             continue
         sent = (mem.get("sent") or []) if mem.get("entry") == name else []
         pulled = tuple(p for p in sent if p in missing)
         rest = [p for p in missing if p not in pulled]
+        # the view moved (level 16 after I2): the pins still to find are looked for where the rings went
+        shift = _ring_shift([pt for pt in pts if pt[0] not in pulled], cands, len(rings))
+        if shift:
+            b = _scaled_board(b, 1.0, *shift)
+        model, errs, _ = _parse(b)
+        if errs:
+            continue
         # a pin the circle search missed (a ring under the tutorial hand, a star the star test missed) still
-        # counts when the ring check sees it; at most one such pin, so a half-seen board is not taken
-        if len(rest) > 1 or (rest and len(model["pin"]) < 2):
+        # counts when the ring check sees it; at most one such pin, so a half-seen board is not taken. Rings
+        # that overlap another pin's ring (closer than CLOSE_RINGS) do not count in that one: the circle search
+        # never sees them (level 14 H/LR, 2026-10-05), the ring check reads them on their free side
+        lone = [p for p in rest if _close_pin(model, p, *model["pin"][p]["at"]) is None]
+        # a ring half hidden behind a wall (level 17 V1/V2 on the top wall) is never seen by the circle search
+        # either: it does not count as lone when its visible half reads as a ring at the library position
+        half = [p for p in lone if not model["pin"][p].get("gold") and "with" not in model["pin"][p]
+                and _half_ring(g, ch, *model["pin"][p]["at"]) is not None]
+        lone = [p for p in lone if p not in half]
+        if len(lone) > 1 or len(rest) > 3 or (rest and len(model["pin"]) < 2) or len(rest) >= len(model["pin"]) - 1:
             continue
         if rest:
             hidden, _, _ = _check_rings(image, model, skip=[p for p in model["pin"] if p not in rest])
@@ -844,10 +1069,16 @@ def _match_library(image, state):
         if pulled:
             why.append(f"pins {' '.join(pulled)} pulled in an earlier round")
         if rest:
-            why.append(f"ring {rest[0]} not found by the circle search but seen by the ring check")
-        found.append((2 if pulled else 1, name, pulled, "; ".join(why)))
+            kinds = [k for k, on in (("overlapping rings", len(rest) > len(lone) + len(half)),
+                                     (f"{' '.join(half)} half hidden behind a wall", bool(half))) if on]
+            why.append(f"ring{'s' if len(rest) > 1 else ''} {' '.join(rest)} not found by the circle search but "
+                       f"seen by the ring check{' (' + '; '.join(kinds) + ')' if kinds else ''}")
+        if shift:
+            why.append(f"the view moved {shift[0]:+.0f},{shift[1]:+.0f} px: every pin shifted with it")
+        found.append((2 if pulled else 1, name, pulled, "; ".join(why), b))
     if not found:
-        moved = _match_reframed(rings, mem) or (stars and _match_reframed(list(rings) + list(stars), mem))
+        moved = (_match_reframed(rings, mem) or (stars and _match_reframed(list(rings) + list(stars), mem))
+                 or _match_reframed_part(image, rings, mem))
         if moved:
             return moved
         kept = _match_remembered(image, rings, mem)
@@ -856,12 +1087,43 @@ def _match_library(image, state):
         return None, None, None, (f"{len(rings)} ring(s) at {' '.join(f'({x},{y})' for x, y in rings[:8])}"
                                   + (f" and {len(stars)} golden star(s) at {' '.join(f'({x},{y})' for x, y in stars[:4])}"
                                      if stars else "") + " on a frame match no level in the library")
-    found.sort()
+    found.sort(key=lambda f: (f[0], f[1]))
     top = [f for f in found if f[0] == found[0][0]]
     if len(top) > 1:
         return None, None, None, f"the rings fit several library boards ({', '.join(f[1] for f in top)})"
-    _, name, pulled, why = top[0]
-    return name, LIBRARY[name], pulled, f"library board {name} recognised ({why})"
+    _, name, pulled, why, b = top[0]
+    return name, b, pulled, f"library board {name} recognised ({why})"
+
+
+SHIFT_MIN = 5  # px: a smaller common offset is the hand-read board's own error
+
+
+def _ring_shift(pts, cands, nrings):
+    """The common offset of the rings found from their library positions when the game moved the view (level
+    16 on 241.5.2, 2026-10-05: after I1 and I2 every ring and the cup sat ~15 px higher; the match within
+    RING_TOL still named L16, then the ring check (9 px) refused RP and F and the rest was tapped by hand).
+    Only rings count (a star centre is read less exactly), all agreeing within 5 px of the median; one ring
+    alone moves the board too (the last pin of L17 after the view moved: the tap goes on the ring found, not
+    15 px beside it). Returns (dx, dy) or None when the board sits where the library says."""
+    pairs, used = [], set()
+    for _pid, (x, y) in pts:
+        best = None
+        for j, (rx, ry) in enumerate(cands[:nrings]):
+            d = ((rx - x) ** 2 + (ry - y) ** 2) ** 0.5
+            if j not in used and d <= RING_TOL and (best is None or d < best[0]):
+                best = (d, j)
+        if best:
+            used.add(best[1])
+            rx, ry = cands[best[1]]
+            pairs.append((rx - x, ry - y))
+    if not pairs:
+        return None
+    dx, dy = float(np.median([p[0] for p in pairs])), float(np.median([p[1] for p in pairs]))
+    if (dx * dx + dy * dy) ** 0.5 < SHIFT_MIN:
+        return None
+    if any(((px - dx) ** 2 + (py - dy) ** 2) ** 0.5 > 5 for px, py in pairs):
+        return None
+    return round(dx), round(dy)
 
 
 def _scaled_board(board, sc, tx, ty):
@@ -879,6 +1141,60 @@ def _scaled_board(board, sc, tx, ty):
         if "swipe" in spec:
             spec["swipe"] = f(*spec["swipe"][:2]) + f(*spec["swipe"][2:])
     return out
+
+
+def _match_reframed_part(image, rings, mem):
+    """The view moved and some pins still expected are not found by the circle search (level 17 on 241.5.2,
+    2026-10-05: after V1 DR H the bombs met, the view moved ~11 px right and up, and V2's ring sat further
+    behind the top wall): one zoom and shift must put every ring found within 8 px of a distinct pin still
+    expected (at least two rings, at most two pins left unmatched), and the unmatched pins must then pass the
+    ring check (half rings included) where the transform puts them."""
+    name, sent = mem.get("entry"), mem.get("sent") or []
+    if name not in LIBRARY or not sent or len(rings) < 2:
+        return None
+    pts = [(pid, xy) for pid, xy in _lib_points(LIBRARY[name]) if pid not in sent]
+    if not 0 < len(pts) - len(rings) <= 2:
+        return None
+    cands = []
+    for sc in np.arange(0.92, 1.12, 0.005):
+        rx, ry = rings[0]
+        for _, (x, y) in pts:
+            tx, ty = rx - sc * x, ry - sc * y
+            err, used = 0.0, set()
+            for qx, qy in rings:
+                d, i = min((((qx - (sc * px + tx)) ** 2 + (qy - (sc * py + ty)) ** 2) ** 0.5, i)
+                           for i, (_, (px, py)) in enumerate(pts) if i not in used)
+                if d > 8:
+                    break
+                used.add(i)
+                err = max(err, d)
+            else:
+                cands.append((err + 50 * abs(float(sc) - 1), float(sc), tx, ty, frozenset(used)))
+    # two rings close together fix the zoom poorly (L17 DL/F: 1.00-1.05 fit within 3 px, and 1.02 puts V2
+    # 17 px off): the zoom nearest 1 that fits wins, and the next ones are tried while the check fails
+    cands.sort(key=lambda c: c[0])
+    tried = set()
+    for _, sc, tx, ty, used in cands:
+        key = (round(sc, 2), round(tx / 3), round(ty / 3), used)
+        if key in tried:
+            continue
+        tried.add(key)
+        if len(tried) > 6:
+            break
+        extra = [pid for i, (pid, _) in enumerate(pts) if i not in used]
+        b = _scaled_board(LIBRARY[name], sc, tx, ty)
+        model, errs, _ = _parse(b)
+        if errs:
+            return None
+        hidden, _, _ = _check_rings(image, model, skip=[p for p in model["pin"] if p not in extra])
+        if hidden:
+            continue
+        pulled = tuple(sent)
+        return (name, b, pulled,
+                f"library board {name} recognised after the view moved (zoom {sc:.3f}, shift {tx:+.0f},{ty:+.0f}; "
+                f"pins {' '.join(pulled)} pulled in an earlier round; ring{'s' if len(extra) > 1 else ''} "
+                f"{' '.join(extra)} seen by the ring check where the view put {'them' if len(extra) > 1 else 'it'})")
+    return None
 
 
 def _match_reframed(rings, mem):
@@ -916,6 +1232,41 @@ def _match_reframed(rings, mem):
             f"pins {' '.join(pulled)} pulled in an earlier round)")
 
 
+def _slider_seen(g, ch, swipe):
+    """A slider pin still in place: a dark knob near the swipe start and a dotted track (light grey dots ~16 px
+    apart on the white wall) running in the swipe direction. Level 19 on 2026-10-05 (235042 shot 40): after
+    T only the hook K was left, a pin with no ring, and the run stopped with 'no pin ring on this frame'; the
+    swipe was sent by hand. Knob at ~(153,821) g~100, dots g~170 on the 210 wall from x 165 to 285."""
+    x1, y1, x2, y2 = swipe
+    h, w = g.shape
+    d = np.array([x2 - x1, y2 - y1], float)
+    d /= max(1e-6, np.hypot(*d))
+    win = g[max(0, int(y1) - 10):min(h, int(y1) + 50), max(0, int(x1) - 25):min(w, int(x1) + 25)]
+    wch = ch[max(0, int(y1) - 10):min(h, int(y1) + 50), max(0, int(x1) - 25):min(w, int(x1) + 25)]
+    if not win.size or not ((win < 130) & (wch < 30)).sum() >= 12:
+        return False
+    best = 0
+    for off in range(0, 46, 2):  # the track runs along the swipe, a little below its start (the hook's loop)
+        for slope in (-0.1, 0.0, 0.1):
+            vals = []
+            for t in range(8, 150):
+                x = x1 + d[0] * t
+                y = y1 + off + (d[1] + slope) * t
+                if not (0 <= int(x) < w and 0 <= int(y) < h):
+                    break
+                vals.append(float(g[int(y) - 1:int(y) + 2, int(x)].min()))
+            v = np.array(vals)
+            if len(v) < 60:
+                continue
+            dots = [i for i in range(2, len(v) - 2) if 140 <= v[i] <= 195 and v[i] == v[i - 2:i + 3].min()
+                    and v[i - 2:i + 3].max() >= 198]
+            # dots evenly spaced (10-24 px) on a white wall
+            gaps = np.diff(dots)
+            n = int(((gaps >= 10) & (gaps <= 24)).sum()) if len(dots) > 1 else 0
+            best = max(best, n)
+    return best >= 4
+
+
 def _match_remembered(image, rings, mem):
     """The level of the last round, when the frame fits no library board by its rings alone (a pin the circle
     search does not see, a pin that answered late): every pin not yet sent must pass the ring check on this
@@ -930,7 +1281,16 @@ def _match_remembered(image, rings, mem):
         return None
     left = [p for p in model["pin"] if p not in sent and model["pin"][p]["check"]]
     if not left:
-        return None
+        # only slider pins left (level 19 after T): no ring to check, the knob and the dotted track instead
+        sliders = [p for p in model["pin"] if p not in sent and "swipe" in model["pin"][p]]
+        if rings or not sliders:
+            return None
+        g, ch = _small(image)
+        if not all(_slider_seen(g, ch, model["pin"][p]["swipe"]) for p in sliders):
+            return None
+        return (name, b, tuple(sent), f"library board {name} kept from the last round (pins {' '.join(sent)} "
+                                      f"sent; only the slider {' '.join(sliders)} left, its knob and dotted track "
+                                      "seen on this frame)")
     pts = [xy for pid, xy in _lib_points(b) if pid in left]
     if any(min((((rx - x) ** 2 + (ry - y) ** 2) ** 0.5 for x, y in pts), default=99) > RING_TOL for rx, ry in rings):
         return None
@@ -941,38 +1301,245 @@ def _match_remembered(image, rings, mem):
                                   f"the rings of {' '.join(left)} checked on this frame)")
 
 
+# --- scrolling levels (challenge) ------------------------------------------------------------------------
+# Challenge 1 (2026-10-06, session 030951, three losses, every pin tapped by hand): the level is about two
+# screens tall and the camera follows the coloured pile, so the same pin sits at another y on every frame. The
+# board is written once in level pixels (the view at the start = 0, "height"); each frame is placed in the
+# level by its rings (one vertical offset for all of them, plus the few px of sideways shake after a blast),
+# and the camera must rest where the board's "views" say for the place the colour is in: a frame taken while
+# it still moves (the intro pan from the cup up to the top, 4-5 s after a pile falls) gives no moves. In try 2
+# the camera moved 1219 -> 1307 between the frame and the tap on TD, and the tap pulled TV (greys out, lost).
+VIEW_TOL = 35  # px between the view the frame shows and the view the camera rests at
+SCROLL_TOL = 12  # px: a ring found and a pin of the board placed by the frame's offset
+
+
+def _match_scrolling(image, rings, mem):
+    """(name, board, pulled, (dx, view), how) or (None, None, None, None, why not)"""
+    if not SCROLLING:
+        return None, None, None, None, "no scrolling level in the library"
+    why = "no scrolling level fits the rings"
+    for name, b in SCROLLING.items():
+        pts = _lib_points(b)
+        sent = list(mem.get("sent") or []) if mem.get("entry") == name else []
+        exp = None
+        if sent or mem.get("entry") == name:
+            model, errs, _ = _parse(b)
+            if not errs:
+                st0, _ = _initial(model)
+                if st0 is not None:
+                    st, _, loss = _replay(model, State(frozenset(), {}, st0, frozenset()), sent)
+                    exp = None if loss else _view(model, st)
+        best = None
+        for rx, ry in rings:
+            for _pid, (x, y) in pts:
+                dx, view = rx - x, y - ry
+                if abs(dx) > 16:
+                    continue
+                used, ok = {}, 0
+                for qx, qy in rings:
+                    m = None
+                    for pid, (px, py) in pts:
+                        d = max(abs(qx - (px + dx)), abs(qy - (py - view)))
+                        if pid not in used.values() and d <= SCROLL_TOL and (m is None or d < m[0]):
+                            m = (d, pid)
+                    if m:
+                        used[(qx, qy)] = m[1]
+                        ok += 1
+                score = (ok, -(abs(view - exp) if exp is not None else 0), -abs(dx))
+                if best is None or score > best[0]:
+                    best = (score, dx, view, dict(used))
+        if best is None:
+            continue
+        (ok, _, _), dx, view, used = best
+        if ok < len(rings):
+            why = f"{name}: {len(rings) - ok} of {len(rings)} rings fit no pin at any view"
+            continue
+        if ok < int(mem.get("min_rings") or 0):
+            why = f"{name}: only {ok} ring(s) fit"
+            continue
+        if ok < 3 and (exp is None or abs(view - exp) > 150):
+            why = f"{name}: only {ok} ring(s), too few to place the frame in the level"
+            continue
+        back = [p for p in used.values() if p in sent]
+        if back:
+            return (None, None, None, None,
+                    f"{name}: pin(s) {' '.join(back)} were tapped in an earlier round but their rings are still there "
+                    "(the tap missed, or another pin came out): look at the frame")
+        how = (f"scrolling board {name} recognised: {ok} ring(s) place this frame at view {view:.0f} px of the level"
+               + (f" (shifted {dx:+.0f} px sideways)" if dx else "")
+               + (f"; pins {' '.join(sent)} pulled in earlier rounds" if sent else ""))
+        return name, b, tuple(sent), (dx, view), how
+    return None, None, None, None, why
+
+
+def _solve_scrolling(image, board, name, pulled, where, how):
+    dx, view = where
+    model, errs, warns = _parse(board)
+    if errs:
+        return {"moves": [], "note": f"{how}. board refused: " + "; ".join(errs[:6]), "rescan": False, "done": False}
+    st0, err = _initial(model)
+    if err:
+        return {"moves": [], "note": f"{how}. board refused: {err}", "rescan": False, "done": False}
+    start = State(frozenset(), {}, st0, frozenset())
+    head = f"{model['level']}: " if model["level"] else ""
+    st, _, loss = _replay(model, start, list(pulled))
+    if loss:
+        return {"moves": [], "rescan": False, "done": False,
+                "note": f"{how}. {head}the pins already pulled ({' '.join(pulled)}) lose in the model: {loss}"}
+    if not _balls_left(st):
+        return {"moves": [], "rescan": False, "done": True, "note": f"{how}. {head}every pull is done ({' '.join(pulled)})"}
+    exp = _view(model, st)
+    if exp is not None and abs(view - exp) > VIEW_TOL:
+        return {"moves": [], "rescan": True, "done": False,
+                "state": {"entry": name, "sent": list(pulled)},
+                "note": f"{how}. The camera is still moving: this frame shows view {view:.0f}, it rests at {exp:.0f} "
+                        "with the colour where it is (the intro pan, or a pile still falling). Wait 3 s and run "
+                        "solve pin-pull --run again (--settle 7 avoids it)."}
+    order, source = None, ""
+    if model["plan"] and model["plan"][:len(pulled)] == list(pulled):
+        rest = model["plan"][len(pulled):]
+        steps = _split_steps(model, rest)
+        cur, ok = st, steps is not None and len(pulled) + len(rest) <= (model["max_moves"] or 99)
+        for s in steps or []:
+            cur, _, loss = _step_ok(model, cur, s)
+            if cur is None or loss:
+                ok = False
+                break
+        if ok and not _balls_left(cur):
+            order, source = rest, "the board's plan (checked by the model, not yet won on the phone)"
+    if order is None:
+        found, partial, err = _search(model, st)
+        if not found:
+            msg = f"{head}no order gets every ball into the cup" + (f" within {model['max_moves']} moves" if model["max_moves"] else "")
+            if err:
+                msg += f" ({err})"
+            if partial:
+                msg += f"; the best keeps balls in {', '.join(partial[2])} after {' '.join(partial[1])}"
+            return {"moves": [], "rescan": False, "done": False, "note": f"{how}. {msg}"}
+
+        def rank(o):
+            _, steps_, _ = _replay(model, st, list(o))
+            return (sum(s_["timing"] for s_ in steps_), len(o))
+        order, source = list(min(found, key=rank)), f"{len(found)} safe order(s) that keep each next ring in the view"
+    step = _split_steps(model, order)[0]
+    # the step's rings where this frame shows them
+    k = image.size[0] / model["fw"]
+    out_view = [p for p in step if not _in_view(model, p, view)]
+    if out_view:
+        return {"moves": [], "rescan": True, "done": False, "state": {"entry": name, "sent": list(pulled)},
+                "note": f"{how}. {head}next {' '.join(step)}, but {' '.join(out_view)} is not in this view: wait for "
+                        "the camera and run solve pin-pull --run again"}
+    cm = {"fw": model["fw"], "pin": {}}
+    for pid, p in model["pin"].items():
+        if pid in pulled or "swipe" in p or not _in_view(model, pid, view):
+            continue
+        cm["pin"][pid] = {"at": [p["at"][0] + dx, p["at"][1] - view], "check": p["check"], "gold": p["gold"]}
+    missing, off, _ = _check_rings(image, cm, skip=[p for p in cm["pin"] if p not in step])
+    if missing:
+        return {"moves": [], "rescan": True, "done": False, "state": {"entry": name, "sent": list(pulled)},
+                "note": f"{how}. {head}next {' '.join(step)}, but no ring at " + ", ".join(missing)
+                        + " on this frame (a popup, an ad, or the camera moved): look, then run again"}
+    moves = []
+    for pid in step:
+        p = model["pin"][pid]
+        x, y = p.get("tap") or p["at"]
+        moves.append([round((x + dx) * k), round((y - view) * k)])
+    _, all_steps, _ = _replay(model, st, order)
+    done = len(order) == len(step)
+    taps = " ".join(f"{(model['pin'][p].get('tap') or model['pin'][p]['at'])[0] + dx:.0f},"
+                    f"{(model['pin'][p].get('tap') or model['pin'][p]['at'])[1] - view:.0f}" for p in step)
+    note = (f"{how}. {head}order {' '.join(order)} ({len(order)} pulls left, {source}). This round plays "
+            f"{' '.join(step)} at {taps} on this frame"
+            + (" (one round: keep --gap under 1 s, the second ring leaves the view once the first pile falls)"
+               if len(step) > 1 else "")
+            + (f"; {' '.join(p for p in step if 'tap' in model['pin'][p])} tapped beside the ring centre, away from "
+               "the neighbour that a centre tap pulls" if any("tap" in model["pin"][p] for p in step) else "")
+            + f". Expect: {_describe(all_steps)}."
+            + ("" if done else " Solve again on the next frame (solve --run --rounds 12 --settle 7 does it)."))
+    if off:
+        note += " rings off by >9 px: " + ", ".join(off)
+    if warns:
+        note += " warn: " + "; ".join(warns)
+    return {"moves": moves, "rescan": not done, "done": done, "note": note,
+            "state": {"entry": name, "sent": list(pulled) + list(step)}}
+
+
 # --- the entry point -----------------------------------------------------------------------------------
+def _pace(res, mem):
+    """Hold this round's pull until the previous round's pull is `_wait` s old. sw.py taps the moves as soon
+    as the solver returns and gives no pause of its own between rounds but the --gap the player typed, so
+    the pause a pull needs lives here, timed from the moment the previous round's moves were returned
+    (`t_sent` in the memory). A memory older than the wait (a recorded frame, a later call) waits nothing."""
+    w = float(res.pop("_wait", 0) or 0)
+    pin = res.pop("_pin", None)
+    t = mem.get("t_sent")
+    if res.get("moves") and w > 0 and isinstance(t, (int, float)):
+        rest = t + w - time.time()
+        if 0 < rest <= 30:
+            time.sleep(rest)
+            res["note"] = (f"{res.get('note') or ''} Waited {rest:.1f} s before {pin}: it needs {w:g} s after "
+                           "the previous pull (balls still running).").strip()
+    return res
+
+
+def _stamp(res):
+    if res.get("moves") and isinstance(res.get("state"), dict):
+        res["state"]["t_sent"] = time.time()
+    return res
+
+
 def solve(image, board=None, frame_scale=1.0, state=None):
     mem = state if isinstance(state, dict) else {}
     if board is not None:
         res = _solve_board(image, board)
+        res.pop("_wait", None), res.pop("_pin", None)
         sent = res.pop("_sent", [])
         res.pop("_stage_done", None)
         if res.get("moves") and not res.get("done"):
             # one pull per round: the next round of `solve --run` comes without --board, so the board rides
             # in the memory
             res["state"] = {"entry": "board", "board": board, "sent": sent}
-        return res
+        return _stamp(res)
     if mem.get("entry") == "board" and isinstance(mem.get("board"), dict):
         pulled = [p for p in mem.get("sent") or []]
-        res = _solve_board(image, mem["board"], pulled=pulled)
+        res = _pace(_solve_board(image, mem["board"], pulled=pulled), mem)
         sent = res.pop("_sent", [])
         res.pop("_stage_done", None)
         res["note"] = f"the board of the first round, pins {' '.join(pulled)} pulled. {res.get('note') or ''}"
         if res.get("moves") and not res.get("done"):
             res["state"] = {"entry": "board", "board": mem["board"], "sent": pulled + sent}
-        return res
+        return _stamp(res)
+    scroll_why = None
+    if mem.get("entry") in SCROLLING:
+        # a scrolling level (challenge) in progress: placed in the level by its rings, never as a screen
+        g, ch = _small(image)
+        sname, sb, spulled, where, scroll_why = _match_scrolling(image, _find_rings(g, ch), mem)
+        if sname:
+            return _stamp(_solve_scrolling(image, sb, sname, spulled, where, scroll_why))
+        return {"moves": [], "rescan": True, "done": False, "state": mem,
+                "note": f"no move for the scrolling level {mem['entry']} on this frame ({scroll_why}); a popup, an "
+                        "ad, the fail or win screen, or a pin that did not come out: look at it"}
     name, lib, pulled, how = _match_library(image, state)
+    if not name and not mem.get("entry"):
+        # no level in memory: a scrolling level needs 4 rings or more to be told from a screen-sized one (its
+        # frames would otherwise read as a grey stack or match nothing)
+        g, ch = _small(image)
+        sname, sb, spulled, where, scroll_why = _match_scrolling(image, _find_rings(g, ch), {"min_rings": 4})
+        if sname:
+            return _stamp(_solve_scrolling(image, sb, sname, spulled, where, scroll_why))
     if name:
         res = _solve_board(image, lib, pulled=pulled, verified=lib.get("verified"))
+        if pulled and mem.get("entry") == name:
+            res = _pace(res, mem)
+        res.pop("_wait", None), res.pop("_pin", None)
         res["note"] = f"{how}. {res.get('note') or ''}"
         res["state"] = {"entry": name, "sent": list(pulled) + res.pop("_sent", []), "stage": lib.get("stage"),
                         "stage_done": bool(res.pop("_stage_done", False))}
-        return res
+        return _stamp(res)
     board, how2 = _read_stack(image)
     if board is not None:
         res = _solve_board(image, board)
-        res.pop("_sent", None), res.pop("_stage_done", None)
+        res.pop("_sent", None), res.pop("_stage_done", None), res.pop("_wait", None), res.pop("_pin", None)
         res["note"] = f"{how2}. {res.get('note') or ''}"
         return res
     if mem.get("stage_done"):
@@ -1005,6 +1572,7 @@ def _solve_board(image, board, pulled=(), verified=None):
     stage = str(model["stage"] or "")
     last_stage = not stage or (stage.split("/")[0].strip() == stage.split("/")[-1].strip())
     pulled = tuple(pulled)
+    start0 = start
     if pulled:
         st, _, loss = _replay(model, start, list(pulled))
         if loss:
@@ -1072,6 +1640,16 @@ def _solve_board(image, board, pulled=(), verified=None):
     gap = model["gap"] + (2 if any(s["timing"] for s in steps) else 0)
     parked = sorted(r for r, p in st.piles.items() if p[2])
     order = list(best)
+    # the pause this round's first pull needs after the previous round's pull: the board's "waits", and
+    # gap + 2 s for a pull that re-routes a place balls just ran through (timing, judged on the whole order
+    # from the start: replayed from the pulled pins alone the run-through is forgotten). 2026-10-05
+    # (235042): level 20 B, M, Y as rounds 3.8 s apart lost; M was read on a frame with the blue still
+    # running over the M rod (shot 61) and the last blue went to the yellow cup (shot 62).
+    wait = 0.0
+    if pulled:
+        _, fsteps, _ = _replay(model, start0, list(pulled) + order[:1])
+        timed = bool(fsteps) and len(fsteps) > len(pulled) and fsteps[len(pulled)]["timing"]
+        wait = max(model["waits"].get(order[0], 0.0), model["gap"] + 2 if timed else 0.0)
     note = (f"{head}order {' '.join(order)} ({len(order)} pulls, {source}). "
             f"Play: taps \"{_taps(model, order)}\" --gap {gap:g}. Expect: {_describe(steps)}. "
             f"End: every ball in the cup" + (f", bomb parked in {', '.join(parked)}" if parked else "") + ".")
@@ -1106,15 +1684,17 @@ def _solve_board(image, board, pulled=(), verified=None):
                else f"the board re-frames after {order[cut - 1]}: the next rings move"
                if order[cut - 1] in model["reframe"] else f"{order[cut]} is a pair of rings pulled together")
         return {"moves": _moves(model, order[:cut], k), "rescan": True, "done": False, "_sent": order[:cut],
+                "_wait": wait, "_pin": order[0],
                 "note": note + f" This round plays {' '.join(order[:cut])} only ({why}); solve again on the next "
                                "frame (solve --run --rounds 6 does it)."}
     if not last_stage:
         note += f" Stage {stage}: look again when the next stage appears."
     return {"moves": _moves(model, order, k), "rescan": not last_stage, "done": last_stage, "_sent": order,
-            "_stage_done": not last_stage, "note": note}
+            "_stage_done": not last_stage, "_wait": wait, "_pin": order[0], "note": note}
 
 
-# generated from the local state/<game>/solvers/boards/*.json (name: board + verified orders won on the phone)
+# generated from the local state/<game>/solvers/boards/*.json (name: board + verified orders won on the phone;
+# IQ1 = Sketchman IQ Test level 1 (the All You Can Play mode), no verified order yet: the search plays it)
 LIBRARY_JSON = r'''{
  "L3": {"level":"level 3","places":{"G":{"has":["grey"],"exits":[{"to":"out","via":["L"]},{"to":"cup","via":["S"]}]},"POP":{"has":["colour"],"exits":[{"to":"cup","via":["S"]}]}},"pins":{"D":{"at":[363,300],"joins":[["G","POP"]]},"S":[606,500],"L":[140,794]},"verified":[["D","S"]],"src":"raw/com.maroieqrwlk.unpin/20261003-203702-chrono-2FYKPJ/shots/00007.jpg"},
  "L4": {"level":"level 4","places":{"BOMB":{"has":["bomb"],"exits":[{"to":"POP","via":["A"]}]},"POP":{"has":["colour"],"exits":[{"to":"cup","via":["B"]}]}},"pins":{"A":[118,482],"B":[612,594]},"verified":[["B"]],"src":"raw/com.maroieqrwlk.unpin/20261003-203702-chrono-2FYKPJ/shots/00015.jpg"},
@@ -1135,16 +1715,16 @@ LIBRARY_JSON = r'''{
  "L12": {"level":"level 12","places":{"POP":{"has":["colour"],"exits":[{"to":"G","via":["A"]}]},"G":{"has":["grey"],"exits":[{"to":"cup","via":["B"]}]},"BOMB":{"has":["bomb"],"exits":[{"to":"?","via":["D"]},{"to":"?","via":["E"]}]}},"pins":{"A":[143,525],"B":{"at":[221,626],"gold":true},"D":[425,455],"E":[580,690]},"verified":[["A","B"]],"src":"raw/com.maroieqrwlk.unpin/20261004-005453-chrono-2FYKPJ/shots/00018.jpg"},
  "L12-after-A": {"level":"level 12 (after A)","places":{"G":{"has":["colour"],"exits":[{"to":"cup","via":["B"]}]},"BOMB":{"has":["bomb"],"exits":[{"to":"?","via":["D"]},{"to":"?","via":["E"]}]}},"pins":{"B":{"at":[221,626],"gold":true},"D":[425,455],"E":[580,690]},"verified":[["B"]],"src":"raw/com.maroieqrwlk.unpin/20261004-005453-chrono-2FYKPJ/shots/00019.jpg"},
  "L13": {"level":"level 13","places":{"TL":{"has":["colour"],"exits":[{"to":"ML","via":["T"]}]},"TR":{"has":["grey"],"exits":[{"to":"MR","via":["T"]}]},"ML":{"has":["grey"],"exits":[{"to":"CL","via":["M"]}]},"MR":{"has":["grey"],"exits":[{"to":"CR","via":["M"]}]},"CL":{"has":["bomb"],"exits":[{"to":"cup","via":["B"]}]},"CR":{"has":["bomb"],"exits":[{"to":"cup","via":["B"]}]},"PL":{"has":["bomb"],"exits":[{"to":"CL","via":["L"]}]},"PR":{"has":["bomb"],"exits":[{"to":"CR","via":["R"]}]}},"pins":{"V":{"at":[365,432],"joins":[["TL","TR"],["ML","MR"],["CL","CR"]]},"T":[484,517],"M":[267,617],"L":[230,597],"R":[505,597],"B":[481,797]},"verified":[["V","T","M","B"]],"src":"raw/com.maroieqrwlk.unpin/20261001-102608-chrono-2FYKPJ/shots/00038.jpg"},
- "L14": {"level":"level 14","places":{"P":{"has":["colour"],"exits":[{"to":"HL","via":["DL"]}]},"G1":{"has":["grey"],"exits":[{"to":"HL","via":["DL"]}]},"G2":{"has":["grey"],"exits":[{"to":"HR","via":["DR"]}]},"G3":{"has":["grey"],"exits":[{"to":"HR","via":["DR"]}]},"HL":{"has":["grey"],"exits":[{"to":"VF","via":["H"]}]},"HR":{"has":["grey"],"exits":[{"to":"VF","via":["H"]}]},"VF":{"exits":[{"to":"out","via":["LL"]},{"to":"cup","via":["LR"]}]}},"pins":{"DL":[118,422],"DR":[591,402],"V1":{"at":[262,350],"joins":[["P","G1"]]},"V2":{"at":[361,350],"joins":[["G1","G2"],["HL","HR"]]},"V3":{"at":[455,350],"joins":[["G2","G3"]]},"H":[596,609],"LR":[613,622],"LL":[118,630]},"verified":[["DL","DR","V2","LR","H"]],"src":"raw/com.maroieqrwlk.unpin/20261001-102608-chrono-2FYKPJ/shots/00074.jpg"},
+ "L14": {"level":"level 14","places":{"P":{"has":["colour"],"exits":[{"to":"HL","via":["DL"]}]},"G1":{"has":["grey"],"exits":[{"to":"HL","via":["DL"]}]},"G2":{"has":["grey"],"exits":[{"to":"HR","via":["DR"]}]},"G3":{"has":["grey"],"exits":[{"to":"HR","via":["DR"]}]},"HL":{"has":["grey"],"exits":[{"to":"VF","via":["H"]}]},"HR":{"has":["grey"],"exits":[{"to":"VF","via":["H"]}]},"VF":{"exits":[{"to":"out","via":["LL"]},{"to":"cup","via":["LR"]}]}},"pins":{"DL":[118,422],"DR":[591,402],"V1":{"at":[262,350],"joins":[["P","G1"]]},"V2":{"at":[361,350],"joins":[["G1","G2"],["HL","HR"]]},"V3":{"at":[455,350],"joins":[["G2","G3"]]},"H":[596,609],"LR":[613,622],"LL":[118,630]},"verified":[["DL","DR","V2","LR","H"],["V1","V2","V3","DL","DR","LR","H"]],"src":"raw/com.maroieqrwlk.unpin/20261005-014031-chrono-2FYKPJ/shots/00013.jpg"},
  "L15-s1": {"level":"level 15 stage 1","stage":"1/4","places":{"TOP":{"has":["colour"],"exits":[{"to":"XZ","via":["T"]}]},"XZ":{"has":["bomb"],"exits":[{"to":"BOT","via":["X1","X2"]},{"to":"out","via":["X1"]},{"to":"?","via":["X2"]}]},"BOT":{"has":["grey"],"exits":[{"to":"cup","via":["F"]}]}},"pins":{"T":[160,450],"X1":[185,497],"X2":[557,494],"F":[163,810]},"verified":[["X1","X2","T","F"]],"src":"raw/com.maroieqrwlk.unpin/20261001-102608-chrono-2FYKPJ/shots/00120.jpg"},
  "L15-s2": {"level":"level 15 stage 2","stage":"2/4","places":{"POP":{"has":["colour"],"exits":[{"to":"U","via":["D"]}]},"U":{"has":["grey"],"exits":[{"to":"M","via":["A"]}]},"M":{"has":["grey"],"exits":[{"to":"L","via":["B"]}]},"L":{"has":["grey"],"exits":[{"to":"cup","via":["C"]}]}},"pins":{"D":[383,343],"A":[198,493],"B":[118,775],"C":[582,817]},"verified":[["D","A","B","C"]],"src":"raw/com.maroieqrwlk.unpin/20261001-102608-chrono-2FYKPJ/shots/00128.jpg"},
  "L15-s3": {"level":"level 15 stage 3","stage":"3/4","places":{"BOMB":{"has":["bomb"],"exits":[{"to":"LCOL","via":["H"]}]},"LCOL":{"exits":[{"to":"cup","via":["V1"]}]},"PM":{"has":["colour"],"exits":[{"to":"MG","via":["H"]}]},"PR":{"has":["colour"],"exits":[{"to":"BG","via":["H"]}]},"MG":{"has":["grey"],"exits":[{"to":"cup","via":["V2"]}]},"BG":{"has":["grey"],"exits":[{"to":"cup","via":["V2"]}]}},"pins":{"V1":[262,298],"V2":[377,298],"H":[578,437]},"verified":[["H","V2"]],"src":"raw/com.maroieqrwlk.unpin/20261001-102608-chrono-2FYKPJ/shots/00136.jpg"},
  "L15-s4": {"level":"level 15 stage 4","stage":"4/4","places":{"PO":{"has":["colour"],"exits":[{"to":"GR","via":["P"]}]},"GR":{"has":["grey"],"exits":[{"to":"cup","via":["G","F"]},{"to":"BZ","via":["G"]}]},"BZ":{"has":["bomb"],"exits":[{"to":"out","via":["R","F"]},{"to":"?","via":["F"]}]}},"pins":{"P":[330,385],"G":[440,440],"R":[488,532],"F":[130,645]},"verified":[["R","F","P","G"]],"src":"raw/com.maroieqrwlk.unpin/20261001-145738-chrono-2FYKPJ/shots/00003.jpg"},
- "L16": {"level":"level 16","places":{"PL":{"has":["colour"],"exits":[{"to":"BL","via":["GP"]}]},"BL":{"has":["bomb"],"exits":[{"to":"C","via":["I1"]}]},"BR":{"has":["bomb"],"exits":[{"to":"C","via":["I2"]}]},"GR":{"has":["grey"],"exits":[{"to":"BR","via":["RP"]}]},"C":{"exits":[{"to":"cup","via":["F"]}]}},"pins":{"GP":{"at":[222,408],"gold":true},"I1":[307,456],"I2":[421,463],"RP":[493,420],"F":[209,806]},"verified":[["I1","I2","RP","GP","F"]],"src":"raw/com.maroieqrwlk.unpin/20261001-145738-chrono-2FYKPJ/shots/00014.jpg"},
- "L17": {"level":"level 17","places":{"TL":{"has":["bomb"],"exits":[{"to":"MC","via":["V1"]}]},"TR":{"has":["grey"],"exits":[{"to":"MC","via":["V2"]}]},"MC":{"exits":[{"to":"CTR","via":["H"]}]},"LL":{"has":["colour"],"exits":[{"to":"CTR","via":["DL"]}]},"LR":{"has":["bomb"],"exits":[{"to":"CTR","via":["DR"]}]},"CTR":{"exits":[{"to":"cup","via":["F"]}]}},"pins":{"V1":[317,292],"V2":[452,292],"H":[123,607],"DL":[243,828],"F":[285,838],"DR":[520,823]},"verified":[["H","DL","V2","F"]],"src":"raw/com.maroieqrwlk.unpin/20261001-150634-chrono-2FYKPJ/shots/00035.jpg"},
+ "L16": {"level":"level 16","places":{"PL":{"has":["colour"],"exits":[{"to":"BL","via":["GP"]}]},"BL":{"has":["bomb"],"exits":[{"to":"C","via":["I1"]}]},"BR":{"has":["bomb"],"exits":[{"to":"C","via":["I2"]}]},"GR":{"has":["grey"],"exits":[{"to":"BR","via":["RP"]}]},"C":{"exits":[{"to":"cup","via":["F"]}]}},"pins":{"GP":{"at":[222,408],"gold":true},"I1":[307,456],"I2":[421,463],"RP":[493,420],"F":[209,806]},"verified":[["I1","I2","RP","GP","F"]],"src":"raw/com.maroieqrwlk.unpin/20261005-151039-chrono-2FYKPJ/shots/00032.jpg"},
+ "L17": {"level":"level 17","places":{"TL":{"has":["bomb"],"exits":[{"to":"MC","via":["V1"]}]},"TR":{"has":["grey"],"exits":[{"to":"MC","via":["V2"]}]},"MC":{"exits":[{"to":"CTR","via":["H"]}]},"LL":{"has":["colour"],"exits":[{"to":"CTR","via":["DL"]}]},"LR":{"has":["bomb"],"exits":[{"to":"CTR","via":["DR"]}]},"CTR":{"exits":[{"to":"cup","via":["F"]}]}},"pins":{"V1":[317,292],"V2":[452,292],"H":[123,607],"DL":[243,828],"F":[285,838],"DR":[520,823]},"verified":[["H","DL","V2","F"],["V1","DR","H","V2","DL","F"]],"src":"raw/com.maroieqrwlk.unpin/20261005-151039-chrono-2FYKPJ/shots/00046.jpg"},
  "L18": {"level":"level 18","places":{"BOMB":{"has":["bomb"],"exits":[{"to":"?","via":["A"]}]},"POP":{"has":["colour"],"exits":[{"to":"GC","via":["C"]}]},"GL":{"has":["grey"]},"GC":{"has":["grey"],"exits":[{"to":"GB","via":["D"]}]},"GB":{"has":["grey"],"exits":[{"to":"cup","via":["E"]}]}},"pins":{"A":[342,412],"B":{"at":[411,448],"joins":[["GL","GC"]]},"C":[475,448],"D":[152,770],"E":[477,792]},"verified":[["C","B","D","E"]],"src":"raw/com.maroieqrwlk.unpin/20261001-150634-chrono-2FYKPJ/shots/00059.jpg"},
- "L19": {"level":"level 19","places":{"BLUE":{"has":["colour"],"exits":[{"to":"CH","via":["T"]}]},"CH":{"exits":[{"to":"cup","via":["K"]}]}},"pins":{"T":[420,468],"K":{"swipe":[153,790,360,745]}},"verified":[["T","K"]],"src":"raw/com.maroieqrwlk.unpin/20261001-153137-chrono-2FYKPJ/shots/00009.jpg"},
- "L20": {"level":"level 20","places":{"YB":{"has":["yellow"],"exits":[{"to":"J","via":["Y"]}]},"BB":{"has":["blue"],"exits":[{"to":"J","via":["B"]}]},"J":{"exits":[{"to":"cup:yellow","via":["M"]},{"to":"cup:blue","via":[]}]}},"pins":{"Y":[335,457],"B":[400,458],"M":[229,820]},"verified":[["B","M","Y"]],"src":"raw/com.maroieqrwlk.unpin/20261001-153137-chrono-2FYKPJ/shots/00042.jpg"},
+ "L19": {"level":"level 19","places":{"BLUE":{"has":["colour"],"exits":[{"to":"CH","via":["T"]}]},"CH":{"exits":[{"to":"cup","via":["K"]}]}},"pins":{"T":[420,468],"K":{"swipe":[153,790,360,745]}},"waits":{"K":6},"verified":[["T","K"]],"src":"raw/com.maroieqrwlk.unpin/20261001-153137-chrono-2FYKPJ/shots/00009.jpg"},
+ "L20": {"level":"level 20","places":{"YB":{"has":["yellow"],"exits":[{"to":"J","via":["Y"]}]},"BB":{"has":["blue"],"exits":[{"to":"J","via":["B"]}]},"J":{"exits":[{"to":"cup:yellow","via":["M"]},{"to":"cup:blue","via":[]}]}},"pins":{"Y":[335,457],"B":[400,458],"M":[229,820]},"waits":{"M":10,"Y":7},"verified":[["B","M","Y"]],"src":"raw/com.maroieqrwlk.unpin/20261006-012240-chrono-2FYKPJ/shots/00024.jpg"},
  "L21": {"level":"level 21","places":{"LPZ":{"has":["colour"],"exits":[{"to":"B1Z","via":["LP"]}]},"B1Z":{"has":["bomb"],"exits":[{"to":"DZ","via":["B1"]}]},"DZ":{"exits":[{"to":"cup","via":["D"]},{"to":"BZ","via":[]}]},"BZ":{"has":["bomb"],"exits":[{"to":"cup","via":["D"]},{"to":"cup","via":[],"only":"balls"}]},"GZ":{"has":["grey"],"exits":[{"to":"RPZ","via":["G"]}]},"RPZ":{"has":["colour"],"exits":[{"to":"BZ","via":["RP"]}]}},"pins":{"LP":[117,513],"B1":[175,632],"D":[131,657],"G":[613,468],"RP":[587,606]},"verified":[["B1","LP","G","RP"]],"src":"raw/com.maroieqrwlk.unpin/20261001-160324-chrono-2FYKPJ/shots/00004.jpg"},
  "L22": {"level":"level 22","places":{"YB":{"has":["yellow"],"exits":[{"to":"J","via":["Y"]}]},"BB":{"has":["blue"],"exits":[{"to":"J","via":["B"]}]},"J":{"exits":[{"to":"cup:blue","via":["D"]},{"to":"cup:yellow","via":[]}]}},"pins":{"Y":[280,490],"B":[360,490],"D":[312,767]},"verified":[["Y","D","B"]],"src":"raw/com.maroieqrwlk.unpin/20261001-160324-chrono-2FYKPJ/shots/00061.jpg"},
  "L23-s1": {"level":"level 23 stage 1","stage":"1/4","places":{"TL":{"has":["grey"],"exits":[{"to":"M","via":["S"]}]},"TR":{"has":["colour"],"exits":[{"to":"M","via":["S"]}]},"M":{"has":["grey"],"exits":[{"to":"cup","via":["XA","XB"]},{"to":"R","via":["XB"]},{"to":"LZ","via":["XA"]}]},"R":{"has":["grey"],"exits":[{"to":"cup","via":["XA"]}]},"LZ":{"exits":[{"to":"cup","via":["XB"]}]}},"pins":{"V":{"at":[365,300],"joins":[["TL","TR"]]},"S":[175,520],"XA":[163,563],"XB":[557,560]},"verified":[["V","S","XB","XA"]],"src":"raw/com.maroieqrwlk.unpin/20261001-160324-chrono-2FYKPJ/shots/00077.jpg"},
@@ -1154,6 +1734,12 @@ LIBRARY_JSON = r'''{
  "L23-s4": {"level":"level 23 stage 4","stage":"4/4","places":{"TOPG":{"has":["grey"],"exits":[{"to":["CL","RP"],"via":["S"]}]},"PLEFT":{"has":["colour"],"exits":[{"to":"CL","via":["DL"]}]},"CL":{"has":["grey"],"exits":[{"to":"cup","via":["L"]}]},"RP":{"has":["colour"],"exits":[{"to":"cup","via":["DR"]}]}},"pins":{"L":[500,445],"S":[618,645],"DL":[203,835],"DR":[498,845]},"verified":[["S","DR","DL","L"],["DL","S","L","DR"]],"src":"raw/com.maroieqrwlk.unpin/20261001-162240-chrono-2FYKPJ/shots/00078.jpg"},
  "L24": {"level":"level 24","places":{"POP":{"has":["colour"],"exits":[{"to":"RG","via":["V"]},{"to":"HL","via":["D"]}]},"RG":{"has":["grey"],"exits":[{"to":"HR","via":["D"]}]},"HL":{"has":["grey"],"exits":[{"to":"BL","via":["H"]}]},"HR":{"exits":[{"to":"BRZ","via":["H"]}]},"BL":{"has":["bomb"],"exits":[{"to":"cup","via":["F"]}]},"BRZ":{"has":["bomb"],"exits":[{"to":"BL","via":["V"]}]}},"pins":{"V":{"at":[385,305],"joins":[["HL","HR"]]},"D":[195,390],"H":[607,622],"F":[162,840]},"verified":[["V","D","H","F"]],"src":"raw/com.maroieqrwlk.unpin/20261001-164104-chrono-2FYKPJ/shots/00027.jpg"},
  "L25": {"level":"level 25","places":{"BALLS":{"has":["colour"],"exits":[{"to":"CH","via":["TOP"]}]},"CH":{"exits":[{"to":"cup","via":["BOT"]}]}},"pins":{"TOP":[400,467],"BOT":[385,908]},"verified":[["BOT","TOP"]],"src":"raw/com.maroieqrwlk.unpin/20261001-164104-chrono-2FYKPJ/shots/00040.jpg"},
- "L26": {"level":"level 26","places":{"BALLS":{"has":["colour"],"exits":[{"to":"cup","via":["P"]}]}},"pins":{"P":[440,545]},"verified":[["P"]],"src":"raw/com.maroieqrwlk.unpin/20261001-164104-chrono-2FYKPJ/shots/00047.jpg"}
+ "L26": {"level":"level 26","places":{"BALLS":{"has":["colour"],"exits":[{"to":"cup","via":["P"]}]}},"pins":{"P":[440,545]},"verified":[["P"]],"src":"raw/com.maroieqrwlk.unpin/20261001-164104-chrono-2FYKPJ/shots/00047.jpg"},
+ "C1": {"level":"challenge 1","scrolling":true,"height":2300,"max_moves":10,"places":{"TOP":{"has":["colour"],"exits":[{"to":"S2Z","via":["T"]}]},"DG":{"has":["grey"],"exits":[{"to":"S2Z","via":["D1"]}]},"S2Z":{"has":["grey"],"exits":[{"to":"S3Z","via":["S2"]}]},"PL":{"has":["bomb"],"exits":[{"to":"?","via":["BL"]}]},"PR":{"has":["bomb"],"exits":[{"to":"?","via":["BR"]}]},"S3Z":{"has":["grey"],"exits":[{"to":"BOT","via":["S3","X","L","M","S4"]},{"to":"?","via":["S3"]}]},"XB":{"has":["bomb"],"exits":[{"to":"MB","via":["X"]}]},"MB":{"has":["bomb"],"exits":[{"to":"BOT","via":["M"]}]},"TRI":{"has":["grey"],"exits":[{"to":"BOT","via":["TD"]},{"to":"out","via":["TV"]}]},"BOT":{"has":["grey"],"exits":[{"to":"cup","via":["J"]}]}},"pins":{"T":[596,503],"D1":[370,652],"S2":[611,1026],"BR":[618,1138],"BL":[132,1162],"S3":[602,1423],"S4":[602,1463],"L":[110,1575],"X":[312,1581],"M":[155,1699],"TD":{"at":[616,1855],"tap":[631,1852]},"TV":[594,1889],"J":[506,2076]},"views":{"TOP":0,"S2Z":474,"S3Z":850,"BOT":1221},"together":[["T","D1"]],"plan":["T","D1","X","S2","S4","L","M","S3","TD","J"],"verified":[],"src":"raw/com.maroieqrwlk.unpin/20261006-030951-chrono-2FYKPJ/shots/00009.jpg"},
+ "IQ1": {"level":"Sketchman IQ Test level 1","places":{"TOP":{"has":["colour"],"exits":[{"to":"C00","via":["T"]}]},"C00":{"exits":[{"to":"?","via":["L1","R1"]},{"to":"C10","via":["L1"]},{"to":"C01","via":["R1"]}]},"C01":{"exits":[{"to":"?","via":["L1","R2"]},{"to":"C11","via":["L1"]},{"to":"C02","via":["R2"]}]},"C02":{"exits":[{"to":"out","via":["L1"]},{"to":"out","via":["R3"]}]},"C10":{"exits":[{"to":"?","via":["L2","R1"]},{"to":"C20","via":["L2"]},{"to":"C11","via":["R1"]}]},"C11":{"exits":[{"to":"?","via":["L2","R2"]},{"to":"cup","via":["L2"]},{"to":"out","via":["R2"]}]},"C20":{"exits":[{"to":"?","via":["L3","R1"]},{"to":"out","via":["L3"]},{"to":"cup","via":["R1"]}]}},"pins":{"T":[466,705],"L1":[248,829],"L2":[212,890],"L3":[179,954],"R1":[482,828],"R2":[520,888],"R3":[556,950]},"verified":[],"src":"raw/com.maroieqrwlk.unpin/20261005-230946-chrono-2FYKPJ/shots/00005.jpg"}
 }'''
 LIBRARY = json.loads(LIBRARY_JSON)
+# scrolling levels (taller than the screen, level pixels) are placed in the level frame by frame, never matched
+# as a screen
+SCROLLING = {k: v for k, v in LIBRARY.items() if v.get("scrolling") and v.get("height")}
+LIBRARY = {k: v for k, v in LIBRARY.items() if k not in SCROLLING}

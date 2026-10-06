@@ -64,6 +64,28 @@ Since 2026-10-04 (lab, 01:30) it also sees golden star-wand pins (a yellow star 
 level 12 pin B) and keeps the level across rounds: a frame that fits no board by its rings alone is still
 the remembered level when the pins not yet pulled pass the ring check there (`kept from the last round`).
 A level stopped half-way (`--rounds` ran out, an ad) continues with the same `solve --run` in the same level.
+Since 2026-10-05 (lab) it reads two rings that overlap (closer than 32 px, level 14 H/LR): each on its side
+away from the other; the note says `(overlapping rings)`.
+Since 2026-10-05 (lab, 2nd) it also reads a ring half hidden behind a wall (level 17 V1/V2 stand on the
+top wall: note `(V1 V2 half hidden behind a wall)`), and follows the view when it moves after a pull with
+the board as it was (level 16 after I2: every ring ~15 px up, note `the view moved +2,-14 px: every pin
+shifted with it`; level 17 after the bombs meet: note `recognised after the view moved (zoom 1.000, shift
++11,-12 ...)`); taps then go on the rings where they are now.
+Since 2026-10-05 (lab, 3rd) it also knows Sketchman IQ Test level 1 (All You Can Play > Sketchman, the
+hourglass with a neck pin and six crossed rods over four chutes): note `library board IQ1 recognised`, order
+T L1 L2 R1 found by the search (not yet played on the phone: no verified order). Play it like a level:
+`level start "sketchman 1" --mechanic pin-pull`, then `solve pin-pull --run --rounds 6 --gap 5`.
+Since 2026-10-06 (lab) the solver PACES the pulls itself: a pull that must wait for balls still running
+(the board's `"waits"`, or a pull that re-routes a place balls just ran through) is held inside the solver
+until enough seconds have passed since the previous round's pull; the note says `Waited 6.2 s before M: it
+needs 10 s after the previous pull`. Level 20 now plays B, M (>= 10 s after B), Y (>= 7 s after M) in one
+`solve --run --rounds 6 --gap 5`. It also finishes level 19 by itself: after T no ring is left, and the slider K
+is recognised by its knob and dotted track (note `only the slider K left, its knob and dotted track seen`),
+then swiped (>= 6 s after T). The run's taps are logged in DEVICE pixels (x 1.48): `[592, 678]` in a solve
+step is the 730-px ring (400,458), not an off-ring tap.
+Since 2026-10-06 (lab, 2nd) it plays SCROLLING levels: Challenge 1 is a library board in level pixels (`C1`);
+each frame is placed in the level by its rings, a frame taken while the camera still moves gives no move, and
+one pin goes per round (`solve pin-pull --run --rounds 12 --gap 0.4 --settle 7`; section Challenge mode).
 Earlier status: the solver plays the known levels by itself, with no board. On the start frame it
 finds the rings and matches them against its level library (`LIBRARY_JSON` embedded in the solver, generated from the local `state/com.maroieqrwlk.unpin/solvers/boards/`; levels 3-26,
 level 10 with its 4 stages), then plays the order already won on the phone; the note starts with `library
@@ -138,10 +160,10 @@ How to write it (one look at the start frame):
 - Multi Stage (puzzle icon on the map; 3-4 boards in a row): the solver's memory handles the stages (above).
   A retry from the fail screen restarts at stage 1; the solver recognises whichever stage is on the frame.
 - Challenge (10 moves) and Boss (25 moves) levels are tall and the camera follows the balls
-  [s:20261001-154701-chrono-2FYKPJ#11] [s:20261001-165538-chrono-2FYKPJ#6]: the first frame shows the whole
-  level zoomed out. Write the board from it with `"scrolling": true` and `"max_moves"`; the solver gives
-  the order by pin name; pull one pin per call and read each next ring on the current frame. Not yet won
-  with this method.
+  [s:20261001-154701-chrono-2FYKPJ#11] [s:20261001-165538-chrono-2FYKPJ#6]. Challenge 1 (Modes > Challenge,
+  card 1) is in the library as a scrolling board (`C1`, since the lab of 2026-10-06): `level start "challenge 1"
+  --mechanic pin-pull`, then `solve pin-pull --run --rounds 12 --gap 0.4 --settle 7 --why "solver"`, no board,
+  no hand taps. See Challenge and boss levels. A new challenge or boss: write it in level pixels (below).
 
 ### Colour bucket levels (two colours, two cups)
 
@@ -153,12 +175,21 @@ colour; a colour in the other cup loses at once [s:20261001-153137-chrono-2FYKPJ
 - Failed plans on level 20: both top pins at once; yellow first; middle pin then both colours; middle then
   blue (4 losses, 129 s to the win) [s:20261001-153137-chrono-2FYKPJ#24] [s:20261001-153137-chrono-2FYKPJ#34].
   The right order still lost once with pulls about 4 s apart [s:20261001-154701-chrono-2FYKPJ#4]: use `--gap 7`.
+- 2026-10-05 the solver run lost L20 the same way: its rounds came 3.8 s apart, M was read on a frame with the
+  blue still running over the M rod (235042 shot 61) and the last blue went to the yellow cup (shot 62); Y 0.5 s
+  after M stalled yellow at 98% [s:20261005-235042-chrono-2FYKPJ#39] [s:20261005-235042-chrono-2FYKPJ#45]. Won
+  with B, ~25 s, M, 6 s, Y [s:20261006-012240-chrono-2FYKPJ#16]. The library board now carries
+  `"waits": {"M": 10, "Y": 7}` and the solver sleeps them: run it, do not tap by hand.
+- A new colour bucket board: add `"waits": {"<steering pin>": 10, "<second colour>": 7}`.
 
 ### Slider pins
 
 A pin with a dotted track does not come out on a tap: swipe it along the dots, in steps if it stops
 (level 19: tap the top pin, then slide the hook pin right twice) [s:20261001-153137-chrono-2FYKPJ#10]
-[s:20261001-153137-chrono-2FYKPJ#18].
+[s:20261001-153137-chrono-2FYKPJ#18]. Since 2026-10-06 (lab) `solve --run` swipes the L19 hook itself after T
+(it sees the knob and the dotted track when no ring is left); on 2026-10-05 the run stopped there with `no pin
+ring on this frame` and the swipe 153,790>360,745 was sent by hand [s:20261005-235042-chrono-2FYKPJ#26].
+A slider on a new board: `{"swipe": [x1, y1, x2, y2]}` from the hook along the dots.
 
 ![Level 19 (241.5.1): the hook pin on the lower left runs on a dotted track to the right — a slider; the last blue balls wait behind it, cup at 94%](../img/20261002-slider-pin-level-19-c7700768.webp)
 
@@ -203,6 +234,16 @@ A pin with a dotted track does not come out on a tap: swipe it along the dots, i
 - A run that stops mid-level with `not a known level` (a ring moved, a pin the solver does not see): run the
   same `solve --run --rounds 6 --gap 5` once more; if it refuses again, write the board of what is left
   (`boards/LN-after-X.json`, like `L8-after-T`, `L12-after-A`) and say in `level end --note` which pin it missed.
+- A level marked hard (flame skull on the level number, 241.5.2) can be an old library level: run the solver
+  first, never assume a new board (L14 and L17 on 2026-10-05 were played by hand though both were library
+  levels: L14's rings overlap, L17's top rings sit half behind the wall).
+- The view moved mid-level (rings a few px off after the bombs meet, L16, L17): do not tap the rest by hand;
+  run `solve --run --rounds 6 --gap 5` again, it shifts the board with the rings it finds. If it still
+  refuses, name the frame in `level end --note`.
+- Sketchman IQ Test levels are pin-pull boards (multicoloured balls, no greys, one cup; an IQ Score gauge at
+  the top). Level 1 is in the library (`IQ1`); levels 2+ are new: write the board (`boards/IQ2.json`, ...) and say
+  so in `level end --note`. Whether fewer pulls raise the IQ score is not known yet: note the score after a win.
+  Leaving a Sketchman level (X > Leave) plays an interstitial and lands on the main map level, not the mode menu.
 - Space theme (dark background): rings read since 2026-10-04 (checked on 7 recorded L10-s4 frames). Levels 1-2
   (grey stacks) are still read only on the default grey background.
 
@@ -233,19 +274,21 @@ A pin with a dotted track does not come out on a tap: swipe it along the dots, i
 | 11 | `570,470 105,505 512,392 105,597 167,821` (E C W F B) | E first: bomb onto bomb; C drops a grey left on the V shelf; pulls 5 s apart (E W F B with gap 5 lost twice, 2026-10-04: a grey stayed on the C half) |
 | 12 | `143,525 221,626` (A B) | bomb parked; B is a golden star-wand pin (since 241.5.1); after A: `boards/L12-after-A.json` |
 | 13 | `365,432 484,517 267,617 481,797` | divider makes the centre bombs meet |
-| 14 | `118,422 591,402 361,350 613,622 596,609` | never pull the lower-left chute (118,630) |
+| 14 | `118,422 591,402 361,350 613,622 596,609` | never pull the lower-left chute (118,630); 241.5.2 also won V1 V2 V3 DL DR LR H; H/LR rings overlap |
 | 15 s1-s4 | `185,497 557,494 160,450 163,810` / `383,343 198,493 118,775 582,817` / `578,437 377,298` / `488,532 130,645 330,385 440,440` | s3: bomb parked behind (262,298) |
-| 16 | `307,456 421,463 493,420 222,408 209,806` | both bombs meet in the centre first |
-| 17 | `123,607 238,828 452,293 285,838` | both bombs parked |
+| 16 | `307,456 421,463 493,420 222,408 209,806` | both bombs meet in the centre first; GP is a golden star; on 241.5.2 the view moves ~15 px up after I2 |
+| 17 | `123,607 243,828 452,292 285,838` (H DL V2 F) | both bombs parked; 241.5.2 also won V1 DR H V2 DL F (bombs meet); V1/V2 rings half behind the top wall |
 | 18 | `475,450 411,450 152,770 477,793` | bomb parked |
-| 19 | `420,468 153,820>285,765`, then swipe `240,775>360,745` | slider pin |
-| 20 | `400,458 229,820 335,457` gap 7 | blue first while the steering pin is in |
+| 19 | `420,468` then swipe `153,790>360,745` (T K) | slider pin; the solver swipes K itself since 2026-10-06 |
+| 20 | `400,458 229,820 335,457` (B M Y); M >= 10 s after B, Y >= 7 s after M | blue first while the steering pin is in; the solver waits these itself since 2026-10-06 (won 2026-10-06 by hand) |
 | 21 | `178,630 105,515 600,470 575,610` | (178,630), not the ring (132,660) under it |
 | 22 | `280,490 310,768 360,490` gap 7 | yellow first while the diagonal is in |
 | 23 s1-s4 | `365,300 175,520 555,560 160,565` / `243,405 458,405 142,772 572,772` / `290,392 537,405 612,580 518,765 474,840` / `203,835 620,645 503,445 498,845` | s3: vertical first, bombs meet; s4: left divider before the long pin |
 | 24 | `385,305 195,400 605,635 160,852` | vertical first, bombs meet |
 | 25 / 26 | `385,908 400,467` / `440,545` | trivial |
 | 27 boss | not won (lost 112 s and 526 s, then Skip) | tall, 25 moves; see Challenge and boss levels |
+| Challenge 1 (`C1`) | model only: T+D1, X, S2, S4, L, M, S3, TD, J (scrolling, one round per pull) | 10 moves exactly; TD tapped on its ring's right edge; never BL, BR, TV |
+| Sketchman 1 (`IQ1`) | model only: `466,705 248,829 212,890 482,828` (T L1 L2 R1) | IQ Test mode; everything above rods L3 R2 R3 ends in the cup chute; never pull L3, R2, R3 |
 
 ### Level times (pin-pull, `sw.py playbook`, 2026-10-02)
 
@@ -333,8 +376,63 @@ Levels 1-8 (241.3.1, old log format, rough): 25-65 s of play each; level 5 (4 st
 | 12 hard (golden pin) | won | 97 | [s:20261004-005453-chrono-2FYKPJ#9] |
 | 13 | won (V T M B), flow cut | 60 | [s:20261004-005453-chrono-2FYKPJ#16] |
 
-### L14 (hard, flame skull) on 241.5.2 — hand order, no library board [s:20261005-014031-chrono-2FYKPJ]
-Solver: "no board" (6 rings, slanted floors). Won on try 2: top dividers (260,352) (362,352) (456,356), upper
-slants (118,422) (592,404), then the lower RIGHT slant (597,607) alone, then the floor (595,610). Keep the lower
-left slant (116,628): it steers the balls to the centre. Pulling floor and both lower slants together lost
-("Balls fell out" through the side gaps beside the chevrons).
+### L14 (hard, flame skull) on 241.5.2 [s:20261005-014031-chrono-2FYKPJ]
+It is the library level 14 unchanged (same rings, same order). The solver said "no board" because the rings
+of the floor H (596,609) and the lower right slant LR (613,622) overlap (21 px apart) and it saw neither; it
+was played by hand. Won on try 2: top dividers (260,352) (362,352) (456,356), upper slants (118,422)
+(592,404), then the lower RIGHT slant alone (a tap at (597,607) pulled LR, not H), then the floor (595,610).
+Keep the lower left slant LL (116,628): pulling it lets the balls out (lost on try 1 with LL, LR and H in one
+batch). Since the lab of 2026-10-05 the solver recognises L14 by itself (`rings H LR not found by the circle
+search but seen by the ring check (overlapping rings)`) and plays DL DR V2 LR H.
+
+- 2026-10-06 (20261006-012240): L20 Color Bucket WON first try in 55 s by hand: B (400,458), wait 6 s until all blue is in the blue cup (the M rod carries it right of the tent), M (229,820), wait 6 s, Y (335,457). The 98% stall of 20261005-235042 had Y only 0.5 s after M. (Lab 2026-10-06: the solver's taps (592,678), (339,1213), (496,676) of 2026-10-05 are device pixels = the rings B, M, Y; the run lost on timing, 3.8 s between rounds. The solver now waits M >= 10 s after B and Y >= 7 s after M: use `solve --run`.) Board: the M rod runs from the left wall down to the tent peak (363,895); with M in everything from the neck goes to the blue cup, with M out it falls left of the peak into the yellow cup.
+- Sketchman IQ levels have no fail: a poor run is still a result screen (71% in the cup: IQ 122, 179 coins; 0%: IQ 50, 0 coins). Try again costs a video; Get goes to the main level. For a deliberate low score: T R1 R2 R3 puts nothing in the cup.
+- 2026-10-06 (20261005-235042): L19 library order T K: after T the balls park at the hook; send K as a swipe 153,790>360,745 by hand, then win. L20 (Color Bucket, two funnels, crossing pin M): library B M Y lost by mixing; B, wait, M, Y reached blue 100% / yellow 98% and stalled (no end screen). (Lab 2026-10-06: not a new order, a timing problem; both fixed in the solver, see Method.) Sketchman IQ L1: library IQ1 order T L1 L2 R1 wins.
+
+## Challenge mode (pin-pull variant), 2026-10-06
+- Board taller than the screen; the camera follows the COLOURED pile and rests 4-5 s after it lands (video of
+  20261006-030951: view 0, 474, 850, 1221 px down the level); header counts moves down from 10; a tap during the
+  intro pan ("0 Moves") does not count [s:20261006-030951-chrono-2FYKPJ#6].
+- Two bombs meeting explode each other (clears the path).
+- Challenge 1 (3 tries by hand, all lost [s:20261006-030951-chrono-2FYKPJ#11] [s:20261006-030951-chrono-2FYKPJ#19]
+  [s:20261006-030951-chrono-2FYKPJ#26]): the triangle of greys at the right has two rings at its tip. The
+  upper-right ring is the diagonal (TD: greys into the channel, wanted); the lower-left ring is the vertical side
+  (TV: greys out of the level, lost). A tap on TD's ring CENTRE pulled TV (try 2, camera at rest: TV's rod runs
+  24 px beside TD's ring); try 3 tapped TV itself. Tap TD on the right edge of its ring.
+
+### Challenge 1 with the solver (lab 2026-10-06; model only, not yet won on the phone)
+- `solve pin-pull --run --rounds 12 --gap 0.4 --settle 7`: the solver places each frame in the level by its rings
+  (note `scrolling board C1 recognised: N ring(s) place this frame at view Y px`) and plays one round per pull:
+  T+D1 together (one round, 0.4 s apart: D1 leaves the view once the colour falls), X (bombs meet), S2, S4, L, M,
+  S3, TD (tapped on the right edge of its ring), J = 10 pulls, exactly the limit. BL, BR (bomb lids) and TV are
+  never pulled. Try 2 played the same order up to S3 and had the colour on the bottom shelf.
+- `--gap 0.4` matters only for the T+D1 round (the others are single pulls); `--settle 7` lets the camera rest
+  before each frame. `The camera is still moving` (the intro pan, a pile still falling): no move, run the same
+  command again after 3 s. `pins ... tapped in an earlier round but their rings are still there`: a tap missed or
+  the wrong pin came out: look at the frame, name it in `level end --note`.
+- A retry is a new level: `level start "challenge 1 try 2"` (the memory of the last try would expect pins gone).
+- If it loses, write in `level end --note` which pull and what moved; the lab fixes the board (`boards/C1.json`).
+- A new scrolling level: one board in LEVEL pixels (y = frame y + the view; the start view is 0), `"scrolling":
+  true`, `"height"`, `"max_moves"`, `"views": {place: view y}` where the colour rests, `"together"` for pins that
+  must go in one round, `"tap"` beside a ring whose centre pulls a neighbour. Save it as `boards/C2.json` and say
+  so in `level end --note`: the lab adds it to the library (until then `--board` plays it as one screen only).
+
+## Level times by mechanic (dream 2026-10-06)
+
+```yaml
+---
+mechanics:
+- id: pin-pull
+  name: pin-pull
+  status: mastered
+  method: solver
+  solver: solvers/com.maroieqrwlk.unpin/pin-pull.py
+  levels:
+    won: 29
+    lost: 9
+    quit: 6
+  typical_min: 1.0
+  best_min: 0.3
+  solver_file: solvers/com.maroieqrwlk.unpin/pin-pull.py
+level_budget_min: 5
+```

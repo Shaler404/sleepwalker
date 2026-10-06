@@ -147,3 +147,23 @@ of the 108-120 session [s:20261001-024647-chrono-2FYKPJ#109] [s:20261001-172422-
 | 1 | won (solve) | 30 | [s:20261003-200925-chrono-2FYKPJ#10] |
 | 2 | won (solve) | 29 | [s:20261003-200925-chrono-2FYKPJ#16] |
 | 3 | won (boosters, then solve) | 133 | [s:20261003-232850-chrono-2FYKPJ#9] |
+
+## Level times by mechanic (dream 2026-10-06)
+
+```yaml
+---
+mechanics:
+- id: akari
+  name: Cat placement (Light Up rules)
+  status: mastered
+  method: solver
+  solver: solvers/com.oakever.akari/akari.py
+  levels:
+    won: 34
+    lost: 2
+    quit: 4
+  typical_min: 0.4
+  best_min: 0.2
+  solver_file: solvers/com.oakever.akari/akari.py
+level_budget_min: 5
+```
