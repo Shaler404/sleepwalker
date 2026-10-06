@@ -161,8 +161,12 @@ them: no level is played just to play. Each goal says when it is done:
   progress, or end the session. `sw.py gate clear` if it opened earlier. Never wait a timer out with
   `wait`: one call sleeps at most 60 s whatever you ask for (the reply says `asked` and `capped`), the
   screen dims after a few idle minutes and the next tap fails with exit 3 (Meowdoku 223249: 13 waits,
-  12 minutes, then blocked). When a `wait` reply says `screen: dimmed`, tap something harmless at once
-  or end the session. A check that needs time is a task with `--after-hours` or `--at`.
+  12 minutes, then blocked). When a `wait` reply says `screen: dimmed`, do what its warning says: with
+  `touch_blocked` Samsung's touch protection is already up and every tap is refused with exit 3 — do not
+  tap; write the notes, set the task, `end --status blocked` (four sessions tapped into it after 2.5-4
+  minutes of waits and ended blocked [s:20261005-145445-chrono-2FYKPJ#0] [s:20261005-151039-chrono-2FYKPJ#37]
+  [s:20261005-141756-chrono-2FYKPJ#23]); without it, tap something harmless at once or end the session.
+  A check that needs time is a task with `--after-hours` or `--at`.
 - **Anything you notice outside your goals** — register it (`feature`, `case`, `task add`) and move
   on. The post-session review turns it into goals.
 - After each milestone record where you are: `sw.py progress "level 12" --value 12` (new features
@@ -225,11 +229,19 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    stopped, or a plan that is finished is not a win. Early records in two games double-counted
    levels and mislabelled the next ones. So `sw.py` refuses `level end won`:
    - right after a move (`tap`, `taps`, `solve --run`): the frame a move returns comes a second after
-     it, before a win screen is up. The refusal takes a frame of the screen now and returns it (`shot`
-     in the reply): open it; if it shows the win screen, repeat `level end won` — do not leave the level
-     open and move on (five refusals in four sessions were followed by no retry; one tutorial stayed
-     open across a classic game and was recorded as a 172 s classic win [s:20261003-193423-chrono-2FYKPJ#4]
-     [s:20261003-232357-chrono-2FYKPJ#17]). If you have already left the win screen (Back, Continue, the
+     it, before a win screen is up. `sw.py` takes a frame of the screen now. The same screen as the one
+     you claimed on (`same` or `small`) and the last action a move: the win is recorded from it, the
+     reply says `frame` — no second call (after Back, `launch` or `restart` the stable screen is not the
+     win screen, and the claim is refused as below; 14 refusals in 47 sessions of 2026-10-05, 8 on an
+     unchanged screen, were each answered
+     with `--shot <the frame already seen>` [s:20261005-231555-chrono-2FYKPJ#34]
+     [s:20261006-003220-chrono-2FYKPJ#17]). A screen that changed: the refusal returns the new frame
+     (`shot` in the reply): open it; if it shows the win screen, repeat `level end won` — do not leave
+     the level open and move on (five refusals in four sessions were followed by no retry; one tutorial
+     stayed open across a classic game and was recorded as a 172 s classic win
+     [s:20261003-193423-chrono-2FYKPJ#4] [s:20261003-232357-chrono-2FYKPJ#17]; three `level start` were
+     refused with "still open" after such a refusal [s:20261005-123456-chrono-2FYKPJ#6]
+     [s:20261006-021434-chrono-2FYKPJ#3]). If you have already left the win screen (Back, Continue, the
      next level), do not take a frame of whatever is in front of you: `level end won --shot N` names the
      frame that showed the win, and the record keeps that frame. Two records were written on the home
      screen and on the next board that way, after a refusal, a Back and a plain `shot`
@@ -378,7 +390,11 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
        cases on the last step in each of four games in one night [s:20261005-004506-chrono-2FYKPJ#24]
        [s:20261005-003925-chrono-2FYKPJ#14] [s:20261005-001914-chrono-2FYKPJ#8]
        [s:20261005-002947-chrono-2FYKPJ#10]). A case you close later anyway names its step:
-       `--source <session>#<step>`;
+       `--source <session>#<step>`. The step is the `step` number in the reply, never the frame number
+       (`shots/NNNNN`, `shot_n`): a frame number beyond the session's steps is refused with the step that
+       took it, one within them goes through and points at the wrong moment, so the dream cannot verify
+       the case (32 sources in 47 sessions of 2026-10-05 [s:20261005-231555-chrono-2FYKPJ#38]
+       [s:20261005-144428-chrono-2FYKPJ#39] [s:20261006-024420-chrono-2FYKPJ#33]);
      - why it appeared, the trigger: `--appeared "…"` when you saw it (it closes `chk-appeared`), or
        `--appeared-guess "…"` when you only suspect it (the planner makes "Find why <feature> appeared: …").
        A feature registered without them is answered with a warning: fix it at once;
@@ -416,8 +432,9 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    confirmed|refuted|inconclusive --note "the evidence and the conclusion"`; an unlock goal — when the
    feature opened (its first look or study goal is created by itself); "Find why … appeared" closes by itself
    when you record `--appeared`, "Run each outcome once under …" when its last cell is closed. No longer
-   relevant (feature removed, duplicate) — `task cancel <id> --reason "…"`. The analysis closes by itself when no goal is left, the search
-   for features is closed and every feature is documented.
+   relevant (feature removed, duplicate) — `task cancel <id> --reason "…"`. The game's open and waiting
+   tasks: `task list` (the whole map, cases included: `sw.py research <game>`). The analysis closes by
+   itself when no goal is left, the search for features is closed and every feature is documented.
 4. **Material for the wiki** — as you go, not at the end:
    - `note <type> "fact"` — prices, currencies, timers, rewards, conditions (type: economy, mechanic,
      ui, event, bug, question);

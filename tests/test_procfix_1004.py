@@ -171,6 +171,7 @@ check(r["result"] == "quit" and ops()[-1]["name"] == "level 9" and ops()[-1]["re
 sw("level", "start", "level 10", "--mechanic", "match", "--plan", "play", "--value", "10")
 sw("taps", "100,100 200,200", "--why", "moves")
 n_shots = session()["shots"]
+session(fake_i=session().get("fake_i", 0) + 1)  # the screen moves on after the move (2026-10-06: an unchanged one is accepted)
 r = run("level", "end", "won", "--note", "solved")
 rep = json.loads(r.stdout)
 check(r.returncode == 2 and "frame was taken now" in rep["error"] and rep.get("shot_n") == n_shots + 1

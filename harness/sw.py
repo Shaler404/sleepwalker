@@ -1057,6 +1057,7 @@ def book_moves(cur: dict, tool: str, done: int, t: float) -> list[str]:
         cur.pop("last_tap", None)  # another action in between: the next tap is not a repeat
     if done:
         cur["looked"] = False
+        cur["last_tool"] = tool  # what the last frame came after: a move, or a key, a launch (level_end)
     lv = cur.get("level")
     if lv:
         if done and not lv.get("move_t"):
@@ -2337,8 +2338,40 @@ def op_cur(args) -> dict:
     return pick_session(args)
 
 
+def step_of_frame(steps: list[dict], n: int) -> int | None:
+    """The step at which frame n (shots/000n.jpg) was taken, from a session's steps.jsonl."""
+    return next((x.get("step") for x in steps if x.get("shot") == n and x.get("type") not in ("mark", "research")),
+                None)
+
+
 def op_source(cur: dict, args) -> str:
-    return getattr(args, "source", None) or (f"{cur['id']}#{cur['step']}" if cur.get("step") is not None else cur["id"])
+    """The source of an op: `--source <session>#<step>`, or this session's current step. A step the session
+    does not have yet is a frame number (shots/NNNNN), not a step: 32 of 555 sourced ops in 47 sessions named a
+    step beyond the session's own count, so the dream's step check and the video timestamps broke (2026-10-05
+    [s:20261005-231555-chrono-2FYKPJ#38] [s:20261005-144428-chrono-2FYKPJ#39] [s:20261006-024420-chrono-2FYKPJ#33]
+    [s:20261005-151039-chrono-2FYKPJ#3]). It is refused with the step that took that frame."""
+    src = getattr(args, "source", None)
+    if not src:
+        return f"{cur['id']}#{cur['step']}" if cur.get("step") is not None else cur["id"]
+    m = re.fullmatch(r"\s*(\S+?)#(\d+)\s*", str(src))
+    if not m:
+        return src
+    sid, n = m.group(1), int(m.group(2))
+    if sid == cur.get("id") and cur.get("step") is not None:
+        last, steps = cur["step"], read_jsonl(Path(cur["dir"]) / "steps.jsonl") if cur.get("dir") else []
+    else:
+        p = RAW() / cur["game"] / sid / "steps.jsonl"
+        if not p.exists():
+            return src
+        steps = read_jsonl(p)
+        last = max((x.get("step") or 0 for x in steps), default=0)
+    if n <= last:
+        return src
+    at = step_of_frame(steps, n)
+    fail(f"--source {sid}#{n}: {'this session is' if sid == cur.get('id') else sid + ' ended'} at step {last}. A "
+         f"source is the step number (`step` in each reply), not the frame number (shots/{n:05d})"
+         + (f": frame {n} was taken at step {at}, so --source {sid}#{at}" if at is not None else ""),
+         source=src, last_step=last, **({"frame_step": at} if at is not None else {}))
 
 
 def summary_of(view: dict) -> dict:
@@ -2953,19 +2986,35 @@ def cmd_wait(args) -> None:
     cur["looked"] = True
     cur.pop("last_tap", None)  # time has passed: a control may work now
     dimmed = cur["platform"] == "android" and screen_dimmed(cur["device"])
+    blocked = dimmed and touch_blocked(cur["device"])
     if dimmed:
         info["screen"] = "dimmed"
-        info.setdefault("warnings", []).append("the screen dimmed: the next tap will fail. Tap something harmless "
-                                               "now, or end and set a task with --after-hours")
+        if blocked:
+            info["touch_blocked"] = True
+        info.setdefault("warnings", []).append(dim_warning(blocked))
     if ran:
         info["ran_meanwhile"] = ran
         info.setdefault("warnings", []).append(f"{ran} other commands ran during this wait: one command at a time. "
                                                "This frame is of now, after them, not of the screen you waited for")
     log_step(cur, {"type": "wait", "seconds": slept, **capped, **shot_rec(cur, info),
-                   **({"screen": "dimmed"} if dimmed else {}), **({"ran_meanwhile": ran} if ran else {}),
-                   **why_of(args)})
+                   **({"screen": "dimmed"} if dimmed else {}), **({"touch_blocked": True} if blocked else {}),
+                   **({"ran_meanwhile": ran} if ran else {}), **why_of(args)})
     save_session(cur)
     out({"seconds": slept, **capped, **info})
+
+
+def dim_warning(blocked: bool) -> str:
+    """What a wait says when the screen has dimmed. "Tap something harmless now" was the advice while Samsung's
+    touch protection was already up: the tap was refused (exit 3) and the session ended blocked in four of four
+    sessions after 2.5-4 minutes of waits (2026-10-04/05 [s:20261004-001002-chrono-2FYKPJ#2]
+    [s:20261005-141756-chrono-2FYKPJ#23] [s:20261005-145445-chrono-2FYKPJ#0] [s:20261005-151039-chrono-2FYKPJ#37]).
+    The wait now looks for the protection window and says which of the two it is."""
+    if blocked:
+        return ("the screen dimmed and Samsung touch protection is up: every tap is refused now (exit 3). Do not tap: "
+                "write the notes, set a task with --after-hours for what you waited for, and end the session "
+                "(end --status blocked --summary ...)")
+    return ("the screen dimmed: tap something harmless now, or end and set a task with --after-hours. Idle minutes "
+            "bring up touch protection on a Samsung phone, and then every tap is refused")
 
 
 def reload_session(cur: dict) -> tuple[dict, int]:
@@ -3245,6 +3294,12 @@ def cmd_case(args) -> None:
         if cid.startswith(("chk-", "under-")):
             fail("an outcome is named by how the level ends (out-of-moves, bomb, timer): not chk- or under-")
         op["outcome"] = True
+    if args.text and not re.search(r"[^\W\d_]{2}", args.text):
+        # `case mg-tic-tac-toe chk-win "x" --done` replaced a case's real text with "x" (restored by hand nine
+        # seconds later), and `case hard-level under-out-of-moves "x"` made a case with nothing to check
+        # (2026-10-05 [s:20261005-231555-chrono-2FYKPJ#38] [s:20261005-080420-chrono-2FYKPJ#56])
+        fail(f"{args.text!r} is a placeholder, not a case: the text says what to check, or what the frames showed "
+             f"(--done). The case keeps its text: sw.py research {cur['game']}")
     if args.text:
         op["text"] = args.text
     else:
@@ -3288,8 +3343,22 @@ def task_id_of(view: dict, raw: str, strict: bool) -> str:
          f"; open tasks: {', '.join(t['id'] for t in open_tasks(view)) or 'none'}")
 
 
+def task_brief(t: dict) -> dict:
+    return {k: t[k] for k in ("id", "title", "kind", "feature", "status", "requires", "not_before", "plan", "note")
+            if t.get(k)}
+
+
 def cmd_task(args) -> None:
     cur = op_cur(args)
+    if args.task_cmd == "list":
+        # `task list` was typed in two sessions and refused by the parser (2026-10-04, 2026-10-05
+        # [s:20261004-005453-chrono-2FYKPJ#6] [s:20261005-073409-chrono-2FYKPJ#6]); the tasks were in `research`
+        view, now = research_view(cur["game"]), time.time()
+        ot = open_tasks(view)
+        return out({"game": cur["game"], "open": [task_brief(t) for t in ot if iso_to_t(t.get("not_before")) <= now],
+                    "waiting": [task_brief(t) for t in ot if iso_to_t(t.get("not_before")) > now],
+                    "done": len([t for t in view["tasks"] if t.get("status") == "done"]),
+                    "cancelled": len([t for t in view["tasks"] if t.get("status") == "cancelled"])})
     tid = slug(args.id) if args.task_cmd == "add" else \
         task_id_of(research_view(cur["game"]), args.id, strict=args.task_cmd == "done")
     if args.task_cmd == "add":
@@ -3506,6 +3575,9 @@ def level_start(cur: dict, args, now: float) -> None:
     out(res)
 
 
+MOVE_TOOLS = ("tap", "taps", "swipe", "solve", "text")  # the tools whose frame a win is claimed on (level_end)
+
+
 def level_end(cur: dict, args, lv: dict, now: float) -> None:
     if args.retry and args.result != "lost":
         fail("--retry opens the same level again after a loss: level end lost --retry")
@@ -3530,6 +3602,7 @@ def level_end(cur: dict, args, lv: dict, now: float) -> None:
     problem = win_problem(cur, lv, op, args.skipped, named is not None) if args.result == "won" else None
     left = ("; if you already left the win screen, name the frame that showed it: level end won --shot N (the "
             "record keeps that frame, not the screen in front of you)")
+    confirmed = None
     if problem and not cur.get("looked") and cur.get("last_app") in (cur["game"], None):
         # the refusal used to send the player for a `shot` and back; five refusals in four sessions got no retry
         # at all, and a tutorial stayed open across a classic game (2026-10-03 [s:20261003-193423-chrono-2FYKPJ#4]
@@ -3538,9 +3611,24 @@ def level_end(cur: dict, args, lv: dict, now: float) -> None:
         info = take_shot(cur, open_device(cur), False)
         cur["looked"] = True
         log_step(cur, {"type": "shot", **shot_rec(cur, info), "why": "level end won: the win screen"})
-        save_session(cur)
-        fail(problem + ". The frame was taken now: open it; if it shows the win screen, repeat level end won" + left,
-             level=lv["name"], shot=info["shot"], shot_n=info["shot_n"], app=info.get("app"))
+        # The same screen on the frame taken now (the hash unchanged: `same`, or `small` for a confetti-sized
+        # change) means the screen the claim was made on was already stable: a refusal would show the player the
+        # frame it has seen, and the second claim then names it (--shot). 14 refusals in 47 sessions of 2026-10-05,
+        # 8 on an unchanged screen, 12 answered with `--shot <the frame claimed on>`, 3 followed by a `level start`
+        # refused because the level was still open [s:20261005-231555-chrono-2FYKPJ#34]
+        # [s:20261006-003220-chrono-2FYKPJ#17] [s:20261005-151039-chrono-2FYKPJ#26] [s:20261005-123456-chrono-2FYKPJ#6]
+        # [s:20261006-021434-chrono-2FYKPJ#3]. The record keeps the frame taken now. Only after a move: after
+        # Back, a launch or a restart the stable screen is the one the player left the win screen for, and the
+        # claim names the win frame (--shot) as before.
+        stable = bool(info.get("same_as_prev") or cur.get("small_streak")) and cur.get("last_tool") in MOVE_TOOLS
+        again = win_problem(cur, lv, op, args.skipped) if stable else problem
+        if again:
+            save_session(cur)
+            fail(again + ". The frame was taken now: open it; if it shows the win screen, repeat level end won" + left,
+                 level=lv["name"], shot=info["shot"], shot_n=info["shot_n"], app=info.get("app"))
+        problem, op["shot"] = None, info["shot_n"]
+        confirmed = (f"the frame taken now (shot {info['shot_n']}) shows the same screen as the one you claimed on: "
+                     "the win is recorded from it")
     if problem:
         fail(problem + (left if "take a frame of the win screen first" in problem else ""),
              level=lv["name"], shot_n=cur.get("last_shot"))
@@ -3569,6 +3657,7 @@ def level_end(cur: dict, args, lv: dict, now: float) -> None:
     save_session(cur)
     m, change = mechanic_change(cur, lv["mechanic"])
     out({"ok": True, "level": lv["name"], "result": args.result, "minutes": round(op["seconds"] / 60, 1),
+         **({"shot": op["shot"], "frame": confirmed} if confirmed else {}),
          "mechanic": mechanic_brief(m), **({"mechanic_change": change} if change else {}),
          **({"retry": f"{lv['name']!r} is open again with a new clock"} if args.retry else {}),
          **({"planned": planned} if planned else {}),
@@ -6285,8 +6374,10 @@ def parser() -> argparse.ArgumentParser:
     q = ts.add_parser("cancel")
     q.add_argument("id")
     q.add_argument("--reason", required=True)
-    for q in (ts.choices["add"], ts.choices["done"], ts.choices["cancel"]):
+    ts.add_parser("list", help="the game's open and waiting tasks (the whole map: sw.py research <game>)")
+    for q in (ts.choices["add"], ts.choices["done"], ts.choices["cancel"], ts.choices["list"]):
         q.add_argument("--game", help="outside a session (the post-session review)")
+    for q in (ts.choices["add"], ts.choices["done"], ts.choices["cancel"]):
         q.add_argument("--source", help="session#step that shows it, when recorded outside the session")
     p = sub.add_parser("progress")
     p.add_argument("text", help='where you are, e.g. "level 12" or "chapter 3, area 2"')
