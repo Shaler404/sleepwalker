@@ -91,6 +91,23 @@ by its number and to letters by counts.
   top bar, no keyboard, every cell lettered) returns done, so the run ends "solved". On the recorded level-9
   frames the toss and the next "(toss, last number)" are the two letters the player typed by hand
   [lab 2026-10-06b].
+  The secret level (session 20261006-082255) has a purple theme and a banner ad under the keyboard: the
+  solver first refused it ("keyboard not found", "a white key is off the expected layout", "a popup covers
+  the keyboard"); the session patched the keyboard reading (only edge arrows, keys above the arrows, the
+  purple grey key colour). Then the run stopped twice on the last cell ("no settled letter to type", typed by
+  hand both times) and once said "these moves finish the level" with cells left: on this theme the digits on
+  the green cursor box are dark green, so the cursor cell's number went unread and its word dropped out.
+  Fixed: cursor digits are also read as dark-green pixels; "finish the level" is only claimed when no row is
+  cut by the top bar and no cell anywhere is empty. On the recorded frames the two hand letters are now the
+  solver's moves, 0 wrong letters over 36 secret-level frames, no change on the other 415 frames [lab 2026-10-06c].
+  Level 11 (session 20261006-131052) stalled twice at 0 mistakes (3 cells of 3 numbers, then the last cell,
+  typed by hand): a word with an apostrophe near its end was not in the list ("unknown word"), which blocked
+  every toss, and the last number sat only in that word, so the best solution had no letter for it. Fixed:
+  (1) a word with one apostrophe 1-2 letters before its end that the list lacks is matched as a listed 4+ letter word
+  plus a clitic ('s, 'd, 'm, 'll, 're, 've, 'em), at a small extra cost; (2) one unknown word no longer blocks
+  the several-numbers toss at 0 mistakes; (3) a last number whose only words are unknown is tossed with the
+  letter of best trigram score among the white keys. On the recorded frames the stalls now type the hand
+  letter (the hint cell included) [lab 2026-10-06e].
   Keep running `solve --run` until the win card; a level-1/2 board takes 3-4 rounds, a level-3 board about 5,
   levels 4-8 6-11 rounds. A note "(toss)" or "(toss, last number)" followed by one mistake is expected, not a
   misread: run it again. A "(hint)" round taps the bulb and then the cell: run it again after it.
@@ -115,7 +132,22 @@ by its number and to letters by counts.
   not read or describe it, tap its button (CLAIM/NEXT) and go on.
 - Pitfalls:
   - Level 3 (session 20261005-221933) opens with a 4-tap tutorial (two highlighted cells of one number, the highlighted key each time); it replays after a restart. Taps: 170,272 543,1155 559,272 543,1155. Then the solver typed 22 cells in 2 rounds and stalled on 5 cells of 3 numbers (two near-best solutions, margin 0.21, no unknown word); typed by hand, 0 mistakes, won in 2.1 min. Fixed by the lab (strong two-number word + toss, see Method): do not type by hand; with "no settled letter to type", several numbers left and 2 mistakes, use a hint or quit.
+  - Level 11 (session 20261006-131052): the solver stalled at 0 mistakes on 3 cells of 3 numbers (a contraction the word list lacked: 'unknown word' blocked the toss), then on the last cell; typed by hand. Fixed by lab 2026-10-06e (see Method): run `solve --run` again after a "(toss)" round; never type by hand.
+  - Restart from the loss popup: an interstitial; Back closes it but lands on the loss popup again (heart already spent): tap Restart once more.
   - Level 6 shows an "It's a locker. Put a correct letter near it to unlock." tooltip over the keyboard on its first lock: the solver refuses that frame ("a popup covers the keyboard"); tap the tooltip once (the next taps of 20261006-003220 closed it), take a new shot, run the solver [lab 2026-10-06].
+  - Secret level (purple theme, banner ad at the bottom): read by the solver since lab 2026-10-06c; a run that
+    ends "the screen changed a lot" there was an interstitial (shot 17 of 20261006-082255), not the board:
+    close the ad, take a new shot, run again. If a theme makes it stall on the cursor cell again, keep the
+    frame and say "cursor number unread?" in the level note, do not type by hand.
+  - Level 11 (won in 20261006-131052 after two stalls typed by hand: 3 cells, then the last cell; fixed by lab 2026-10-06e): 5 locks, some two-dot, Chest Hunt key cells and a board that
+    scrolls (more below). On 5 recorded level-11 boards (052618/24; 024420/62, 71-73, locks moved by restarts)
+    the solver reads all 5 locks, never taps a lock or a given letter, types 22-23 cells in round 1 and its
+    letters agree across all five frames (0 disagreements) [lab 2026-10-06d]. Run `solve --run` to the win card.
+  - Open the level first, then `level start`: tap START/CONTINUE, close the interstitial, take a shot of the
+    board, and only then `sw.py level start`. A level opened with `level start` and ended before the board
+    (an ad, a lost phone: 052618 and 104733 level 11) has one hand tap and no solver move, and `lab-check`
+    counts it as "placed by hand" [lab 2026-10-06d]. End a level aborted that way with a note that says
+    "no board reached, not a solver level".
   - The bulb at zero (orange play badge) starts a rewarded video that ends in a playable with no X (100 s, Back and launch ignored); only restart leaves it, the board is reset and no hint is credited. Do not use the bulb at zero on a level you need.
   - A one-dot lock treated as two-dot: level 13 lost 3 mistakes in one 29-tap batch [s:20261001-050941-chrono-2FYKPJ#72].
   - A quote longer than the screen (scroll bar on the right): the cursor scrolls the board; read the new
@@ -215,7 +247,7 @@ Typical 1.4 min, best 0.5 min: within the budget (`sw.py playbook`).
 - Restart from that popup: same board, 0 mistakes, no ad. Force-stop mid-level: CONTINUE reopens the board fresh (hint-revealed letter gone, hint not refunded).
 - Hint bulb: tap, then tap one empty cell to reveal only that cell. At 0 the bulb shows a play icon: video ad with no close for 60+ s (restart needed).
 
-## Level times by mechanic (dream 2026-10-06)
+## Level times by mechanic (dream 2026-10-07)
 
 ```yaml
 ---
@@ -226,14 +258,14 @@ mechanics:
   method: solver
   solver: solvers/com.crypt.gram.puzz/cryptogram.py
   levels:
-    won: 10
-    lost: 3
-    quit: 4
-  typical_min: 2.0
+    won: 12
+    lost: 4
+    quit: 8
+  typical_min: 4.0
   best_min: 1.5
   solver_file: solvers/com.crypt.gram.puzz/cryptogram.py
-  solver_sign: solver gave up in 4 of 5 levels (no moves, the same moves, or no change
-    on screen)
+  solver_sign: 'solver bypassed: 2 of 5 levels placed by hand; solver gave up in 2
+    of 5 levels (no moves, the same moves, or no change on screen)'
 - id: card-cryptogram
   name: card-cryptogram
   status: studying

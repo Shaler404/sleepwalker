@@ -54,6 +54,7 @@ Median 0.4 min against a 5 min budget. Boards of levels 1-3: [levels.md](../leve
 
 - A blocked tap costs one drop and the arrow turns red; at 0 drops "Out of Lives" offers a free Continue (board kept) or Restart (board reset) [s:20261003-233756-chrono-2FYKPJ#4-5] [s:20261003-233756-chrono-2FYKPJ#23].
 - Hard levels (L5, L8, L10; L5 is about 3 screens wide, but L8 and L10 fit the screen at 35 px and 23.6 px pitch [s:20261005-012010-chrono-2FYKPJ#16] [s:20261005-012010-chrono-2FYKPJ#21]): play the hint loop: bulb (665,212), wait about 2 s for the pan, tap the green arrow. The hint is free (about 55 uses on L5). ⚠️ Previously: "never batch blind taps on a Hard board" (that gave 4 Out of Lives in one session); the solver now sends up to 14 free-ray taps per round on Hard boards, see the dream report's solver note [s:20261003-233756-chrono-2FYKPJ#6-22] [s:20261004-001551-chrono-2FYKPJ#2-108].
+  ⚠️ The per-round limit of 14 taps no longer holds: see "Lab 2026-10-06 (6)" below: a round chains waves of up to 30 moves, each tap with at most drops - 1 taps depending on it, no re-taps; three boards in a row lost no drop (20261006-093640, 20261006-114946).
 - If a bulb tap leaves the frame unchanged, the green arrow is off-screen: find the green edge pixel and swipe toward it [s:20261004-001551-chrono-2FYKPJ#84-92]. Do not `shot` after a tap that already returns a frame [s:20261004-001551-chrono-2FYKPJ#13].
 - To speed up (untested): in each hint frame also tap the other arrows that are visibly free (task make-hard-fast) [s:20261004-001551-chrono-2FYKPJ#61].
 - After a win the Daily Streak screen can come before the win card; shoot the card only once Next Level and Home are visible (the score counts up: 895 -> 1194) [s:20261004-001551-chrono-2FYKPJ#110].
@@ -69,6 +70,7 @@ Median 0.4 min against a 5 min budget. Boards of levels 1-3: [levels.md](../leve
 - `state/com.oakever.arrows/solvers/arrows-escape.py` won Hard L5 with no hints and no drop lost (3 drops at the end), 2 stars, 05:54 in-game, score 1300 [s:20261005-010045-chrono-2FYKPJ#91].
 - Run it as `solve arrows-escape --run --rounds 1 --settle 2.0`, one round per call once the level is over 5 min (the harness stops `--run` after each round then). `--settle 2.0` is needed: a 1 s frame catches the fling still moving.
 - How it works: phase 1 maps the board by swipes (solver memory: nodes A/D/E, edges, heads in global node coords; every frame is registered by the integer node offset with the best agreement; cells that ever held an arrow never change, arrows only turn into dots). Phase 2 extracts the arrows (paths with one head), checks the whole board clears by ordered removal, then taps the free arrows in view plus the ones they free (up to 14 per round), or pans toward the nearest free arrow.
+  ⚠️ Previously "up to 14 per round": see "Lab 2026-10-06 (6)" below: a round chains waves of up to 30 moves, each tap with at most drops - 1 taps depending on it, no re-taps; three boards in a row lost no drop (20261006-093640, 20261006-114946).
 - Board physics: a 300 ms swipe moves the board about 2x its length (FLING = 2); pushing the view far past the board's end snaps it back to the start view, so exploration aims the unseen edge at 30% of the screen, not the centre.
 - Cost on Hard L5: ~47 explore rounds (many lost to map restarts while the fling and snap-back were learned) + ~38 tap/pan rounds. With the fixes, expect about 10 explore pans on a 50-column board.
 - ⚠️ Previously (superseded: the solver won L6, L7, Hard L8, L9 and Hard L10 with 3 stars in 20261005-012010 [s:20261005-012010-chrono-2FYKPJ#3] [s:20261005-012010-chrono-2FYKPJ#9] [s:20261005-012010-chrono-2FYKPJ#16] [s:20261005-012010-chrono-2FYKPJ#20] [s:20261005-012010-chrono-2FYKPJ#29]): not working yet on normal boards from level 6: the pitch differs per level (about 61 px on L6; the solver now searches it), several heads are missed at that pitch, and the new bottom-right grid button (guideline toggle) reads as arrow nodes (task solver-normal-levels).
@@ -77,6 +79,7 @@ Median 0.4 min against a 5 min budget. Boards of levels 1-3: [levels.md](../leve
 
 ## Lab 2026-10-05 (arrows-escape, normal boards)
 - Method: solver on every level, normal and Hard. Normal boards (L6 on) fit the screen: `solve arrows-escape --run --rounds 3` with no hand taps; the solver reads the whole board in one frame (pitch searched and refined per frame, guideline button masked) and taps up to 14 free arrows per round. L6 (28 arrows) cleared in 2 rounds, 3 stars [s:20261005-012010-chrono-2FYKPJ#2-3]. Hard boards: as in the Solver section above (`--rounds 1 --settle 2.0`).
+  ⚠️ Previously "up to 14 free arrows per round": see "Lab 2026-10-06 (6)" below: a round chains waves of up to 30 moves, each tap with at most drops - 1 taps depending on it, no re-taps; three boards in a row lost no drop (20261006-093640, 20261006-114946).
 - The solver now returns no moves unless the level header's divider line is on screen (`header line` < 0.9 in its note): home, settings, the theme popup, Rate Us, the win card, Daily Streak and Out of Lives. Before, the home screen passed its background test and got an explore swipe.
 - Pitfalls:
   - Do not place moves by hand when the solver gives none: read its note. "not a level board" means a popup is on top (close it, then solve); "misread components" or "can never leave" means a reading problem: take `shot`, run `solve` once more, and if it repeats, note the shot number for the lab instead of tapping by hand.
@@ -89,6 +92,7 @@ Median 0.4 min against a 5 min budget. Boards of levels 1-3: [levels.md](../leve
 
 ## Lab 2026-10-05 (2): chain limit and sparse-board pitch (after 20261005-224323)
 - Method: solver, `solve arrows-escape --run --rounds 20` on every level (Hard boards that do not fit: `--rounds 1 --settle 2.0` as above). Expect about twice the rounds of before with the same taps (Hard L13 replay: 15 rounds instead of 6, about 3 min); a round now taps 3-14 arrows.
+  ⚠️ Superseded round size ("3-14 arrows"): see "Lab 2026-10-06 (6)" below: a round chains waves of up to 30 moves, each tap with at most drops - 1 taps depending on it, no re-taps; three boards in a row lost no drop (20261006-093640, 20261006-114946).
 - What changed: a round no longer taps a long chain hanging on one free arrow. Each tap may have at most (drops left - 1) taps depending on it in the same round. Before, L16 tapped 1 free arrow plus 13 it freed, and lost all 3 drops twice on the same plan [s:20261005-224323-chrono-2FYKPJ#53] [s:20261005-224323-chrono-2FYKPJ#56]. The note shows `(N chained, drops D, chain budget B, H held for the next round)`.
 - Why L16 failed is not known: the board was read right, and in the recorded rounds a chained tap works even 0.35 s after its blocker. If a drop is lost, the note says `DROP LOST (a -> b)` and lists the arrows tapped that did not leave (head node); chains then stay off for the level.
 - Pitch: the solver keeps the first frame's pitch in its memory, and halves a pitch whose halfway points carry dots. Hard L15 resumed with a fresh memory on a half-cleared board now reads 39 arrows (before: pitch 52.55 instead of 26.3, "misread components") [s:20261005-224323-chrono-2FYKPJ#38].
@@ -99,6 +103,7 @@ Median 0.4 min against a 5 min budget. Boards of levels 1-3: [levels.md](../leve
 ## Session 20261005-233140 (opus): chained taps off
 - L16 (55 arrows, normal, gold league arrows) lost 2 drops in round 4 with the chain budget 2: the first tap of the round, on an arrow that WAS free, was ignored by the game (no red, no drop), and the two taps chained behind it hit blocked arrows (red, -1 drop each) [s:20261005-233140-chrono-2FYKPJ#8-9]. An ignored free tap is harmless; a chained tap behind it is not.
 - Solver change: chain budget is always 0 (only arrows free on the current frame are tapped, re-checked every round). L16 rounds 5-17 lost nothing; ~17 rounds for 55 arrows, 3.6 min.
+  ⚠️ Superseded: see "Lab 2026-10-06 (6)" below: a round chains waves of up to 30 moves, each tap with at most drops - 1 taps depending on it, no re-taps; three boards in a row lost no drop (20261006-093640, 20261006-114946).
 - After a normal win: Bronze League jump screen (Continue), then the win card, then an interstitial can start by itself ~3 s later; Android Back on its end card returns to the win card (no X after 45 s).
 - L17 (normal, ~60 arrows) with chains off: 19 rounds, 0 drops lost by the solver [s:20261005-233140-chrono-2FYKPJ#40-48]. Ignored taps confirmed again: in a 2-tap batch the second tap was dropped while the first arrow flashed red.
 - Deliberate Out of Lives for tests: 3 single taps on blocked arrows, one per call. The Continue is a 2-ad rewarded pod (~35 s), close with "X Reward granted" top left.
@@ -152,23 +157,86 @@ Median 0.4 min against a 5 min budget. Boards of levels 1-3: [levels.md](../leve
 - Super Hard L20 (red): a shaped (paw/mitten) board, ~17 px pitch at 730, ~150+ arrows, fits the screen. Not attempted yet: expect over 100 rounds at the current 1-free-per-round rate. Give it a session of its own.
 - After every win this session: Silver League jump card (Continue) -> win card -> interstitial. Back closes some end cards; a Trivia playable ignored Back for 90 s, and `restart --after-win` kept the L19 win.
 
-## Level times by mechanic (dream 2026-10-06)
+## Lab 2026-10-06 (5): chained rounds with re-taps (after 20261006-041006)
+- Method: solver, `solve arrows-escape --run --rounds 20 --settle 1.2` on every level (Hard boards wider than the
+  screen: `--rounds 1 --settle 2.0` as before). A round now taps up to 30 moves: the free arrows, then the arrows they
+  free, wave after wave. Expected rounds (replay with the start boards): normal levels 3-6, Hard 5-12 (L18H 52 -> 12,
+  L16 17 -> 6). A round of 30 moves takes about 25 s; the harness looks at the screen every 5 moves.
+- Why chains were unsafe: the game ignores about 1 tap in 250 (no red, no drop, the arrow stays). L16 round 4: the
+  FIRST tap of the round was ignored and the taps chained behind it were blocked (2 drops)
+  [s:20261005-233140-chrono-2FYKPJ#12]; Hard L18 round 28 had one more ignored free tap
+  [s:20261006-041006-chrono-2FYKPJ#78]. Every other chained tap in ~930 replayed taps worked.
+- Fix: every arrow that a later tap of the round waits for is tapped twice (the note counts `re-taps`), at a point
+  with no other arrow within 1.4 cells. A parent with no such point keeps its dependants for the next round.
+- Pitfalls:
+  - Not verified on the phone yet: what a second tap on an arrow that is already sliding does. Watch the first
+    chained rounds: a note `DROP LOST` turns chains off for the rest of the level (the solver goes back to free-only
+    rounds by itself). Write the shot number and the listed head nodes in the level note for the lab.
+  - The note ends `chains on` / `chains off: a drop was lost this level`; `N held for the next round` is normal.
+
+## Session 20261006-064018 (opus): Daily Challenge boards, chained rounds
+- Daily Challenge boards (today and past days) are normal arrows-escape boards in a shape (~100-112 arrows, ~20 px pitch at 730), header = the date, 3 drops, AD hint. `solve arrows-escape --run --rounds 25 --settle 1.2` won both (Oct 6: 35 rounds, 04:44; Oct 5: 34 rounds, 03:14).
+- ⚠️ Chained rounds with re-taps (lab 2026-10-06 (5)) lost one drop on BOTH boards, each time right after the first chained round (Oct 6 round 1: 8 chained, 8 re-taps; Oct 5 round 2: 8 chained, 6 re-taps), and the note listed no tapped arrow left on the board ("tapped and still on the board: []"). So the lost drop is not an ignored parent: most likely a re-tap (or a chained tap) landing on an arrow that is still sliding or on a neighbour. Lab: suspect the re-tap itself. With chains off afterwards the rounds were 1-3 taps each (~35 rounds per board, ~5 min).
+- Super Hard L20 (130 arrows, shaped, fits the screen): same solver call, round 1 had 7 chained + 4 re-taps and again lost one drop, chains off after; 38 rounds, 04:11 in-game, 3 stars. Three boards out of three lost exactly one drop right after the first chained round: until the lab fixes re-taps, chained rounds are a net cost (one drop) for a saving of maybe 5-10 rounds.
+- Steps: a ~100-130 arrow board costs ~35-40 solver rounds = ~35-40 session steps; a 140-step session fits 3 such boards plus menus.
+
+## Lab 2026-10-06 (6): re-taps removed, chain budget (after 20261006-064018)
+- Method: solver on every level, unchanged call: `solve arrows-escape --run --rounds 20 --settle 1.2` (Hard boards
+  wider than the screen: `--rounds 1 --settle 2.0`). Event worm levels: `solve worms-escape --run --rounds 20 --settle 1.5`.
+- Cause of the 3 lost drops (found in the screen recording of 20261006-064018): the game gives a tap to the NEAREST
+  arrow, even 2-3 cells (up to 74 px at 1080) away from the touch. A re-tap lands where its arrow has already left,
+  so it moved a neighbour. Oct 6 round 1: the re-tap of the arrow at (8,15) took the arrow at (7,17); the planned
+  tap on (7,17) then found empty page and took (9,20); the planned tap on (9,20) took the blocked arrow (12,40):
+  red, one drop. L20 round 1: the re-tap of (32,21) went straight to the blocked arrow beside it (1.5 cells).
+- Solver change: no re-taps; each arrow is tapped once, on the arrow. A round chains waves again, but at most
+  drops-1 taps may wait on any one tap (directly or through other taps), so one ignored tap (1 in 250) costs at most
+  drops-1 drops, never the level. Replay with perfect taps (rounds, free-only -> now): Oct 6 daily 36 -> 16,
+  Oct 5 daily 37 -> 15, Super Hard L20 42 -> 17, Hard L18 51 -> 21, L16 23 -> 9, L19 29 -> 12. The worms solver
+  gets the same budget (it never re-tapped). The idle tap under a start toast now keeps 160 px from every arrow.
+- Pitfalls:
+  - `DROP LOST ... tapped and still on the board: [heads]` = an ignored tap: chains go on with the smaller budget
+    (`chain budget 1`); `... still on the board: []` = unknown cause: chains off for the level. Note the shot.
+  - Never tap by hand on a point where an arrow was: a tap on empty page goes to the nearest arrow 2-3 cells away.
+    The same holds for the hand play of worm levels.
+  - ⚠️ Previously (superseded): "chained rounds with re-taps"; the lost drop after the first chained round came from
+    the re-taps, which are gone.
+
+## Session 20261006-093640 (opus): no-re-tap chains verified once, dense-board pitch fix
+- L21 (normal, 88 arrows): `solve arrows-escape --run --rounds 20 --settle 1.2`, 19 rounds, 18 chained (2-6 chained taps each), 0 drops lost: the first board of three for solver-retap-drop. 0 mistakes still gave only 2 stars ("No Mistakes!", 02:14).
+- Hard L22 (fits the screen, ~25 px pitch at 1080, very dense, no dots at the start) read at twice the pitch (49.7): "misread components ... heads 0" on every call. Fixed: after the pitch search the solver halves the pitch while the half pitch scores >= 0.85 of it (true pitch: 0.50-0.58; doubled: 0.95-0.96). Offline: shot 31 now reads 138 arrows, 15 free. Not yet run on the phone.
+- Pitfall: debugging a solver for ~4 minutes with the phone idle on the board ended in exit 3 (touch protection). Fix the solver between levels, or tap something harmless every 2-3 minutes.
+- Pitfall: an interstitial after the L21 win opened the Play Store by itself after ~25 s; `launch` returned to the win card.
+
+## Session 20261006-114946 (opus): chains verified, dense Hard L22
+- Hard L22 (dense, ~25 px pitch at 1080) now reads at the true pitch: round 1 138 arrows, 15 free; `solve arrows-escape --run --rounds 20 --settle 1.2`, 21 rounds, 131 moves, up to 9 chained per round, 0 drops lost, 4.8 min logged, 3 stars [s:20261006-114946-chrono-2FYKPJ#21].
+- L23 (normal, 28 arrows): 5 rounds, 0.6 min of play, 3 stars. With L21 that is three boards in a row of chained rounds with 0 drops lost: the no-re-tap chain budget works.
+- Deliberate Out of Lives: a second tap on an arrow that is already red costs no drop; pick three different blocked arrows (inside a spiral is the safest choice) [s:20261006-114946-chrono-2FYKPJ#36].
+
+## Lab 2026-10-06 (7): signs explained, no code change (after 20261006-114946)
+- arrows-escape: the "2 of 5 placed by hand" are the 093640 L22 quit (session blocked before the half-pitch fix)
+  and the deliberate Out of Lives on daily Oct 4. Method unchanged: `solve arrows-escape --run --rounds 20 --settle 1.2`.
+  Deliberate experiments with hand taps count as "placed by hand": say "experiment" in the level note.
+- worms-escape: no event level has been played with the solver yet. Next event level: `solve worms-escape --run
+  --rounds 20 --settle 1.5`, no hand taps, no AD hint; on "misread components" note the shot for the lab.
+
+## Level times by mechanic (dream 2026-10-07)
 
 ```yaml
 ---
 mechanics:
 - id: arrows-escape
   name: arrows-escape
-  status: broken
+  status: mastered
   method: solver
   solver: solvers/com.oakever.arrows/arrows-escape.py
   levels:
-    won: 20
-    lost: 2
-    quit: 5
-  typical_min: 5.0
+    won: 26
+    lost: 3
+    quit: 6
+  typical_min: 4.3
   best_min: 0.6
   solver_file: solvers/com.oakever.arrows/arrows-escape.py
+  solver_sign: 'solver bypassed: 2 of 5 levels placed by hand'
 - id: worms-escape
   name: worms-escape
   status: studying

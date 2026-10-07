@@ -86,8 +86,14 @@ step is the 730-px ring (400,458), not an off-ring tap.
 Since 2026-10-06 (lab, 2nd) it plays SCROLLING levels: Challenge 1 is a library board in level pixels (`C1`);
 each frame is placed in the level by its rings, a frame taken while the camera still moves gives no move, and
 one pin goes per round (`solve pin-pull --run --rounds 12 --gap 0.4 --settle 7`; section Challenge mode).
+Since 2026-10-06 (lab, 3rd) the library also knows levels 27-33, all played by hand before: L27 (Boss declined, and
+`L27-after-T` for the moved view), L28, L29, L30, L31 stages 1-4, L32 (BD is a ring or a golden star, both read) and
+L33 (one ring T, then the two hook sliders K1 and K2, swiped by the solver once their knob and dotted track are seen).
+Each plays the order won on the phone; checked offline on every recorded frame of those levels (lab-log). From level
+28 on: `level start`, decline a Boss / Challenge Level popup with No, thanks, then `solve pin-pull --run --rounds 6
+--gap 5`, no board, no hand taps.
 Earlier status: the solver plays the known levels by itself, with no board. On the start frame it
-finds the rings and matches them against its level library (`LIBRARY_JSON` embedded in the solver, generated from the local `state/com.maroieqrwlk.unpin/solvers/boards/`; levels 3-26,
+finds the rings and matches them against its level library (`LIBRARY_JSON` embedded in the solver, generated from the local `state/com.maroieqrwlk.unpin/solvers/boards/`; levels 3-33,
 level 10 with its 4 stages), then plays the order already won on the phone; the note starts with `library
 board L10-s3 recognised`. Between stages it keeps a memory: after a stage it says `stage 1/4 (L10-s1) was
 played; the next stage is not on this frame` until the next stage's rings appear; pins it already sent
@@ -247,7 +253,7 @@ A slider on a new board: `{"swipe": [x1, y1, x2, y2]}` from the hook along the d
 - Space theme (dark background): rings read since 2026-10-04 (checked on 7 recorded L10-s4 frames). Levels 1-2
   (grey stacks) are still read only on the default grey background.
 
-- With no board the solver knows the library levels (3-26) and grey stacks; on a new purple level it says
+- With no board the solver knows the library levels (3-33) and grey stacks; on a new purple level it says
   "not a known level ... not a grey-background level": that is expected, write the board. Its floor contents come from pixel colour: a floor read as
   `empty` or the wrong kind means a misread, give the board instead and say so in `level end --note`.
 - `--board` needs an absolute path (the solver runs in a temporary folder).
@@ -287,8 +293,18 @@ A slider on a new board: `{"swipe": [x1, y1, x2, y2]}` from the hook along the d
 | 24 | `385,305 195,400 605,635 160,852` | vertical first, bombs meet |
 | 25 / 26 | `385,908 400,467` / `440,545` | trivial |
 | 27 boss | not won (lost 112 s and 526 s, then Skip) | tall, 25 moves; see Challenge and boss levels |
+| 27 (Boss declined) | `515,410` then after the view moves `539,745 297,830 507,823` (T C V F) | 241.5.2: Play on L27 shows a 'Boss Level!' popup; No, thanks opens this small normal board (2 bombs, greys, colours). T drops the top bomb on the bottom bomb; view shifts ~+5,-12 px after, the solver refuses the shifted rings: run `--board boards/L27-after-T.json` (won 2026-10-06, 66 s) |
 | Challenge 1 (`C1`) | model only: T+D1, X, S2, S4, L, M, S3, TD, J (scrolling, one round per pull) | 10 moves exactly; TD tapped on its ring's right edge; never BL, BR, TV |
+| 28 | `328,412 618,528 112,596 474,770` (T S L F) | T drops the right bomb onto the left one; won twice by hand; library since the lab of 2026-10-06 |
+| 29 | `554,498 470,918` (T B), B >= 6 s after T | one colour, yellow cup; the solver waits B itself |
+| 30 | `592,462 118,618 272,364 442,362` (H1 H2 DL DR) | 3x3 grid; the right divider DR LAST (H1 DR DL lost: unpainted greys into the cup channel) |
+| 31 s1-s4 | `518,720 230,770` / `426,452 116,718 548,678 476,806` / `610,594 562,566 310,388 160,638 516,822` / `346,298 550,814 130,830` | s1: bomb parked on the top pin (118,518); s2: never the vertical (370,398); s4: never the pin under the right bomb (596,398) |
+| 32 | `112,552 443,390 550,798 136,818` (S V BD LD) | hard (flame skull); BD was a golden star on 113518, a ring on 145232; LD last |
+| 33 | `286,468`, swipe `330,800>190,835`, swipe `553,620>350,592` (T K1 K2) | Challenge Level popup declined; K1 and K2 are hook sliders |
 | Sketchman 1 (`IQ1`) | model only: `466,705 248,829 212,890 482,828` (T L1 L2 R1) | IQ Test mode; everything above rods L3 R2 R3 ends in the cup chute; never pull L3, R2, R3 |
+
+⚠️ The L27 row's `--board boards/L27-after-T.json` is no longer needed: the solver library holds `L27-after-T` (lab 2026-10-06), so `solve pin-pull --run` recognises the moved view by itself.
+
 
 ### Level times (pin-pull, `sw.py playbook`, 2026-10-02)
 
@@ -417,7 +433,39 @@ search but seen by the ring check (overlapping rings)`) and plays DL DR V2 LR H.
   must go in one round, `"tap"` beside a ring whose centre pulls a neighbour. Save it as `boards/C2.json` and say
   so in `level end --note`: the lab adds it to the library (until then `--board` plays it as one screen only).
 
-## Level times by mechanic (dream 2026-10-06)
+## merge-balls (Merge Balls mode) — seen, not learned (session 20261006-060944)
+- Board: numbered balls behind pins in a tube; pulling a pin drops a ball onto the one below and they MERGE by sum (20 + 12 -> 32, seen).
+- A spike sits between the tube exit and the jar; a % gauge under the jar (0% at start); a race bar of 4 racers at the bottom (You 4th, checkered finish).
+- Merge Level 1 is a tutorial: a hand points at the top pin. X (top left) leaves, pause top right. Banner ad at the bottom.
+- Goal/loss rules not yet seen (guess: get a big enough total into the jar; the spike may pop small balls).
+- Colours on L1 (lab 2026-10-06, shots 5-6 of 060944): green 20 + red 12 became GREEN 32, so the merged ball kept the
+  colour of the green one (or of the bigger one); the third ball, red 16, sits on the horizontal floor pin (412,368) above
+  the funnel; the spike stands on the funnel's way out, right above the jar.
+- Method: manual, not yet a solver (one recorded pull only). Play the tutorial as the hand shows, and after EVERY pull take
+  a shot and write in a `note`: which balls merged, the new number and colour, what the spike did to a ball that reached it
+  (popped, lowered the number, nothing), and the % under the jar. Three such levels are enough for the lab to write the
+  rules (and a solver if the numbers decide everything). Questions to settle: does a red ball merging into green add or
+  subtract; does the spike pop balls under some number; is a level lost when a red ball reaches the jar.
+
+## 2026-10-06 (20261006-061608): L24-L27
+- L24, L25, L26: `solve --run --rounds 6 --gap 5` library, first try, 0.2-0.7 min each.
+- L27: the Boss popup is optional: No, thanks gives a normal 4-pin board (boards/L27.json, L27-after-T.json). Prefer it unless the goal is the boss.
+- After a win the solver's last round can land on the league board already: the Level completed screen (gift meter, Get N) comes after Next Level (520,1270) and the streak gauge.
+
+### Hand orders, 2026-10-06 (session 20261006-091133)
+(Since the lab of 2026-10-06, 3rd, L28-L33 are library boards: run `solve --run`, do not replay these by hand.)
+
+- L28 (two bombs under a shelf, crossed pins): top diagonal pin (328,412) first - the bomb drops onto the other bomb, both explode and paint the top; then right shelf (618,528), lower-left diagonal (112,596), bottom pin (474,770). Won twice.
+- L29 (one-colour yellow bucket): top pin (554,498), wait 5 s, bottom pin (470,918).
+- L30 (3x3 grid, colours in the centre): top shelf (592,462), middle shelf (118,618), left divider (272,364), right divider (442,362) LAST. The right divider runs the full height: pulled early it lets the bottom-middle greys into the cup unpainted (lost once).
+- Interstitials after wins now run every level: "Skip to playable" (140,110) -> wait ~15 s -> skip icon (45,110) -> "Close" (83,110) on the end card returns to the game. A playable with no skip (bus jam) has no exit: a restart there reverted the L28 win.
+
+### Hand orders, 2026-10-06 (session 20261006-145232)
+- L32 (hard, flame skull; shelf of colours over crossed diagonals): shelf ring 112,552, wait 3 s; vertical 443,390 (colours paint the right greys); big diagonal 550,798; lower-left diagonal 136,818 LAST. Won first try.
+- L33 (grandma node -> 'Challenge Level!' popup +450 / No, thanks; declined = normal board): one pin 286,468, then two HOOK GATES that are dragged, not tapped: swipe lower hook 330,790 -> 190,835, upper hook 553,615 -> 350,590 (along the dotted track). Won.
+- L34 (grey skull, no Boss popup): 4 bombs (frame 39 of 20261006-145232), colours on a top-right shelf, greys below; crossed pins. Not played.
+
+## Level times by mechanic (dream 2026-10-07)
 
 ```yaml
 ---
@@ -428,11 +476,35 @@ mechanics:
   method: solver
   solver: solvers/com.maroieqrwlk.unpin/pin-pull.py
   levels:
-    won: 29
-    lost: 9
-    quit: 6
-  typical_min: 1.0
+    won: 40
+    lost: 10
+    quit: 7
+  typical_min: 1.4
   best_min: 0.3
   solver_file: solvers/com.maroieqrwlk.unpin/pin-pull.py
+  solver_sign: 'solver bypassed: 5 of 5 levels placed by hand; solver gave up in 2
+    of 5 levels (no moves, the same moves, or no change on screen)'
+- id: merge-balls
+  name: merge-balls
+  status: studying
+  method: manual
+  levels:
+    won: 0
+    lost: 0
+    quit: 1
+  typical_min: null
+  best_min: null
+  solver_file: ''
+- id: core-pin
+  name: core-pin
+  status: studying
+  method: manual
+  levels:
+    won: 0
+    lost: 0
+    quit: 1
+  typical_min: null
+  best_min: null
+  solver_file: ''
 level_budget_min: 5
 ```

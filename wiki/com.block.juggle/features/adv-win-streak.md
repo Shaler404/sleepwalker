@@ -4,8 +4,8 @@ title: "Adventure Consecutive Victories (win streak)"
 type: feature
 feature: adv-win-streak
 version_seen: 10.8.1
-verified_at: 2026-10-04
-sources: [20261003-235233-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-235233-chrono-2FYKPJ, 20261006-133549-chrono-2FYKPJ]
 ---
 
 # Adventure Consecutive Victories (win streak)
@@ -55,11 +55,21 @@ Version 10.8.1.
 | Level 2 lost (No Space Left) | x0 | [^s5] |
 | Level 2 won (second try) | x1 | [^s3] |
 | Level 3 won | x2 | [^s2] |
+| Level 6 won | x5 | [^s6] |
+| Level 7 won (win screen hidden by an ad, the app restarted) | not shown | [^s7] |
+| Level 8 won | x7 | [^s8] |
+| Level 9 won (hard) | x8 | [^s9] |
 
 - Each Adventure win adds one; a loss resets it to x0 [^s1] [^s2].
 - The loss screen shows x0 with only Retry and the back arrow: no offer to keep the streak, no price
   [^s5].
-- No reward came at x1 or x2: no popup, no coins on the win screen [^s4].
+- No reward came at x1 or x2: no popup, no coins on the win screen [^s4]. None came at x5, x7 or x8
+  either [^s6] [^s8] [^s9].
+- A win whose win screen never showed still counts: the level 7 win ended in an ad that needed an app
+  restart, and the level 8 win showed x7 [^s7] [^s8].
+
+![The level 8 win screen at x7: the level 7 win, whose panel never showed, was counted](../img/20261006-adv-win-streak-result-939393c3.webp) [^s8]
+*x7 after level 8: the hidden level 7 win counted*
 - The home menu's daily counter did not follow it: after the level 2 loss the panel showed x0 and the
   daily counter stayed x1 [^s1].
 
@@ -77,6 +87,7 @@ Version 10.8.1.
 | Offers to keep it <!-- case:chk-save --> | Looked at the loss screen | ✅ None: x0 with only Retry and the back arrow, no revive or paid keep | [^s5] |
 | Win under the streak <!-- case:under-win --> | Won levels 1, 2 (second try) and 3 | ✅ Each win adds one: x1, x1 (from 0), x2 | [^s2] |
 | No Space Left under the streak <!-- case:under-no-space-left --> | Lost level 2 at x1 | ✅ Reset to x0 on the loss screen | [^s5] |
+| A win hidden by an ad and an app restart <!-- case:restart-after-win --> | Restarted the app out of the level 7 ad, then won level 8 | ✅ Still counted: x5 after level 6, x7 after level 8, x8 after level 9 | [^s8] |
 | Restart (gear > Replay) under the streak <!-- case:under-restart --> | — | not verified |  |
 | Quit (gear > Home) under the streak <!-- case:under-quit --> | Quit level 4 at x2 with gear > Home | not verified: the panel only shows on a result screen, and none came after the quit |  |
 | Leaving the app under the streak <!-- case:under-exit-app --> | — | not verified |  |
@@ -86,10 +97,15 @@ Version 10.8.1.
 - Settings gear > Replay in a level with the streak running: kept or reset <!-- case:under-restart -->
 - Quitting a level (gear > Home) with the streak running: kept or reset; to be read on the next result screen <!-- case:under-quit -->
 - Leaving the app in a level with the streak running <!-- case:under-exit-app -->
-- Whether anything pays at a higher count (x3 and up)
+- Whether anything pays at a higher count (nothing up to x8)
 
 [^s1]: session 20261003-235233-chrono-2FYKPJ, step 30 — [video at 6:08](https://youtu.be/RE70Idi_jrA?t=368)
 [^s2]: session 20261003-235233-chrono-2FYKPJ, step 59 — [video at 12:07](https://youtu.be/RE70Idi_jrA?t=727)
 [^s3]: session 20261003-235233-chrono-2FYKPJ, step 45 — [video at 9:41](https://youtu.be/RE70Idi_jrA?t=581)
 [^s4]: session 20261003-235233-chrono-2FYKPJ, step 60 — [video at 12:34](https://youtu.be/RE70Idi_jrA?t=754)
 [^s5]: session 20261003-235233-chrono-2FYKPJ, step 29 — [video at 5:47](https://youtu.be/RE70Idi_jrA?t=347)
+
+[^s6]: session 20261006-133549-chrono-2FYKPJ, step 60 — [video at 20:18](https://youtu.be/UNoU_1pbeJk?t=1218)
+[^s7]: session 20261006-133549-chrono-2FYKPJ, step 72 — [video at 24:43](https://youtu.be/UNoU_1pbeJk?t=1483)
+[^s8]: session 20261006-133549-chrono-2FYKPJ, step 84 — [video at 26:43](https://youtu.be/UNoU_1pbeJk?t=1603)
+[^s9]: session 20261006-133549-chrono-2FYKPJ, step 104 — [video at 31:39](https://youtu.be/UNoU_1pbeJk?t=1899)

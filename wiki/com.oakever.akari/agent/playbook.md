@@ -47,7 +47,8 @@ the dream merges it here. Level times: `sw.py playbook`.
   - It refuses with a note when the frame is not a settled board: an ad, a popup, the home screen, the
     fail screen, the "Hard" banner, the board still appearing (cells growing, boxes dropping), the bulb
     booster's hint (veiled page with an orange "Apply": the note says to tap Apply (364,1348) and run it
-    again), a reading with 0 or 2+ solutions, or a counter that disagrees. Fix what the note says (wait, close the popup,
+    again), the fail screen "Almost!" (the note names the free green Restart (364,1285)), a whole screen
+    dimmed evenly by the phone (below), a reading with 0 or 2+ solutions, or a counter that disagrees. Fix what the note says (wait, close the popup,
     skip the ad) and run it again.
   - Fallback when it refuses a settled, clean board twice: write the board as JSON and run
     `sw.py solve akari --board FILE --run`. Rows: '.' empty, '0'-'4' numbered wall, '#' box or cell
@@ -76,6 +77,12 @@ the dream merges it here. Level times: `sw.py playbook`.
   - A rejected cat plays an animation for about a second (an angry cat, the number next to it flashes
     red, the cell lit without its cat): the solver refuses ("lit cells do not match", "none of
     floor/wall/box"); look again and run it once more [s:20261003-232850-chrono-2FYKPJ#11].
+  - The whole screen dimmed evenly, board, bar and ad banner alike, with no popup on it, is the phone, not
+    the game: its idle dim or Samsung touch protection (the proximity sensor covered). Game taps, Back and
+    `restart` do nothing; level 44 was quit after 433 s of taps on it, read as a "stuck veil after the
+    rewarded video". The solver says "the whole screen is dimmed evenly ... not the game" and shows the board
+    it reads under the dim; when `sw.py` says touches are blocked, the sensor must be cleared (record the
+    session as blocked); do not log the level quit as a solver failure [s:20261006-102842-chrono-2FYKPJ#18].
   - Boosters are not needed with the solver: after the cat booster or the bulb's Apply the solver reads
     the placed cats and places the rest (level 3: 8/9 read, 1 placed) [s:20261003-232850-chrono-2FYKPJ#9].
   - Grey X marks (the bulb's Apply, or a single tap) and red X (a rejected cat) sit on dark cells; the
@@ -148,7 +155,7 @@ of the 108-120 session [s:20261001-024647-chrono-2FYKPJ#109] [s:20261001-172422-
 | 2 | won (solve) | 29 | [s:20261003-200925-chrono-2FYKPJ#16] |
 | 3 | won (boosters, then solve) | 133 | [s:20261003-232850-chrono-2FYKPJ#9] |
 
-## Level times by mechanic (dream 2026-10-06)
+## Level times by mechanic (dream 2026-10-07)
 
 ```yaml
 ---
@@ -159,10 +166,10 @@ mechanics:
   method: solver
   solver: solvers/com.oakever.akari/akari.py
   levels:
-    won: 34
-    lost: 2
-    quit: 4
-  typical_min: 0.4
+    won: 46
+    lost: 3
+    quit: 7
+  typical_min: 0.6
   best_min: 0.2
   solver_file: solvers/com.oakever.akari/akari.py
 level_budget_min: 5

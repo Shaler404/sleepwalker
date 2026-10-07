@@ -5,7 +5,7 @@ type: feature
 feature: golden-fish
 version_seen: 1.19.1
 verified_at: 2026-10-06
-sources: [20261006-010939-chrono-2FYKPJ, 20261006-021434-chrono-2FYKPJ]
+sources: [20261006-010939-chrono-2FYKPJ, 20261006-021434-chrono-2FYKPJ, 20261006-101030-chrono-2FYKPJ]
 ---
 
 # Golden Fish bonus board
@@ -19,7 +19,8 @@ follows. It can be skipped from the same win screen [^s1] [^s2] [^s3] [^s4] [^s5
 
 On the win screen of every 4th main level (L134 this session; 54, 58 ... 126 earlier): a Golden Fish button
 stands where the next-level button is, with Skip to Level N below [^s1]. It came up again on the win of Level
-138, and not on the wins of Levels 135, 136 and 137 [^s2] [^s7].
+138, and not on the wins of Levels 135, 136 and 137 [^s2] [^s7]; then again on the win of Level 142, not on
+those of Levels 140 and 141 [^s10] [^s11] [^s12].
 
 ## Where to find it
 
@@ -79,9 +80,10 @@ after Level 138 [^s2] [^s5]. Level 139 on that screen led to an interstitial vid
 
 ## How it works
 
-- Offered on the win screen of every fourth main level: 54, 58 ... 126 (earlier sessions), 134, 138; not on
-  135, 136, 137 [^s1] [^s2] [^s7].
-- Optional: "Skip to Level N+1" on the same win screen goes on without it [^s2]. Whether a skipped offer comes
+- Offered on the win screen of every fourth main level: 54, 58 ... 126 (earlier sessions), 134, 138, 142; not
+  on 135, 136, 137, 140, 141 [^s1] [^s2] [^s7] [^s12].
+- Optional: "Skip to Level N+1" on the same win screen goes on without it [^s2]. On Level 142 it was skipped: Skip to Level 143
+  opened Level 143 with no interstitial seen in the frames after it [^s13]. Whether a skipped offer comes
   back is not known.
 - One golden fish instead of three fish [^s3]. Inferred from the single fish and the tooltip: one wrong cat
   ends the board; not tested.
@@ -114,6 +116,7 @@ Version 1.19.1.
 | What differs from the base level: smaller board, no level number, one golden fish, no interstitial before it <!-- case:chk-differs --> | One golden board played | ✅ | [^s3] |
 | Its win: fish leaderboard with +5 fish, then Surgical with a golden fish and the Level N+1 button, no Skip <!-- case:chk-win --> | Board solved with no mistake | ✅ | [^s5] |
 | Where and how often: every 4th main level (54, 58 ... 126, 134, 138; not 135-137) <!-- case:chk-frequency --> | Wins of Levels 134 to 138 | ✅ | [^s2] |
+| Offered again on the Level 142 win screen ("Flawless"; Golden Fish, Skip to Level 143 below), four levels after Level 138: the every-4th-level interval holds; skipped <!-- case:interval --> | Levels 140 to 142 won; Skip to Level 143 tapped | ✅ | [^s12] |
 | Each loss: its fail screen and what the loss costs <!-- case:chk-loss --> | No loss played | not verified |  |
 | Retry and continue offers after a loss and their price <!-- case:chk-retry --> | No loss played | not verified |  |
 
@@ -138,3 +141,8 @@ Version 1.19.1.
 [^s7]: session 20261006-021434-chrono-2FYKPJ, step 12 — [video at 3:25](https://youtu.be/Xj5RUsVHvCc?t=205)
 [^s8]: session 20261006-021434-chrono-2FYKPJ, step 20 — [video at 5:21](https://youtu.be/Xj5RUsVHvCc?t=321)
 [^s9]: session 20261006-021434-chrono-2FYKPJ, step 24 — [video at 6:32](https://youtu.be/Xj5RUsVHvCc?t=392)
+
+[^s10]: session 20261006-101030-chrono-2FYKPJ, step 7 — [video at 1:26](https://youtu.be/FuAwbQouw6Q?t=86)
+[^s11]: session 20261006-101030-chrono-2FYKPJ, step 10 — [video at 2:33](https://youtu.be/FuAwbQouw6Q?t=153)
+[^s12]: session 20261006-101030-chrono-2FYKPJ, step 14 — [video at 3:10](https://youtu.be/FuAwbQouw6Q?t=190)
+[^s13]: session 20261006-101030-chrono-2FYKPJ, step 15 — [video at 3:26](https://youtu.be/FuAwbQouw6Q?t=206)

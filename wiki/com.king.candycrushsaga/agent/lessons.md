@@ -3,7 +3,7 @@ game: com.king.candycrushsaga
 title: "Lessons"
 type: agent
 version_seen: 1.337.0.2
-verified_at: 2026-10-06
+verified_at: 2026-10-07
 ---
 
 # Lessons for the agent: Candy Crush Saga
@@ -22,3 +22,7 @@ verified_at: 2026-10-06
   *Confirmed: 20261005-220615-chrono-2FYKPJ, 1.337.0.2.* [s:20261005-220615-chrono-2FYKPJ#12]
 - A `mark` role with a space (for example tab:Profile card) must be quoted or written with an underscore, or the call fails with exit code 2.
   *Confirmed: 20261006-000939-chrono-2FYKPJ, 1.337.0.2.* [s:20261006-000939-chrono-2FYKPJ#11]
+- For colour bomb combo tests, use Level 4: its dome drops a bomb every 3 moves. On Level 1 a five-line setup needs a swap that matches nothing, which the board rarely allows.
+  *Confirmed: 20261006-094912-chrono-2FYKPJ, 20261006-120721-chrono-2FYKPJ, 1.337.0.2.* [s:20261006-094912-chrono-2FYKPJ#19] [s:20261006-094912-chrono-2FYKPJ#32] [s:20261006-120721-chrono-2FYKPJ#17] [s:20261006-120721-chrono-2FYKPJ#20]
+- After `key back` or a dialog tap, take a fresh frame before the next tap: a swap sent on the old frame hit the open Quit dialog, and the Quit confirm needed a second tap.
+  *Confirmed: 20261006-094912-chrono-2FYKPJ, 1.337.0.2.* [s:20261006-094912-chrono-2FYKPJ#13] [s:20261006-094912-chrono-2FYKPJ#14] [s:20261006-094912-chrono-2FYKPJ#34] [s:20261006-094912-chrono-2FYKPJ#35]

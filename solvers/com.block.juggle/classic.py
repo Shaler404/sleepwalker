@@ -22,7 +22,9 @@ tray piece fits.
 Search: every order of the remaining pieces x every legal placement (bitboards), clears applied, leaf
 scored by lines cleared, open cells, room for the hard pieces (3x3, 1x5, 5x1, 2x3 L), fragmentation
 (empty/filled transitions) and isolated holes. When no order places all pieces, the line placing the most
-is returned and the note says the game is about to end. Modes: "gameover" (the default since lab
+is returned and the note says the game is about to end. Gameover mode first looks for a BLOCK line
+(block_search, lab 2026-10-06 (4)): 1-2 placements after which no other tray piece fits, so the game ends
+with pieces left in the tray; filling alone never ended a game (the game deals trays that fit). Modes: "gameover" (the default since lab
 2026-10-03: a classic level is played to its end screen) fills the board with the fewest clears; a --board
 file with {"mode": "score"} plays for score instead (scored as above). The mode is kept in the memory.
 Game over: no tray piece fits, or the "No Space Left" banner (a dark band over the tray) -> done.
@@ -94,6 +96,13 @@ LEAD = 0.2                 # leftward drags: aim up to this far ahead (left) of 
 # overshot one column right with the +0.2 lead (all needed >= 0.3 cell less), while every rightward drop that
 # landed would still have landed 0.3-0.5 cell further left. Rightward drops do not land short.
 LEAD_RIGHT = -0.1
+# Score mode values a placement by the game's points for its clears, not by the line count (lab 2026-10-06 (7),
+# read off the Adventure score bar of session 20261006-141221, L11 and L12, 47 rounds exact): a placement
+# scores 1 per cell plus 10 * k(k+1)/2 for k lines cleared at once (1 line 10, 2 lines 30, 3 lines 60), and
+# past ~81% of a score target the cells stop counting (only clears). SCORE_TRI counts k lines at once as
+# k(k+1)/2 in the search. OFF: an offline game simulator (96 games x 30 random trays drawn from the 504 logged
+# score-mode tray pieces, true scoring) gave only +3% points (845 -> 870) and more game overs (21 -> 26 of 96).
+SCORE_TRI = False
 WARMUP_PULL = 0.4          # warm-up after a refill: touch the first piece and pull it this far down
 TRAY_BELOW_BOARD = 2.35    # tray piece centre, cells under the board (for the room estimate)
 
@@ -280,23 +289,76 @@ def goals_done(a):
 
 def result_panel(a):
     """'won' / 'lost' / None: the adventure result screen, a dark navy page with the light 'Consecutive
-    Victories' banner on top and a purple 'Next (Hard) Level' button (won) or a green 'Retry' (lost)."""
+    Victories' banner on top and a purple 'Next (Hard) Level' button (won) or a green 'Retry' (lost).
+    The button sits lower on gem levels (y ~1100-1180 of 730 wide) than on the score-target "Well Done!"
+    panel (y ~1030-1125, session 20261006-133549 frame 150, missed before lab 2026-10-06 (7)): the button
+    band is searched over y 980-1240."""
     page = _reg(a, 5, 1350, 60, 1550).mean(0)
     ban = _reg(a, 180, 175, 550, 290).mean(0)
     if not (page.max() < 90 and page[2] > page[0] and ban.min() > 170):
         return None
-    btn = _reg(a, 180, 1100, 550, 1180).mean(0)
-    if btn[2] > 190 and btn[0] > 130 and btn[1] < 150:
+    s = a.shape[1] / 730
+    y0 = 980
+    reg = a[int(y0 * s):int(1240 * s), int(180 * s):int(550 * s)]
+    purple = ((reg[..., 2] > 190) & (reg[..., 0] > 130) & (reg[..., 1] < 150)).mean(1)
+    green = ((reg[..., 1] > 150) & (reg[..., 0] < 130) & (reg[..., 2] < 100)).mean(1)
+    if (purple > 0.6).sum() > 30 * s:
         return "won"  # purple "Next Hard Level"
-    if not (btn[1] > 150 and btn[0] < 130 and btn[2] < 100):
+    rows = np.where(green > 0.6)[0]
+    if len(rows) < 30 * s:
         return None
     # green: "Next Level" (won, text ends at x ~512 of 730) or "Retry" (lost, text ends at ~470)
-    s = a.shape[1] / 730
-    strip = a[int(1110 * s):int(1170 * s), int(160 * s):int(570 * s)]
+    strip = a[int(y0 * s + rows[0]):int(y0 * s + rows[-1]), int(160 * s):int(570 * s)]
     cols = np.where((strip.min(2) > 215).sum(0) > 2)[0]
     if not len(cols):
         return None
     return "won" if 160 + cols[-1] / s > 495 else "lost"
+
+
+def game_page(a):
+    """The game's own pages are blue (board page (61,84,149), classic result (22,100,198), dimmed result
+    page (16,30,70), map (60,77,135)) along the left edge; interstitials are not (black loading frame,
+    videos, store pages: session 20261006-133549 frames 21-28, 48-50, 100-108, 142-148)."""
+    left = _reg(a, 0, 300, 25, 1400).mean(0)
+    return left[2] > left[0] + 35 and left[2] > left[1] + 30
+
+
+def result_arriving(a):
+    """The Adventure result is coming in: the page dims to navy (16,30,70) and the board is gone, while the
+    Consecutive Victories banner slides down (frame 91 of session 20261006-133549) or the score counts up
+    in a disc on the emptied board (frame 149, a score-target level). Not yet the panel: no button."""
+    left = _reg(a, 0, 300, 25, 1400).mean(0)
+    page = _reg(a, 5, 1350, 60, 1550).mean(0)
+    if not (left.max() < 90 and page.max() < 90 and left[2] > left[0] + 35 and page[2] > page[0] + 35):
+        return False
+    # dimmed popups over the game (Open with sheet, Award, a leave dialog) dim the page the same way: ask for
+    # the banner (>= 30 light rows of 730 px in the top 330) or the bright blue score disc in the board centre
+    s = a.shape[1] / 730
+    top = a[:int(330 * s), int(180 * s):int(550 * s)]
+    if ((top.min(2) > 200).mean(1) > 0.8).sum() / s >= 30:
+        return True
+    # the disc on the dark emptied board (bright 0.03 of the board area; an Award or leave-dialog panel 0.5-1)
+    disc = _reg(a, 320, 610, 410, 700)
+    bright = (_reg(a, 40, 370, 690, 1020).max(1) > 150).mean()
+    return ((disc[:, 2] > 180) & (disc[:, 0] < 120)).mean() > 0.5 and bright < 0.06
+
+
+def classic_result(a):
+    """The classic game-over result screen (session 20261006-105231 frames 21, 46, 60, 85): a bright blue (or, on
+    a new best, purple) page
+    with no board, a gold title that rotates (Can you Top that?, Your Best is Next, ...), Score and Best Score
+    and a green Play button. When the game ended without an interstitial the run reached it straight after
+    the BLOCK round and stopped as "not a classic board" (gave up), game 2 of that session.
+    (button green 0.91, title gold 0.12-0.27, top page (24,67,181); boards and ads: green <= 0.05)"""
+    btn = _reg(a, 180, 1070, 550, 1150)
+    green = ((btn[:, 1] > 150) & (btn[:, 0] < 120) & (btn[:, 2] < 80)).mean()
+    orange = ((btn[:, 0] > 190) & (btn[:, 1] > 120) & (btn[:, 1] < 200) & (btn[:, 2] < 90)).mean()
+    title = _reg(a, 20, 380, 710, 560)
+    gold = ((title[:, 0] > 200) & (title[:, 1] > 140) & (title[:, 2] < 120)).mean()
+    top = _reg(a, 0, 0, 730, 300).mean(0)
+    # blue page + green Play, or the purple page + orange Play of a new best ("Can you Top that?",
+    # session 20261003-193423 frame 39: button (218,159,38), top (83,21,168))
+    return max(green, orange) > 0.6 and gold > 0.05 and top[2] > 150 and top[0] < 120 and top[1] < 100
 
 
 # ---------------------------------------------------------------- rules
@@ -402,7 +464,8 @@ def search(bb, pieces, reachable, mode="normal"):
                 moved = True
                 weak = r0 + hs[s] < N and bool(bb & (m << 8))
                 nb, ln = place(bb, m)
-                rec(nb, tuple(x for x in left if x != s), lines + ln, line + [(s, r0, c0, ln)], frag + weak)
+                gain = ln * (ln + 1) // 2 if (mode == "normal" and SCORE_TRI) else ln
+                rec(nb, tuple(x for x in left if x != s), lines + gain, line + [(s, r0, c0, ln)], frag + weak)
         if not moved or not left:
             n = len(line)
             v = evaluate(bb, lines, mode) - pen * frag - (50 * len(left) if left else 0)
@@ -411,6 +474,72 @@ def search(bb, pieces, reachable, mode="normal"):
 
     rec(bb, tuple(s for s, _ in pieces), 0, [], 0)
     return best[0]
+
+
+def block_search(bb, pieces, reachable):
+    """Gameover mode, lab 2026-10-06 (4): a line of 1 or 2 placements after which NO remaining tray piece fits
+    anywhere, so the game ends at once ("No Space Left"). The game deals trays that fit the board as dealt
+    (84 trays of session 20261006-084209 all placed in full, filling only made it deal 1x1s and diagonals and
+    forced clears: 10.7 min, no game over), but it does not check the order: in that game 79 of the 84 trays
+    from round 5 on had such a blocking line (73 of 110 recorded trays over three sessions).
+    Returns (line, robust) or None; line items are (slot, r0, c0, lines). Ranked: fewest fragile drops
+    (cells one row lower blocked), then the block still holding if a drop lands one row low or a column off
+    (robust), then the fewest pieces placed."""
+    if len(pieces) < 2:
+        return None
+    pls = {s: [p for p in placements(shape) if reachable(s, shape, p[0], p[1])] for s, shape in pieces}
+    allm = {s: [m for _, _, m in placements(shape)] for s, shape in pieces}
+    hs = {s: len(shape) for s, shape in pieces}
+    ws = {s: len(shape[0]) for s, shape in pieces}
+    shp = dict(pieces)
+
+    def blocked(b, rest):
+        return all(all(b & m for m in allm[s]) for s in rest)
+
+    def twins(s, r0, c0):
+        out = []
+        for dr, dc in ((1, 0), (0, -1), (0, 1)):
+            r, c = r0 + dr, c0 + dc
+            if 0 <= r <= N - hs[s] and 0 <= c <= N - ws[s]:
+                out.append(mask_of(shp[s], r, c))
+        return out
+
+    best = None
+    slots = [s for s, _ in pieces]
+    for k in (1, 2):
+        if k >= len(slots):
+            break
+        for order in itertools.permutations(slots, k):
+            rest = [s for s in slots if s not in order]
+
+            def rec(b, i, line, frag):
+                nonlocal best
+                if i == k:
+                    if not blocked(b, rest):
+                        return
+                    # robustness: the last drop landing one row low or a column off still blocks
+                    s, r0, c0 = line[-1][:3]
+                    prev = line[-2][4] if k == 2 else bb
+                    rob = 0
+                    for tm in twins(s, r0, c0):
+                        if not prev & tm and blocked(place(prev, tm)[0], rest):
+                            rob += 1
+                    key = (frag, -rob, k, sum(x[3] for x in line))
+                    if best is None or key < best[0]:
+                        best = (key, [x[:4] for x in line], rob)
+                    return
+                s = order[i]
+                for r0, c0, m in pls[s]:
+                    if b & m:
+                        continue
+                    weak = r0 + hs[s] < N and bool(b & (m << 8))
+                    nb, ln = place(b, m)
+                    rec(nb, i + 1, line + [(s, r0, c0, ln, nb)], frag + weak)
+
+            rec(bb, 0, [], 0)
+        if best is not None and best[0][0] == 0:
+            break  # a sure 1-piece block: no need to look at 2-piece lines
+    return None if best is None else (best[1], best[2])
 
 
 # ---------------------------------------------------------------- drag
@@ -450,16 +579,28 @@ def _bb_of(grid):
 
 
 def recall(state, tray, bb):
-    """What the last round did, from the memory: (barred placements for this tray, note, new tray?)."""
+    """What the last round did, from the memory: (barred placements for this tray, note, new tray?, nothing
+    changed?)."""
     shapes = [p["shape"] if p else None for p in tray]
     if not state or "tray" not in state:
-        return [], "", True
+        return [], "", True, False
     prev = state["tray"]
     new_tray = any(cur is not None and cur != old for cur, old in zip(shapes, prev))
     if new_tray:
-        return [], "", True
+        return [], "", True, False
     barred = [tuple(b) for b in state.get("barred", [])]
     pbb = int(state.get("board", "0"), 16)
+    plan = state.get("plan", [])
+    # Nothing of the last plan happened (same board, every planned piece still in its slot): the moves were
+    # most likely never sent. Session 20261006-105231 lost the adb link inside `solve --run` four times; the
+    # memory had the plan of the round that crashed and the next call barred all three placements as "did not
+    # drop" and skipped the warm-up (games 3 and 5). All drags of a plan missing together is the seam-touch bug
+    # of session -230945, fixed since: so the first time, the plan is simply played again (with the warm-up);
+    # a second unchanged round in a row bars as before.
+    if (plan and bb == pbb and not state.get("unchanged")
+            and all(shapes[s] is not None and shapes[s] == prev[s] for s, _, _ in plan)):
+        return barred, ("last round: nothing changed (the moves were probably not sent: adb drop?): planned "
+                        "again once. "), True, True
     said = []
     missed_before = False  # an earlier piece of the plan is still in the tray: the clears it made did not happen
     for s, r0, c0 in state.get("plan", []):
@@ -477,7 +618,7 @@ def recall(state, tray, bb):
             said.append(f"slot{s + 1} -> r{r0}c{c0} not placed (the clear it waited for did not happen)")
         else:
             said.append(f"slot{s + 1} -> r{r0}c{c0} not placed (an earlier piece landed on its cells)")
-    return barred, ("last round: " + "; ".join(said) + ". ") if said else "", False
+    return barred, ("last round: " + "; ".join(said) + ". ") if said else "", False, False
 
 
 # ---------------------------------------------------------------- entry
@@ -502,10 +643,26 @@ def solve(image, board=None, frame_scale=1.0, state=None):
         return {"moves": [], "rescan": False, "done": True, "state": keep,
                 "note": ("LEVEL WON: the result panel (Consecutive Victories, Next Level)" if rp == "won" else
                          "LEVEL LOST: the result panel (You Can Do It!, Retry)") + ": level end " + rp}
+    if classic_result(a):
+        return {"moves": [], "rescan": False, "done": True, "state": keep,
+                "note": "GAME OVER: the classic result screen (Score, Best Score, Play): level end lost"}
     adventure = is_adventure(a)
     mode = explicit or ("normal" if adventure else DEFAULT_MODE)
     geo = find_board(a)
     if isinstance(geo, str):
+        # Lab 2026-10-06 (7): 3 of 4 Adventure runs of session 20261006-133549 stopped here as "gave up" right
+        # after the winning round: on the result panel sliding in (frame 91) and on the interstitial that
+        # plays BEFORE the result panel (frames 100, 142). The memory says this level was being played.
+        if st.get("adv") or adventure:
+            if result_arriving(a):
+                return {"moves": [], "rescan": False, "done": True, "state": keep,
+                        "note": "LEVEL OVER: the Adventure result panel is coming in (dimmed page, no board): "
+                                "take a shot when the button is up; Next Level = level end won, Retry = lost"}
+            if st.get("adv") and not game_page(a):
+                return {"moves": [], "rescan": False, "done": True, "state": keep,
+                        "note": "LEVEL OVER: an interstitial covers the screen right after an Adventure round "
+                                "(in Adventure the ad plays before the result panel): close the ad, then take "
+                                "a shot of the result panel; Next Level = level end won, Retry = lost"}
         return _no(f"not a classic board: {geo}", state={**st, **keep})
     x0, y0, cell = geo
     if adventure and goals_done(a):
@@ -522,17 +679,22 @@ def solve(image, board=None, frame_scale=1.0, state=None):
             return _no(f"{why} ({k} waits)", state={**st, **keep})
         tray_w, _ = read_tray(a, x0, y0, cell)
         ps = [p for p in tray_w if p]
-        if not ps:
-            return _no(why, state={**st, **keep})
-        t = min(ps, key=lambda p: len(p["shape"]))["touch"]
+        # no readable piece (a new game's tray still growing in, session 20261006-105231 frame 22): the pull
+        # starts on the middle slot, which is harmless whether a piece is there or not
+        t = (min(ps, key=lambda p: len(p["shape"]))["touch"] if ps
+             else (x0 + 4 * cell, y0 + 8 * cell + TRAY_BELOW_BOARD * cell))
         pull = min(H - 2, t[1] + (WARMUP_PULL + 0.1 * k) * cell)
         return {"moves": [[round(t[0]), round(t[1]), round(t[0]), round(pull)]], "rescan": True, "done": False,
-                "note": f"WAIT {k + 1}: {why}; pulled a tray piece back as a pause", "state": {**st, **keep, "waits": k + 1}}
+                "note": f"WAIT {k + 1}: {why}; pulled a tray piece back as a pause", "state": {**st, **keep, "waits": k + 1, **({"adv": True} if adventure else {})}}
     # page background left of the board and under it, clear of the glowing dot ring (score ~319 on)
     bg_probe = np.vstack([a[int(y0):int(y0 + 8 * cell), :int(x0 * .3)].reshape(-1, 3),
                           a[int(y0 + 8 * cell + .55 * cell):int(y0 + 8 * cell + .8 * cell)].reshape(-1, 3)])
-    if np.abs(bg_probe.mean(0) - BG).sum() > 30:
-        return _no(f"page background {bg_probe.mean(0).astype(int).tolist()} is not the game's blue: popup or dim",
+    # median, not mean: gems flying over the page under the board (stars of session 20261006-141221 frame 102)
+    # moved the mean to (74,91,140) and the run stopped as gave up; the median stays the page blue there,
+    # while a dimmed page (105231, (8,37,63)) is still refused
+    bg_med = np.median(bg_probe, 0)
+    if np.abs(bg_med - BG).sum() > 30:
+        return _no(f"page background {bg_med.astype(int).tolist()} is not the game's blue: popup or dim",
                    state={**(state or {}), **keep})
     # "No Space Left": the game over banner, a dark band across the whole width over the tray, the board
     # full of colour behind it (session 20261003-193423 frames 33, 38: read before as "a clear is animating")
@@ -567,9 +729,10 @@ def solve(image, board=None, frame_scale=1.0, state=None):
     pieces = [(s, p["shape"]) for s, p in enumerate(tray) if p]
     board_txt = "/".join("".join("#" if v else "." for v in row) for row in grid)
     if not pieces:
-        why = f"tray unreadable: {'; '.join(tray_notes)}" if tray_notes else "tray empty (refill animating?)"
-        return _no(why, state={**(state or {}), **keep})
-    barred, said, new_tray = recall(state, tray, bb)
+        if tray_notes:
+            return _no(f"tray unreadable: {'; '.join(tray_notes)}", state={**(state or {}), **keep})
+        return wait("tray empty: the refill or a new game's tray is still animating")
+    barred, said, new_tray, unchanged = recall(state, tray, bb)
 
     def touch_of(s, r0, c0):
         """The block nearest the bbox centre; a placement that missed before touches the next block."""
@@ -584,6 +747,32 @@ def solve(image, board=None, frame_scale=1.0, state=None):
     def droppable(s, shape, r0, c0):
         return (s, r0, c0) not in barred and drag(tray[s]["touch"], shape, r0, c0, x0, y0, cell) is not None
 
+    blk = block_search(bb, pieces, droppable) if mode == "gameover" else None
+    if blk:
+        line, rob = blk
+        moves = []
+        if new_tray and len(pieces) == 3:
+            f = tray[line[0][0]]["touch"]
+            moves.append([round(f[0]), round(f[1]), round(f[0]), round(min(H - 2, f[1] + WARMUP_PULL * cell))])
+        desc = []
+        for s, r0, c0, ln in line:
+            shape = tray[s]["shape"]
+            t = touch_of(s, r0, c0)
+            up = extra_up_of(s, r0, c0)
+            sx, sy, fx, fy = (drag(t, shape, r0, c0, x0, y0, cell, up) or drag(t, shape, r0, c0, x0, y0, cell)
+                              or drag_any(t, shape, r0, c0, x0, y0, cell))
+            moves.append([round(sx), round(sy), round(min(max(fx, 1), W - 2)), round(min(max(fy, 1), H - 2))])
+            desc.append(f"slot{s + 1} {'/'.join(shape)} -> r{r0}c{c0}" + (f" clears {ln}" if ln else ""))
+        left = [f"slot{s + 1}" for s, _ in pieces if s not in [x[0] for x in line]]
+        tray_txt = " | ".join("/".join(p["shape"]) if p else "-" for p in tray)
+        note = (f"[mode gameover] {said}BLOCK: after {'; '.join(desc)} no room is left for {', '.join(left)}: "
+                f"the game should end now (No Space Left; run again to see it). "
+                f"Still blocks if the last drop lands a row low / a column off: {rob} of 3. "
+                f"board {board_txt}; tray {tray_txt}")
+        mem = {**keep, "tray": [p["shape"] if p else None for p in tray], "board": format(bb, "x"),
+               "plan": [[s, r0, c0] for s, r0, c0, _ in line], "barred": [list(b) for b in barred],
+               "unchanged": unchanged}
+        return {"moves": moves, "note": note, "rescan": True, "done": False, "state": mem}
     n, val, line = search(bb, pieces, droppable, mode)
     risky_low = retry = False
     if n < len(pieces):
@@ -637,5 +826,8 @@ def solve(image, board=None, frame_scale=1.0, state=None):
     if n < len(pieces):
         note = f"only {n} of {len(pieces)} pieces fit: game over after these. " + note
     mem = {**keep, "tray": [p["shape"] if p else None for p in tray], "board": format(bb, "x"),
-           "plan": [[s, r0, c0] for s, r0, c0, _ in line], "barred": [list(b) for b in barred]}
+           "plan": [[s, r0, c0] for s, r0, c0, _ in line], "barred": [list(b) for b in barred],
+               "unchanged": unchanged}
+    if adventure:
+        mem["adv"] = True
     return {"moves": moves, "note": note, "rescan": True, "done": False, "state": mem}

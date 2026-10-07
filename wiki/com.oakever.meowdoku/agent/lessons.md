@@ -3,7 +3,7 @@ game: com.oakever.meowdoku
 title: "Lessons"
 type: agent
 version_seen: 1.19.1
-verified_at: 2026-10-06
+verified_at: 2026-10-07
 ---
 
 # Lessons for the agent: Meowdoku: Brain Puzzle Games
@@ -20,3 +20,7 @@ verified_at: 2026-10-06
   *Confirmed: 20261006-021434-chrono-2FYKPJ, 1.19.1.* [s:20261006-021434-chrono-2FYKPJ#18] [s:20261006-021434-chrono-2FYKPJ#19]
 - The solver reports 'not a board' on a win screen: take it as a won level and photograph the win card, do not retry.
   *Confirmed: 20261005-143752-chrono-2FYKPJ, 1.19.1; 20261006-021434-chrono-2FYKPJ, 1.19.1.* [s:20261005-143752-chrono-2FYKPJ#2] [s:20261006-021434-chrono-2FYKPJ#27]
+- Run day-boundary and streak tests before the day's first win: once a win has counted the day, the streak screen cannot change and the test is lost.
+  *Confirmed: 20261006-101030-chrono-2FYKPJ, 20261006-122109-chrono-2FYKPJ, 1.19.1.* [s:20261006-101030-chrono-2FYKPJ#1] [s:20261006-101030-chrono-2FYKPJ#16] [s:20261006-122109-chrono-2FYKPJ#1] [s:20261006-122109-chrono-2FYKPJ#16]
+- In Profile, an open frame tooltip swallows the next frame tap: tap the Profile title (365,415) to close it first.
+  *Confirmed: 20261006-044214-chrono-2FYKPJ, 1.19.1.* [s:20261006-044214-chrono-2FYKPJ#6] [s:20261006-044214-chrono-2FYKPJ#8]

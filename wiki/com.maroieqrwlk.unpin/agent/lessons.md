@@ -3,7 +3,7 @@ game: com.maroieqrwlk.unpin
 title: "Lessons"
 type: agent
 version_seen: 241.5.1
-verified_at: 2026-10-06
+verified_at: 2026-10-07
 ---
 
 # Lessons for the agent: Pull the Pin
@@ -26,3 +26,9 @@ verified_at: 2026-10-06
   *Confirmed: 20261005-141756-chrono-2FYKPJ, 241.5.2; 20261006-033538-chrono-2FYKPJ, 241.5.2.* [s:20261005-141756-chrono-2FYKPJ#13] [s:20261006-033538-chrono-2FYKPJ#40]
 - Sketchman (IQ test) levels cannot be failed: a 0% result still pays IQ 50; the Get button leaves for the next main level, not the mode grid.
   *Confirmed: 20261006-012240-chrono-2FYKPJ, 241.5.2; 20261005-235042-chrono-2FYKPJ, 241.5.2.* [s:20261006-012240-chrono-2FYKPJ#13] [s:20261005-235042-chrono-2FYKPJ#21]
+- On a post-win or between-stage playable ad with no close, try `launch` before a restart: `launch` came back with the stage or the win kept three times, while a restart reverted the Level 28 win (coins and league kept).
+  *Confirmed: 20261006-091133-chrono-2FYKPJ, 20261006-113518-chrono-2FYKPJ, 241.5.2.* [s:20261006-091133-chrono-2FYKPJ#11] [s:20261006-091133-chrono-2FYKPJ#12] [s:20261006-113518-chrono-2FYKPJ#8] [s:20261006-113518-chrono-2FYKPJ#12] [s:20261006-113518-chrono-2FYKPJ#24]
+- Hooks on dotted tracks hold the balls after the pins are out: swipe each hook along its dots; a tap does not move it.
+  *Confirmed: 20261006-145232-chrono-2FYKPJ, 241.5.2.* [s:20261006-145232-chrono-2FYKPJ#12] [s:20261006-145232-chrono-2FYKPJ#13] [s:20261006-145232-chrono-2FYKPJ#14]
+- In the key chest room, tap one chest per frame: a tap during the coin animation of the previous chest is lost.
+  *Confirmed: 20261006-113518-chrono-2FYKPJ, 241.5.2.* [s:20261006-113518-chrono-2FYKPJ#18] [s:20261006-113518-chrono-2FYKPJ#20]

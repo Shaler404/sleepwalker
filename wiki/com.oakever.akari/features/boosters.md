@@ -4,8 +4,8 @@ title: "Cat and bulb boosters"
 type: feature
 feature: boosters
 version_seen: 1.0.2
-verified_at: 2026-10-05
-sources: [20261003-200925-chrono-2FYKPJ, 20261003-232850-chrono-2FYKPJ, 20261005-221436-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-200925-chrono-2FYKPJ, 20261003-232850-chrono-2FYKPJ, 20261005-221436-chrono-2FYKPJ, 20261006-002027-chrono-2FYKPJ, 20261006-080945-chrono-2FYKPJ, 20261006-102842-chrono-2FYKPJ]
 ---
 
 # Cat and bulb boosters
@@ -71,7 +71,9 @@ The hint closes only with Apply. With the hint open, the phone's Back key, taps 
 
 When the cat booster reached 0, its green badge read AD instead of a number [^s8]. A tap played a rewarded video of about 40 s; the video ended on a Play Store page, and after returning to the game the cat badge read 1. The refill did not place a cat: the counter stayed at 8/9 [^s11] [^s12].
 
-The bulb booster works the same way. After its fourth use on Level 25 its badge read AD [^s20]. A tap played a rewarded video that ended on a Play Store page; back in the game the bulb badge read 1, the cat badge was unchanged at 1 and the board was as before (1/14) [^s22] [^s23].
+The bulb booster works the same way. After its fourth use on Level 25 its badge read AD [^s20]. A tap played a rewarded video that ended on a Play Store page; back in the game the bulb badge read 1, the cat badge was unchanged at 1 and the board was as before (1/14) [^s22] [^s23]. A second bulb refill on Level 44 went the same way: with both badges at AD, a tap on the bulb played a rewarded video whose top bar read Reward granted next to an X; after the game was opened again the bulb badge read 1 and the cat badge still AD [^s24] [^s25].
+
+After that return the whole Level 44 screen stayed dimmed, with no hint card on it, for about two and a half minutes until the session ended; the phone refused the session's taps in that time, so whether the game itself still took input was not seen [^s25].
 
 ![Level 3 with the cat booster at zero: its badge reads AD; the bulb badge reads 4; counter 8/9](../img/20261003-boosters-tab-ad-badge-fbabd456.webp) [^s8]
 *The cat booster at zero: the badge reads AD*
@@ -89,7 +91,8 @@ Version 1.0.2:
 - The balance is shown only on the badges; no counter on Home [^s14].
 - Cat booster: one correct cat per use. Bulb booster: one deduction per use; on Level 3 it placed 3 cats, on Level 25 one hint placed 1 cat and three hints placed 4, 4 and 3 X marks [^s3] [^s10] [^s18] [^s20].
 - At zero: the badge reads AD; one rewarded video gives 1 unit. Seen for both boosters: the cat on Level 3 (video about 40 s), the bulb on Level 25 [^s11] [^s12] [^s23].
-- No refill timer and no other source were seen: the win screens of Levels 1 to 3 gave no boosters [^s15] [^s16].
+- No refill timer and no daily refill: both badges read AD on Level 40 in one session and still read AD when Level 42 opened in the next, about two hours later, with no booster used in between; Level 43 also opened with both at AD [^s26] [^s27] [^s29]. The win screens of Levels 1 to 3 gave no boosters [^s15] [^s16].
+- The game's help article on getting more hints names only two sources: a few free hints for new players, and a rewarded video when they run out [^s28].
 
 ## Cases
 
@@ -103,12 +106,12 @@ Version 1.0.2:
 | Sources: every way to get it <!-- case:chk-sources --> | Played Levels 1 to 4; watched the video at zero | 5 each at the start; the balance carries over; a rewarded video gives +1 at zero (cat); no booster from a win | ✅ [^s17] |
 | Sinks: every way it is spent and the price <!-- case:chk-sinks --> | Used each booster | 1 unit per use; the bulb is charged when the hint opens | ✅ [^s17] |
 | At zero: what happens and the refill offers <!-- case:chk-empty --> | Drained the cat booster to 0 and tapped it | Badge reads AD; a rewarded video of about 40 s refills 1 | ✅ [^s17] |
-| Refill timer, if any <!-- case:chk-refill --> | Watched the badges over Levels 3 and 4; drained the bulb to 0 on Level 25 | not verified: no timer seen in one look; refill by video seen for both boosters; a timer or daily refill not ruled out | [^s17] |
+| Refill timer, if any <!-- case:chk-refill --> | Left both boosters at 0 for about two hours across sessions; opened Levels 42 and 43 | Both badges still AD: no timer or daily refill. The only refill is the rewarded video | ✅ [^s27] [^s29] |
 
 ## Not verified
 
-- Refill timer: whether a timer or a daily refill adds boosters; the badges were watched only briefly <!-- case:chk-refill -->
-- Whether a booster ever comes as a reward later in the game (none through Level 4).
+- Whether a booster ever comes as a reward later in the game (none through Level 4; the help article mentions in-game prompts for free hints, none seen).
+- Why the Level 44 screen stayed dimmed after the bulb's rewarded video, and whether the level could still be played.
 
 [^s1]: session 20261003-200925-chrono-2FYKPJ, step 13 — [video at 1:39](https://youtu.be/JOMuD_cF8gM?t=99)
 [^s2]: session 20261003-232850-chrono-2FYKPJ, step 2 — [video at 0:31](https://youtu.be/94hgW4CXmbg?t=31)
@@ -133,3 +136,9 @@ Version 1.0.2:
 [^s21]: session 20261005-221436-chrono-2FYKPJ, step 8 — [video at 1:26](https://youtu.be/w-eepdKQSUc?t=86)
 [^s22]: session 20261005-221436-chrono-2FYKPJ, step 16 — [video at 2:13](https://youtu.be/w-eepdKQSUc?t=133)
 [^s23]: session 20261005-221436-chrono-2FYKPJ, step 17 — [video at 2:59](https://youtu.be/w-eepdKQSUc?t=179)
+[^s24]: session 20261006-102842-chrono-2FYKPJ, step 17 — [video at 8:29](https://youtu.be/lTda8PGd_d0?t=509)
+[^s25]: session 20261006-102842-chrono-2FYKPJ, step 18 — [video at 11:31](https://youtu.be/lTda8PGd_d0?t=691)
+[^s26]: session 20261006-080945-chrono-2FYKPJ, step 7 — [video at 4:17](https://youtu.be/8G_AQiotBBU?t=257)
+[^s27]: session 20261006-102842-chrono-2FYKPJ, step 1 — [video at 0:24](https://youtu.be/lTda8PGd_d0?t=24)
+[^s28]: session 20261006-002027-chrono-2FYKPJ, step 34 — [video at 8:17](https://youtu.be/u0n3VnemzrQ?t=497)
+[^s29]: session 20261006-102842-chrono-2FYKPJ, step 4 — [video at 2:24](https://youtu.be/lTda8PGd_d0?t=144)

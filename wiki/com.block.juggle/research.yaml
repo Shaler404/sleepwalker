@@ -2,18 +2,18 @@
 game: com.block.juggle
 version: 10.8.1
 play_version: 10.8.0
-play_checked: '2026-10-05T22:05:43'
+play_checked: '2026-10-06T10:09:39'
 phone_version: 10.8.1
 discovery: open
 ftue_verified: null
 progress:
-  text: Water Sort L2
-  value: 2.0
-  at: '2026-10-05T23:29:12'
-  session: 20261005-231555-chrono-2FYKPJ
+  text: adventure L13
+  value: 13.0
+  at: '2026-10-06T14:42:46'
+  session: 20261006-141221-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-06T04:02:50'
+  chrono: '2026-10-06T15:01:50'
 mechanics:
 - id: classic
   name: classic
@@ -21,56 +21,65 @@ mechanics:
   method: solver
   levels:
     won: 0
-    lost: 1
-    quit: 2
+    lost: 19
+    quit: 3
   recent:
-  - level: classic game 1
+  - level: classic game C
     result: lost
-    seconds: 205
+    seconds: 56
+    model: opus
+  - level: classic game D
+    result: lost
+    seconds: 48
+    model: opus
+  - level: classic game A (launch check)
+    result: lost
+    seconds: 57
+    model: opus
+  - level: classic game B
+    result: lost
+    seconds: 182
+    model: opus
+  - level: classic game C
+    result: lost
+    seconds: 68
+    model: opus
+  - level: classic game D
+    result: lost
+    seconds: 99
+    model: opus
+  - level: classic game E (short-ad test)
+    result: lost
+    seconds: 97
+    model: opus
+  - level: classic game A (1st after launch)
+    result: lost
+    seconds: 61
     model: opus
     deliberate: true
-  - level: classic game 3
-    result: quit
-    seconds: 247
-    model: sonnet
-  - level: classic row-7 drop test
-    result: quit
-    seconds: 60
+  - level: classic game B
+    result: lost
+    seconds: 75
     model: opus
+    deliberate: true
+  - level: classic game C
+    result: lost
+    seconds: 65
+    model: opus
+    deliberate: true
   solver: solvers/com.block.juggle/classic.py
-  note: 'lab 2026-10-06 (2): no new levels; solver re-checked on start frames, unchanged.
-    Play one full game by solve --run only (gameover mode) to No Space Left, no hand
-    drags.'
+  note: 'lab 2026-10-06 (5): done on the classic result screen (no-ad game over was
+    a gave-up stop); an unchanged round after an adb drop is replayed once instead
+    of barred; empty tray = WAIT'
 - id: adventure
   name: adventure
-  status: mastered
+  status: broken
   method: solver
   levels:
-    won: 5
+    won: 13
     lost: 1
     quit: 1
   recent:
-  - level: adventure 1
-    result: won
-    seconds: 131
-    model: opus
-  - level: adventure 2
-    result: lost
-    seconds: 62
-    model: opus
-    deliberate: true
-  - level: adventure 2
-    result: won
-    seconds: 188
-    model: opus
-  - level: adventure 3
-    result: won
-    seconds: 137
-    model: opus
-  - level: adventure 4
-    result: quit
-    seconds: 34
-    model: opus
   - level: adventure L4
     result: won
     seconds: 320
@@ -79,9 +88,40 @@ mechanics:
     result: won
     seconds: 256
     model: sonnet
-  best_s: 131
-  note: 'lab 2026-10-06 (2): no new levels; solve classic --run with no --board ends
-    on LEVEL WON/LOST, WAIT rounds on gem flights; re-checked on 6 start frames.'
+  - level: adventure L6
+    result: won
+    seconds: 186
+    model: opus
+  - level: adventure L7
+    result: won
+    seconds: 258
+    model: opus
+  - level: adventure L8
+    result: won
+    seconds: 117
+    model: opus
+  - level: adventure L9 (hard)
+    result: won
+    seconds: 326
+    model: opus
+  - level: adventure L10
+    result: won
+    seconds: 165
+    model: opus
+  - level: adventure L11
+    result: won
+    seconds: 374
+    model: opus
+  - level: adventure L12
+    result: won
+    seconds: 419
+    model: opus
+  - level: adventure L13
+    result: won
+    seconds: 515
+    model: opus
+  best_s: 117
+  note: two levels in a row lost or over 5 min
   solver: solvers/com.block.juggle/classic.py
 - id: fruit-merge
   name: fruit-merge
@@ -141,8 +181,10 @@ mechanics:
     seconds: 298
     model: sonnet
   solver: solvers/com.block.juggle/one-line.py
-  note: 'lab 2026-10-06: Hamiltonian path from the coloured start, one swipe per straight
-    run, fresh boards only; checked on session 20261005-125535 frames 41-64'
+  note: 'lab 2026-10-06 (6): solver also finishes a line already drawn (reads the
+    chain from the start disc to its head, swipes the rest from the head); crown =
+    solved; dead end only when no path covers the open squares from the head. Checked
+    on all 27 frames of 125535 L1-L2.'
 - id: onet
   name: onet
   status: studying
@@ -181,22 +223,51 @@ mechanics:
     frames 39-56'
 - id: water-sort
   name: water-sort
-  status: studying
+  status: mastered
   method: solver
   levels:
-    won: 1
-    lost: 0
-    quit: 0
+    won: 6
+    lost: 1
+    quit: 1
   recent:
   - level: water sort L1
     result: won
     seconds: 60
     model: sonnet
-  best_s: 60
+  - level: water sort L2
+    result: won
+    seconds: 50
+    model: opus
+  - level: water sort L3
+    result: lost
+    seconds: 125
+    model: opus
+    deliberate: true
+  - level: water sort L3 retry
+    result: won
+    seconds: 47
+    model: opus
+    moves_before: 1
+  - level: water sort L4
+    result: quit
+    seconds: 223
+    model: opus
+  - level: water sort L4
+    result: won
+    seconds: 43
+    model: opus
+  - level: water sort L5
+    result: won
+    seconds: 91
+    model: opus
+  - level: water sort L6
+    result: won
+    seconds: 122
+    model: opus
+  best_s: 43
   solver: solvers/com.block.juggle/water-sort.py
-  note: 'lab 2026-10-06: fewest pours, rounds cut before a pour reusing the previous
-    pour''s tube, raised tube = selection tapped down first; checked on session 20261005-231555
-    frames 38-53'
+  note: 'lab 2026-10-06 (5): independent pours moved forward (busy-source rule kept):
+    L5 10 -> 6 rounds offline'
 features:
 - id: terms-consent
   name: Terms of Use consent
@@ -359,12 +430,14 @@ features:
     source: 20261003-235233-chrono-2FYKPJ#4
     version: 10.8.1
   - id: chk-exit-app
-    text: 'Leaving the app mid-game: not verified for classic. The kept game-over
-      screen after launch (212548#44) was Block Slide''s; in classic the return after
-      a Replay ad was a fresh board (212548#28)'
-    done: false
+    text: 'Leaving the app mid-game keeps the game: the previous session ended with
+      a classic game in progress at 11366 (084209#103) and the harness force-stops
+      the app at session end; on the next launch Classic opened the same board at
+      11366 (shot 3) and the game went on to 11386'
+    done: true
     version: 10.8.1
     outcome: true
+    source: 20261006-105231-chrono-2FYKPJ#1
   - id: chk-elements
     text: 'Does not apply: only plain coloured pieces, no obstacles or specials; a
       cyan diamond badge behind the score appears at high scores (seen at 1106, gone
@@ -384,6 +457,14 @@ features:
       test'
     done: true
     source: 20261003-193423-chrono-2FYKPJ#1
+  - id: result-titles
+    text: 'The game-over result screen title rotates between at least 7 variants:
+      ''Can you Top that?'', ''Your Best is Next'', ''Your High Score is Calling!'',
+      ''Unbeaten? Try Again!'', ''Just One More!'', ''Try every Combo!'' (20261006-111957-chrono-2FYKPJ
+      shot 9), ''See The Next Block'' (20261006-111957-chrono-2FYKPJ shot 32); layout
+      always Score, Best Score and a green Play'
+    done: true
+    source: 20261006-111957-chrono-2FYKPJ#19
   type: core-level
   appeared:
     text: the default board on launch, after the tutorial
@@ -751,10 +832,11 @@ features:
     source: 20261005-231555-chrono-2FYKPJ#41
     version: 10.8.1
   - id: chk-win
-    text: 'Last cork then the next level loads at once: no win screen, no ad (L1 to
-      L2)'
+    text: 'Last cork: the board dims and a Next Puzzle ribbon with confetti shows
+      for about a second, no buttons, no reward, no ad; the next level loads by itself
+      (L1 to L2, L2 to L3, L3 to L4)'
     done: true
-    source: 20261005-231555-chrono-2FYKPJ#48
+    source: 20261006-053412-chrono-2FYKPJ#5
     version: 10.8.1
   - id: chk-loss
     text: 'A loss: its screen, what it costs and the retry offers'
@@ -766,8 +848,55 @@ features:
     source: 20261005-231555-chrono-2FYKPJ#48
     version: 10.8.1
   - id: chk-limits
-    text: 'Limits: attempts, energy, a timer or a schedule; what more attempts cost'
-    done: false
+    text: No energy, lives, timer or attempt counter across L1-L4; the restart arrow
+      is free but asks Restart Game? (counted as a Loss) and plays a video interstitial;
+      add-tube and hint stocks (3 each at start) do not refill between sessions (2
+      and 2 after use); what happens at 0 is open (task ws-boosters-zero)
+    done: true
+    source: 20261006-053412-chrono-2FYKPJ#14
+  - id: level-kept
+    text: Leaving Water Sort and restarting the app keeps the level number (L2) but
+      deals the level's board again from the start; spent add-tube and hint stocks
+      stay spent (2 and 2)
+    done: true
+    source: 20261006-053412-chrono-2FYKPJ#2
+    version: 10.8.1
+  - id: restart-arrow
+    text: Restart arrow opens Restart Game? (counted as a Loss); Restart played a
+      video interstitial that opened Google Play by itself, then a playable end card
+      that ignored Back; after an app restart Water Sort reopened on the same L3 with
+      the identical layout (fixed boards per level)
+    done: true
+    source: 20261006-053412-chrono-2FYKPJ#14
+    version: 10.8.1
+  - id: board-saved
+    text: Leaving mid-level and relaunching the app kept the L4 board as left (red
+      and blue already corked), not a fresh deal
+    done: true
+    source: 20261006-084209-chrono-2FYKPJ#2
+    version: 10.8.1
+  - id: back-arrow
+    text: Back arrow on the board leaves at once with no confirm, to the More Games
+      list over the classic board (score 0), even when Water Sort was opened from
+      the home menu
+    done: true
+    source: 20261006-084209-chrono-2FYKPJ#18
+    version: 10.8.1
+  - id: win-ad
+    text: Wins L1-L5 went straight to the next level; the L6 win played a store-header
+      video interstitial (about 35 s, end card without X, Back closes it) before Level
+      7
+    done: true
+    source: 20261006-084209-chrono-2FYKPJ#16
+    version: 10.8.1
+  - id: no-dead-end
+    text: 'Through L7 the boards keep 2 empty tubes and 3-4 colours (L6 is easier
+      than L5: 3 colours); BFS over every reachable state of L4 (5132), L5 (11357)
+      and L7 (6732) found no stuck state, so no loss screen can be reached by pouring
+      on these levels'
+    done: true
+    source: 20261006-084209-chrono-2FYKPJ#18
+    version: 10.8.1
   type: mode
   appeared:
     text: listed in Settings > More Games from the first launch
@@ -1062,6 +1191,32 @@ features:
       test'
     done: true
     source: 20261003-193423-chrono-2FYKPJ#29
+  - id: cooldown
+    text: 'Time cooldown between game-over interstitials, and a cold app launch restarts
+      it. Session 105231: G2 none at 4.5 min after the previous ad began / 1.1 after
+      its close; G3 ad 6.3/2.9; G4 none 4.7/1.7; G5 ad 6.8/3.7; G6 ad 5.5/3.7. Session
+      111957: game A had no ad at 1.7 min after launch, although the last ad (previous
+      session) began ~8.5 min earlier; B ad at 3.0 after launch; C none at 4.6/2.2
+      (the close was an app restart); D ad at 5.6/3.2. Fits both a ~5 min timer from
+      the ad''s start and a ~2.5-3 min timer from the ad''s close or the launch; which
+      one is left to ad-cooldown-short-ad'
+    done: true
+    source: 20261006-111957-chrono-2FYKPJ#23
+  - id: cooldown-from-close
+    text: 'The game-over interstitial cooldown counts from the previous ad''s close:
+      game E ended 3.3 min after ad D''s close (4.4 after its start, ad ran 66 s)
+      and got an ad (session 133549 min 17.3)'
+    done: true
+    source: 20261006-133549-chrono-2FYKPJ#37
+    version: 10.8.1
+  - id: first-after-launch
+    text: 'The first result after a cold launch has had no ad every time: classic
+      game A (3.2 min after the launch), game C (3.9 min after launch 2, 6.7 min after
+      the previous ad''s start), Adventure L8 (2.2 min after launch 3); the second
+      result after each launch got one (game B 4.4, game D 4.9, L9 4.6 min). A first-game
+      exemption or a launch cooldown of 4-4.5 min: task ad-first-game-after-launch'
+    done: true
+    source: 20261006-133549-chrono-2FYKPJ#84
   type: ad-placement
   appeared:
     text: 'at game over of the first classic game on a fresh install (score 327, ~2
@@ -1198,6 +1353,20 @@ features:
       test'
     done: true
     source: 20261003-212548-chrono-2FYKPJ#29
+  - id: ad-before-win
+    text: 'An Adventure interstitial plays right at the win, before the win panel
+      (L7, L9). After a restart out of the L7 ad''s playable end card (no X, ignored
+      Back), the win was kept: the map showed Level 8 and the L8 win showed Consecutive
+      Victories x7. Adventure ads follow the same time cooldown as classic (L6 at
+      3.8 min after the last close and L8, the first result after a launch, had none)'
+    done: true
+    source: 20261006-133549-chrono-2FYKPJ#72
+  - id: next-level
+    text: Next Level on the win panel starts the next level at once with its Target
+      Collection banner (L6 -> L7); Next Hard Level (purple) on the L8 win starts
+      hard L9
+    done: true
+    source: 20261006-133549-chrono-2FYKPJ#85
   found_at:
     text: classic best 2516
     value: 327.0
@@ -1288,11 +1457,15 @@ features:
     done: true
     source: 20261003-212548-chrono-2FYKPJ#29
   - id: chk-counter
-    text: Oct 5 first Adventure win (L4) moved x2 -> x3 and the grey check turned
-      green (shot 35); before the win x2 with grey check (shot 2); tapping the panel
-      does nothing
+    text: 'The day counts as won without Adventure: Oct 6 opened at x3 with a grey
+      check (105231 shot 2), after Water Sort wins that morning (053412, 084209),
+      so mini-game wins do not count; after session 105231, which played only Classic
+      (6 game overs, the first a new best 11386), home showed x4 with a green check
+      (111957 shot 2). Oct 5: first Adventure win (L4) moved x2 -> x3 and turned the
+      check green. Which classic event counts (any game over or a new best) is left
+      to daily-victory-classic; tapping the panel does nothing'
     done: true
-    source: 20261005-004506-chrono-2FYKPJ#24
+    source: 20261006-111957-chrono-2FYKPJ#0
     version: 10.8.1
   - id: chk-in-level
     text: Nothing during the Adventure level; the 'Consecutive Victories xN' panel
@@ -1303,7 +1476,8 @@ features:
   - id: chk-break
     text: 'A same-day Adventure loss does not break it: after L2 lost (in-level ''Consecutive
       Victories'' x0) the home panel still shows x1 with the green check. A missed
-      day not tested yet (task daily-victories-missed-day)'
+      day is not tested yet: classic games count as a victory, so the day must have
+      no Classic and no Adventure (task daily-victories-missed-day-3)'
     done: false
   - id: chk-rewards
     text: 'No reward seen at x1 or x2: no popup, no currency on the home menu or the
@@ -1477,8 +1651,9 @@ features:
     done: true
     source: 20261003-235233-chrono-2FYKPJ#25
   - id: chk-frequency
-    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
-      from which level'
+    text: 'Partial: gem goals on L2-L8 (L5 hard) and L13; score-target goals on L9
+      (hard)-L12; L1 goal type not recorded. Not a fixed every-Nth pattern yet (task
+      adv-diamonds-frequency)'
     done: false
   - id: under-restart
     text: 'Gear > Replay on L4: video interstitial (playable end card, Back key closed
@@ -1491,6 +1666,12 @@ features:
     text: 'Leaving to the Play Store from an ad and launch under Adventure diamond-collection
       levels: as the base, or what differs'
     done: false
+  - id: levels-l6-l8
+    text: 'Gem goals continue: L6 40/40/40 (blue/red/purple), L7 22/22/20, L8 30/30/30
+      (blue diamonds, orange pentagons, red stars, pre-built board shot 112). L1 and
+      L9 (hard) are score-target levels, L2-L8 all gem levels so far'
+    done: true
+    source: 20261006-133549-chrono-2FYKPJ#73
   found_at:
     text: adventure 1
     value: 1.0
@@ -1574,6 +1755,12 @@ features:
     text: 'Leaving to the Play Store from an ad and launch under Adventure Consecutive
       Victories (win streak): as the base, or what differs'
     done: false
+  - id: restart-after-win
+    text: 'A win whose panel was hidden by an ad and an app restart still counts:
+      x5 after L6, the L7 win panel never showed, x7 after L8 (shot 124), x8 after
+      L9'
+    done: true
+    source: 20261006-133549-chrono-2FYKPJ#84
   found_at:
     text: adventure 1
     value: 1.0
@@ -1661,6 +1848,21 @@ features:
     text: 'Leaving the app mid-game under Adventure hard levels (Next Hard Level):
       as the base, or what differs'
     done: false
+  - id: hard-l9
+    text: 'L9 is hard too: the L8 win panel shows the purple Next Hard Level (shot
+      124); L9 is a score-target level (bar 0 -> 687, pre-built yellow ring pattern,
+      3x3 and 3x2 tray pieces), not gem goals, so hard levels are not only gem levels;
+      L9 won by the solver in score mode, ad before the Well Done panel, Consecutive
+      Victories x8, then a green Next Level (L10 not hard). Hard so far: L5 and L9;
+      L6 not hard; L7 and L8 unmarked (L7''s panel was hidden by an ad and a restart).
+      Hypothesis for adv-hard-frequency: every 4th level from L5 (next L13)'
+    done: true
+    source: 20261006-133549-chrono-2FYKPJ#104
+  - id: l13-not-hard
+    text: 'L13 was a normal level: the L12 win panel offered ''Next Level'', not ''Next
+      Hard Level'' (shot 97), so the ''every 4th from L5'' hypothesis (L5, L9, L13)
+      is refuted; hard levels so far L5 and L9 only'
+    done: false
   found_at:
     text: adventure L4
     value: 4.0
@@ -1670,6 +1872,67 @@ features:
       (purple) instead of the green Next Level, so L5 is flagged hard'
     certainty: fact
     source: 20261005-004506-chrono-2FYKPJ#23
+- id: rate-us
+  name: Rating prompt (rate us)
+  status: in_progress
+  cases:
+  - id: close-x
+    text: Close X dismisses the Rating popup and leaves the 'Just One More!' result
+      screen with Play (shot 85); no store opened
+    done: true
+    source: 20261006-105231-chrono-2FYKPJ#51
+    version: 10.8.1
+  - id: chk-entry
+    text: 'No entry of its own: it pops up by itself over the classic result screen
+      after a game over (here after the game-over interstitial)'
+    done: true
+    source: 20261006-105231-chrono-2FYKPJ#50
+    version: 10.8.1
+  - id: chk-screen
+    text: 'Blue ''Rating'' panel: ''If you like our game, please give us 5 stars praise'',
+      five star icons, a grey thumbs-up button, close X top right (shot 84)'
+    done: true
+    source: 20261006-105231-chrono-2FYKPJ#50
+    version: 10.8.1
+  - id: chk-options
+    text: 'Options seen: five stars, a thumbs-up button and the X'
+    done: true
+    source: 20261006-105231-chrono-2FYKPJ#50
+    version: 10.8.1
+  - id: chk-links
+    text: 'Does not apply: the Rating popup has no privacy, terms or help links; its
+      only way out of the game is the rating answer itself (stars / thumbs-up), covered
+      by chk-answers'
+    done: true
+    source: 20261006-105231-chrono-2FYKPJ#50
+  - id: no-repeat
+    text: 'Not shown again: session 111957 (4 classic game overs, scores 37-41) and
+      session 133549 (5 classic game overs, scores 21-143, plus 4 Adventure wins)
+      had no Rating popup. So far 1 popup in 15 classic game overs over 3 sessions
+      (105231 game 6, 2239 points, the only high score); every later game was a deliberate
+      low-score loss. A score threshold, a game-over count or a once-only prompt are
+      still open (rate-us-trigger)'
+    done: true
+    source: 20261006-133549-chrono-2FYKPJ#37
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-105231-chrono-2FYKPJ#50
+  - id: chk-answers
+    text: 'For a prompt (consent, rate us, notifications): what each answer does and
+      whether it comes back'
+    done: false
+  found_at:
+    text: water sort L7
+    value: 7.0
+  type: system
+  appeared:
+    text: 'over the classic result screen after game 6''s game over and its interstitial
+      (session game overs: 6th; first time seen in any session)'
+    certainty: fact
+    source: 20261006-105231-chrono-2FYKPJ#50
 tasks:
 - id: analyze
   title: Analyze the game
@@ -1790,22 +2053,41 @@ tasks:
   title: Is a revive / second chance offered at game over in later games?
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:41:48'
   feature: classic
   source: session
   plan: reach game over in 2-3 more classic games (gameover mode) and look for a continue
     offer before 'Can you Top that?'
+  closed: '2026-10-06T11:21:39'
+  closed_by: 20261006-105231-chrono-2FYKPJ#49
+  note: 'No revive or continue offer at game over: 6 classic game overs this session
+    went No Space Left -> (interstitial on 4) -> result screen with only Play (shots
+    21, 46, 60, 85); with the earlier game overs none has ever offered a second chance'
+  result: refuted
 - id: ad-cadence
   title: How often the game-over interstitial plays
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:41:48'
   feature: ad-interstitial-classic
   source: session
   plan: end several classic games; count interstitials per game over and whether any
     plays mid-game
+  closed: '2026-10-06T11:17:26'
+  closed_by: 20261006-105231-chrono-2FYKPJ#51
+  note: '6 classic game overs this session (gameover-mode BLOCK, 1-3 min each), 4
+    interstitials, all at game over, none mid-game. Session minutes: G1 over 1.4 ad;
+    G2 5.9 none (4.5 min after the previous ad began, 1.1 after it closed); G3 7.7
+    ad (6.3 / 2.9); G4 12.7 none (4.7 / 1.7); G5 14.7 ad (6.8 / 3.7); G6 ~20.2 ad
+    (5.5 / 3.7). Not every game over and not every second one (G5 and G6 both had
+    one): a time cooldown, about 5 min from the previous ad''s start (or 2-3 min from
+    its close). No ad on Play/new game. The result screen title rotates (Your Best
+    is Next, Your High Score is Calling!, Unbeaten? Try Again!, Just One More!). Ads
+    auto-opened a Play Store sheet twice (closed by its X) and two playable end cards
+    had no X and ignored Back: restart was needed (game over and best were kept).'
+  result: confirmed
 - id: study-terms-consent
   title: 'Study Terms of Use consent: open it, walk its screens and tabs, verify its
     cases'
@@ -2040,12 +2322,20 @@ tasks:
   title: Look for a shop, a no-ads purchase or any offer popup
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:45:07'
   source: session
   plan: over 3 classic game overs and in Settings / More Settings, mark any price
     button, Remove Ads or offer popup; done when one is found (a new offer feature)
     or 3 game overs show none
+  closed: '2026-10-06T14:16:52'
+  closed_by: 20261006-133549-chrono-2FYKPJ#25
+  note: 'No shop or offer anywhere: 5 classic game overs this session (and 10 in sessions
+    105231/111957) show only Score, Best Score and the green Play button (shot 42);
+    the home menu has Adventure, Classic, More Games, Medal and two cross-promo icons,
+    no store or Remove Ads (shot 69); Settings and More Settings were walked in full
+    in 011754/032721 with no price button'
+  result: refuted
 - id: appeared-medal
   title: 'Find why Medal appeared: Medal icon with badge on the home menu top right'
   kind: experiment
@@ -2063,7 +2353,7 @@ tasks:
     badge) the first time it was opened by Back from classic [20261003-212548-chrono-2FYKPJ#29]'
 - id: outcomes-daily-victories
   title: 'Run each outcome once under Consecutive Daily Victories: Leaving the app
-    mid-game'
+    mid-game keeps the game'
   kind: experiment
   requires: any
   status: open
@@ -2209,7 +2499,7 @@ tasks:
     made x1 -> x2 and a second same-day win kept x2'
 - id: outcomes-adv-diamonds
   title: 'Run each outcome once under Adventure diamond-collection levels: Leaving
-    the app mid-game'
+    the app mid-game keeps the game'
   kind: experiment
   requires: any
   status: open
@@ -2224,7 +2514,7 @@ tasks:
   rank: 7
 - id: outcomes-adv-win-streak
   title: 'Run each outcome once under Adventure Consecutive Victories (win streak):
-    Leaving the app mid-game'
+    Leaving the app mid-game keeps the game'
   kind: experiment
   requires: any
   status: open
@@ -2242,32 +2532,53 @@ tasks:
     does anything pay at x2, x3?'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:59:21'
   feature: adv-win-streak
   source: session
   plan: win Adventure levels with the classic solver (score/diamond goals), read the
     panel and any reward after each win
+  closed: '2026-10-06T14:52:53'
+  closed_by: 20261006-141221-chrono-2FYKPJ#79
+  note: 'No reward at any count: the Consecutive Victories panel only counts up (x9
+    after L10 shot 26, x10 after L11 shot 56, x11 after L12 shot 97; earlier x1-x8
+    none either). The win panel has only the counter and Next Level.'
+  result: refuted
 - id: daily-victories-missed-day
   title: 'After a day with no Adventure win, read the Consecutive Daily Victories
     counter: does a missed day reset it to x0 (and is a save offered)?'
   kind: daily
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-04T00:06:09'
   feature: daily-victories
   not_before: '2026-10-06T10:00:00'
   source: game
+  closed: '2026-10-06T10:53:23'
+  closed_by: 20261006-105231-chrono-2FYKPJ#0
+  note: 'Premature: on Oct 6 the counter is x3 with a grey check (last win Oct 5,
+    shot 2), no full day missed yet; moved to daily-victories-missed-day-2 at 2026-10-07'
 - id: adv-ad-cadence
   title: 'How often an interstitial follows an Adventure result: seen after the L2
     retry win (not after L1, the L2 loss or L3)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T00:06:09'
   feature: adventure
   source: session
   plan: play 4-5 Adventure levels and note after which results an interstitial appears
+  closed: '2026-10-06T14:08:16'
+  closed_by: 20261006-133549-chrono-2FYKPJ#101
+  note: 'Adventure interstitials are time-gated, not tied to a result type: L6 win
+    (min ~22.0, 3.8 min after the last classic ad''s close, 2nd result since launch)
+    no ad; L7 win (~23.3, 5.1 after that close) ad before the win panel; L8 win (first
+    result after cold launch 3, 2.2 min after it) no ad; L9 hard result (~31.2, 2nd
+    result after launch, 4.6 after launch, ~6.7 after L7 ad''s close by restart) ad.
+    The cooldown is shared with classic (the classic ad at 18.2 gated L6). Open: why
+    L6 at 3.8 min after a close had none when classic game E got one at 3.3 (new experiment
+    adv-ad-cooldown-length).'
+  result: confirmed
 - id: study-adv-diamonds
   title: 'Study Adventure diamond-collection levels: open it, walk its screens and
     tabs, verify its cases'
@@ -2312,12 +2623,19 @@ tasks:
     opening Google Play
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T01:10:05'
   feature: ad-interstitial-classic
   source: session
   plan: when it plays, wait without tapping and shot every 10 s until it ends or shows
     an X; never tap the top-left >| icon (it opens the store)
+  closed: '2026-10-06T08:47:34'
+  closed_by: 20261006-084209-chrono-2FYKPJ#17
+  note: 'Royal Kingdom store-header interstitial after the Water Sort L6 win (step
+    16-17): waited about 35 s without tapping, the video turned into a PLAY NOW end
+    card with the >| icon and no X; one Back key closed it and returned to the game
+    (Level 7), Google Play never opened'
+  result: confirmed
 - id: adventure-retry-next
   title: 'Adventure: tap Retry on the loss panel and Next Level on the win panel;
     gear > Replay inside a level'
@@ -2352,7 +2670,8 @@ tasks:
 - id: outcomes-adv-hard-levels
   title: 'Run each outcome once under Adventure hard levels (Next Hard Level): Settings
     gear > Replay, No Space Left, Back key mid-game opens the home menu with no confirmation;
-    whether the game in progress is kept is NOT verified, Leaving the app mid-game'
+    whether the game in progress is kept is NOT verified, Leaving the app mid-game
+    keeps the game'
   kind: experiment
   requires: any
   status: open
@@ -2559,10 +2878,18 @@ tasks:
     fewer empty tubes; leave with back arrow)'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T23:29:09'
   feature: mg-water-sort
   source: session
+  closed: '2026-10-06T08:48:20'
+  closed_by: 20261006-084209-chrono-2FYKPJ#18
+  note: 'L4-L7 played (L4 resumed mid-board, L5 4 colours, L6 3 colours, L7 4 colours;
+    all with 2 empty tubes + locked add tube). BFS over every reachable state of L4,
+    L5 and L7 found no stuck state: no loss can be reached by pouring; the only loss
+    is Restart (counted as a Loss). Back arrow leaves at once to More Games over the
+    classic board. New: L6 win played a store-header interstitial. chk-loss stays
+    open; later levels in task ws-loss-later'
 - id: ttt-real-win
   title: 'Tic Tac Toe: win a real round against the robot and record the win screen
     and whether the 0 VS 0 scoreboard changes'
@@ -2602,3 +2929,240 @@ tasks:
   created: '2026-10-06T03:34:26'
   feature: terms-consent
   source: session
+- id: ws-boosters-zero
+  title: 'Water Sort: spend the add-tube and hint stocks to 0 and record what tapping
+    them at 0 offers (video, coins, nothing) and what No Thanks on Use Item does'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T05:46:43'
+  feature: mg-water-sort
+  source: session
+  plan: 'On a Water Sort level use hint twice and add-tube twice (stocks are 2 and
+    2), then tap each again at 0 and mark the sheet; tap No Thanks / X, never pay.
+    Confirmed: a refill offer (a video or a price) is marked; refuted: the button
+    greys out with no offer'
+- id: ws-loss-later
+  title: 'Water Sort: check a later level (L15+) for 1 empty tube or more colours,
+    BFS it for a stuck state and record the loss screen if one exists'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T08:48:19'
+  feature: mg-water-sort
+  source: session
+  plan: play levels by solve water-sort --run; on each new board with fewer empties
+    or 5+ colours BFS for a dead end; if one exists, pour into it and mark the screen.
+    Refuted if by L15 the boards still have 2 empties and no dead end
+- id: daily-victories-missed-day-2
+  title: 'Missed-day check: on Oct 7 or later read the Consecutive Daily Victories
+    counter after a day (Oct 6) with NO Adventure win; do not win Adventure before
+    reading it'
+  kind: daily
+  requires: any
+  status: cancelled
+  created: '2026-10-06T10:53:22'
+  feature: daily-victories
+  not_before: '2026-10-07T09:00:00'
+  source: game
+  plan: 'Oct 6 home showed x3 with a grey check (shot 2); if Oct 6 passes with no
+    Adventure win, open home on Oct 7: x0 (or a save offer) = a missed day resets;
+    x3 = it does not'
+  closed: '2026-10-06T11:37:34'
+  closed_by: 20261006-111957-chrono-2FYKPJ#0
+  note: 'Oct 6 is not a missed day: home showed x4 with a green check after session
+    105231 played only Classic, so a classic game counts as the day''s victory (20261006-111957-chrono-2FYKPJ#0).
+    Replaced by daily-victory-classic (what counts) and daily-victories-missed-day-3
+    (a full day with no Classic and no Adventure)'
+- id: ad-cooldown-start-vs-end
+  title: 'Classic interstitial cooldown: measured from the ad''s start (~5 min) or
+    from its close (~2-3 min)?'
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-06T11:17:34'
+  feature: ad-interstitial-classic
+  source: session
+  plan: 'After a game-over ad that runs long (>2.5 min until closed), end the next
+    game 3 min after the close but under 5 min after the ad began: an ad = cooldown
+    from the close; none = from the start. Use gameover mode BLOCK (1-2 min a game).'
+  closed: '2026-10-06T11:37:33'
+  closed_by: 20261006-111957-chrono-2FYKPJ#23
+  note: 'The plan cannot work as written: it asks for an ad held open >2.5 min and
+    then a game over 3 min after the close but under 5 min after the start, which
+    needs an ad shorter than 2 min. Holding an ad open ~3.5 min also let the Samsung
+    screen dim and blocked touches (20261006-111957-chrono-2FYKPJ#23). The 4 data
+    points of this session are in ad-interstitial-classic case cooldown. Replaced
+    by ad-cooldown-short-ad (short-ad design)'
+- id: rate-us-trigger
+  title: When does the Rating popup come up (first seen after the 6th game over of
+    a session, 2239 points)?
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T11:17:35'
+  feature: rate-us
+  source: session
+  plan: Note game overs and scores before each Rating popup in later sessions; check
+    whether it follows a score threshold, a game-over count, or comes only once; never
+    tap the thumbs-up or stars (they lead to the store review)
+- id: study-rate-us
+  title: 'Study Rating prompt (rate us): open it, walk its screens and tabs, verify
+    its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-06T11:18:34'
+  feature: rate-us
+  source: external
+- id: ad-cooldown-short-ad
+  title: 'Classic interstitial cooldown: settled whether it counts from the ad''s
+    start (~5 min) or from its close / the app launch (~3 min), by one game over 3.2
+    min after a short ad''s close'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T11:37:34'
+  feature: ad-interstitial-classic
+  source: session
+  plan: 'Classic gameover mode BLOCK (0.4-0.6 min a game). Before the test, the first
+    game over after the app launch must be more than 3.5 min after the launch, so
+    that the launch is out of the picture. 1) Get a game-over interstitial and close
+    it as fast as possible (skip >> top right, end card X, Back; no restart; no wait
+    longer than 2.5 min untouched, because the Samsung screen dims and touches are
+    blocked). Note the minute it began and the minute it closed; it must close within
+    ~45 s of its start. 2) Wait on the classic board and end the next game 3.2 min
+    after the close (that is under ~4.2 min after the start, below the 4.6-4.7 min
+    seen with no ad). An ad means the cooldown counts from the close (confirmed).
+    No ad means it counts from the start (refuted). Repeat once if the ad ran longer
+    than 45 s. Second check of the launch reset: after a cold launch, end the first
+    game at 3.2 min after the launch. An ad means the launch restarts the cooldown
+    at ~3 min.'
+  closed: '2026-10-06T13:54:13'
+  closed_by: 20261006-133549-chrono-2FYKPJ#37
+  note: 'Ad D started min 12.9, closed by Back at 14.0 (66 s, slightly over the 45
+    s target); game E over at 17.3 = 3.3 after close / 4.4 after start -> ad. The
+    cooldown counts from the close (~3 min). Launch check: game A, the first game
+    over 3.2 min after a cold launch, no ad; game C, first game over 3.9 min after
+    cold launch 2 (and 6.7 min after ad B''s start), no ad; game B (second after launch
+    1, 4.4 min) ad; game D (second after launch 2, 4.9 min) ad. With session 111957
+    (first game after launch/restart never had an ad, the second at ~3.0 min did)
+    the launch effect looks like ''the first game over after a launch never shows
+    an ad'' rather than a 3-min launch cooldown: new experiment ad-first-game-after-launch.'
+  result: confirmed
+- id: daily-victory-classic
+  title: 'Consecutive Daily Victories: settled whether any classic game over or only
+    a new classic best marks the day as won'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T11:37:35'
+  feature: daily-victories
+  not_before: '2026-10-07T00:05:00'
+  source: session
+  plan: 'On a new day (Oct 7 or later), before any Classic or Adventure play: mark
+    the home panel (expect a grey check). Play one Classic game to a quick game over
+    well below the best 11386 (gameover mode BLOCK), go Back to home and mark the
+    panel. A green check with the counter +1 means any classic game over counts (confirmed).
+    A grey check means a game over is not enough: the 105231 day was won by its new
+    best 11386, or by something else in that session (refuted; then test a classic
+    game with a new best on the next day only if cheap, else record as a hypothesis).
+    Mini-game wins do not count (Oct 6 morning Water Sort wins left it grey). Do not
+    win Adventure before the second read.'
+- id: daily-victories-missed-day-3
+  title: 'Missed-day check: read the Consecutive Daily Victories counter the day after
+    a full calendar day with no Classic game and no Adventure win'
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-06T11:37:35'
+  feature: daily-victories
+  not_before: '2026-10-09T09:00:00'
+  source: game
+  plan: 'Oct 8 (or the first day after daily-victory-classic is closed) must pass
+    with no Classic game at all and no Adventure play (mini-games only; they do not
+    count). On the next day, read the home panel first, before any play: x0, or a
+    save offer = a missed day resets (mark any offer and its price for chk-save; do
+    not pay); the old counter = it does not reset. If any Classic game or Adventure
+    win happened on the skipped day, move the goal one day on.'
+- id: ad-first-game-after-launch
+  title: 'Classic: the first game over after an app launch never shows an interstitial
+    (a game-count rule, not a launch cooldown)'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T13:54:18'
+  feature: ad-interstitial-classic
+  source: session
+  plan: 'Cold launch (restart), end game 1 at ~1 min after launch and game 2 at ~2.5
+    min after launch (no ad within the previous ~4 min). Ad at game 2 (2.5 min) =
+    first-game exemption confirmed and no launch time cooldown; no ad at game 2 =
+    a launch time cooldown (>2.5 min). Also try game 1 at >6 min after launch: an
+    ad there refutes the exemption.'
+  closed: '2026-10-06T14:16:54'
+  closed_by: 20261006-141221-chrono-2FYKPJ#6
+  note: 'Cold launch (restart) at session min 0.6; classic game A, the FIRST game
+    over after that launch, ended at 1.6 (1.0 min after launch, ~4.8 min after the
+    previous session''s last ad close) and an interstitial played at once (shot 9:
+    block-puzzle video, auto Play Store sheet, brick-car playable closed by restart).
+    So the first game over after a launch can show an ad and there is no launch cooldown
+    of 1 min or more. The earlier no-ad first games (111957 game A 1.7 min after launch;
+    133549 games A and C at 3.2/3.9 min) are better explained by an ad not yet loaded
+    after a cold start (fill/preload) than by a game-count rule. Rule as known: ~3
+    min cooldown from the previous ad''s close, otherwise an ad at a classic game
+    over when one is loaded.'
+  result: refuted
+- id: adv-ad-cooldown-length
+  title: 'Adventure: how long after an ad''s close can the next Adventure result show
+    an interstitial (L6 at 3.8 min had none; classic at 3.3 had one)?'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T14:08:17'
+  feature: adventure
+  source: session
+  plan: Close an ad, then end an Adventure level at ~3.5 min and the next at ~4.5
+    min after the close (no restart between); note which results get an ad. Also check
+    whether a first result after a cold launch ever has an ad.
+  closed: '2026-10-06T14:43:00'
+  closed_by: 20261006-141221-chrono-2FYKPJ#93
+  note: 'Adventure win results timed against the previous ad''s close (session min):
+    close by restart 4.2 -> L10 win 6.9 (2.7 after) no ad; L11 win ~11.6 (7.4 after)
+    ad (Royal Match, Back closed it at 13.6); L12 win ~20.4 (6.8 after) ad (closed
+    by Back 21.3); L13 win ~26.0 (4.7 after; held on purpose) ad. With L6 at 3.8 (no
+    ad, session 133549) the Adventure cooldown ends between 3.8 and 4.7 min after
+    the previous ad''s close (L13 was 5.6 min after the L12 ad''s start). Classic
+    had an ad at 3.3 after a close, so Adventure is either a bit longer or the same
+    ~3.5-4 min window; the next test is one result at ~4.2. First result after a cold
+    launch: L10 (2.7 min after launch) had none but was inside the cooldown; classic
+    game A this session (first game after a cold launch, 1.0 min) had an ad, so a
+    launch does not exempt the first result. Ads in Adventure come BEFORE the win
+    panel (all 3).'
+  result: confirmed
+- id: rate-us-high-score
+  title: 'Classic: does the Rating popup come back after a high-score game (the only
+    popup followed a 2239-point game; 14 low-score game overs had none)?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T14:16:53'
+  feature: rate-us
+  source: session
+  plan: Play one classic game with the solver in score mode to over 2000 points (or
+    a new best), then let it end; note whether the Rating popup comes up after the
+    game over (and its interstitial). Popup = a score threshold confirmed; none after
+    two such games = the prompt is once-only or count-based. Close it with X only;
+    never tap the stars or the thumbs-up
+- id: adv-ad-cooldown-4min
+  title: 'Adventure: does a result 4.0-4.3 min after an ad''s close get an interstitial
+    (window 3.8 none / 4.7 ad)?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T14:43:11'
+  feature: adventure
+  source: session
+  plan: Close an ad by Back (not restart) and note the minute; play the next Adventure
+    level holding the last clear until 4.1-4.2 min after the close. Ad = cooldown
+    under ~4.2 (same as classic ~3.3-4); none = Adventure cooldown is 4.2-4.7. Repeat
+    once with a restart close to see whether a restart (cold launch) changes it.

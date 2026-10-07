@@ -3,7 +3,7 @@ game: com.vitastudio.mahjong
 title: "Lessons"
 type: agent
 version_seen: 3.40.1
-verified_at: 2026-10-06
+verified_at: 2026-10-07
 ---
 
 # Lessons for the agent: Vita Mahjong
@@ -22,3 +22,9 @@ verified_at: 2026-10-06
   *Confirmed: 20261005-133525-chrono-2FYKPJ, 3.40.1.* [s:20261005-133525-chrono-2FYKPJ#15-16] [s:20261005-133525-chrono-2FYKPJ#10]
 - Closing a popup opened from Options (How to Play, Theme, No Ads) also closes Options: a tap meant for Restart then lands on a tile.
   *Confirmed: 20261006-022624-chrono-2FYKPJ, 3.40.1; 20261005-221108-chrono-2FYKPJ, 3.40.1.* [s:20261006-022624-chrono-2FYKPJ#12] [s:20261006-022624-chrono-2FYKPJ#19] [s:20261005-221108-chrono-2FYKPJ#9]
+- On a spin level, take a frame after every tile that leaves the board before the next tap: the edge ring turns one place and taps sent during the turn land on tiles that moved. Compare boards tile by tile before writing "nothing moved".
+  *Confirmed: 20261006-071736-chrono-2FYKPJ, 20261006-072809-chrono-2FYKPJ, 3.40.1.* [s:20261006-071736-chrono-2FYKPJ#38] [s:20261006-072809-chrono-2FYKPJ#10] [s:20261006-072809-chrono-2FYKPJ#11] [s:20261006-072809-chrono-2FYKPJ#13]
+- The win screen has no way Home (its back arrow and Android Back do nothing): open the next level and use its back arrow.
+  *Confirmed: 20261006-072809-chrono-2FYKPJ, 3.40.1.* [s:20261006-072809-chrono-2FYKPJ#56] [s:20261006-072809-chrono-2FYKPJ#57] [s:20261006-072809-chrono-2FYKPJ#58] [s:20261006-072809-chrono-2FYKPJ#59]
+- Closing a Settings sub-screen (help center, About) closes Settings too: open the gear again before the next row.
+  *Confirmed: 20261006-071736-chrono-2FYKPJ, 3.40.1.* [s:20261006-071736-chrono-2FYKPJ#21] [s:20261006-071736-chrono-2FYKPJ#29]

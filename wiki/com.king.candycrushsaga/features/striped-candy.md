@@ -5,14 +5,14 @@ type: feature
 feature: striped-candy
 version_seen: 1.337.0.2
 verified_at: 2026-10-06
-sources: [20261003-194350-chrono-2FYKPJ, 20261003-225003-chrono-2FYKPJ, 20261006-020945-chrono-2FYKPJ]
+sources: [20261003-194350-chrono-2FYKPJ, 20261003-225003-chrono-2FYKPJ, 20261006-020945-chrono-2FYKPJ, 20261006-094912-chrono-2FYKPJ]
 ---
 
 # Striped candy
 
 A special candy made on the board by matching four candies of one colour in a line. It keeps the colour
 of the match and carries white stripes; matched again with candies of its colour, it clears its whole row
-or column [^s5] [^s4].
+or column [^s5] [^s4]. Two striped candies swapped with each other both go off in one move [^s6].
 
 ## Why it appeared
 
@@ -45,6 +45,17 @@ made a second one [^s3] [^s4].
 ![The board right after the move: "Tasty!" over the board and the blue order counting down](../clips/20261006-level1-striped-fires-row.webp) [^s4]
 *Clip 3 s · [original on YouTube from 2:50](https://youtu.be/bLHRGXNqFXM?t=170)*
 
+### Two striped candies swapped together
+
+Before the move, on the 2026-10-06 replay of level 1, an orange striped candy with vertical stripes stood
+next to a blue striped candy with horizontal stripes in the seventh row; 24 moves left, blue order 19
+[^s6]. The two were swapped with each other: a full row and a full column cleared in that one move
+[^s6]. The move is seen in the [original on YouTube from 2:46](https://youtu.be/7Qqt9Jow58Q?t=166); the
+recording was deleted before a clip was cut.
+
+![Level 1 after the two striped candies were swapped together: the row and the column refilled, a green fish in the bottom-left cell, 23 moves left, blue order 12](../img/20261006-striped-candy-result-aaff94a2.webp) [^s6]
+*After the striped + striped swap: the blue order fell from 19 to 12 and the moves from 24 to 23*
+
 ## How it works
 
 Version 1.337.0.2:
@@ -55,8 +66,11 @@ Version 1.337.0.2:
 | Fired by | Matching it with two or more candies of its colour | [^s5] [^s4] |
 | Effect | Clears a full row or column; a vertical beam was seen on level 3 | [^s5] |
 | In numbers | Level 1: one move with a blue striped candy took the blue order from 32 to 18 (14 blue) and the moves from 27 to 26 | [^s3] [^s4] |
+| Striped + striped | Two adjacent striped candies (orange and blue) swapped with each other: a full row and a full column cleared; blue order 19 to 12, moves 24 to 23. No match of three was needed | [^s6] |
 
-Inferred, not verified: the stripe direction shows whether it clears a row or a column. Swapped with a
+Inferred, not verified: the stripe direction shows whether it clears a row or a column (the striped +
+striped pair had one vertical and one horizontal candy and cleared one row and one column, which fits
+either way). Swapped with a
 wrapped candy, a striped candy cleared three columns on level 3 (see [core-level](core-level.md)).
 
 ## Outcomes
@@ -78,12 +92,13 @@ The base level is [core-level](core-level.md).
 | Where to find it <!-- case:chk-entry --> | Replayed level 1 from its map node | ✅ No menu entry; made by a four-in-a-line swap | [^s4] |
 | What it looks like <!-- case:chk-screen --> | Made one on level 1 | ✅ A candy of its colour with white stripes, horizontal here | [^s4] |
 | First level <!-- case:chk-first-level --> | Replayed level 1 | ✅ First seen on level 1; no tutorial popup on the replay | [^s4] |
-| Interactions <!-- case:chk-interactions --> | Swapped it into a match with two blue candies | ✅ Fired its row: blue order 32 to 18 in one move; combos with fish, wrapped candy, colour bomb not tried this session | [^s4] |
+| Interactions <!-- case:chk-interactions --> | Swapped it into a match with two blue candies | ✅ Fired its row: blue order 32 to 18 in one move. Two striped candies swapped together fired a row and a column. Combos with fish, wrapped candy, colour bomb not tried | [^s4] [^s6] |
 | Ways to lose <!-- case:chk-loss --> | Played with it on level 1 | ✅ No extra way to lose; it only clears candies | [^s4] |
+| Two striped candies swapped together <!-- case:combo-striped-striped --> | Level 1 replay: swapped an orange striped candy with the blue striped candy next to it | ✅ Both fired: a full row and a full column cleared in one move; blue order 19 to 12 | [^s6] |
 
 ## Not verified
 
-- A striped candy combined with a fish, a wrapped candy or a colour bomb in this session (only the
+- A striped candy combined with a fish, a wrapped candy or a colour bomb (only the
   striped and wrapped pair on level 3 is recorded, on [core-level](core-level.md))
 - Whether the stripe direction decides a row or a column
 
@@ -92,3 +107,4 @@ The base level is [core-level](core-level.md).
 [^s3]: session 20261006-020945-chrono-2FYKPJ, step 8 — [video at 2:25](https://youtu.be/bLHRGXNqFXM?t=145)
 [^s4]: session 20261006-020945-chrono-2FYKPJ, step 9 — [video at 2:53](https://youtu.be/bLHRGXNqFXM?t=173)
 [^s5]: session 20261003-225003-chrono-2FYKPJ, step 24 — [video at 6:09](https://youtu.be/EeHt-Knje2A?t=369)
+[^s6]: session 20261006-094912-chrono-2FYKPJ, step 11 — [video at 2:51](https://youtu.be/7Qqt9Jow58Q?t=171)

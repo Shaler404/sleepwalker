@@ -5,7 +5,7 @@ type: feature
 feature: settings
 version_seen: 1.19.1
 verified_at: 2026-10-06
-sources: [20261003-200440-chrono-2FYKPJ, 20261006-010939-chrono-2FYKPJ]
+sources: [20261003-200440-chrono-2FYKPJ, 20261006-010939-chrono-2FYKPJ, 20261006-071212-chrono-2FYKPJ]
 ---
 
 # Settings
@@ -78,7 +78,10 @@ The cross top right closes it and returns to the level [^s14].
 
 Tapping the Pattern Mode toggle switches it ON and shows a grey toast "Pattern Mode On" under the title [^s6].
 The red dots on the music and Pattern Mode toggles disappeared once they were tapped [^s6]. Pattern Mode was
-set back to OFF [^s8]. What Pattern Mode changes on the board was not seen: the board stayed behind the popup.
+set back to OFF [^s8]. On the board, Pattern Mode puts a faint icon in every cell, one icon per colour region
+(yarn, bell, paw, grass, fish bone, bow, whiskers, sparkles, triangles, sprout on Level 139); the colours and
+rules stay the same, and switching it off restores plain colours; frame on the
+[main level](level.md#pattern-mode) page [^s20] [^s21].
 
 ### Feedback
 
@@ -159,7 +162,6 @@ Version 1.19.1.
 
 ## Not verified
 
-- What Pattern Mode changes on the board.
 - What Restart does from in-level Settings.
 - Sign in with Facebook or Google, Delete Account, Chat with us, and confirming another language: not tapped.
 - Whether the language list goes on past Turkish (the player's record says 10 languages; 9 were seen in the frames).
@@ -184,3 +186,6 @@ Version 1.19.1.
 [^s17]: session 20261006-010939-chrono-2FYKPJ, step 15 — [video at 2:44](https://youtu.be/hWdnTswKtkU?t=164)
 [^s18]: session 20261006-010939-chrono-2FYKPJ, step 16 — [video at 2:53](https://youtu.be/hWdnTswKtkU?t=173)
 [^s19]: session 20261006-010939-chrono-2FYKPJ, step 20 — [video at 3:18](https://youtu.be/hWdnTswKtkU?t=198)
+
+[^s20]: session 20261006-071212-chrono-2FYKPJ, step 4 — [video at 0:52](https://youtu.be/rwKHO-fD0pA?t=52)
+[^s21]: session 20261006-071212-chrono-2FYKPJ, step 7 — [video at 1:11](https://youtu.be/rwKHO-fD0pA?t=71)

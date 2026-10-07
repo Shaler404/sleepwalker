@@ -5,7 +5,7 @@ type: feature
 feature: profile
 version_seen: 1.337.0.2
 verified_at: 2026-10-06
-sources: [20261003-194350-chrono-2FYKPJ, 20261006-000939-chrono-2FYKPJ]
+sources: [20261003-194350-chrono-2FYKPJ, 20261006-000939-chrono-2FYKPJ, 20261006-120721-chrono-2FYKPJ]
 ---
 
 # Profile and inventory
@@ -13,7 +13,7 @@ sources: [20261003-194350-chrono-2FYKPJ, 20261006-000939-chrono-2FYKPJ]
 A popup with the player's avatar, name and level, and an inventory of eleven slots: unlimited lives and ten
 boosters. The pencil by the name opens a name prompt; the avatar opens a profile card with weekly stats and
 an Edit screen where the name, the avatar and its frame are chosen. At level 4 every slot was at 0 and the
-ten booster slots were locked, the four read unlocking at levels 7, 10, 20 and 65 [^s1] [^s3] [^s5] [^s10].
+ten booster slots were locked, unlocking at levels from 7 to 88 [^s1] [^s3] [^s5] [^s10] [^s18].
 
 ## Why it appeared
 
@@ -67,7 +67,12 @@ saved [^s7] [^s8].
 
 A tap on a locked inventory slot shows a tooltip with its unlock level. In the first row: the colour bomb
 unlocks at level 10, the lollipop hammer at level 7, the fourth slot (striped and wrapped) at level 20; the
-first slot of the second row (a round candy) at level 65 [^s9] [^s10]. The other six slots were not read.
+first slot of the second row (a round candy) at level 65 [^s9] [^s10]. The other six read: in the second row
+the hand 43, the fish 35, the candy with a tick 50; in the third row the flying saucer 73, the ball with a
+paintbrush 58, the party popper 88 [^s19] [^s18]. Each of those six has its own page: [hand](inv-r2s2-l43.md),
+[fish](inv-r2s3-l35.md), [candy with a tick](inv-r2s4-l50.md), [flying saucer](inv-r3s1-l73.md),
+[ball with a paintbrush](inv-r3s2-l58.md), [party popper](inv-r3s3-l88.md). The tooltip gives only the level,
+no booster name.
 
 ### Profile card
 
@@ -118,8 +123,9 @@ Under the card's header: "Last 7 days" with Levels won (3), Lives sent (0), Colo
 ## How it works
 
 Version 1.337.0.2. The inventory holds unlimited lives and the ten boosters; booster slots stay locked
-until their level: lollipop hammer 7, colour bomb 10, striped and wrapped 20, the round candy 65 (see [Boosters](boosters.md))
-[^s10]. The name is at most 16 characters, without symbols [^s7] [^s12]. The level beside the name follows
+until their level: lollipop hammer 7, colour bomb 10, striped and wrapped 20, fish 35, hand 43, candy with a
+tick 50, ball with a paintbrush 58, round candy 65, flying saucer 73, party popper 88 (see
+[Boosters](boosters.md)) [^s10] [^s18]. The grid is not in unlock order. The name is at most 16 characters, without symbols [^s7] [^s12]. The level beside the name follows
 progress: 2 at the first look, 4 with level 4 next [^s1] [^s17]. The card's first opening runs a short
 tutorial that assigns a name [^s15] [^s16].
 
@@ -132,13 +138,14 @@ tutorial that assigns a name [^s15] [^s16].
 | What it looks like <!-- case:chk-screen --> | Looked at the popup, then the card and its stats | ✅ Name, level 4, eleven-slot inventory; card with Edit and stats | [^s16] |
 | Every entry point on it <!-- case:chk-entries --> | Tapped the pencil, three locked slots, the avatar, Edit, Frames | ✅ Name prompt; unlock tooltips (levels 7, 10, 20); card; Edit with Avatars and Frames; one frame locked at 20000 | [^s16] |
 | Badges, timers and counters on it <!-- case:chk-badges --> | Read the popup, Frames and the card | ✅ Level 4 beside the name; a count (0) under each slot, padlocks on locked ones; 20000 badge on a frame; login streak 0 | [^s16] |
-| Unlock levels of the inventory slots <!-- case:inventory-locks --> | Tapped four locked slots | ✅ Colour bomb 10, lollipop hammer 7, striped and wrapped 20, round candy (row 2, first) 65; six slots not tapped | [^s10] |
+| Unlock levels of the inventory slots <!-- case:inventory-locks --> | Tapped four locked slots | ✅ Colour bomb 10, lollipop hammer 7, striped and wrapped 20, round candy (row 2, first) 65; the other six in the row below | [^s10] |
 | The card's first-time tutorial renames the player <!-- case:auto-rename --> | Tapped Next, Next, then Sweet on the card's tutorial | ✅ The name changed from "Me" to an auto-assigned five-letter name without Save; Edit says a new player should update the name | [^s16] |
+| Unlock levels of the other six slots <!-- case:inventory-locks-rest --> | Tapped the six slots not read before, one by one | ✅ Row 2: hand 43, fish 35, candy with a tick 50; row 3: flying saucer 73, ball with a paintbrush 58, party popper 88 | [^s18] |
 | What changes on it with progress <!-- case:chk-changes --> | Compared with the first look at level 2 | ✅ Level count grew from 2 to 4; the slots are still locked until levels 7, 10, 20, 65 | [^s17] |
 
 ## Not verified
 
-- The unlock levels of the other six booster slots, and the slots once unlocked (task profile-unlock-slots)
+- The slots once unlocked: name, effect and count (task profile-unlock-slots)
 - What the 20000 on the locked frame counts
 - What Save in the name prompt and choosing another avatar or frame change
 
@@ -158,3 +165,5 @@ tutorial that assigns a name [^s15] [^s16].
 [^s15]: session 20261006-000939-chrono-2FYKPJ, step 16 — [video at 2:25](https://youtu.be/CpL9KWG38IA?t=145)
 [^s16]: session 20261006-000939-chrono-2FYKPJ, step 17 — [video at 2:36](https://youtu.be/CpL9KWG38IA?t=156)
 [^s17]: session 20261006-000939-chrono-2FYKPJ, step 18 — [video at 2:49](https://youtu.be/CpL9KWG38IA?t=169)
+[^s18]: session 20261006-120721-chrono-2FYKPJ, step 7 — [video at 1:17](https://youtu.be/d7On5DG_97A?t=77)
+[^s19]: session 20261006-120721-chrono-2FYKPJ, step 2 — [video at 0:28](https://youtu.be/d7On5DG_97A?t=28)

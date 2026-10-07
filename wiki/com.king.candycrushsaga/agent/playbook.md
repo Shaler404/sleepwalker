@@ -86,7 +86,17 @@ many plain matches on meringue (level 3) and repeated moves on stale frames (lev
 ## Dispenser (L4)
 - The cap above column 4 refills the cell under it; a 5-line there gave a colour bomb, later refills were plain. Swap the bomb with green: 65 to 23 meringue in one move.
 
-## Level times by mechanic (dream 2026-10-06)
+## Dispenser rule (2026-10-06, confirmed)
+- L4 cap above column 4 releases a colour bomb every 3 moves (after moves 3, 6, 9), no 5-line needed, even if the move is far from the cap column. Use it: swap each bomb with green. Keep matches off the 5-line over the cap (row0 B B G B B + swap makes a bomb by hand).
+- L1 swap-two-stripeds clears a row plus a column. 5-line bombs on L1 are hard to set up: each setup swap must itself match.
+- After `key back` the Quit dialog button taps land late: take a second shot, then tap Quit again.
+
+## L4 notes (2026-10-06 session 120721)
+- Not confirmed: session 20261006-120721 noted no bomb while r0c4 (the cell under the cap) held a candy, but its own moves fit the every-3-moves rule above (task dispenser-blocked-exp); do not plan on clearing column 4. A bomb that falls to the bottom row sits between meringue and can only swap vertically: make the bomb by hand on top and use it at once.
+- Bomb swapped with a colour that has a striped on board fires the striped too (chain). Striped in a plain 3-match fires its column.
+- Fish: swap into a 2x2 square (L4 r1-r2 c5-c6 red).
+
+## Level times by mechanic (dream 2026-10-07)
 
 ```yaml
 ---
@@ -98,8 +108,8 @@ mechanics:
   levels:
     won: 5
     lost: 0
-    quit: 7
-  typical_min: 3.9
+    quit: 11
+  typical_min: 3.8
   best_min: 1.5
   solver_file: ''
 level_budget_min: 5

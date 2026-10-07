@@ -43,7 +43,7 @@ home screen for it was seen.
 The ninth segment fills as an animation shortly after the win screen appears; right after it a rating
 popup came over the win screen (see [Rate Us popup](rate-us.md)) [^s1]:
 
-*The level 19 win screen: the ninth segment of the chest bar fills, then the "Are you enjoying Vita Mahjong?" popup with five stars and Rate Us drops in* (clip dropped: per-dream clip limit) [^s1]
+![The level 19 win screen: the ninth segment of the chest bar fills, then the "Are you enjoying Vita Mahjong?" popup with five stars and Rate Us drops in](../clips/20261005-level-chest-bar-fill.webp) [^s1]
 *Clip 3 s · [original on YouTube from 15:11](https://youtu.be/nmXrQmoLWlU?t=911)*
 
 A tap on the next-level button while the bar was still animating did not open the level; the next tap

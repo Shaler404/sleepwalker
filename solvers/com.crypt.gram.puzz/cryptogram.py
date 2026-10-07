@@ -3529,10 +3529,14 @@ def _keyboard(a, white):
         if 0.12 * W <= w <= 0.18 * W and 0.065 * H <= h <= 0.09 * H:
             arrows.append((x, y, w, h))
         elif 0.065 * W <= w <= 0.1 * W and 0.04 * H <= h <= 0.06 * H:
-            keys.append((x + w / 2, y + h / 2))
+            if y + h / 2 < 0.91 * H:
+                keys.append((x + w / 2, y + h / 2))
+    if len(arrows) > 2:
+        arrows = [ar for ar in arrows if ar[0] < 0.05 * W or ar[0] + ar[2] > 0.95 * W]
     if len(arrows) != 2:
         return None, f"keyboard not found ({len(arrows)} arrow keys)"
     top = min(ar[1] for ar in arrows)
+    keys = [k for k in keys if k[1] > top - 190 * sy]
     y3 = top + 57 * sy
     layout = {}
     for letters, x0, pitch, dy in KEY_ROWS:
@@ -3541,7 +3545,7 @@ def _keyboard(a, white):
     matched = 0
     for kx, ky in keys:
         if min(math.hypot(kx - x, ky - y) for x, y in layout.values()) > 22 * sx:
-            return None, "a white key is off the expected layout"
+            return None, f"a white key is off the expected layout at {int(kx)},{int(ky)}"
         matched += 1
     if matched < 4:
         return None, f"only {matched} white keys"
@@ -3551,7 +3555,7 @@ def _keyboard(a, white):
         mean = probe.reshape(-1, 3).mean(axis=0) if probe.size else np.zeros(3)
         if float(probe.min(axis=2).mean()) > 235 if probe.size else False:
             state = "white"
-        elif all(abs(mean[i] - KEY_GREY[i]) <= 12 for i in range(3)):
+        elif all(abs(mean[i] - KEY_GREY[i]) <= 12 for i in range(3)) or all(abs(mean[i] - g) <= 14 for i, g in enumerate((99, 91, 204))):  # second: secret-level purple theme
             state = "grey"
         else:
             state = "other"      # covered by a hand graphic, a popup
@@ -3595,7 +3599,10 @@ def read_board(image):
     text = ((mean < 150) & (sat < 100)) | ((G > 120) & (G - R > 45) & (G - B > 45))
     faint = (sat < 60) & (mean >= 150) & (mean <= 232)
     green = (G > 150) & (G - R > 60) & (G - B > 100)
-    on_green = (G - R < 40) & (mean < 160)     # the dark digits inside the green cursor box
+    # the dark digits inside the green cursor box: grey-olive on the classic theme; dark green (about 20,73,21)
+    # on the secret-level purple theme, where the cursor number went unread and the last cell of the level was
+    # typed by hand twice (secret level, 2026-10-06)
+    on_green = ((G - R < 40) & (mean < 160)) | ((G < 150) & (mean < 110))
     white = a.min(axis=2) > 248
     keys, kb_top = _keyboard(a, white)
     if keys is None:
@@ -3873,12 +3880,40 @@ def _code(ch):
     return ord(ch) - 65
 
 
+# a word with an apostrophe near its end that the list lacks: a listed word (4+ letters) plus a clitic (level 11,
+# 2026-10-06: a verb + 'em was an "unknown word", it blocked every toss and its last number was typed by hand).
+# The suffix costs log-weight on top of the base word, so a listed contraction of the same shape still wins.
+_CLITICS = {1: (("S", 1.5), ("D", 3.5), ("M", 6.0)), 2: (("LL", 3.0), ("RE", 3.0), ("VE", 3.0), ("EM", 4.0))}
+_ENTRY_CACHE = {}
+
+
+def _entries(n, apos):
+    key = (n, apos)
+    if key in _ENTRY_CACHE:
+        return _ENTRY_CACHE[key]
+    entries = list(_DICT.get(key, []))
+    # bases of 4+ letters only: with 3-letter bases (every short word + 's) two short apostrophe words of a level-9
+    # board got so many fits that its robust letters were lost
+    if len(apos) == 1 and apos[0] >= 4 and n - apos[0] in _CLITICS:
+        have = {e[0] for e in entries}
+        base = _DICT.get((apos[0], ()), [])
+        for suf, pen in _CLITICS[n - apos[0]]:
+            for letters, lp in base:
+                w = letters + suf
+                if w not in have:
+                    have.add(w)
+                    entries.append((w, lp - pen))
+        entries.sort(key=lambda t: -t[1])
+    _ENTRY_CACHE[key] = entries
+    return entries
+
+
 def _prepare(word, fixed, used0, banned):
     """The word's candidates as arrays (letters as codes 0-25, log weights), consistent with the word's own
     pattern (same number = same letter, different numbers = different letters), the given letters, the fixed
     map, the letters no unsolved number can take and the letters the game rejected for a number."""
     toks = word["toks"]
-    entries = _DICT.get((len(toks), word["apos"]), [])
+    entries = _entries(len(toks), word["apos"])
     if not entries:
         word["arr"], word["lp"], word["pos"], word["nums"] = np.zeros((0, len(toks)), np.uint8), np.zeros(0), {}, set()
         for t in toks:
@@ -4324,12 +4359,26 @@ def analyze(image, state=None):
         elif n in sols[0][1]:
             res["toss"].setdefault(n, sols[0][1][n])
             res["last"] = True
+        else:
+            # its only words are unknown (level 11, 2026-10-06: a contraction the list lacked; the last cell was
+            # typed by hand): the letter with the best trigram score among the keys still white, never a banned one
+            assign = dict(sols[0][1])
+            used = set(assign.values()) | set(fixed.values()) | excluded
+            used |= {ch for ch, k in b["keys"].items() if k[2] == "grey"}
+            used |= {bl for bn, bl in banned if bn == n}
+            g = _ngram_guess(words, assign, used, {n})
+            if n in g:
+                res["toss"].setdefault(n, g[n][0])
+                res["last"] = True
     # several numbers left, nothing settled, no toss (level 9, 2026-10-06: two numbers, each in one word with
     # 2-3 listed fits, 1 mistake): at 1 mistake take a hint on the least settled number when the bulb shows a
     # count; otherwise toss, one cell, the number whose best-solution letter most near-best solutions share
     # (solutions that leave it to an unlisted word do not vote): at least half of them at 0 mistakes, three
     # quarters at 1. A wrong toss costs one mistake, the memory bans the letter
-    if len(unsolved) > 1 and not res["map"] and not res["toss"] and not cuts and sols[0][2] == 0 and mistakes <= 1:
+    # One unknown word (a name, a contraction the list lacks: level 11, 2026-10-06, stalled at 0 mistakes on 3
+    # cells of 3 numbers) no longer blocks it at 0 mistakes: only numbers a listed word pins can be tossed.
+    if (len(unsolved) > 1 and not res["map"] and not res["toss"] and not cuts and mistakes <= 1
+            and (sols[0][2] == 0 or (sols[0][2] == 1 and mistakes == 0))):
         near = [s for s in sols if s[0] >= best - delta]
         share = {}
         for n in unsolved:
@@ -4458,8 +4507,11 @@ def solve(image, board=None, frame_scale=1.0, state=None):
     if st is not None:
         st["typed"] = [t for t in typed if t[0] not in fixed]
     cells = [c for r in b["rows"] for c in r["cells"]]
-    left = [c for c in cells if c["typable"] and not c["letter"]]
-    done = n >= len(left) and not b["more_below"] and not any(c["lock"] for c in cells)
+    # every cell not known to hold a letter, typable or not: a row cut by the top bar hides its letters (secret
+    # level, 2026-10-06: "these moves finish the level" with cells left above, the run stopped one round early)
+    left = [c for c in cells if not c["letter"]]
+    done = (n >= len(left) and not b["more_below"] and not any(c["lock"] for c in cells)
+            and not any(r["cut"] for r in b["rows"]))
     out = {"moves": moves, "note": f"{n} cells ({kind}): {counts}", "rescan": True, "done": done}
     if st is not None:
         out["state"] = st

@@ -1,16 +1,16 @@
 # Tasks: Meowdoku: Brain Puzzle Games
 
-Status: **▶️ active** — ready now: 12
+Status: **▶️ active** — ready now: 11
 
 Mode: **cases** — all features are found: study goals and checks only; do not advance
 
-Progress reached: **level 139** · last new feature found at: **level 134**
+Progress reached: **level 145** · last new feature found at: **level 134**
 
-Goals: unlock 1, experiment 12 · maps: level 127 home — 6 new · search for features closed: Golden Fish (the last new entry) was played through at L138: its board, popup and win lead only back to the next main level, no new entry point; Home, Settings, Profile, leaderboard and daily walked earlier; the one lock (cat skins) has its unlock goal; no shop/IAP/no-ads/offer seen across L127-139; onboarding left to ftue
+Goals: unlock 1, experiment 8 · maps: level 127 home — 6 new · search for features closed: Golden Fish (the last new entry) was played through at L138: its board, popup and win lead only back to the next main level, no new entry point; Home, Settings, Profile, leaderboard and daily walked earlier; the one lock (cat skins) has its unlock goal; no shop/IAP/no-ads/offer seen across L127-139; onboarding left to ftue
 
-Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **Cat placement on color regions (Queens-like)** — mastered, solver, levels won 16, typical 1.0 min
+Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **Cat placement on color regions (Queens-like)** — mastered, solver, levels won 22, typical 1.0 min
 
-Google Play version: **1.18.0** (checked 2026-10-05 22:05:43) · analyzed version: **1.19.1** · FTUE from a fresh install: **never**
+Google Play version: **1.18.0** (checked 2026-10-06 10:09:39) · analyzed version: **1.19.1** · FTUE from a fresh install: **never**
 
 Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit by hand. Feature map: [features.md](features.md).
 
@@ -19,26 +19,25 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 | Task | Kind | Feature | Source | Note |
 |---|---|---|---|---|
 | Unlock Cat skins (7 locked): unknown: 7 locked silhouettes, tap shows no hint; Daily Challenge says a 3-fish clear unlocks a trial skin | unlock | [Cat skins (7 locked)](features/cat-skins.md) | knowledge gap | the lock seen on screen (feature --locked) |
-| Use the hint booster down to 0 and see what refills it: confirmed when the badge at 0 and its refill (video, timer, level win) are marked | experiment | [Hint booster (bulb)](features/booster-hint.md) | knowledge gap |  |
-| Toggle Pattern Mode in the in-level settings once: confirmed when the board with Pattern Mode on is marked and the toggle is set back | experiment | [Main level (cat placement board)](features/level.md) | knowledge gap |  |
-| What decides the score a placed cat gives (+576 on L128, +672 on L130)? | experiment | [Main level (cat placement board)](features/level.md) | knowledge gap |  |
 | Daily Streak interrupted: try Restore (video) once and record the day-7 gift | experiment | [Daily Streak](features/daily-streak.md) | knowledge gap |  |
-| Find what the Daily Streak break popup counts: confirmed when the number in 'N days interrupted' is matched to the current streak, the best streak or the days lost | experiment | [Daily Streak](features/daily-streak.md) | knowledge gap |  |
-| Is the trial skin granted only for a 3-fish daily clear, and what happens when its 24h trial ends | experiment | [Daily Challenge](features/daily-challenge.md) | knowledge gap |  |
 | What the Daily Streak day-7 gift gives | experiment | [Daily Streak](features/daily-streak.md) | knowledge gap |  |
-| Hearts on leaderboard rows: watch after a win what gives hearts and if tapping does anything | experiment | [Fish leaderboard](features/fish-leaderboard.md) | knowledge gap |  |
-| Leaderboard frames 5/15/30/50: verify they are given for top-N placement at period end | experiment | [Profile (name, avatar, frame, skins)](features/profile.md) | knowledge gap |  |
-| Read the own condition of each Leaderboard frame (5, 15, 30, 50): done when each frame's tooltip is marked | experiment | [Profile (name, avatar, frame, skins)](features/profile.md) | knowledge gap |  |
+| Watch a fish leaderboard period end with the game open: period ends about 01:09 phone time on 2026-10-07 (timer read 23:55:49 at 01:13 on 10-06); open the leaderboard at 01:05 and stay past 01:09; mark results screen, final rank, reward | check | [Fish leaderboard](features/fish-leaderboard.md) | from the game |  |
+| Rate Us: wins of L133 and L134 did not bring it back; keep playing and note after which win it returns, then tap X and Rate Us (back at once) | check | [Rate Us popup](features/rate-us.md) | from the game |  |
 | Run each outcome once under Golden Fish bonus board: Out of fishes, Settings gear > Restart restarts the SAME board (same layout, cat bar order shuffled), cats cleared, score 0, hint count kept, no confirm, Back arrow in level goes straight Home, no confirm, may trigger interstitial, Android Back on Home opens Quit popup; X cancels | experiment | Golden Fish bonus board | knowledge gap |  |
+| After 02:30 on 10-07 open Profile > Skins: is the bow-cat trial skin gone or locked? | check | [Daily Challenge](features/daily-challenge.md) | from the game |  |
+| Leaderboard frames after a period end: open Profile > Frame right after the fish period results and note which of frames 1/5/15/30/50 unlocked against the final rank | experiment | [Profile (name, avatar, frame, skins)](features/profile.md) | knowledge gap |  |
+| Daily Streak day rollover: done when the yarn counter is marked on 2026-10-07 before any win and again after the first win of that day | experiment | [Daily Streak](features/daily-streak.md) | knowledge gap |  |
+| Toast after a hint-free win with no interstitial: done when a level start that follows a hint-free win and had no ad is shot within 1 s | experiment | [Main level (cat placement board)](features/level.md) | knowledge gap |  |
+| Find what spaces the level-start interstitials: done when level starts at known seconds since the last ad show whether a time cooldown (about 75-120 s) or a level count decides | experiment | [Interstitial ad at level start](features/ad-interstitial.md) | knowledge gap |  |
 
 ## Waiting
 
 | Task | Not before | Kind | Feature |
 |---|---|---|---|
-| Find when the Daily Streak day rolls over: done when the yarn counter is marked before and after the first win of a new calendar day and the jump (or none) is explained | 2026-10-06 08:00:00 | experiment | [Daily Streak](features/daily-streak.md) |
-| Watch a fish leaderboard period end with the game open: period ends about 01:09 phone time on 2026-10-07 (timer read 23:55:49 at 01:13 on 10-06); open the leaderboard at 01:05 and stay past 01:09; mark results screen, final rank, reward | 2026-10-07 01:03:00 | check | [Fish leaderboard](features/fish-leaderboard.md) |
-| Rate Us: wins of L133 and L134 did not bring it back; keep playing and note after which win it returns, then tap X and Rate Us (back at once) | 2026-10-07 01:16:44 | check | [Rate Us popup](features/rate-us.md) |
+| Check hint badge at the first level after the date changes (was 1 on 10-06 after 4 wins) — day 1 of 1 | 2026-10-07 10:17:06 | daily | [Hint booster (bulb)](features/booster-hint.md) |
+| Before the first win of a new day note current/best streak (3/3 on 10-06, MON-WED ticked), win and mark the break popup if it shows N — day 1 of 1 | 2026-10-07 10:17:07 | daily | [Daily Streak](features/daily-streak.md) |
 | Skip the Daily Challenge on 2026-10-07 entirely, open it on 2026-10-08: done when the Home button and the daily screen after a missed day are marked (what is lost or reset, any streak or calendar effect) | 2026-10-08 08:00:00 | check | [Daily Challenge](features/daily-challenge.md) |
+| First daily clear with one mistake (2 fish kept): does it still give the 24 h trial skin? | 2026-10-08 08:00:00 | experiment | [Daily Challenge](features/daily-challenge.md) |
 
 ## Needs a human
 
@@ -52,6 +51,18 @@ The agent cannot do these tasks until it is given a suitable phone.
 
 | Task | Closed | By | Note |
 |---|---|---|---|
+| Find when the Daily Streak day rolls over: done when the yarn counter is marked before and after the first win of a new calendar day and the jump (or none) is explained | 2026-10-06 12:26:05 | 20261006-122109-chrono-2FYKPJ#16 | Streak counter was already 3/best 3 (Mon-Wed ticked) on 10-06 before this session's wins: today's first win happened in earlier sessions, so no pre-first-win baseline exists. Wins of L143-145 did not change it (no streak popup). Needs a session at the start of 10-07 before any win. |
+| Find when the 'Only N% of players solved the last level without hints' toast shows: done when a level start after a hint-free win and one after a win with a hint Apply are both shot within 1 s of the level opening | 2026-10-06 12:26:04 | 20261006-122109-chrono-2FYKPJ#16 | After hint-free win L143 and L145 the next level opened under a full-screen interstitial (shots 11-13, 27-28); after launch no toast on L144/L146 board. After the hint win L144 (one Apply) L145 opened with no ad and no toast (shot 20). Toast never seen this session; the ad hides the first second, so the toast cannot be tied to hint-free wins. Retry needs a hint-free win followed by a no-ad start. |
+| Find what the Daily Streak break popup counts: confirmed when the number in 'N days interrupted' is matched to the current streak, the best streak or the days lost | 2026-10-06 10:17:08 | 20261006-101030-chrono-2FYKPJ#16 | 10-06 already had a win (L139 at 07:12) so no break popup came; streak screen showed Current 3, Best 3, Mon-Wed ticked. Needs the first win of a new day: follow-up task streak-break-popup-count. |
+| Does a level win or a new day add hints: done when the hint badge before and after a won level (and at the first level of a new day) is marked | 2026-10-06 10:17:05 | 20261006-101030-chrono-2FYKPJ#16 | Hint badge was 1 at end of L139, 1 at L140 start, 1 at L141 start and 1 at L143 start after three wins without using the hint: a win adds no hints. The new-day part was not observable (day did not change in session); see follow-up task. |
+| What decides the score a placed cat gives (+576 on L128, +672 on L130)? | 2026-10-06 10:17:04 | 20261006-101030-chrono-2FYKPJ#16 | Total score is a function of board size only: 10x10 = 10080 (L140 and L142), 8x8 = 7296 (L141); both equal 48*N*(N+11). Per-cat +576/+672 (L128/L130) are the per-placement increments within one board, not constant; the final total does not depend on order or fish (all 3 fish here). |
+| Check hint count after next level win (does a win refill hints?) (cancelled) | 2026-10-06 07:19:12 | review-20261006 | duplicate of exp-hint-win-refill, which has a plan with a confirm/refute result and covers the new-day case |
+| Use the hint booster down to 0 and see what refills it: confirmed when the badge at 0 and its refill (video, timer, level win) are marked | 2026-10-06 07:16:34 | 20261006-071212-chrono-2FYKPJ#16 | 2 hints used via Apply; badge at 0 turns into green video icon; tapping it starts a rewarded ad (playable then store); after return badge shows 1 (+1 per ad). Win-based refill not checked: win screen did not change in this session (steps 8-14). |
+| Hearts on leaderboard rows: watch after a win what gives hearts and if tapping does anything | 2026-10-06 07:16:34 | 20261006-071212-chrono-2FYKPJ#16 | After win the leaderboard shows hearts per row (podium 17/0/4, rows 3/0/0) and toasts 'X loved your ... cheered for you' (incoming cheers). Tapping an outline heart on row 4 turned it solid red and 3->4; second tap no change (no toggle). Source of others' hearts: other players cheer; no reward seen (steps 15-16). |
+| Toggle Pattern Mode in the in-level settings once: confirmed when the board with Pattern Mode on is marked and the toggle is set back | 2026-10-06 07:13:35 | 20261006-071212-chrono-2FYKPJ#7 | Pattern Mode ON shows icons on each color region (yarn, bell, paw, grass, fish, bow, whiskers, sparkles, triangles, sprout); rules unchanged; toggled back OFF (step 6) |
+| Is the trial skin granted only for a 3-fish daily clear, and what happens when its 24h trial ends | 2026-10-06 04:45:02 | 20261006-044214-chrono-2FYKPJ#14 | Trial skin (bow cat) is in Profile > Skins with a 21:37 countdown at 04:5x 10-06, so the grant lasts 24h; earlier retry with 2 fish gave no new skin (prior session). Expiry behaviour needs time: follow-up daily-trial-skin-expiry set for 10-07 02:40. |
+| Leaderboard frames 5/15/30/50: verify they are given for top-N placement at period end | 2026-10-06 04:44:29 | 20261006-044214-chrono-2FYKPJ#11 | Profile > Frame at 04:4x on 10-06 after the period rollover: all five Leaderboard frames (1,5,15,30,50) still locked; the tooltips say first place only, so tier-by-rank is not supported but not disproved (our rank at period end unknown). |
+| Read the own condition of each Leaderboard frame (5, 15, 30, 50): done when each frame's tooltip is marked | 2026-10-06 04:44:29 | 20261006-044214-chrono-2FYKPJ#11 | Tapping locked frames 5, 30 and 50 (steps 4-11, frame 12) shows the same tooltip as rank 1: get first place in the challenge to get this frame, with GO. Texts name first place, not top-5/15/30/50; the numbers on the tags are unexplained. |
 | Open the Daily Challenge on 2026-10-06: done when the renewed Home button (timer, check gone, skin) and the new dated board are marked; then skip one day and mark what a missed day shows | 2026-10-06 02:27:45 | 20261006-021434-chrono-2FYKPJ#26 | 10/06 renewed Home button (frame 45) and new dated board (frame 46) seen at ~02:22; missed-day part moved to daily-missed-day |
 | Watch the Daily Challenge Retry ad once after a clear: done when what Retry gives (the same board or a new one, timer reset, best time kept or replaced, another trial skin or none) is marked | 2026-10-06 02:24:34 | 20261006-021434-chrono-2FYKPJ#33 | Retry (AD): ad ended with Reward granted + X (~8 s); gives the SAME board with cats cleared, timer reset to 00:00, 3 fish. Retry clear with 2 fish: 00:38 beat 98.7% (first 00:22 beat 99.0%), no trial skin popup (skin popup came only on 3-fish first clear, Equip/Later). Retry offered again. Best-time stored not verified. |
 | Find how often the interstitial and banner show: play three levels in a row and mark which level starts show an interstitial and whether the banner is on every level | 2026-10-06 02:20:59 | 20261006-021434-chrono-2FYKPJ#22 | L135 no interstitial, L136 yes, L137 no, L138 yes; banner on every level incl golden. Rule: interstitial at every other level start (alternating) |

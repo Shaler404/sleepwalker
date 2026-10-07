@@ -4,8 +4,8 @@ title: "Consecutive Daily Victories"
 type: feature
 feature: daily-victories
 version_seen: 10.8.1
-verified_at: 2026-10-05
-sources: [20261003-212548-chrono-2FYKPJ, 20261003-235233-chrono-2FYKPJ, 20261005-004506-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-212548-chrono-2FYKPJ, 20261003-235233-chrono-2FYKPJ, 20261005-004506-chrono-2FYKPJ, 20261006-105231-chrono-2FYKPJ, 20261006-111957-chrono-2FYKPJ]
 ---
 
 # Consecutive Daily Victories
@@ -15,8 +15,9 @@ A panel on the home menu titled "Consecutive Daily Victories", with a crown on a
 The first win of a day adds one, more wins the same day add nothing, and the tick turns green once the
 day's win is in [^s1] [^s2] [^s3]. It is a different counter from the
 [Adventure win streak](adv-win-streak.md) ("Consecutive Victories" on the Adventure result screen), which
-counts wins in a row and is reset by a loss [^s4]. No reward was seen for it, up to x3
-[^s1] [^s3].
+counts wins in a row and is reset by a loss [^s4]. No reward was seen for it, up to x4
+[^s1] [^s3] [^s9]. On 6 October it went from x3 to x4 with no Adventure level played that day, in a
+session of classic games only [^s10] [^s9]; what counted as the day's victory there is not known.
 
 ## Why it appeared
 
@@ -49,6 +50,9 @@ Adventure win and green after it [^s5] [^s2]. Tapping the panel does nothing
 
 ### Result
 
+![The home menu on 6 October after classic games only: the panel shows x4 with a green tick](../img/20261006-daily-victories-result-93112c2c.webp) [^s9]
+*6 October, no Adventure level played: x4 and a green tick*
+
 ![The home menu after two Adventure wins on 2026-10-04: the panel shows x2 with a green tick](../img/20261003-daily-victories-result-93112c2c.webp) [^s1]
 *After the second win of the second day: still x2, green tick*
 
@@ -67,8 +71,20 @@ Version 10.8.1. The day boundary is the phone's midnight [^s1].
 | Game opened on 2026-10-05, no win yet | x2, grey tick | [^s7] |
 | Adventure level 4 restarted with gear > Replay | x2, grey tick | [^s3] |
 | Adventure level 4 won after the restart, 2026-10-05 | x3, green tick | [^s3] |
+| Game opened on 2026-10-06, no win yet | x3, grey tick | [^s10] |
+| One classic game over (a new best score, 11386), then an app restart | x3, grey tick, small dots over the count | [^s11] |
+| Two more classic game overs, then an app restart; no Adventure level played | x4, green tick | [^s9] |
+| Next session, same day (11:20), at the start | x4, green tick | [[^s12]] |
+| Two more classic game overs and an app restart, same day | x4, green tick | [[^s13]] |
 
-- Only Adventure wins counted. Classic games never moved it [^s5] [^s2].
+- Up to 5 October only Adventure wins moved it; classic games did not [^s5] [^s2]. On 6 October it rose
+  to x4 with a green tick in a session of six classic games and no Adventure level [^s9]. The home menu
+  was not seen between the restart after game 1 (still x3) and the one after game 3 (x4), so what moved it
+  is not known.
+- Later that day it still showed x4 with a green tick, at the start of the next session and after two
+  more classic games and an app restart: more games the same day did not add to it [[^s12]] [[^s13]].
+- Hypothesis: a classic game over counts as the day's victory after some condition (a new best score,
+  which game 1 set, or a number of classic games in the day), not verified.
 - A loss on a day already won did not lower it, while the Adventure win streak went from x1 to x0 on
   the same loss [^s4].
 - At a new day the count stays and the tick turns grey until that day's first Adventure win
@@ -94,14 +110,15 @@ Version 10.8.1. The day boundary is the phone's midnight [^s1].
 | No Space Left under the streak <!-- case:under-no-space-left --> | Lost Adventure level 2 at x1 | ✅ x1 kept with the green tick | [^s4] |
 | Quit under the streak <!-- case:under-quit --> | Gear > Home in Adventure level 4 at x2 | ✅ x2 kept with the green tick | [^s8] |
 | Restart (gear > Replay) under the streak <!-- case:under-restart --> | Gear > Replay in Adventure level 4 at x2, before the day's win | ✅ x2 and the grey tick stay until the win; the win after the restart gave x3 with a green tick | [^s3] |
-| Leaving the app under the streak <!-- case:under-exit-app --> | — | not verified |  |
+| Leaving the app under the streak <!-- case:under-exit-app --> | A game-over ad opened the Play Store by itself; the app was restarted (not a launch from the store) | partly: x3 and the grey tick were kept after the restart; a launch back from the store not checked on the home menu | [^s11] |
 
 ## Not verified
 
-- What breaks it: a day with no Adventure win, and what the break costs (task daily-victories-missed-day) <!-- case:chk-break -->
+- What breaks it: a day with no Adventure win, and what the break costs (task daily-victories-missed-day-2). The missed-day check now also needs a day with no classic game, since classic games may have counted on 6 October <!-- case:chk-break -->
 - Offers to keep it after a break and their price <!-- case:chk-save -->
 - Leaving the app with the streak running <!-- case:under-exit-app -->
-- Whether anything pays at a higher count (x4 and up)
+- Whether anything pays at a higher count (no reward seen at x4; x5 and up)
+- What moved it from x3 to x4 on 6 October with no Adventure level
 
 [^s1]: session 20261003-235233-chrono-2FYKPJ, step 60 — [video at 12:40](https://youtu.be/RE70Idi_jrA?t=760)
 [^s2]: session 20261003-235233-chrono-2FYKPJ, step 22 — [video at 4:16](https://youtu.be/RE70Idi_jrA?t=256)
@@ -111,3 +128,10 @@ Version 10.8.1. The day boundary is the phone's midnight [^s1].
 [^s6]: session 20261005-004506-chrono-2FYKPJ, step 1 — [video at 0:29](https://youtu.be/pwB69H7MFAc?t=29)
 [^s7]: session 20261005-004506-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/pwB69H7MFAc?t=0)
 [^s8]: session 20261003-235233-chrono-2FYKPJ, step 64 — [video at 13:34](https://youtu.be/RE70Idi_jrA?t=814)
+
+[^s9]: session 20261006-105231-chrono-2FYKPJ, step 20 — [video at 9:03](https://youtu.be/yIChzBeRjtU?t=543)
+[^s10]: session 20261006-105231-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/yIChzBeRjtU?t=0)
+[^s11]: session 20261006-105231-chrono-2FYKPJ, step 7 — [video at 4:19](https://youtu.be/yIChzBeRjtU?t=259)
+
+[^s12]: session 20261006-111957-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/dKW3szW8gxw?t=0)
+[^s13]: session 20261006-111957-chrono-2FYKPJ, step 14 — [video at 5:06](https://youtu.be/dKW3szW8gxw?t=306)

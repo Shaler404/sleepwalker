@@ -97,9 +97,24 @@ the dream merges it here. Level times: `sw.py playbook`.
   - Record a level as won only after the win screen or the leaderboard, and name it from the "Level N"
     header, not from your own count: labels drifted by one in several sessions
     [s:20261001-013526-chrono-2FYKPJ#110] [s:20261001-060942-chrono-2FYKPJ#59] [s:20261001-184038-chrono-2FYKPJ#19].
-  - Pattern Mode ON (icons on regions) does not change the rules; `solve --run` placed no cats on L85
-    and L86 while it was ON (cause not proven). Switch it OFF in the level settings (575,758) after a
-    test [s:20261001-115413-chrono-2FYKPJ#14] [s:20261001-115413-chrono-2FYKPJ#75].
+  - Pattern Mode ON (icons on regions) does not change the rules. The solver from 2026-10-06 reads a
+    Pattern Mode board correctly (lab: L139 frame 071212/00007, 10 moves, the winning cats); the L85/L86
+    "no cats" came from the older solver. OFF is still the default [s:20261006-071212-chrono-2FYKPJ#7].
+  - Hint Apply leaves X marks on the board; `solve` ignores them and still returns every cat
+    (071212/00012, 00014). The hint popup itself reads as "dimmed by an overlay": close it first.
+  - Research taps inside a level (settings, boosters, ads) count as hand moves in the lab's
+    "placed by hand" sign (L139: 12 taps vs 10 solver cats). When a level is a booster/settings test,
+    say so in the level note so the lab does not read it as a bypassed solver.
+  - A toast "Only N% of players solved the last level without hints" covers rows 4-6 of the next board
+    for a second or two after the level opens; `solve` refuses it ("a colour region is not connected").
+    Wait 2 s and run it again (lab 2026-10-06: 101030/00031 refused, 00032 the same L143 board, 10 moves, done).
+  - Record keeping (the lab reads only recorded levels): `level start "level N" ... --mechanic queens`
+    BEFORE `solve --run`, and `level end won` on the first `shot` that shows the leaderboard or the win
+    screen, BEFORE the Continue tap (365,1413). `level end won` right after a tap is refused ("take a frame
+    of the win screen first"); if you already tapped on, use `level end won --shot N` with the frame that
+    showed the win. Session 101030: L140 and L142 were refused once each, `level start "level 141"` was
+    refused while L140 was still open, so L141 (8x8, won in 1 round) was never recorded and its run
+    counted toward nothing; a recorded clean level would have cleared the lab's stale "gave up" sign.
   - Do not idle-wait on a screen for minutes: the phone dims and sleeps, and the next tap fails
     [s:20261001-223249-chrono-2FYKPJ#8].
   - Daily Challenge boards sit about 22 px lower; the solver still works [s:20261001-013526-chrono-2FYKPJ#106].
@@ -150,7 +165,7 @@ The times above come from the transcripts. Every level is far under the 5-minute
 | 128 | won, 2 fish (booster study, includes about 80 s of popups and ad) | 194 | [s:20261003-201915-chrono-2FYKPJ#17] |
 | 129 | won, Immaculate (solve about 36 s) | 111 | [s:20261003-202631-chrono-2FYKPJ#5] |
 
-## Level times by mechanic (dream 2026-10-06)
+## Level times by mechanic (dream 2026-10-07)
 
 ```yaml
 ---
@@ -161,13 +176,11 @@ mechanics:
   method: solver
   solver: solvers/com.oakever.meowdoku/queens.py
   levels:
-    won: 16
+    won: 22
     lost: 1
     quit: 2
   typical_min: 1.0
   best_min: 0.5
   solver_file: solvers/com.oakever.meowdoku/queens.py
-  solver_sign: solver gave up in 3 of 5 levels (no moves, the same moves, or no change
-    on screen)
 level_budget_min: 5
 ```

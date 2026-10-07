@@ -3,7 +3,7 @@ game: com.oakever.arrows
 title: "Lessons"
 type: agent
 version_seen: 1.33.0
-verified_at: 2026-10-06
+verified_at: 2026-10-07
 ---
 
 # Lessons for the agent: Amaze GO!
@@ -22,3 +22,7 @@ verified_at: 2026-10-06
   *Confirmed: 20261005-124219-chrono-2FYKPJ, 1.33.0; 20261006-013740-chrono-2FYKPJ, 1.33.0.* [s:20261005-124219-chrono-2FYKPJ#21] [s:20261006-013740-chrono-2FYKPJ#2]
 - An interstitial end card with no X is closed by Back and the win is kept.
   *Confirmed: 20261005-233140-chrono-2FYKPJ, 1.33.0; 20261006-013740-chrono-2FYKPJ, 1.33.0.* [s:20261005-233140-chrono-2FYKPJ#23] [s:20261006-013740-chrono-2FYKPJ#31]
+- The interstitial after a win jumps to the Play Store by itself after about 25-35 s: plan a `launch` then; it returns to the win card.
+  *Confirmed: 20261006-064018-chrono-2FYKPJ, 20261006-093640-chrono-2FYKPJ, 20261006-114946-chrono-2FYKPJ, 1.33.0.* [s:20261006-064018-chrono-2FYKPJ#40] [s:20261006-064018-chrono-2FYKPJ#81] [s:20261006-093640-chrono-2FYKPJ#21] [s:20261006-093640-chrono-2FYKPJ#22] [s:20261006-114946-chrono-2FYKPJ#24]
+- Re-tapping an arrow that is already red costs no drop; a blocked tap on another arrow does. For a deliberate loss, tap three different blocked arrows.
+  *Confirmed: 20261006-114946-chrono-2FYKPJ, 1.33.0.* [s:20261006-114946-chrono-2FYKPJ#36] [s:20261006-114946-chrono-2FYKPJ#37] [s:20261006-114946-chrono-2FYKPJ#38]

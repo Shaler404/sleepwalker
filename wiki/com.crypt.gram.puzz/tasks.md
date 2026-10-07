@@ -1,16 +1,16 @@
 # Tasks: Cryptogram: Word Logic Puzzles
 
-Status: **▶️ active** — ready now: 24
+Status: **▶️ active** — ready now: 23
 
 Mode: **goals** — work through the session goals in order; play levels only as far as an unlock or experiment goal needs; register anything new you notice as a feature or a goal, do not pursue it now
 
-Progress reached: **level 10** · last new feature found at: **level 8**
+Progress reached: **level 11 won** · last new feature found at: **level 8**
 
-Goals: study 7, unlock 4, experiment 13 · maps: level 1 (fresh install, no level played) — 9 new
+Goals: study 1, unlock 4, experiment 16 · maps: level 1 (fresh install, no level played) — 9 new
 
-Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **Number-coded quote** — mastered, solver, levels won 10, typical 2.0 min; **card-cryptogram** — studying, manual, levels won 0
+Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **Number-coded quote** — mastered, solver, levels won 12, typical 4.0 min; **card-cryptogram** — studying, manual, levels won 0
 
-Google Play version: **3.6.1** (checked 2026-10-05 22:05:43) · analyzed version: **3.6.1** · FTUE from a fresh install: **never**
+Google Play version: **3.6.1** (checked 2026-10-06 10:09:39) · analyzed version: **3.6.1** · FTUE from a fresh install: **never**
 
 Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit by hand. Feature map: [features.md](features.md).
 
@@ -27,28 +27,25 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 | Unlock Leagues: complete 50 levels (47 more after level 3) | unlock | Leagues | knowledge gap | the lock seen on screen (feature --locked) |
 | Unlock Collection: complete 15 levels (12 more after level 3) | unlock | Collection | knowledge gap | the lock seen on screen (feature --locked) |
 | Unlock Album: complete 99 levels (96 more after level 3) | unlock | Album | knowledge gap | the lock seen on screen (feature --locked) |
-| Study Shop: open it, walk its screens and tabs, verify its cases | study | Shop | external |  |
-| Study Statistics: open it, walk its screens and tabs, verify its cases | study | Statistics | external |  |
-| Run each outcome once under Win streak banner: Home icon in level, Restart only from the loss popup (no restart button on the HUD seen); no confirmation, no ad, same board and cells, mistakes reset, Force-stop (restart) mid-level with a hint used, Lose by 3 mistakes | experiment | Win streak banner | knowledge gap |  |
-| Run each outcome once under Chest Hunt event: Home icon in level, Force-stop (restart) mid-level with a hint used | experiment | Chest Hunt event | knowledge gap |  |
-| Run each outcome once under Secret Level: Win card, Home icon in level, Restart only from the loss popup (no restart button on the HUD seen); no confirmation, no ad, same board and cells, mistakes reset, Force-stop (restart) mid-level with a hint used, Lose by 3 mistakes | experiment | Secret Level | knowledge gap |  |
-| Study Secret Level (Daily Tasks bar reward): play it, note reward | study | Secret Level | knowledge gap |  |
+| Run each outcome once under Win streak banner: Home icon in level, Restart only from the loss popup (no restart button on the HUD seen); no confirmation, no ad, same board and cells, mistakes reset, Force-stop (restart) mid-level with a hint used | experiment | Win streak banner | knowledge gap |  |
+| Run each outcome once under Chest Hunt event: Force-stop (restart) mid-level with a hint used | experiment | Chest Hunt event | knowledge gap |  |
+| Run each outcome once under Secret Level: Home icon in level, Restart only from the loss popup (no restart button on the HUD seen); no confirmation, no ad, same board and cells, mistakes reset, Lose by 3 mistakes | experiment | Secret Level | knowledge gap |  |
 | Playable interstitial (no close) after win/NEXT and on START needs restart; log frequency | experiment | Banner ad | knowledge gap |  |
-| Study Rate us popup: open it, walk its screens and tabs, verify its cases | study | Rate us popup | external |  |
 | Study Win streak banner: open it, walk its screens and tabs, verify its cases | study | Win streak banner | external |  |
-| Study No ADS offer: open it, walk its screens and tabs, verify its cases | study | No ADS offer | external |  |
-| Chest Hunt keys per level: free claim against key slots, and keys after a loss | experiment | Chest Hunt event | knowledge gap |  |
-| Run each outcome once under Quote Race event: Home icon in level, Force-stop (restart) mid-level with a hint used | experiment | Quote Race event | knowledge gap |  |
+| Daily Tasks after the day reset: mark the new batch, the bar (reset to 0/9 or kept) and whether an unplayed Secret Level survives | check | [Daily Tasks](features/daily-tasks.md) | from the game | The card timer read 23h 2m at 00:56 on 2026-10-06, so the reset is near midnight. On the first home after it: mark the card (chk-next-day); if the Secret Level was not played before the reset, note whether it is lost (chk-missed) |
+| Run each outcome once under Quote Race event: Force-stop (restart) mid-level with a hint used | experiment | Quote Race event | knowledge gap |  |
 | Does the hint pack price discount (RSD 249) follow a timer or level time? note tag price at level start and after 3 min on several boards | experiment | Hint pack offer (+20 hints) | knowledge gap |  |
-| Study Quote Race: rewards chest, end results at timer end, quit case | study | Quote Race event | knowledge gap |  |
-| Find why a tutorial hand points at the hint bulb after a Restart, and whether it blocks the HUD every time | experiment | Hints (bulb) | knowledge gap |  |
+| Quote Race at its 12h end: mark the results screen, the final rank and the reward chest paid, and whether a new race starts | check | Quote Race event | from the game | Started about 02:45 on 2026-10-06 with 11h59m; rank 2 with 2 levels after level 10 [20261006-024420-chrono-2FYKPJ#39]; closes chk-end and chk-rewards |
+| Does the Rate us popup come back after later wins (levels 10, 15, 20) and what do Not now vs a star do | experiment | Rate us popup | knowledge gap |  |
+| Find whether Quote Race PLAY always shows an interstitial while home CONTINUE does not | experiment | Quote Race event | knowledge gap |  |
+| Find whether an interstitial interrupts a level mid-board after some minutes of play | experiment | Banner ad | knowledge gap |  |
+| Find what breaks the win streak: read Statistics Current Win Streak before and after a Home-icon quit and after a 3-mistake loss | experiment | Win streak banner | knowledge gap |  |
+| Win streak counts only first-try wins: a level won after an earlier loss does not add | experiment | Win streak banner | knowledge gap |  |
 
 ## Waiting
 
 | Task | Not before | Kind | Feature |
 |---|---|---|---|
-| Quote Race at its 12h end: mark the results screen, the final rank and the reward chest paid, and whether a new race starts | 2026-10-06 14:50:00 | check | Quote Race event |
-| Daily Tasks after the day reset: mark the new batch, the bar (reset to 0/9 or kept) and whether an unplayed Secret Level survives | 2026-10-07 00:30:00 | check | [Daily Tasks](features/daily-tasks.md) |
 | Chest Hunt at its end: the results screen, the reward for the keys collected, and whether a new event starts | 2026-10-09 00:30:00 | check | Chest Hunt event |
 
 ## Needs a human
@@ -61,6 +58,15 @@ None.
 
 | Task | Closed | By | Note |
 |---|---|---|---|
+| Find why a tutorial hand points at the hint bulb after a Restart, and whether it blocks the HUD every time | 2026-10-06 13:32:06 | 20261006-131052-chrono-2FYKPJ#37 | L12 lost by 3 deliberate mistakes with 0 hints; Restart -> interstitial -> Back returned to the loss popup; second Restart opened the moved board with no hand over the bulb (frame 64, about 1 s after the tap). The hand is not shown after every restart at 0 hints, so it was a one-off (first time). Not checked: whether it appears later on the same board (phone dropped at the next step) |
+| Chest Hunt keys per level: free claim against key slots, and keys after a loss | 2026-10-06 13:32:05 | 20261006-131052-chrono-2FYKPJ#37 | Free CLAIM equals the key slots filled: L11 4 slots (one filled by a hint) -> CLAIM 4, home card 17 -> 21 [#19-#21]; with L9 3/3 and L7-L8 4/5 before. Loss: a 3-mistake loss forfeits the level's collected keys, the popup says key -2 after 2 slots filled on L12 [#33]. Side finding: the CHEST HUNT panel shows 2 keys fewer than the home card (15 vs 17, 19 vs 21) |
+| Check secret-level loss case: lose by 3 mistakes under Secret Level (cancelled) | 2026-10-06 08:43:02 | 20261006-082255-chrono-2FYKPJ#26 | duplicate: the Lose-by-3-mistakes cell (under-loss-3-mistakes) is already owed by outcomes-secret-level |
+| Study Statistics: open it, walk its screens and tabs, verify its cases | 2026-10-06 08:39:21 | 20261006-082255-chrono-2FYKPJ#34 | Profile tab counters (levels 11, first try 9, words 135, letters 425, IQ 118, secret levels 1, best time 01:12, avg 03:07, streak 1/8); Achievements is Coming Soon |
+| Study Shop: open it, walk its screens and tabs, verify its cases | 2026-10-06 08:38:38 | 20261006-082255-chrono-2FYKPJ#30 | Walked the Shop: 4 rows, claimed the free hint (24h cooldown), no payments |
+| Study Secret Level (Daily Tasks bar reward): play it, note reward | 2026-10-06 08:37:44 | 20261006-082255-chrono-2FYKPJ#26 | Played and won; no visible reward beyond Daily Tasks Completed and Daily Challenge counter; loss/retry/frequency left to outcomes-secret-level and the next-day goal |
+| Study Rate us popup: open it, walk its screens and tabs, verify its cases | 2026-10-06 05:32:31 | 20261006-052618-chrono-2FYKPJ#16 | Popup only appears on the level-5 win card; not reproducible now (no entry, not in settings); answers case left for rate-us-return |
+| Study No ADS offer: open it, walk its screens and tabs, verify its cases | 2026-10-06 05:32:30 | 20261006-052618-chrono-2FYKPJ#16 | No ADS button opens the Google Play payment sheet directly, no game screen; closed by harness |
+| Study Quote Race: rewards chest, end results at timer end, quit case | 2026-10-06 05:32:30 | 20261006-052618-chrono-2FYKPJ#16 | Standings, info, locked chest (no contents shown), quit via home free verified at 9h13m left; rewards/end need quote-race-end followup |
 | Run Home-icon quit under Quote Race and Chest Hunt (home icon was blocked by a hint tutorial hand on level 11 restart) (cancelled) | 2026-10-06 03:07:17 | 20261006-024420-chrono-2FYKPJ#39 | duplicate: the Home-icon quit cells are already owed by outcomes-quote-race and outcomes-chest-hunt (under-quit); the blocker (hint tutorial hand over Home after a restart) is recorded in the review |
 | Study Chest Hunt event | 2026-10-06 03:04:37 | 20261006-024420-chrono-2FYKPJ#39 | Keys on cells, claim 3 or x3 with video, 9->12->17/120, loss and restart done; quit and end remain as tasks |
 | Study Hint pack offer (+20 hints): open it, walk its screens and tabs, verify its cases | 2026-10-06 03:04:36 | 20261006-024420-chrono-2FYKPJ#39 | Button on board, tap opens Play payment sheet directly; price 399 vs 249 tag; timer open as task hint-pack-timer |

@@ -5,7 +5,7 @@ type: feature
 feature: core-level
 version_seen: 3.40.1
 verified_at: 2026-10-06
-sources: [20261003-195050-chrono-2FYKPJ, 20261005-002327-chrono-2FYKPJ, 20261005-073409-chrono-2FYKPJ, 20261005-073804-chrono-2FYKPJ, 20261006-022624-chrono-2FYKPJ]
+sources: [20261003-195050-chrono-2FYKPJ, 20261005-002327-chrono-2FYKPJ, 20261005-073409-chrono-2FYKPJ, 20261005-073804-chrono-2FYKPJ, 20261006-022624-chrono-2FYKPJ, 20261006-122751-chrono-2FYKPJ]
 ---
 
 # Tray mahjong level
@@ -146,6 +146,20 @@ screen [^s15]:
 - A rating popup ("Are you enjoying Vita Mahjong?", five stars, Rate Us) came over the win screen a moment
   after it appeared (see the clip on [Level progress chest](level-chest.md)) [^s15].
 
+The level 22 win screen, after the chain of league standing, notification notice, Daily Victories panel
+and Rate Us popup [^s19] [^s20] [^s21] [^s22]:
+
+![The level 22 win screen: "Brilliant!" under a lotus; Time 11:17, IQ 180.4, Combo 50 with a small crown on the box; "Not one fumble, you identified locked tiles accurately!"; the chest bar with 2 of 10 segments and "Reach Level 30"; the green Level 23 button with a purple x2 tag; the three booster buttons behind with "+" badges](../img/20261006-core-level-result-85e97b16.webp) [^s23]
+*The level 22 win screen: a different line under the boxes, the chest bar restarted toward level 30*
+
+- The same title and boxes: Time 11:17, IQ 180.4, Combo 50; the Combo box carries a small crown
+  [^s23].
+- The line under the boxes is another one: "Not one fumble, you identified locked tiles accurately!"
+  [^s23]. Inferred: the game picks the line from how the level was played (tray use on level 19,
+  locked-tile taps on level 22); not verified.
+- The chest bar: 2 of 10 segments, "Reach Level 30" (the level 20 chest was opened earlier) [^s23].
+- The next-level button: green "Level 23" with the purple x2 tag of the [League](leagues.md) [^s23].
+
 ## How it works
 
 Version 3.40.1.
@@ -159,6 +173,8 @@ Version 3.40.1.
 - A matched pair: +0.4 IQ (40 to 40.4) [^s9].
 - Level 19 was won in 14:12 at IQ 154.8, with one Shuffle, one Undo and several Hints used [^s14]
   [^s15].
+- Level 22 was won in 11:17 at IQ 180.4, with one Undo and one Shuffle (the Shuffle from a video, see
+  [Boosters](boosters.md)) [^s24] [^s25] [^s23].
 - The board of a level is generated anew: level 19 had a different layout and set of tiles after a
   Restart and after the app was force-stopped and reopened [^s10]
   [^s7]. The colour of the face-down backs differed between boards and
@@ -175,7 +191,7 @@ Version 3.40.1.
 
 | Outcome | What happens | Frame | Source |
 |---|---|---|---|
-| Win <!-- case:chk-win --> | The cleared board replays as a fade; on the first win of the day the Daily Victories panel; then the win screen: Brilliant!, Time, IQ, Combo, the holder line, the chest bar and the next-level button; no coins | the Win screen frame and clip above | [^s14] [^s15] |
+| Win <!-- case:chk-win --> | The cleared board replays as a fade; on the first win of the day the Daily Victories panel; then the win screen: Brilliant!, Time, IQ, Combo, a line on the play, the chest bar and the next-level button; no coins | the Win screen frames and clip above | [^s14] [^s15] [^s23] |
 | Out of space (loss) <!-- case:out-of-space --> | The tray holds 4 unmatched tiles; the "Out of space" window: Revive, -4 to revive, Restart | the Result frame and the Out of space clip above | [^s2] |
 | Restart after the loss <!-- case:chk-restart --> | Free; a new board right away, IQ 40, boosters 3/5/10 | the Restart clip above | [^s10] |
 | Quit with the back arrow <!-- case:chk-quit --> | Home screen at once, no confirmation, no cost seen | — | [^s5] |
@@ -225,3 +241,11 @@ Version 3.40.1.
 [^s17]: session 20261005-073804-chrono-2FYKPJ, step 49 — [video at 16:19](https://youtu.be/nmXrQmoLWlU?t=979)
 
 [^s18]: session 20261006-022624-chrono-2FYKPJ, step 21 — [video at 4:54](https://youtu.be/D6M-84xYVJM?t=294)
+
+[^s19]: session 20261006-122751-chrono-2FYKPJ, step 40 — [video at 11:12](https://youtu.be/B2PSO6tOKeQ?t=672)
+[^s20]: session 20261006-122751-chrono-2FYKPJ, step 41 — [video at 11:58](https://youtu.be/B2PSO6tOKeQ?t=718)
+[^s21]: session 20261006-122751-chrono-2FYKPJ, step 42 — [video at 12:09](https://youtu.be/B2PSO6tOKeQ?t=729)
+[^s22]: session 20261006-122751-chrono-2FYKPJ, step 43 — [video at 12:39](https://youtu.be/B2PSO6tOKeQ?t=759)
+[^s23]: session 20261006-122751-chrono-2FYKPJ, step 44 — [video at 12:53](https://youtu.be/B2PSO6tOKeQ?t=773)
+[^s24]: session 20261006-122751-chrono-2FYKPJ, step 14 — [video at 3:58](https://youtu.be/B2PSO6tOKeQ?t=238)
+[^s25]: session 20261006-122751-chrono-2FYKPJ, step 32 — [video at 9:47](https://youtu.be/B2PSO6tOKeQ?t=587)

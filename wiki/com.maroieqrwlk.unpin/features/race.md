@@ -5,7 +5,7 @@ type: feature
 feature: race
 version_seen: 241.5.2
 verified_at: 2026-10-06
-sources: [20261004-004411-chrono-2FYKPJ, 20261005-014031-chrono-2FYKPJ, 20261005-235042-chrono-2FYKPJ, 20261006-012240-chrono-2FYKPJ, 20261006-030951-chrono-2FYKPJ]
+sources: [20261004-004411-chrono-2FYKPJ, 20261005-014031-chrono-2FYKPJ, 20261005-235042-chrono-2FYKPJ, 20261006-012240-chrono-2FYKPJ, 20261006-030951-chrono-2FYKPJ, 20261006-061608-chrono-2FYKPJ, 20261006-091133-chrono-2FYKPJ]
 ---
 
 # Level race
@@ -14,7 +14,8 @@ A timed event offered in a popup before a level: the player races three other pl
 beat 15 levels, within a time limit (5 h 59 min left when offered); first place shows a reward of +250
 coins [^s1]. The player can join with **Go!** or decline with **No, thanks** [^s1]. Declined twice [^s3] [^s5],
 it was joined the third time, at level 20: a race button with the timer then sits on the map ("Daily race"), and
-a race bar runs under the board of a level [^s6] [^s7]. The race's own screen and its end were not seen.
+a race bar runs under the board of a level [^s6] [^s7]. The race's own screen was not seen. The
+race ended with a "Race has ended!" screen: the player 4th, no prize [^s21].
 
 ## Why it appeared
 
@@ -71,6 +72,15 @@ The third offer, on Play! for level 20, was the same again with 5h 59m left [^s8
 ![New race started! on Play! for level 20: Time Left 5h 59m, beat 15 levels the fastest, the bar with You at place 4 and +250 coins, Go! and No, thanks](../img/20261005-race-popup-aae718ef.webp) [^s8]
 *The third offer, the one joined (a local banner ad blacked out)*
 
+### Result
+
+![Race has ended!: You haven't won any prizes! Better luck in the next race., a pink ribbon with 4., the coin balance 6858 at the top right, Tap to continue](../img/20261006-race-result-faf85ad0.webp) [^s21]
+*The end of the race joined at level 20: "Race has ended!", place 4 on a pink ribbon, no prize; Tap to continue*
+
+A grey full screen: the title "Race has ended!", a two-line text that no prize was won and to try the next
+race, the place (4.) on a ribbon, the coin balance at the top right and **Tap to continue** [^s21]. Tap to
+continue went back to the level 30 board [^s23].
+
 ## What you can do
 
 | Tab or button | What it does |
@@ -121,8 +131,27 @@ Versions 241.5.1 and 241.5.2, from the offer popup only [^s1] [^s4]:
 - During the level 20 win the bar showed You at place 4, and the win went straight to the league board with no
   race screen between [^s15].
 
-What a race counts (wins only or every level), the rewards for places 2 and 3, and what happens at the end of
-the timer were not seen.
+- On 6 October, about 29 hours after joining at level 20, the race button on the map read 00h 00m for the whole
+  session, at levels 24, 25 and 27; no results popup came on any visit to the map [^s18] [^s19]. Inferred: the
+  race has ended (its 6 hours ran out long before); not verified, since the race screen was not opened.
+- In the same session the race bar still showed under the level 27 board: You on 4, markers 3 and 1 ahead of it
+  [^s20].
+
+![The map at level 27: the race button at the right edge with the checkered flag and 00h 00m under it](../img/20261006-bonus-levels-result-95ea8568.webp) [^s19]
+*The map at level 27 on 6 October: the race button reads 00h 00m, as it did all session (the player's name blacked out)*
+
+- On 6 October, in the next session, the map at level 28 still showed the race button at 00h 00m [^s25]. The
+  race bar under the level 30 board showed You on 4 with markers 3 and 1 ahead, as under level 27 the session
+  before [^s22]. The bar did not move during levels 28 and 29 [^s21].
+- The results came after level 30 was lost and **Retry** was tapped: the Retry interstitial, then "Race has
+  ended!" with the player 4th and "You haven't won any prizes!"; the coin balance on it was 6858 [^s21]. About 30
+  hours had passed since joining at level 20, so the results came long after the 6 hours ran out. What brings
+  the results screen up (the Retry, the loss, or any level start after the end) is not verified.
+- After the results the level 30 board had no race bar [^s23], and the map at level 31 had no race button at
+  its right edge [^s24].
+
+What a race counts (wins only or every level) and the rewards for places 1 to 3 beyond the +250 shown on the
+offer were not seen.
 
 ## Outcomes
 
@@ -150,7 +179,7 @@ Level race runs over ordinary levels. Seen with the race joined at level 20 (ver
 | During a level <!-- case:chk-in-level --> | Opened level 20 after joining | ✅ A race bar under the board: racers' markers from the start to a checkered finish, the You marker (place 1 at level 20) | [^s7] |
 | Progress per level <!-- case:chk-progress --> | — | not verified |  |
 | The rewards <!-- case:chk-rewards --> | — | not verified: only +250 coins for place 1 shown on the offer | [^s1] |
-| The end <!-- case:chk-end --> | — | not verified |  |
+| The end <!-- case:chk-end --> | Lost level 30 and tapped Retry, about 30 h after joining | not verified in the map; seen: "Race has ended!", place 4, no prize, Tap to continue; then no race bar and no race button | [^s21] [^s23] [^s24] |
 | Win under Level race <!-- case:under-win --> | Won level 20 (a Color Bucket level) with the race running | ✅ As the base: the race bar under the board (You at place 4), then the league board; no race screen | [^s15] |
 | Restart under Level race <!-- case:under-restart --> | — | not verified |  |
 | Quit under Level race <!-- case:under-quit --> | Left level 20 by the back arrow right after joining | ✅ As the base: the map; the race kept running (5h 59m) | [^s6] |
@@ -158,15 +187,16 @@ Level race runs over ordinary levels. Seen with the race joined at level 20 (ver
 | Balls fell out under Level race <!-- case:under-balls-out --> | — | not verified |  |
 | Colours mixed under Level race <!-- case:under-colour-mix --> | Lost level 20 (a Color Bucket level) | ✅ The fail screen as the base; the race bar stayed with the player first, no race screen | [^s10] |
 | In Challenge mode <!-- case:in-challenge --> | Played Challenge 1 (three tries, all lost) | ✅ The race bar under the Challenge board: five markers, You on 5, a chequered flag; it did not move in the lost tries | [^s16] |
+| The flag at 00h 00m <!-- case:flag-zero-all-session --> | Went back to the map at levels 24, 25 and 27, a day after joining | ✅ The race button read 00h 00m all session; no results popup on any map visit | [^s18] [^s19] |
 | Joined | Tapped Go! on the offer before level 20 | ✅ Level 20 opened with the race bar; the map got the race button | [^s9] [^s6] |
 
 ## Not verified
 
 - What it looks like: the race screen (the map's race button not tapped yet) <!-- case:chk-screen -->
-- Its timer and schedule: what happens when 6 h run out, and when the next race comes <!-- case:chk-timer -->
+- Its timer and schedule: what happens when 6 h run out (the button sat at 00h 00m with no popup), and when the next race comes <!-- case:chk-timer -->
 - Progress per level: what a win, and a loss, add; the marker moves after Sketchman results, how far was not measured <!-- case:chk-progress -->
 - The rewards for each place <!-- case:chk-rewards -->
-- The end: the results screen and the reward paid <!-- case:chk-end -->
+- The end: the results screen was seen with place 4 and no prize [^s21]; still open in the map. The reward paid for places 1 to 3, and what brings the results screen up, not seen <!-- case:chk-end -->
 - Restart under Level race: as the base, or what differs <!-- case:under-restart -->
 - Exit the app under Level race: as the base, or what differs <!-- case:under-exit-app -->
 - Balls fell out under Level race: as the base, or what differs <!-- case:under-balls-out -->
@@ -193,3 +223,12 @@ Level race runs over ordinary levels. Seen with the race joined at level 20 (ver
 
 [^s16]: session 20261006-030951-chrono-2FYKPJ, step 5 — [video at 1:14](https://youtu.be/nuXkt-gY2qg?t=74)
 [^s17]: session 20261006-030951-chrono-2FYKPJ, step 23 — [video at 13:11](https://youtu.be/nuXkt-gY2qg?t=791)
+[^s18]: session 20261006-061608-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/OfYU2WgEiQU?t=0)
+[^s19]: session 20261006-061608-chrono-2FYKPJ, step 19 — [video at 8:34](https://youtu.be/OfYU2WgEiQU?t=514)
+[^s20]: session 20261006-061608-chrono-2FYKPJ, step 21 — [video at 10:30](https://youtu.be/OfYU2WgEiQU?t=630)
+
+[^s21]: session 20261006-091133-chrono-2FYKPJ, step 39 — [video at 17:54](https://youtu.be/nKqzeXFw6rA?t=1074)
+[^s22]: session 20261006-091133-chrono-2FYKPJ, step 32 — [video at 14:45](https://youtu.be/nKqzeXFw6rA?t=885)
+[^s23]: session 20261006-091133-chrono-2FYKPJ, step 40 — [video at 18:03](https://youtu.be/nKqzeXFw6rA?t=1083)
+[^s24]: session 20261006-091133-chrono-2FYKPJ, step 46 — [video at 19:50](https://youtu.be/nKqzeXFw6rA?t=1190)
+[^s25]: session 20261006-091133-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/nKqzeXFw6rA?t=0)

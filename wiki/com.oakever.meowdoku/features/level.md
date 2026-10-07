@@ -4,8 +4,8 @@ title: "Main level (cat placement board)"
 type: feature
 feature: level
 version_seen: 1.19.1
-verified_at: 2026-10-03
-sources: [20261003-200440-chrono-2FYKPJ, 20261003-201915-chrono-2FYKPJ, 20261003-202631-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-200440-chrono-2FYKPJ, 20261003-201915-chrono-2FYKPJ, 20261003-202631-chrono-2FYKPJ, 20261006-071212-chrono-2FYKPJ, 20261006-101030-chrono-2FYKPJ, 20261006-122109-chrono-2FYKPJ]
 ---
 
 # Main level (cat placement board)
@@ -13,7 +13,7 @@ sources: [20261003-200440-chrono-2FYKPJ, 20261003-201915-chrono-2FYKPJ, 20261003
 The game's core puzzle. A square board is split into colour regions, and the player places cats so that
 each colour, each row and each column holds exactly one cat and no two cats touch. Main levels are numbered.
 This account played Levels 127 (9x9), 128, 129 and 130 (10x10); Level 130 was marked Hard [^s1] [^s2]
-[^s14]. A level starts with three fish. Each wrong cat costs one, and the third
+[^s14]. Later boards were 10x10 (Levels 140 and 142) and 8x8 (Level 141) [^s34] [^s35] [^s36]. A level starts with three fish. Each wrong cat costs one, and the third
 wrong cat loses the level. The fish kept are paid to the [Fish rank event](fish-event.md) [^s2] [^s3]
 [^s15].
 
@@ -73,6 +73,7 @@ of fish kept slides in left of the board [^s19].
 |---|---|
 | [Win](#win) | The win screen after the last cat: a title by the fish kept and the next level's button |
 | [Settings](#settings) | The gear (top right): sound toggles, Pattern Mode, Feedback and Restart |
+| [Pattern Mode](#pattern-mode) | A Settings toggle that puts an icon on every colour region of the board |
 | [Restart](#restart) | Restart in Settings: the same board again, empty, with three fish |
 | [Out of Fishes](#out-of-fishes) | The loss screen after the third wrong cat: Get 3 Fishes (ad) or Restart |
 | [Quit](#quit) | The back arrow leaves for Home at once; Android Back on Home asks before closing the app |
@@ -95,7 +96,8 @@ After the last cat, in this order [^s9] [^s11] [^s6] [^s19] [^s18]:
 2. On the day's first win only, the [Daily Streak](daily-streak.md) popup and screen [^s11].
 3. The win screen: a title, a cat animation, a line of praise and the next level's button. Three titles were
    seen: "Perfect" (Level 127, 3 fish), "Brilliant" (Level 128, 2 fish), "Immaculate" (Level 129, 3 fish).
-   Inferred: with 3 fish the title is picked from several; not verified.
+   Inferred: with 3 fish the title is picked from several; not verified. On 6 October, all with 3 fish:
+   "Supreme" (Level 140, Hard), "Expert" (Level 141), "Flawless" (Level 142, "0 errors!") [^s37] [^s35] [^s38].
 
 The next tap on the next level's button played a full-screen interstitial video ad, after Level 127 and
 again after Level 129 [^s12] [^s20]. Both times the app was relaunched to leave
@@ -103,6 +105,18 @@ it, and the next level opened with an empty board [^s13] [^s21].
 
 ![Rate Us popup over the Level 127 win screen: Are you enjoying Meowdoku, five stars, Rate Us, a close cross](../img/20261003-level-popup-949c3b73.webp) [^s10]
 *After the first win only, the rating popup over the win screen: five stars, Rate Us, the close cross top right*
+
+![Level 143 just opened: a translucent band across the middle of the board with "Only 23.8% of players solved the last level without hints — you're one of them!"](../img/20261006-level-tab-win-bec19160.webp) [^s39]
+*Level 143 right after Skip to Level 143: a fading toast over the board about the hint-free Level 142 (the banner ad is blacked out)*
+
+The next level can open with a toast over its board about the level just won. Level 143, opened with Skip to
+Level 143 after Level 142 was won without a hint, showed "Only 23.8% of players solved the last level without
+hints — you're one of them!" in a translucent band across the board; by the next frame it was gone [^s39]
+[^s39]. One later observation: after a win that used one hint Apply (Level 144), the next-level tap opened Level 145
+with no interstitial, and the frame about 1 s later showed no toast over the board [^s40]. This was seen once;
+whether the hint is what left the toast out was not established. Inferred: the missing interstitial fits an ad
+cooldown better than the hint (the last ad had played about 73 s earlier); not verified. Whether other toasts
+show after other wins was not seen.
 
 ### Settings
 
@@ -117,8 +131,20 @@ The gear (top right of the level) opens a Settings popup over the board [^s22]:
 - Restart, an orange button; see [Restart](#restart).
 - A close cross top right.
 
-The toggles, Pattern Mode and Feedback were not tried in a level (see [Settings](settings.md) for the Home
-version).
+The sound toggles and Feedback were not tried in a level (see [Settings](settings.md) for the Home
+version). Pattern Mode is under [Pattern Mode](#pattern-mode).
+
+### Pattern Mode
+
+![Level 139 with Pattern Mode on: every colour region of the 10x10 board carries its own faint icon (yarn, bell, paw, grass, fish bone, bow, whiskers, sparkles, triangles, sprout)](../img/20261006-level-tab-pattern-mode-bbc19463.webp) [^s32]
+*Level 139 after Settings > Pattern Mode on: each colour region shows its own icon in every cell (the banner ad is blacked out)*
+
+With Pattern Mode switched on in the level's Settings and the popup closed, every cell of the board carries a
+faint icon, the same icon for all cells of one colour region: a ball of yarn, a bell, a paw, grass blades, a
+fish bone, a bow, whiskers, sparkles, triangles and a sprout on the ten regions of Level 139 [^s32]. The
+colours, the rule cards, the score and the boosters did not change [^s32]. Switched off again in Settings,
+the board was back to plain colours [^s33]. Inferred: the icons tell the regions apart without relying on
+colour; whether they change anything else (scoring, hints) was not seen.
 
 ### Restart
 
@@ -182,8 +208,11 @@ a wrong cat's cross is still animating are ignored. Not verified.
   Level 128 194 s, Level 129 about 110 s) [^s10] [^s7] [^s21].
 - Score: counts per level from 0 (Level 127 ended at 8640, Levels 128 and 129 at 10080) [^s9] [^s3]
   [^s19]. On Level 130 the first cat gave +576 and the second +672
-  [^s30] [^s29]. Inferred: each cat is worth more
-  than the one before; the rule is not verified.
+  [^s30] [^s29]. The final score depends on the board size only: 7296 on the 8x8 Level 141,
+  10080 on the 10x10 Levels 140 (Hard) and 142 (not Hard), each with 3 fish and a different title [^s37] [^s35] [^s38].
+  All the totals seen (8640 for 9x9, 7296 for 8x8, 10080 for 10x10) equal 48 x N x (N + 11) for an N x N
+  board; the per-cat steps (+576, +672) grow within a board. Inferred: neither the Hard tag nor the title
+  changes the score.
 - Hard levels: Level 130 had a flame and "Hard" in the HUD and a red "Hard" tag on its button. Its board
   (10x10, ten colours) and its fish and boosters looked like those of other levels
   [^s18] [^s14]. What else Hard changes was not
@@ -221,14 +250,17 @@ Version 1.19.1.
 | Restart: Settings > Restart replays the same board, cats cleared, score 0, spent boosters not refunded, no confirmation <!-- case:chk-restart --> | Restart tapped with two cats on the board | ✅ | [^s23] |
 | Quit: the back arrow goes straight Home, no confirmation <!-- case:chk-quit --> | Back arrow before any move (Level 127) and after a restart (Level 130) | ✅ | [^s4] [^s17] |
 | Exit the app: Android Back on Home opens the Quit popup; its cross cancels <!-- case:chk-exit-app --> | Back pressed on Home, cross tapped | ✅ | [^s27] |
+| Final score by board size only: 8x8 = 7296 (Level 141), 10x10 = 10080 (Level 140, Hard, and Level 142, not Hard), = 48 x N x (N + 11); the Hard tag and the title (Supreme, Expert, Flawless) do not change it <!-- case:score-formula --> | Levels 140 to 142 won with 3 fish | ✅ | [^s35] [^s38] |
+| The next level opened from Skip shows a fading toast over the board: "Only 23.8% of players solved the last level without hints — you're one of them!" (Level 143 after a hint-free Level 142) <!-- case:start-toast --> | Skip to Level 143 tapped | ✅ | [^s39] |
+| After a win that used one hint Apply (Level 144), Level 145 opened with no interstitial and no toast over the board, about 1 s after the next-level tap; a single observation, the cause not established <!-- case:no-toast-after-hint-win --> | Level 144 won with one hint; next level tapped | ✅ | [^s40] |
 | Level elements: none beyond colour regions on Levels 127-130; the in-level Settings holds sound toggles, Pattern Mode, Feedback, Restart <!-- case:chk-elements --> | Four levels played; the gear opened | ✅ | [^s22] |
 
 ## Not verified
 
 - Get 3 Fishes on Out of Fishes: what it gives (three fish with the board kept, or a restart); not tapped
 - Exit the app with cats on the board and come back: is the board kept (only tried during an ad, before any move)
-- What the score counts per cat, and what Hard changes besides the tag
-- Pattern Mode and the sound toggles inside a level
+- What Hard changes besides the tag (the final score is the same as on a 10x10 level without it)
+- The sound toggles inside a level
 
 [^s1]: session 20261003-200440-chrono-2FYKPJ, step 3 — [video at 1:05](https://youtu.be/Pqx4QY-FpBA?t=65)
 [^s2]: session 20261003-201915-chrono-2FYKPJ, step 12 — [video at 4:18](https://youtu.be/ffhYgQE4LvU?t=258)
@@ -262,3 +294,15 @@ Version 1.19.1.
 [^s29]: session 20261003-202631-chrono-2FYKPJ, step 13 — [video at 4:40](https://youtu.be/3-USmjAyOV8?t=280)
 [^s30]: session 20261003-202631-chrono-2FYKPJ, step 12 — [video at 4:22](https://youtu.be/3-USmjAyOV8?t=262)
 [^s31]: session 20261003-202631-chrono-2FYKPJ, step 19 — [video at 6:01](https://youtu.be/3-USmjAyOV8?t=361)
+
+[^s32]: session 20261006-071212-chrono-2FYKPJ, step 4 — [video at 0:52](https://youtu.be/rwKHO-fD0pA?t=52)
+[^s33]: session 20261006-071212-chrono-2FYKPJ, step 7 — [video at 1:11](https://youtu.be/rwKHO-fD0pA?t=71)
+
+[^s34]: session 20261006-101030-chrono-2FYKPJ, step 6 — [video at 1:05](https://youtu.be/FuAwbQouw6Q?t=65)
+[^s35]: session 20261006-101030-chrono-2FYKPJ, step 10 — [video at 2:33](https://youtu.be/FuAwbQouw6Q?t=153)
+[^s36]: session 20261006-101030-chrono-2FYKPJ, step 13 — [video at 3:03](https://youtu.be/FuAwbQouw6Q?t=183)
+[^s37]: session 20261006-101030-chrono-2FYKPJ, step 7 — [video at 1:26](https://youtu.be/FuAwbQouw6Q?t=86)
+[^s38]: session 20261006-101030-chrono-2FYKPJ, step 14 — [video at 3:10](https://youtu.be/FuAwbQouw6Q?t=190)
+[^s39]: session 20261006-101030-chrono-2FYKPJ, step 15 — [video at 3:26](https://youtu.be/FuAwbQouw6Q?t=206)
+
+[^s40]: session 20261006-122109-chrono-2FYKPJ, step 12 — [video at 1:04](https://youtu.be/dw0JCgXQwQQ?t=64)

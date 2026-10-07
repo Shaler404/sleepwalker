@@ -164,6 +164,63 @@ the dream merges it here. Level times: `sw.py playbook`.
   - a level opened only to study menus (Options, Theme) is still a level: every Options tap counted as a hand-placed
     move (022624, 24 taps) and kept core-match flagged "bypassed". Open menus from Home where possible, or end the
     level with a note "menus only, no tiles played".
+  Lab 2026-10-06 (3rd, frames of 072809, L21 spin, cream faces with green backs): the solver now knows the SPIN ring.
+  - It learns per level that the board spins: open faces of the last frame found again whole cells away after a
+    take. From then on its note says "SPIN: N open tiles may turn with the ring". It learns which cells hold still
+    (a face read in place after a take, or the inner cells once the ring's two rows and two columns have been seen
+    moving) and plays a line with at most ONE tile that may move, as its FIRST tap; after it only tiles that hold
+    still (higher layer, inner cells, the stacks). A pair whose two tiles both ride the ring: one tile now ("spin: a
+    free pair the ring may move"), its twin from the tray next round. After every take it forgets the faces of
+    backs that may have turned (they may be another back now) and flips them again. A Hint-lit pair on the ring:
+    one tile per round.
+  - Backs of the lower row with a green lip under them (232 px tall, 072809/00058-00073) were not read at all: the
+    endgame said "no certain pair" with 3 free backs on the board. Read now.
+  - Method on L21: `solve --run --rounds 40 --settle 2` from a settled first frame, as everywhere. The ring is
+    learnt only once ring faces are open and move: until the first "SPIN" note the solver plays as on any level
+    (on 072809 the open faces at the start were all higher-layer, inner or stacks, so that was right).
+  Pitfalls (not on any frame yet):
+  - a frame taken while the ring still turns: faces between cells are not read; if a round says "fewer open tiles
+    ... animation", just run again (a longer --settle helps);
+  - a Shuffle on a spinning board (072809 step 17) re-deals everything: the solver forgets the cells and learns
+    them again (one or two slower rounds);
+  - the free side of an inner tile next to the ring: it is tapped after a take only when the cell beside it is known
+    to hold still; a "Locked" tap there is harmless (nothing moves).
+  Lab 2026-10-06 (4th, frames of 101909, L22 opened twice, no tiles played): two new looks, both read now.
+  - Classic set (Theme > Tiles > Classic, on a RED table): the cream face itself with blue side bands and light blue
+    backs with a flower. Before, the solver called it "cream" and took the two free blue backs for an art PAIR (a
+    2-tap line of back flips); now note "classic tile set": 101909/00012 plays the rice pair and the 二萬 pair, then
+    flips the right blue back. The red table beside a tile read as a neighbour (a board-edge tile read locked on
+    that side): it now reads as table, like the dark green one.
+  - Red set with BAMBOO backs (on a dark green table, after the relaunch): gold 福 tiles with a red "x2" ribbon on
+    the top-right corner were not read at all (the ribbon breaks the tile's outline, its fold looks like a neighbour
+    on the right): 101909/00022 said "no certain pair ... take the video". Now it reads both gold tiles and plays the
+    gold pair. The bamboo strokes on red backs run off the back's edge; they are filled into the back now.
+  - Hint and Shuffle both at "+" (0) on L22: on a real dead end the solver stops ("Hint at 0 and Shuffle at 0"):
+    take the Get Two video by hand, then run it again.
+  Pitfalls (not on any frame yet): a FREE bamboo back (only covered ones so far: if a tile beside a red bamboo back
+  reads free and its tap says "Locked", the back was missed); the Hint tint and a flipped back in the Classic set;
+  an x2 gold tile in the tray. A level opened only to look at the board (no tiles) still counts as hand moves: end
+  it with "menus only, no tiles played" as 101909 did.
+  Lab 2026-10-06 (5th, frames of 122751, L22 red set and L23 purple set): the hand pairs of that session are read now.
+  - The red set's dark side band has pixels just outside the mapped red (g/r 0.29): they read as a right neighbour, so
+    raised top tiles (the blue vases, the top-row 9-circle) read "locked by left and right". Mapped now: 00009 plays
+    the vase pair, 00025 the 9-circle pair.
+  - Art cards were compared only at even pixel offsets: the two coffee cards (1 px apart) were two kinds. Now every
+    pixel: 00009 plays the coffee pair, 00010-00011 the latte and vase-bird pairs the session tapped by hand.
+  - A picture card on a white ground (L23 rabbit with roses) reads as a cream face while its twin reads as art: the
+    two could never pair. Now compared in art mode over 5 px: 00071 plays tray twin, rabbit pair, 5-circle and
+    9-circle pairs (the session's hand batch plus one pair).
+  - A dense face matched only 2 px off (the 9-circles, 0.0% shifted, 12% unshifted) was refused: accepted now when
+    the shifted match is near perfect.
+  Method on these boards: `solve --run --rounds 40 --settle 2` from the first settled frame, as everywhere; no art
+  pairs by eye first. Dead ends with Hint and Shuffle at 0 and two unknown tray singles still stop the run (note
+  "Hint at 0 and Shuffle at 0"): take the Free Shuffle video by hand, then run again.
+  Pitfalls:
+  - a lower tile running on under a top tile (a gold card, a red back) beside its LEFT edge still reads as a
+    left neighbour: such a top tile is taken only when its right side is open. A back's deep red band and a lower
+    back look alike in the gap; the solver keeps the safe side;
+  - `solve --run` dies with a raw `AdbError` traceback when adb loses the phone for a moment (122751 steps 17 and
+    45): not a solver fault; wait for the phone (`sw.py` status) and run it again from a fresh frame.
 
 ### Level times
 | Level | Result | Minutes | Model | What decided it | Source |
@@ -234,7 +291,42 @@ as one call.
 - The game clock on the win screen counts the time across sessions (15:31 for L20 across two sessions).
 - L21 adds spinning tiles ("Clear every tile to stop the spin!"): unknown mechanic, read its rules before playing.
 
-## Level times by mechanic (dream 2026-10-06)
+## Session 20261006-072809 (opus study): L21 won, spin rule found
+- SPIN (L21, "Clear every tile to stop the spin!"): a ring of LOWER-layer tiles along the board's edge (top row,
+  both side columns, bottom row) turns one place CLOCKWISE after every tile that leaves the board: a tray take
+  (single or pair), a match, a flip-and-twin clear. A flip of a back or a locked tap does NOT turn it. Yellow
+  chevrons on the ring show the direction (left side up, right side down). Top-layer tiles and the bottom stacks
+  never move. Shuffle re-deals the ring with the rest.
+- Method on spin boards: in a batch put at most ONE ring tile, as the FIRST tap; the rest of the batch only
+  top-layer / stack tiles (they do not move). After a ring take, look before the next ring tap: its twin has moved
+  one place. Taps sent while the ring turns hit whatever moved under them (shot 22).
+- The solver did not model the ring in this session (stalls: "animation hides some", "no certain pair"). Lab
+  2026-10-06 (3rd) taught it the ring and the lipped backs of the lower row: run `solve --run` on L21 too (see the
+  Method note above); hand taps only for what its note asks.
+- The free Shuffle (badge 1) at a dead end with one tray single gave 6 pairs at once.
+- A tap on a seen back flips it face up again (no tray) in this green set; tap it a second time to take it.
+
+## Session 20261006-101909 (opus study): theme vs tile set
+- The Theme picker drives the board right after Confirm (Classic = white faces, blue sides and backs; red background).
+  After a force-stop relaunch the picker is back to Simple + dark green, and the next board drew the RED-back set on a
+  dark green background: the tile set on a board does not follow the picker after a relaunch. Never assume a set; the
+  solver reads all of them.
+
+## Session 20261006-122751 (opus study): L22 won in 12.8 min (red set, art tiles)
+- Boosters at L22 start: Shuffle 0, Hint 0, Undo 1. All three at 0 open a video offer (Shuffle: 1 per video; Hint, Undo: 2).
+- The solver did NOT read the blue-vase pair or the art cards (coffee, latte, vase-bird) on the opening red-set frame
+  (shot 9: "no certain pair" with the vase pair free on top). Fixed by lab 2026-10-06 (5th): run `solve --run` from
+  the first frame, no art pairs by eye.
+- Fast hand loop that worked: 4-6 taps of art/face pairs, uncertain tile first; a flipped back that turns face down
+  again is a "seen" back: tap it (goes to the tray) then its twin.
+- Dead end with Hint and Shuffle at 0 and 2 tray singles: Free Shuffle video (playable end card with no X: `launch`,
+  the Shuffle was granted), then `solve --run` cleared the last ~40% in 38 moves.
+- L23 (purple set) is a SPIN board too (the solver's note said "SPIN" after the first takes): take the top-layer
+  twin of a tray tile alone, then look before the next ring tile.
+- Auto Complete check: run the solver in short runs (`--rounds 3`) near the end so a frame with every tile
+  uncovered is left idle for 5 s; a full `--run` clears the rest itself before the game could.
+
+## Level times by mechanic (dream 2026-10-07)
 
 ```yaml
 ---
@@ -245,12 +337,13 @@ mechanics:
   method: solver
   solver: solvers/com.vitastudio.mahjong/core-match.py
   levels:
-    won: 2
+    won: 4
     lost: 1
-    quit: 7
-  typical_min: 16.2
-  best_min: 14.9
+    quit: 11
+  typical_min: 17.5
+  best_min: 13.3
   solver_file: solvers/com.vitastudio.mahjong/core-match.py
-  solver_sign: 'solver bypassed: 4 of 5 levels placed by hand'
+  solver_sign: 'solver bypassed: 2 of 5 levels placed by hand; solver gave up in 3
+    of 5 levels (no moves, the same moves, or no change on screen)'
 level_budget_min: 5
 ```

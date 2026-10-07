@@ -2,48 +2,28 @@
 game: com.king.candycrushsaga
 version: 1.337.0.2
 play_version: 1.337.0.2
-play_checked: '2026-10-05T22:05:43'
+play_checked: '2026-10-06T10:09:39'
 phone_version: 1.337.0.2
 discovery: open
 ftue_verified: null
 progress:
-  text: level 1
-  value: 1.0
-  at: '2026-10-05T07:31:40'
-  session: 20261005-072135-chrono-2FYKPJ
+  text: level 3 wrapped study
+  value: 3.0
+  at: '2026-10-06T04:40:33'
+  session: 20261006-043504-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-06T04:02:50'
+  chrono: '2026-10-06T15:01:50'
 mechanics:
 - id: core-match
   name: core-match
   status: mastered
   method: manual
   levels:
-    won: 4
+    won: 5
     lost: 0
-    quit: 7
+    quit: 11
   recent:
-  - level: level 2
-    result: won
-    seconds: 294
-    model: sonnet
-  - level: level 3
-    result: won
-    seconds: 500
-    model: sonnet
-  - level: level 4
-    result: quit
-    seconds: 92
-    model: sonnet
-  - level: level 4
-    result: quit
-    seconds: 66
-    model: sonnet
-  - level: level 4
-    result: quit
-    seconds: 111
-    model: sonnet
   - level: level 4
     result: quit
     seconds: 35
@@ -63,6 +43,26 @@ mechanics:
   - level: level 1 striped study
     result: quit
     seconds: 87
+    model: sonnet
+  - level: level 3 wrapped study
+    result: won
+    seconds: 224
+    model: sonnet
+  - level: level 4
+    result: quit
+    seconds: 27
+    model: sonnet
+  - level: level 1 combos
+    result: quit
+    seconds: 368
+    model: sonnet
+  - level: level 4 dispenser
+    result: quit
+    seconds: 360
+    model: sonnet
+  - level: level 4
+    result: quit
+    seconds: 586
     model: sonnet
   note: carried over from the study before the 2026-10-02 restart (playbook and solver
     kept)
@@ -497,12 +497,14 @@ features:
     done: true
     source: 20261006-000939-chrono-2FYKPJ#10
   - id: inventory-locks-rest
-    text: 'Tap the 6 untapped inventory slots (row 2 #2-4: hand, carrot-like, tick;
-      row 3: three items) and record each Unlocks at level N tooltip'
-    done: false
+    text: 'Tooltips of the 6 remaining inventory slots (shots 4-9): row 2 #2 hand
+      43, #3 fish 35, #4 tick 50; row 3 #1 saucer 73, #2 ball with brush 58, #3 party
+      popper 88. Each registered as its own locked feature (inv-*)'
+    done: true
+    source: 20261006-120721-chrono-2FYKPJ#7
   - id: auto-rename
     text: The first-time profile-card tutorial (Next, Next) renamed the player from
-      Me to Otter without Save; Edit says Since you're a new player update your name
+      Me to [auto-assigned name] without Save; Edit says Since you're a new player update your name
     done: true
     source: 20261006-000939-chrono-2FYKPJ#17
   found_at:
@@ -948,6 +950,13 @@ features:
       test'
     done: true
     source: 20261003-194350-chrono-2FYKPJ#5
+  - id: combo-bomb-colour-with-specials
+    text: Bomb swapped with a plain purple (L4) cleared every purple including a purple
+      striped, which fired its line; a blue striped in that line also fired; cascade
+      took meringue 23 to 18 in one move (shots 27-29). Bomb+striped direct swap still
+      not run
+    done: true
+    source: 20261006-120721-chrono-2FYKPJ#18
   found_at:
     text: level 1 won, on map before level 2
     value: 2.0
@@ -1005,6 +1014,11 @@ features:
     done: true
     source: 20261006-020945-chrono-2FYKPJ#9
     version: 1.337.0.2
+  - id: combo-striped-striped
+    text: 'Swapping two adjacent striped candies fires both: a full row and a full
+      column cleared in one move (L1 replay, blue order 19 to 12, frame 26)'
+    done: true
+    source: 20261006-094912-chrono-2FYKPJ#11
   found_at:
     text: level 1 won, on map before level 2
     value: 2.0
@@ -1143,7 +1157,7 @@ features:
   page: features/account.md
 - id: wrapped-candy
   name: Wrapped candy
-  status: seen
+  status: documented
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1152,25 +1166,40 @@ features:
     done: true
     source: 20261003-225003-chrono-2FYKPJ#14
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Level 3 from the map (tap level 3 crown, Play): board starts with orange
+      wrapped candies (frame 10)'
+    done: true
+    source: 20261006-043504-chrono-2FYKPJ#13
+    version: 1.337.0.2
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Wrapped candy = candy in a wrapper; frames 10 (orange) and 16 (blue)
+    done: true
+    source: 20261006-043504-chrono-2FYKPJ#13
+    version: 1.337.0.2
   - id: chk-first-level
-    text: The first level it shows on and how the game introduces it
-    done: false
+    text: Level 3 shows pre-placed orange wrapped candies at start (frame 10); tip
+      on level 2 loading screen
+    done: true
+    source: 20261006-043504-chrono-2FYKPJ#13
+    version: 1.337.0.2
   - id: chk-rules
-    text: What it does and how it is used
-    done: false
+    text: Matched in a 3 line it explodes in a 3x3 area (blue wrapped, meringue 15
+      to 2, frame 20); can be made by cascade (frame 16)
+    done: true
+    source: 20261006-043504-chrono-2FYKPJ#13
+    version: 1.337.0.2
   - id: chk-interactions
-    text: How it interacts with the other pieces
-    done: false
+    text: A striped candy's row blast detonated the side orange wrappeds without a
+      match (frames 12-14); meringue hit by blast loses layers
+    done: true
+    source: 20261006-043504-chrono-2FYKPJ#13
+    version: 1.337.0.2
   - id: chk-loss
-    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
-      level (case <base> <kind> "..." --outcome)'
-    done: false
+    text: 'Adds no loss way: wrapped is only a helper; no failure seen in a level
+      won with 20 moves left'
+    done: true
+    source: 20261006-043504-chrono-2FYKPJ#13
+    version: 1.337.0.2
   found_at:
     text: level 4 reached, on map
     value: 4.0
@@ -1180,6 +1209,7 @@ features:
       made on level 3
     certainty: fact
     source: 20261003-225003-chrono-2FYKPJ#14
+  version_seen: 1.337.0.2
 - id: fish
   name: Fish candy
   status: in_progress
@@ -1288,7 +1318,7 @@ features:
     source: 20261003-225003-chrono-2FYKPJ#13
 - id: bomb-dispenser
   name: Candy dispenser
-  status: in_progress
+  status: documented
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1314,14 +1344,11 @@ features:
     source: 20261005-001914-chrono-2FYKPJ#8
     version: 1.337.0.2
   - id: chk-rules
-    text: 'Correction (review): no dispense was seen yet. The colour bomb under the
-      cap in frame 9 came from the move itself: a blue swapped up into the middle
-      of 4 blues on the top row (frame 7) is a 5-in-a-line, which makes a colour bomb
-      at the swap cell, and that cell is under the cap. After the bomb was used, the
-      cap''s column refilled with plain candies (frame 11); step 8 did not clear the
-      cap''s column (frame 13). The real rule is the open case dispense-trigger'
+    text: The cap above column 4 drops one colour bomb into its column every 3 moves
+      (moves 3, 6, 9 on L4, frames 54, 61, 67); no match under the cap is needed.
+      The 10-05 bomb under the cap came from the player's own 5-line
     done: true
-    source: 20261005-001914-chrono-2FYKPJ#8
+    source: 20261006-094912-chrono-2FYKPJ#32
     version: 1.337.0.2
   - id: chk-interactions
     text: 'Correction (review): the bomb+green clear (meringue 59 to 23, green 50
@@ -1338,8 +1365,18 @@ features:
     source: 20261005-001914-chrono-2FYKPJ#8
     version: 1.337.0.2
   - id: dispense-trigger
-    text: 'What the cap with the colour-bomb icon releases and when (after N clears
-      of the cell under it, N moves, or never): goal dispenser-rule-exp'
+    text: 'The cap releases a colour bomb every 3 moves, whatever the move did: bombs
+      after moves 3, 6 and 9 of L4 (moves left 25 to 22, 22 to 19, 19 to 16; frames
+      54, 61, 67), none after moves 4, 5, 7, 8; move 9 matched away from the cap column.
+      The first bomb fell to the bottom open cell of the column (r3), later ones stopped
+      at r1 under the cap'
+    done: true
+    source: 20261006-094912-chrono-2FYKPJ#32
+  - id: dispense-blocked-hypothesis
+    text: 'Player saw no bomb drop while the cell under the cap (r0c4) held a candy;
+      one dropped only after a vertical stripe cleared column 4, then fell to the
+      bottom row between meringue (shots 37, 43). Conflicts with the every-3-moves
+      rule from 20261006-094912: see dispenser-blocked-exp'
     done: false
   found_at:
     text: level 4 reached, on map
@@ -1594,6 +1631,294 @@ features:
   locked:
     text: level 65
     value: 65.0
+- id: inv-r2s2-l43
+  name: 'Inventory slot row2 #2 (hand icon)'
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-120721-chrono-2FYKPJ#7
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 3 wrapped study
+    value: 3.0
+  type: currency-booster
+  appeared:
+    text: 'Profile inventory tooltip: Unlocks at level 43'
+    certainty: fact
+    source: 20261006-120721-chrono-2FYKPJ#7
+  locked:
+    text: level 43
+    value: 43.0
+- id: inv-r2s3-l35
+  name: 'Inventory slot row2 #3 (fish icon)'
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-120721-chrono-2FYKPJ#7
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 3 wrapped study
+    value: 3.0
+  type: currency-booster
+  appeared:
+    text: 'Profile inventory tooltip: Unlocks at level 35'
+    certainty: fact
+    source: 20261006-120721-chrono-2FYKPJ#7
+  locked:
+    text: level 35
+    value: 35.0
+- id: inv-r2s4-l50
+  name: 'Inventory slot row2 #4 (check icon)'
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-120721-chrono-2FYKPJ#7
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 3 wrapped study
+    value: 3.0
+  type: currency-booster
+  appeared:
+    text: 'Profile inventory tooltip: Unlocks at level 50'
+    certainty: fact
+    source: 20261006-120721-chrono-2FYKPJ#7
+  locked:
+    text: level 50
+    value: 50.0
+- id: inv-r3s1-l73
+  name: 'Inventory slot row3 #1 (saucer/UFO icon)'
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-120721-chrono-2FYKPJ#7
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 3 wrapped study
+    value: 3.0
+  type: currency-booster
+  appeared:
+    text: 'Profile inventory tooltip: Unlocks at level 73'
+    certainty: fact
+    source: 20261006-120721-chrono-2FYKPJ#7
+  locked:
+    text: level 73
+    value: 73.0
+- id: inv-r3s2-l58
+  name: 'Inventory slot row3 #2 (ball with brush icon)'
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-120721-chrono-2FYKPJ#7
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 3 wrapped study
+    value: 3.0
+  type: currency-booster
+  appeared:
+    text: 'Profile inventory tooltip: Unlocks at level 58'
+    certainty: fact
+    source: 20261006-120721-chrono-2FYKPJ#7
+  locked:
+    text: level 58
+    value: 58.0
+- id: inv-r3s3-l88
+  name: 'Inventory slot row3 #3 (party icon)'
+  status: seen
+  cases:
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261006-120721-chrono-2FYKPJ#7
+  - id: chk-entry
+    text: 'Where to find it: the screen and the button that open it (mark --as entry
+      --at X,Y)'
+    done: false
+  - id: chk-screen
+    text: 'What it looks like: its screen (mark --as screen)'
+    done: false
+  - id: chk-effect
+    text: 'What it does: the effect of one unit or one use'
+    done: false
+  - id: chk-balance
+    text: 'The balance: where it shows and the starting amount'
+    done: false
+  - id: chk-sources
+    text: 'Sources: every way to get it (a level win, a video, a daily reward, a pack)
+      and how much'
+    done: false
+  - id: chk-sinks
+    text: 'Sinks: every way it is spent and the price'
+    done: false
+  - id: chk-empty
+    text: 'At zero: what happens and the offers to refill it (never spend premium
+      currency to get there)'
+    done: false
+  - id: chk-refill
+    text: 'Refill timer, if any: how long one unit takes and the maximum'
+    done: false
+  found_at:
+    text: level 3 wrapped study
+    value: 3.0
+  type: currency-booster
+  appeared:
+    text: 'Profile inventory tooltip: Unlocks at level 88'
+    certainty: fact
+    source: 20261006-120721-chrono-2FYKPJ#7
+  locked:
+    text: level 88
+    value: 88.0
 tasks:
 - id: analyze
   title: Analyze the game
@@ -1675,7 +2000,7 @@ tasks:
     from the start; tap did nothing (inbox empty or needs account)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:49:16'
   feature: mailbox
   source: session
@@ -1683,6 +2008,11 @@ tasks:
     icon in the top bar of the map from the start; tap did nothing (inbox empty or
     needs account)); confirmed when a frame shows the trigger. Record it with feature
     mailbox --appeared "...": the goal closes by itself'
+  closed: '2026-10-06T07:10:08'
+  closed_by: 20261006-070942-chrono-2FYKPJ#0
+  note: Icon present on the map from the first frame; progressed install cannot show
+    its appearance. Needs a fresh install (FTUE). Still inert at L4.
+  result: inconclusive
 - id: mailbox-exp
   title: 'Mailbox envelope tap does nothing: test again after a few levels or when
     it shows a badge'
@@ -1871,10 +2201,14 @@ tasks:
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T19:52:00'
   feature: terms-consent
   source: external
+  closed: '2026-10-06T04:40:44'
+  closed_by: 20261006-043504-chrono-2FYKPJ#13
+  note: 'Not reachable on progressed install: no Terms link in Settings or Account
+    & Help; set terms-consent-fresh (fresh phone)'
 - id: study-notifications-prompt
   title: 'Study Notification permission prompt: open it, walk its screens and tabs,
     verify its cases'
@@ -1947,12 +2281,18 @@ tasks:
   title: Colour bomb combined with striped, wrapped and another colour bomb
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:07:49'
   feature: color-bomb
   source: session
   plan: get a bomb next to a striped / wrapped / bomb candy and swap them; note the
     effect
+  closed: '2026-10-06T07:11:23'
+  closed_by: 20261006-070942-chrono-2FYKPJ#3
+  note: L4 gives one bomb (dispenser) but no striped/wrapped/second bomb with its
+    4 colours and meringue; needs a board with more colours (L1/L2 replay) to build
+    a striped first, then swap it with the bomb.
+  result: inconclusive
 - id: loss-oom
   title: Lose a level by running out of moves and record the fail screen, retry and
     life cost
@@ -2023,10 +2363,14 @@ tasks:
   title: 'Study Wrapped candy: make or meet it in a level, mark it, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:13:44'
   feature: wrapped-candy
   source: session
+  closed: '2026-10-06T04:40:44'
+  closed_by: 20261006-043504-chrono-2FYKPJ#13
+  note: 'L3 replay: pre-placed wrappeds, striped row detonation, blue wrapped 3x3
+    blast'
 - id: study-fish
   title: 'Study Fish candy: make or meet it in a level, mark it, verify its cases'
   kind: study
@@ -2120,7 +2464,7 @@ tasks:
     daily calendar'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:24:44'
   feature: sweet-gift
   source: session
@@ -2130,11 +2474,16 @@ tasks:
     about 2 h earlier, so not a fixed daily calendar); confirmed when a frame shows
     the trigger. Record it with feature sweet-gift --appeared "...": the goal closes
     by itself'
+  closed: '2026-10-06T07:10:08'
+  closed_by: 20261006-070942-chrono-2FYKPJ#0
+  note: Launch at 10-06 07:09 showed no gift (previous session ended ~2h earlier).
+    Trigger still unknown; only the one 25h-absence sighting.
+  result: inconclusive
 - id: dispenser-rule-exp
   title: Find what the level 4 cap (colour-bomb icon) releases and when
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:25:07'
   feature: bomb-dispenser
   source: session
@@ -2144,6 +2493,13 @@ tasks:
     (note after how many clears or moves); refuted if only plain candies fall through
     it in 5+ clears (then it is a plain spawner or decoration: say what the icon means).
     Mark the frame of a dispensed bomb --feature bomb-dispenser --as result'
+  closed: '2026-10-06T10:05:09'
+  closed_by: 20261006-094912-chrono-2FYKPJ#32
+  note: 'Cap above column 4 releases a colour bomb every 3 moves: bombs appeared after
+    moves 3, 6 and 9 with no 5-line made by me (moves 4, 5, 7, 8 gave none). It does
+    not need a match in the cap column (move 9 was elsewhere). Bomb 1 landed at the
+    bottom of the open column, later ones at row 1 below the cap cell.'
+  result: confirmed
 - id: sweet-gift-next-day
   title: 'Sweet gift: launch the next day and note whether the gift comes again, what
     it gives and at what hour (calendar or one-off)'
@@ -2164,21 +2520,31 @@ tasks:
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:29:17'
   feature: sweet-gift
   source: external
+  closed: '2026-10-06T04:40:45'
+  closed_by: 20261006-043504-chrono-2FYKPJ#13
+  note: Gift did not appear on relaunch at 04:35; earlier cases verified; appeared/calendar/next-day/missed
+    left open, followup set
 - id: fish-interactions
   title: 'Fish combos: swap fish with striped/wrapped/colour bomb, fish as an order,
     fish in a loss'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T07:31:52'
   feature: fish
   source: session
   plan: 'build a fish on an open board (L1 replay: swap to make 2x2), swap it with
     another special, watch effect'
+  closed: '2026-10-06T12:19:18'
+  closed_by: 20261006-120721-chrono-2FYKPJ#25
+  note: Made a red fish on L4 by swapping into a 2x2 red square (fish landed at lower-right
+    square cell). Could not put it in a 3-match or beside a special in 13 moves; no
+    combo observed. Retry on L1 with an open board.
+  result: inconclusive
 - id: lives-cap-check
   title: 'Check lives at 5 again: 3 lives at 07:26 with timer 30 min per life; expect
     5/Full about 08:30'
@@ -2310,12 +2676,17 @@ tasks:
     tapped yet (row 2 #2-4, row 3 #1-3)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-06T00:17:13'
   feature: profile
   source: session
   plan: Map avatar (365,110) > Profile; tap each untapped slot once, shot the tooltip;
     done when all 6 levels are recorded, each as feature --locked with its value
+  closed: '2026-10-06T12:09:16'
+  closed_by: 20261006-120721-chrono-2FYKPJ#7
+  note: 'Levels: r2#2=43, r2#3=35, r2#4=50, r3#1=73, r3#2=58, r3#3=88 (shots 4-9);
+    registered as locked features'
+  result: confirmed
 - id: profile-frame-20000
   title: 'Profile Edit > Frames: find what the locked frame with the 20000 badge needs
     (tap it and read the tooltip)'
@@ -2327,3 +2698,171 @@ tasks:
   source: session
   plan: Map avatar > tap avatar > Edit > Frames; tap the locked 7th frame once; the
     tooltip or popup names the condition (score, points, purchase); never buy
+- id: terms-consent-fresh
+  title: See Terms of Use consent answers and links on first launch
+  kind: replay
+  requires: fresh
+  status: open
+  created: '2026-10-06T04:36:20'
+  feature: terms-consent
+  source: session
+- id: sweet-gift-recheck
+  title: Check Sweet gift popup at launch again (not shown on 10-06 04:35 relaunch
+    either)
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-06T04:36:20'
+  feature: sweet-gift
+  not_before: '2026-10-07T00:36:20'
+  source: game
+- id: colorbomb-combos-l1
+  title: Colour bomb + striped/wrapped/bomb combos on a many-colour level
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T07:11:24'
+  feature: color-bomb
+  source: session
+  plan: replay L1/L2, make a striped then a 5-line, swap them; note effect
+  closed: '2026-10-06T09:57:46'
+  closed_by: 20261006-094912-chrono-2FYKPJ#19
+  note: 'L1 replay, 6 moves: no 5-line colour bomb could be built (each setup swap
+    matched on its own and cascades reshuffled). Observed: striped+striped swap clears
+    row+column. Wrapped and fish appear by cascade. Retry with a board where X X _
+    X X exists, or L2.'
+  result: inconclusive
+- id: mailbox-appeared-fresh
+  title: On a fresh install, record when the Mailbox envelope first shows on the map
+    (first map, or after a level) and whether a tap opens anything
+  kind: experiment
+  requires: fresh
+  status: open
+  created: '2026-10-06T07:13:17'
+  feature: mailbox
+  source: session
+  plan: 'fresh install: after Terms and level 1, mark the first map top bar; envelope
+    present on first map confirms ''from the first launch''; absent then present after
+    a level win confirms a level trigger; tap it once'
+- id: colorbomb-combos-l4
+  title: Colour bomb + wrapped/fish/striped combos on L4 using dispensed bombs
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T10:05:15'
+  feature: color-bomb
+  source: session
+  plan: 'L4 gives a bomb every 3 moves: after a bomb appears make a wrapped/striped/fish
+    next to it and swap them; note the effect'
+  closed: '2026-10-06T12:19:17'
+  closed_by: 20261006-120721-chrono-2FYKPJ#25
+  note: 'Bomb+striped swap not reachable: bomb sits in the top row (or fell to the
+    bottom row between meringue) and a striped cannot be moved next to it by a valid
+    match. Observed: bomb swapped with purple cleared all purple incl. a purple striped
+    and a blue striped, both fired in the clear and cascaded (meringue 23 to 18).
+    Dispenser bomb did not appear while r0c4 held a candy; it appeared only after
+    a vertical stripe cleared column 4. Striped inside a red 3-match fired its column.'
+  result: inconclusive
+- id: win-l4
+  title: Win level 4 with the dispensed colour bombs and record progress level 4
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T10:09:08'
+  feature: core-level
+  source: session
+  plan: 'Play L4 to the end, no deliberate quit: the cap drops a colour bomb every
+    3 moves; swap each bomb with green (the order candy) or with a special next to
+    it (that also serves colorbomb-combos-l4); clear the meringue rows with matches
+    low on the board. In 20261006-094912 after 9 moves only 13 meringue and 13 green
+    were left with 16 moves (frame 67). Confirmed when the win screen or the map with
+    level 5 current is marked and progress ''level 4'' --value 4 is logged; if the
+    moves run out, that is the out-of-moves outcome (loss-oom): mark it'
+- id: unlock-inv-r2s2-l43
+  title: 'Unlock Inventory slot row2 #2 (hand icon): level 43'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-06T12:09:08'
+  feature: inv-r2s2-l43
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 43
+  target_value: 43.0
+- id: unlock-inv-r2s3-l35
+  title: 'Unlock Inventory slot row2 #3 (fish icon): level 35'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-06T12:09:09'
+  feature: inv-r2s3-l35
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 35
+  target_value: 35.0
+- id: unlock-inv-r2s4-l50
+  title: 'Unlock Inventory slot row2 #4 (check icon): level 50'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-06T12:09:10'
+  feature: inv-r2s4-l50
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 50
+  target_value: 50.0
+- id: unlock-inv-r3s1-l73
+  title: 'Unlock Inventory slot row3 #1 (candy icon): level 73'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-06T12:09:10'
+  feature: inv-r3s1-l73
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 73
+  target_value: 73.0
+- id: unlock-inv-r3s2-l58
+  title: 'Unlock Inventory slot row3 #2 (lollipop icon): level 58'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-06T12:09:11'
+  feature: inv-r3s2-l58
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 58
+  target_value: 58.0
+- id: unlock-inv-r3s3-l88
+  title: 'Unlock Inventory slot row3 #3 (party icon): level 88'
+  kind: unlock
+  requires: any
+  status: open
+  created: '2026-10-06T12:09:12'
+  feature: inv-r3s3-l88
+  source: session
+  note: the lock seen on screen (feature --locked)
+  target_text: level 88
+  target_value: 88.0
+- id: fish-combo-l1
+  title: Fish in a 3-match and next to striped/bomb on L1 open board
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T12:19:18'
+  feature: fish
+  source: session
+  plan: 'L1: make 2x2 fish, then a 3-match containing the fish colour, then a fish+striped
+    swap; note targets'
+- id: dispenser-blocked-exp
+  title: Find whether the L4 cap drops a bomb every 3 moves or only when the cell
+    under it is free
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T12:21:56'
+  feature: bomb-dispenser
+  source: session
+  plan: On L4 count moves and note each bomb drop and whether r0c4 was occupied at
+    that move; 6 moves with r0c4 kept full and no bomb confirms the free-cell rule,
+    bombs at moves 3 and 6 anyway confirm every-3-moves. Fold into win-l4, no quit

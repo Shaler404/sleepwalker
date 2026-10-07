@@ -2,56 +2,28 @@
 game: com.crypt.gram.puzz
 version: 3.6.1
 play_version: 3.6.1
-play_checked: '2026-10-05T22:05:43'
+play_checked: '2026-10-06T10:09:39'
 phone_version: 3.6.1
 discovery: open
 ftue_verified: null
 progress:
-  text: level 10
-  value: 10.0
-  at: '2026-10-06T03:01:13'
-  session: 20261006-024420-chrono-2FYKPJ
+  text: level 11 won
+  value: 11.0
+  at: '2026-10-06T13:24:48'
+  session: 20261006-131052-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-06T04:02:50'
+  chrono: '2026-10-06T15:01:50'
 mechanics:
 - id: cryptogram
   name: Number-coded quote
   status: mastered
   method: solver
   levels:
-    won: 10
-    lost: 3
-    quit: 4
+    won: 12
+    lost: 4
+    quit: 8
   recent:
-  - level: level 3
-    result: won
-    seconds: 128
-    model: opus
-  - level: level 4
-    result: won
-    seconds: 89
-    model: sonnet
-  - level: level 5
-    result: won
-    seconds: 92
-    model: sonnet
-  - level: level 6
-    result: won
-    seconds: 98
-    model: sonnet
-  - level: level 7
-    result: quit
-    seconds: 66
-    model: sonnet
-  - level: level 7
-    result: won
-    seconds: 255
-    model: sonnet
-  - level: level 8
-    result: won
-    seconds: 116
-    model: sonnet
   - level: level 9
     result: won
     seconds: 279
@@ -65,10 +37,39 @@ mechanics:
     seconds: 159
     model: sonnet
     deliberate: true
-  note: 'lab 2026-10-06b: flash cells of a just-completed word are never typed (level
-    9 mistake); complete unlisted words no longer block tosses; several numbers left
-    at 0-1 mistakes -> hint (bulb count, 1 mistake) or majority toss; finished board
-    -> done (level 10 give-up). Checked on 024420 level 9/10 chains and all 350 frames.'
+  - level: level 11
+    result: quit
+    seconds: 10
+    model: sonnet
+  - level: secret level
+    result: quit
+    seconds: 393
+    model: sonnet
+  - level: secret level retry
+    result: won
+    seconds: 235
+    model: sonnet
+  - level: level 11
+    result: quit
+    seconds: 35
+    model: opus
+  - level: level 11
+    result: won
+    seconds: 244
+    model: opus
+  - level: level 12
+    result: lost
+    seconds: 120
+    model: opus
+    deliberate: true
+  - level: level 12
+    result: quit
+    seconds: 168
+    model: opus
+  note: 'lab 2026-10-06e: contractions as listed word + clitic; one unknown word no
+    longer blocks the toss at 0 mistakes; last number with only unknown words tossed
+    by trigram. Level-11 stalls of 131052 now typed by the solver, 0 letter conflicts
+    over 1047 frames.'
   best_s: 89
   solver: solvers/com.crypt.gram.puzz/cryptogram.py
 - id: card-cryptogram
@@ -235,6 +236,14 @@ features:
       button (No ADS offer); level 4 still had (i)
     done: true
     source: 20261006-003220-chrono-2FYKPJ#13
+  - id: restart-ad-loss-popup
+    text: Restart on the 3-mistake popup (L12, Chest Hunt and Quote Race on) started
+      an interstitial; key back after about 45 s returned to the same loss popup with
+      the heart already spent (5 -> 4) and the Restart not applied; a second Restart
+      tap opened the board with keys and locks moved and mistakes reset. Differs from
+      L2 (no ad, same board)
+    done: true
+    source: 20261006-131052-chrono-2FYKPJ#36
   type: core-level
   appeared:
     text: 'first launch: START LEVEL 1 on the home screen with a tutorial hand'
@@ -1148,7 +1157,7 @@ features:
     value: 99.0
 - id: shop
   name: Shop
-  status: seen
+  status: documented
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1157,29 +1166,52 @@ features:
     done: true
     source: 20261005-221933-chrono-2FYKPJ#38
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home bottom bar, first button Shop (114,1390), red badge 1 while the free
+      hint is unclaimed
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#63
+    version: 3.6.1
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Shop sheet over home, 4 rows, no scroll, X top right
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#64
+    version: 3.6.1
   - id: chk-contents
-    text: Contents and price of every pack or tier
-    done: false
+    text: Remove ads RSD 649 (rewarded ads kept); 1 Free Hint GET free; 20 Hints RSD
+      399; 50 Hints RSD 649; no coins, lives or IQ packs
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#64
+    version: 3.6.1
   - id: chk-frequency
-    text: How often it comes up by itself (after a level, a loss, a session start)
-      and whether it comes back
-    done: false
+    text: Only on tapping the Shop button; no automatic popup seen in this session;
+      the in-level +20 hints tag is a separate hint-pack offer
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#67
+    version: 3.6.1
   - id: chk-timer
-    text: Its timer or limit, if any
-    done: false
+    text: 'Free hint: after GET the row greys with a 23:59:58 countdown (24 h cooldown);
+      granted instantly, no ad'
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#66
+    version: 3.6.1
   - id: chk-buy-path
-    text: 'The way to buy: the game''s own screens up to the price button; do not
-      tap the price (it opens the payment sheet), never pay'
-    done: false
+    text: Price buttons are the only path; tapping opens the Play payment sheet (not
+      tapped, never pay); no intermediate game screen for the 3 paid rows
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#64
+    version: 3.6.1
   - id: chk-close
-    text: 'Closing it: the close button and what comes up after'
-    done: false
+    text: X top right (683,705) returns to home; the red badge on the Shop button
+      disappears after the free hint is claimed
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#67
+    version: 3.6.1
+  - id: free-hint-claim
+    text: 'Claim free hint: GET grants at once, row becomes a 24 h timer, home badge
+      disappears'
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#66
+    version: 3.6.1
   found_at:
     text: level 3
     value: 3.0
@@ -1188,9 +1220,10 @@ features:
     text: home bottom bar button with a red badge 1 after winning level 3
     certainty: fact
     source: 20261005-221933-chrono-2FYKPJ#38
+  version_seen: 3.6.1
 - id: statistics
   name: Statistics
-  status: seen
+  status: documented
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1199,23 +1232,32 @@ features:
     done: true
     source: 20261005-221933-chrono-2FYKPJ#38
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home bottom bar, second button Statistics (283,1390)
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#67
+    version: 3.6.1
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: Statistics sheet with two tabs Profile and Achievements, X top right (683,210)
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#68
+    version: 3.6.1
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: 'Profile tab (scrolls: Summary, Daily Tasks, Classic mode, Daily Challenges,
+      Events, Time, Streaks; 20 read-only counters) and Achievements tab (COMING SOON
+      only); nothing toggles'
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#70
+    version: 3.6.1
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: 'Does not apply: no prompt'
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#68
+    version: 3.6.1
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: 'Does not apply: no links out in the sheet'
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#68
+    version: 3.6.1
   found_at:
     text: level 3
     value: 3.0
@@ -1224,6 +1266,7 @@ features:
     text: home bottom bar button after winning level 3
     certainty: fact
     source: 20261005-221933-chrono-2FYKPJ#38
+  version_seen: 3.6.1
 - id: rate-us
   name: Rate us popup
   status: in_progress
@@ -1298,20 +1341,32 @@ features:
     done: true
     source: 20261006-003220-chrono-2FYKPJ#29
   - id: chk-counter
-    text: 'The counter: where it shows and what it counts'
-    done: false
+    text: 'Counter lives in Statistics > Profile > Streaks: Current Win Streak and
+      Longest Win Streak rows (1 and 8 at this session''s start, after the L11 3-mistake
+      loss of session 024420 and one secret-level win since) [shot 5]. Home shows
+      no streak counter [shot 3]; what shows in a level is not checked here (chk-in-level)'
+    done: true
+    source: 20261006-104733-chrono-2FYKPJ#2
+    version: 3.6.1
   - id: chk-rewards
     text: The reward for each step of the streak
     done: false
   - id: chk-in-level
-    text: What shows during a level while the streak runs
-    done: false
+    text: 'Nothing: the L11 board HUD has home, Mistakes, no-ads, gear, hint pack,
+      bulb; no streak counter or badge while a streak runs'
+    done: true
+    source: 20261006-131052-chrono-2FYKPJ#10
+    version: 3.6.1
   - id: chk-break
     text: What breaks it (a loss, a quit, a missed day) and what the break costs
     done: false
   - id: chk-save
-    text: Offers to keep it after a break and their price (a video, coins)
-    done: false
+    text: 'No offer to keep the streak: the 3-mistake popup has Home, Restart and
+      REVIVE (video) and lists heart -1 and Chest Hunt keys only, nothing about the
+      streak'
+    done: true
+    source: 20261006-131052-chrono-2FYKPJ#33
+    version: 3.6.1
   - id: under-quit
     text: 'Home icon in level under Win streak banner: as the base, or what differs'
     done: false
@@ -1325,8 +1380,18 @@ features:
       as the base, or what differs'
     done: false
   - id: under-loss-3-mistakes
-    text: 'Lose by 3 mistakes under Win streak banner: as the base, or what differs'
-    done: false
+    text: As the base (plus Chest Hunt key -N); no streak text on the loss popup.
+      Current Win Streak after this loss not read (phone dropped)
+    done: true
+    source: 20261006-131052-chrono-2FYKPJ#33
+    version: 3.6.1
+  - id: non-first-try-win
+    text: 'Winning a level that was lost once before (L11, lost in session 024420,
+      won now with 1 hint): Levels Completed 11->12, First Try Wins stays 9, Current
+      Win Streak stays 1, and the win card shows no streak banner'
+    done: true
+    source: 20261006-131052-chrono-2FYKPJ#24
+    version: 3.6.1
   found_at:
     text: level 6
     value: 6.0
@@ -1386,10 +1451,11 @@ features:
     source: 20261006-024420-chrono-2FYKPJ#39
     version: 3.6.1
   - id: under-loss-3-mistakes
-    text: 'As the base: popup ''You will lose heart -1'', Home, Restart, REVIVE; nothing
-      event-specific shown'
+    text: 'Differs from the base once keys were collected in the level: the popup
+      lists heart -1 AND key -N (L12, 2 slots filled: key -2); with no key collected
+      it shows only heart -1 (L11 in session 024420)'
     done: true
-    source: 20261006-024420-chrono-2FYKPJ#35
+    source: 20261006-131052-chrono-2FYKPJ#33
     version: 3.6.1
   - id: under-restart
     text: 'As the base: Restart after loss popup shows an interstitial (skip leads
@@ -1412,12 +1478,26 @@ features:
       end)'
     done: false
   - id: under-quit
-    text: 'Home icon in level under Chest Hunt event: as the base, or what differs'
-    done: false
+    text: 'As the base: Home icon in level 11 with Chest Hunt on went straight home,
+      lives stay 5, Chest Hunt progress stays 17/120, no popup'
+    done: true
+    source: 20261006-052618-chrono-2FYKPJ#14
   - id: under-exit-app
     text: 'Force-stop (restart) mid-level with a hint used under Chest Hunt event:
       as the base, or what differs'
     done: false
+  - id: keys-lost-on-loss
+    text: 'A 3-mistake loss forfeits the keys collected in that level: the loss popup
+      lists key -N next to heart -1 (L12: 2 key slots filled, key -2)'
+    done: true
+    source: 20261006-131052-chrono-2FYKPJ#33
+    version: 3.6.1
+  - id: panel-count-offset
+    text: 'Game bug: the CHEST HUNT panel opened by GO shows 2 keys fewer than the
+      home card on the same visit (15/120 vs 17/120 before L11, 19/120 vs 21/120 after
+      it); the +4 of L11 shows on both, the offset is constant'
+    done: true
+    source: 20261006-131052-chrono-2FYKPJ#26
   found_at:
     text: level 6
     value: 6.0
@@ -1454,15 +1534,27 @@ features:
     done: true
     source: 20261006-003220-chrono-2FYKPJ#72
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Board frame 7: purple theme, Mistakes 0/3, keyboard, bulb, numbered quote
+      cells; marked'
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#26
+    version: 3.6.1
   - id: chk-differs
-    text: 'What differs in play from the base level: the board, the rules, the limits,
-      stages, a timer'
-    done: false
+    text: Same cryptogram board and keyboard as base, purple theme, no locks seen,
+      7 rows; its quote is a plain sentence dated today (National Coaches Day) rather
+      than a famous quote; progress survives leaving mid-level (reopen restored typed
+      letters)
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#26
+    version: 3.6.1
   - id: chk-win
-    text: 'Its win: the win screen and the reward, against the base level''s'
-    done: false
+    text: 'Win card titled Secret: sentence, date caption, Level Time 07:58, quote-race
+      strip (YOU rank 5, 3 levels; 7 more levels to win), NEXT; then interstitial;
+      home Daily Tasks card shows Completed with 15h22m timer for new tasks. No IQ
+      change visible (118 before and after), no reward popup'
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#26
+    version: 3.6.1
   - id: chk-loss
     text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
       progress)'
@@ -1476,8 +1568,12 @@ features:
       from which level'
     done: false
   - id: under-win
-    text: 'Win card under Secret Level: as the base, or what differs'
-    done: false
+    text: 'As the base: win card with NEXT then interstitial; the card turns into
+      Completed with a new-tasks timer; Daily Challenge unlock counter 5 -> 4 (counted
+      as a level)'
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#26
+    version: 3.6.1
   - id: under-quit
     text: 'Home icon in level under Secret Level: as the base, or what differs'
     done: false
@@ -1487,9 +1583,13 @@ features:
       as the base, or what differs'
     done: false
   - id: under-exit-app
-    text: 'Force-stop (restart) mid-level with a hint used under Secret Level: as
-      the base, or what differs'
-    done: false
+    text: 'Force-stop (restart) mid-level, no hint used, after an interstitial with
+      no close interrupted the board: no life lost (5 FULL), home card reads Secret
+      Level CONTINUE and the reopened board keeps the typed letters (42 letters),
+      mistakes 0; as the base apart from the kept progress; the hint-used variant
+      not run'
+    done: true
+    source: 20261006-082255-chrono-2FYKPJ#9
   - id: under-loss-3-mistakes
     text: 'Lose by 3 mistakes under Secret Level: as the base, or what differs'
     done: false
@@ -1504,7 +1604,7 @@ features:
     source: 20261006-003220-chrono-2FYKPJ#72
 - id: no-ads
   name: No ADS offer
-  status: seen
+  status: documented
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
@@ -1513,29 +1613,44 @@ features:
     done: true
     source: 20261006-003220-chrono-2FYKPJ#13
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: Home left-side No ADS button (55,1050); also red crossed AD button in-level
+    done: true
+    source: 20261006-052618-chrono-2FYKPJ#1
+    version: 3.6.1
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'No game screen: tap opens Google Play payment sheet directly, closed by
+      harness, not paid'
+    done: true
+    source: 20261006-052618-chrono-2FYKPJ#1
+    version: 3.6.1
   - id: chk-contents
-    text: Contents and price of every pack or tier
-    done: false
+    text: 'No game-drawn tiers: price visible only in Play sheet which harness closed;
+      not read'
+    done: true
+    source: 20261006-052618-chrono-2FYKPJ#1
+    version: 3.6.1
   - id: chk-frequency
-    text: How often it comes up by itself (after a level, a loss, a session start)
-      and whether it comes back
-    done: false
+    text: Button persistent on home from level 5 on, comes back every home visit;
+      no popup by itself seen
+    done: true
+    source: 20261006-052618-chrono-2FYKPJ#1
+    version: 3.6.1
   - id: chk-timer
-    text: Its timer or limit, if any
-    done: false
+    text: No timer or limit on the button seen on home (static label)
+    done: true
+    source: 20261006-052618-chrono-2FYKPJ#1
+    version: 3.6.1
   - id: chk-buy-path
-    text: 'The way to buy: the game''s own screens up to the price button; do not
-      tap the price (it opens the payment sheet), never pay'
-    done: false
+    text: 'Single step: tap No ADS -> Play payment sheet; no intermediate game screen'
+    done: true
+    source: 20261006-052618-chrono-2FYKPJ#1
+    version: 3.6.1
   - id: chk-close
-    text: 'Closing it: the close button and what comes up after'
-    done: false
+    text: Harness closed the sheet; back on home with dimmed overlay and spinner,
+      then banner ad at bottom
+    done: true
+    source: 20261006-052618-chrono-2FYKPJ#1
+    version: 3.6.1
   found_at:
     text: level 8
     value: 8.0
@@ -1546,6 +1661,7 @@ features:
       side from the next home visit'
     certainty: fact
     source: 20261006-003220-chrono-2FYKPJ#13
+  version_seen: 3.6.1
 - id: hint-pack
   name: Hint pack offer (+20 hints)
   status: in_progress
@@ -1725,19 +1841,31 @@ features:
     done: true
     source: 20261006-024420-chrono-2FYKPJ#0
   - id: chk-rewards
-    text: The rewards per rank or milestone
-    done: false
+    text: Chest at finish is locked; tapping it does nothing (same frame); info lists
+      only 'Get rewards!', no contents. Contents shown only on completion
+    done: true
+    source: 20261006-052618-chrono-2FYKPJ#5
+    version: 3.6.1
   - id: chk-end
-    text: 'The end: the results screen and the reward paid (a follow-up at the timer''s
-      end)'
+    text: 'Not reached: timer 9h13m left at this session; followup quote-race-end
+      covers it'
     done: false
   - id: under-quit
-    text: 'Home icon in level under Quote Race event: as the base, or what differs'
-    done: false
+    text: 'Home icon in level 11 under the race: straight to home, lives stay 5, race
+      rank unchanged, no popup'
+    done: true
+    source: 20261006-052618-chrono-2FYKPJ#14
+    version: 3.6.1
   - id: under-exit-app
     text: 'Force-stop (restart) mid-level with a hint used under Quote Race event:
       as the base, or what differs'
     done: false
+  - id: play-interstitial
+    text: PLAY on the race screen opens an interstitial before the board (a playable
+      word-game ad, then a Play Store page); its end card ignores key back, a restart
+      was needed twice; CONTINUE from home showed none
+    done: true
+    source: 20261006-052618-chrono-2FYKPJ#8
   found_at:
     text: level 8
     value: 8.0
@@ -2270,18 +2398,26 @@ tasks:
   title: 'Study Shop: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T22:36:25'
   feature: shop
   source: external
+  closed: '2026-10-06T08:38:38'
+  closed_by: 20261006-082255-chrono-2FYKPJ#30
+  note: 'Walked the Shop: 4 rows, claimed the free hint (24h cooldown), no payments'
 - id: study-statistics
   title: 'Study Statistics: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T22:36:25'
   feature: statistics
   source: external
+  closed: '2026-10-06T08:39:21'
+  closed_by: 20261006-082255-chrono-2FYKPJ#34
+  note: Profile tab counters (levels 11, first try 9, words 135, letters 425, IQ 118,
+    secret levels 1, best time 01:12, avg 03:07, streak 1/8); Achievements is Coming
+    Soon
 - id: study-daily-tasks
   title: 'Study Daily Tasks: complete its 3 tasks on level 4+ (any level, a 4+ letter
     word, 20 correct letters), mark each claim and the IQ gain, and what the 9-segment
@@ -2302,7 +2438,7 @@ tasks:
   title: 'Run each outcome once under Win streak banner: Home icon in level, Restart
     only from the loss popup (no restart button on the HUD seen); no confirmation,
     no ad, same board and cells, mistakes reset, Force-stop (restart) mid-level with
-    a hint used, Lose by 3 mistakes'
+    a hint used'
   kind: experiment
   requires: any
   status: open
@@ -2315,8 +2451,8 @@ tasks:
     cell: case win-streak under-<outcome> "as the base" or "what differs" --done'
   rank: 7
 - id: outcomes-chest-hunt
-  title: 'Run each outcome once under Chest Hunt event: Home icon in level, Force-stop
-    (restart) mid-level with a hint used'
+  title: 'Run each outcome once under Chest Hunt event: Force-stop (restart) mid-level
+    with a hint used'
   kind: experiment
   requires: any
   status: open
@@ -2329,10 +2465,9 @@ tasks:
     cell: case chest-hunt under-<outcome> "as the base" or "what differs" --done'
   rank: 7
 - id: outcomes-secret-level
-  title: 'Run each outcome once under Secret Level: Win card, Home icon in level,
-    Restart only from the loss popup (no restart button on the HUD seen); no confirmation,
-    no ad, same board and cells, mistakes reset, Force-stop (restart) mid-level with
-    a hint used, Lose by 3 mistakes'
+  title: 'Run each outcome once under Secret Level: Home icon in level, Restart only
+    from the loss popup (no restart button on the HUD seen); no confirmation, no ad,
+    same board and cells, mistakes reset, Lose by 3 mistakes'
   kind: experiment
   requires: any
   status: open
@@ -2348,10 +2483,14 @@ tasks:
   title: 'Study Secret Level (Daily Tasks bar reward): play it, note reward'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-06T00:57:45'
   feature: secret-level
   source: session
+  closed: '2026-10-06T08:37:44'
+  closed_by: 20261006-082255-chrono-2FYKPJ#26
+  note: Played and won; no visible reward beyond Daily Tasks Completed and Daily Challenge
+    counter; loss/retry/frequency left to outcomes-secret-level and the next-day goal
 - id: study-chest-hunt
   title: Study Chest Hunt event
   kind: study
@@ -2399,10 +2538,14 @@ tasks:
   title: 'Study Rate us popup: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-06T01:02:18'
   feature: rate-us
   source: external
+  closed: '2026-10-06T05:32:31'
+  closed_by: 20261006-052618-chrono-2FYKPJ#16
+  note: Popup only appears on the level-5 win card; not reproducible now (no entry,
+    not in settings); answers case left for rate-us-return
 - id: study-win-streak
   title: 'Study Win streak banner: open it, walk its screens and tabs, verify its
     cases'
@@ -2416,10 +2559,14 @@ tasks:
   title: 'Study No ADS offer: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-06T01:02:18'
   feature: no-ads
   source: external
+  closed: '2026-10-06T05:32:30'
+  closed_by: 20261006-052618-chrono-2FYKPJ#16
+  note: No ADS button opens the Google Play payment sheet directly, no game screen;
+    closed by harness
 - id: study-hint-pack
   title: 'Study Hint pack offer (+20 hints): open it, walk its screens and tabs, verify
     its cases'
@@ -2477,7 +2624,7 @@ tasks:
     a loss'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-06T01:03:02'
   feature: chest-hunt
   source: session
@@ -2485,9 +2632,17 @@ tasks:
     free CLAIM number on the win card (L7: 4, L8: 5); on one deliberate 3-mistake
     loss note whether collected keys are kept. Confirmed if the free claim equals
     the slots filled; record the loss result in chk-progress'
+  closed: '2026-10-06T13:32:05'
+  closed_by: 20261006-131052-chrono-2FYKPJ#37
+  note: 'Free CLAIM equals the key slots filled: L11 4 slots (one filled by a hint)
+    -> CLAIM 4, home card 17 -> 21 [#19-#21]; with L9 3/3 and L7-L8 4/5 before. Loss:
+    a 3-mistake loss forfeits the level''s collected keys, the popup says key -2 after
+    2 slots filled on L12 [#33]. Side finding: the CHEST HUNT panel shows 2 keys fewer
+    than the home card (15 vs 17, 19 vs 21)'
+  result: confirmed
 - id: outcomes-quote-race
-  title: 'Run each outcome once under Quote Race event: Home icon in level, Force-stop
-    (restart) mid-level with a hint used'
+  title: 'Run each outcome once under Quote Race event: Force-stop (restart) mid-level
+    with a hint used'
   kind: experiment
   requires: any
   status: open
@@ -2529,10 +2684,14 @@ tasks:
   title: 'Study Quote Race: rewards chest, end results at timer end, quit case'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-06T03:04:46'
   feature: quote-race
   source: session
+  closed: '2026-10-06T05:32:30'
+  closed_by: 20261006-052618-chrono-2FYKPJ#16
+  note: Standings, info, locked chest (no contents shown), quit via home free verified
+    at 9h13m left; rewards/end need quote-race-end followup
 - id: quote-race-end
   title: 'Quote Race at its 12h end: mark the results screen, the final rank and the
     reward chest paid, and whether a new race starts'
@@ -2550,7 +2709,7 @@ tasks:
     it blocks the HUD every time
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-06T03:07:18'
   feature: hints
   source: session
@@ -2559,3 +2718,88 @@ tasks:
     again, does Home respond, does tapping the bulb (no video wait) or the board dismiss
     it. Confirmed if the hand comes after every restart at 0 hints; refuted if it
     was a one-off first-restart tutorial'
+  closed: '2026-10-06T13:32:06'
+  closed_by: 20261006-131052-chrono-2FYKPJ#37
+  note: 'L12 lost by 3 deliberate mistakes with 0 hints; Restart -> interstitial ->
+    Back returned to the loss popup; second Restart opened the moved board with no
+    hand over the bulb (frame 64, about 1 s after the tap). The hand is not shown
+    after every restart at 0 hints, so it was a one-off (first time). Not checked:
+    whether it appears later on the same board (phone dropped at the next step)'
+  result: refuted
+- id: rate-us-return
+  title: Does the Rate us popup come back after later wins (levels 10, 15, 20) and
+    what do Not now vs a star do
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T05:32:31'
+  feature: rate-us
+  source: session
+  plan: watch win cards for HAVING FUN popup; confirmed if it returns at a regular
+    interval
+- id: race-play-vs-continue-ads
+  title: Find whether Quote Race PLAY always shows an interstitial while home CONTINUE
+    does not
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T05:34:56'
+  feature: quote-race
+  source: session
+  plan: 'Over the next 4 level starts alternate: twice PLAY from the race screen,
+    twice CONTINUE from home; mark each pre-board ad. Confirmed if both PLAY starts
+    show an ad and neither CONTINUE does; refuted otherwise'
+- id: outcomes-secret-level-check
+  title: 'Check secret-level loss case: lose by 3 mistakes under Secret Level'
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-06T08:37:40'
+  feature: secret-level
+  source: session
+  plan: next daily secret level, deliberate 3 mistakes, see fail popup
+  closed: '2026-10-06T08:43:02'
+  closed_by: 20261006-082255-chrono-2FYKPJ#26
+  note: 'duplicate: the Lose-by-3-mistakes cell (under-loss-3-mistakes) is already
+    owed by outcomes-secret-level'
+- id: mid-level-interstitial
+  title: Find whether an interstitial interrupts a level mid-board after some minutes
+    of play
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T08:43:02'
+  feature: banner-ad
+  source: session
+  plan: On the next 3 levels that run over 4 min, shoot the board every minute and
+    log the minute of any full-screen ad before the win; confirmed if an ad cuts in
+    mid-board at a similar time (the secret level showed one about 5 min in with 5
+    cells left); refuted if ads come only at start, NEXT or restart
+- id: win-streak-break
+  title: 'Find what breaks the win streak: read Statistics Current Win Streak before
+    and after a Home-icon quit and after a 3-mistake loss'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T10:52:51'
+  feature: win-streak
+  source: session
+  plan: 'Read Statistics > Profile > Streaks (Current N); quit a level by the Home
+    icon and read it again; win a level and read; lose one by 3 mistakes and read.
+    Confirmed for an ending if Current drops to 0 after it; mark any keep-the-streak
+    offer on the loss popup (chk-save). Clue: Current 1 / Longest 8 after the L11
+    loss and one secret win [20261006-104733-chrono-2FYKPJ#2]'
+- id: win-streak-first-try
+  title: 'Win streak counts only first-try wins: a level won after an earlier loss
+    does not add'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T13:32:13'
+  feature: win-streak
+  source: session
+  plan: 'Read Statistics Current Win Streak and First Try Wins, win a new level on
+    the first try (no loss before), read again; then win L12 (lost once in session
+    131052) and read. Confirmed if only the first-try win adds 1 and shows the streak
+    banner. Clue: L11 won after an old loss left Current 1, First Try Wins 9 while
+    Levels Completed went 11->12'

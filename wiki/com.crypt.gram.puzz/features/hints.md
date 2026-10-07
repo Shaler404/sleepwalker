@@ -4,8 +4,8 @@ title: "Hints (bulb)"
 type: feature
 feature: hints
 version_seen: 3.6.1
-verified_at: 2026-10-05
-sources: [20261003-234451-chrono-2FYKPJ, 20261005-003245-chrono-2FYKPJ, 20261005-221933-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-234451-chrono-2FYKPJ, 20261005-003245-chrono-2FYKPJ, 20261005-221933-chrono-2FYKPJ, 20261006-024420-chrono-2FYKPJ, 20261006-131052-chrono-2FYKPJ]
 ---
 
 # Hints (bulb)
@@ -39,6 +39,7 @@ A tap on the bulb with hints left puts the level into hint mode: the board is sh
 |---|---|
 | [Hint mode](#hint-mode) | Tap an empty cell to reveal its letter; the X (inferred) leaves hint mode |
 | [Hint video](#hint-video) | With no hints left a tap on the bulb starts a full-screen video ad at once; it showed no close button |
+| [After a restart](#after-a-restart) | A tutorial hand over the bulb after a Restart, seen once |
 
 ### Hint mode
 
@@ -64,6 +65,13 @@ After the force-stop, CONTINUE reopened level 3 from its start (letters typed be
 ![Level 3 reopened after the force-stop: the bulb still shows the orange play icon](../img/20261005-hints-result-c2b549b6.webp) [^s11]
 *After the force-stop: level 3 from the start, the bulb still at zero*
 
+### After a restart
+
+After Restart from the 3-mistake popup on level 11 (in an earlier session) a tutorial hand pointed at the bulb, which had the play icon, and the home icon did not respond while the hand was up [^s13]. On level 12, about 1 s after Restart from the same popup with 0 hints, the board showed the bulb with the play icon and no hand [^s14]. Inferred: the hand is not shown after every restart at 0 hints; whether it showed later on that board was not seen (the session ended).
+
+![Level 12 right after Restart from the loss popup: the bulb at the bottom right with the orange play icon, no tutorial hand](../img/20261006-hints-tab-after-restart-cbb54a17.webp) [^s14]
+*Level 12 after Restart with 0 hints: the bulb with its play icon and no hand over it (the hint pack's price tag is blacked out)*
+
 ## How it works
 
 All in 3.6.1:
@@ -74,6 +82,7 @@ All in 3.6.1:
 - No coin price was seen; at zero the bulb starts a video ad, and no purchase prompt was seen on the bulb [^s4] [^s7] [^s10].
 - A hint used in a level that is then closed by force-stop is not returned: CONTINUE reopens the level from the start, the revealed letter gone, the bulb still showing the play icon [^s7].
 - Restart after a loss does not change the count (still 1 when no hint had been used) [^s8].
+- A hint can reveal a [Chest Hunt](chest-hunt.md) key cell: on level 11 the one hint (badge 1 at the start) was used on a key cell, and the level's free key claim included it (inferred from CLAIM 4 for four key cells) [^s15] [^s16] [^s17].
 - A hint video that is never closed gives nothing: after a force-stop the bulb was still at zero [^s11]. Whether a video that does close grants a hint is unknown.
 
 ## Cases
@@ -96,6 +105,7 @@ All in 3.6.1:
 - Refill timer: whether hints come back over time, or are given again on later levels (none was added at level 3) <!-- case:chk-refill -->
 - Whether the hint video grants a hint once it closes (in both tries the ad never closed; task hint-reward-retry)
 - The X in hint mode: whether it leaves without spending the hint
+- After a restart: what brings up the tutorial hand over the bulb (seen once, not on the next restart)
 
 [^s1]: session 20261003-234451-chrono-2FYKPJ, step 17 — [video at 4:04](https://youtu.be/WwMBaKGzEUU?t=244)
 [^s2]: session 20261005-003245-chrono-2FYKPJ, step 1 — [video at 0:25](https://youtu.be/xwf29tc75Dk?t=25)
@@ -110,3 +120,9 @@ All in 3.6.1:
 [^s11]: session 20261005-221933-chrono-2FYKPJ, step 28 — [video at 8:38](https://youtu.be/I7zPQ2z7rvA?t=518)
 
 [^s12]: session 20261005-221933-chrono-2FYKPJ, step 25 — [video at 7:27](https://youtu.be/I7zPQ2z7rvA?t=447)
+
+[^s13]: session 20261006-024420-chrono-2FYKPJ, step 39 — [video at 18:48](https://youtu.be/ZmbMZC7iP0E?t=1128)
+[^s14]: session 20261006-131052-chrono-2FYKPJ, step 37 — [video at 18:49](https://youtu.be/2fot0pfWAP0?t=1129)
+[^s15]: session 20261006-131052-chrono-2FYKPJ, step 10 — [video at 5:45](https://youtu.be/2fot0pfWAP0?t=345)
+[^s16]: session 20261006-131052-chrono-2FYKPJ, step 17 — [video at 8:20](https://youtu.be/2fot0pfWAP0?t=500)
+[^s17]: session 20261006-131052-chrono-2FYKPJ, step 19 — [video at 8:45](https://youtu.be/2fot0pfWAP0?t=525)

@@ -3,7 +3,7 @@ game: com.oakever.akari
 title: "Lessons"
 type: agent
 version_seen: 1.0.2
-verified_at: 2026-10-06
+verified_at: 2026-10-07
 ---
 
 # Lessons for the agent: MeowTrail
@@ -20,3 +20,9 @@ verified_at: 2026-10-06
   *Confirmed: 20261005-080420-chrono-2FYKPJ, 1.0.2; 20261006-002027-chrono-2FYKPJ, 1.0.2.* [s:20261005-080420-chrono-2FYKPJ#15] [s:20261005-080420-chrono-2FYKPJ#50] [s:20261006-002027-chrono-2FYKPJ#21]
 - The system Back key does not close the Home Settings sheet: use its X button.
   *Confirmed: 20261006-002027-chrono-2FYKPJ, 1.0.2.* [s:20261006-002027-chrono-2FYKPJ#43]
+- The every-second-start interstitial count survives a force-stop, a 3.5-minute pause on Home and a rewarded video: none of them shifts the alternation.
+  *Confirmed: 20261006-080945-chrono-2FYKPJ, 20261006-102842-chrono-2FYKPJ, 20261006-124837-chrono-2FYKPJ, 1.0.2.* [s:20261006-080945-chrono-2FYKPJ#3] [s:20261006-080945-chrono-2FYKPJ#7] [s:20261006-080945-chrono-2FYKPJ#9] [s:20261006-102842-chrono-2FYKPJ#12] [s:20261006-102842-chrono-2FYKPJ#14] [s:20261006-124837-chrono-2FYKPJ#5] [s:20261006-124837-chrono-2FYKPJ#8]
+- Do not wait on the win screen: it has no harmless control and the phone blocked touches there after about 3 minutes. Wait on Home with the gear and its close button (665,127 then 648,830) about every 50 s.
+  *Confirmed: 20261006-080945-chrono-2FYKPJ, 20261006-102842-chrono-2FYKPJ, 1.0.2.* [s:20261006-080945-chrono-2FYKPJ#11] [s:20261006-102842-chrono-2FYKPJ#6] [s:20261006-102842-chrono-2FYKPJ#11]
+- A board dimmed after a rewarded video is the phone (touch protection), not the game: wait 10 s after `launch` and take a frame; both later videos left the board bright and playable.
+  *Confirmed: 20261006-102842-chrono-2FYKPJ, 20261006-124837-chrono-2FYKPJ, 1.0.2.* [s:20261006-102842-chrono-2FYKPJ#18] [s:20261006-124837-chrono-2FYKPJ#3] [s:20261006-124837-chrono-2FYKPJ#12]

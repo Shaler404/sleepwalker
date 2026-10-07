@@ -2,74 +2,73 @@
 game: com.oakever.akari
 version: 1.0.2
 play_version: 1.0.2
-play_checked: '2026-10-05T22:05:43'
+play_checked: '2026-10-06T10:09:39'
 phone_version: 1.0.2
 discovery: closed
 ftue_verified: null
 progress:
-  text: level 34
-  value: 34.0
-  at: '2026-10-06T02:41:35'
-  session: 20261006-023308-chrono-2FYKPJ
+  text: level 46
+  value: 46.0
+  at: '2026-10-06T12:57:25'
+  session: 20261006-124837-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-06T04:02:50'
+  chrono: '2026-10-06T15:01:50'
 mechanics:
 - id: akari
   name: Cat placement (Light Up rules)
   status: mastered
   method: solver
   levels:
-    won: 34
-    lost: 2
-    quit: 4
+    won: 46
+    lost: 3
+    quit: 7
   recent:
-  - level: level 26
-    result: won
-    seconds: 154
+  - level: level 40
+    result: quit
+    seconds: 33
     model: sonnet
-  - level: level 27
+  - level: level 40
     result: won
     seconds: 28
     model: sonnet
-  - level: level 28
+  - level: level 41
     result: won
-    seconds: 22
+    seconds: 26
     model: sonnet
-  - level: level 29
+  - level: level 42
     result: won
-    seconds: 22
+    seconds: 51
     model: sonnet
-  - level: level 30
+  - level: level 43
     result: quit
-    seconds: 145
+    seconds: 115
     model: sonnet
-  - level: level 30
+  - level: level 43
     result: won
-    seconds: 48
+    seconds: 38
     model: sonnet
-  - level: level 31
-    result: won
-    seconds: 22
+  - level: level 44
+    result: quit
+    seconds: 433
     model: sonnet
-  - level: level 32
+  - level: level 44
     result: won
-    seconds: 17
+    seconds: 152
     model: sonnet
-  - level: level 33
+  - level: level 45
     result: won
-    seconds: 24
+    seconds: 28
     model: sonnet
-  - level: level 34
+  - level: level 46
     result: won
-    seconds: 22
+    seconds: 188
     model: sonnet
   solver: solvers/com.oakever.akari/akari.py
-  note: 'Solver reads the board itself; refuses the bulb hint popup (tap Apply) and
-    transient rejected-cat animations. The 20261003-232850 bypass signs were deliberate
-    booster/loss/exit study taps, not solver faults.; dream 2026-10-04: the scripted
-    tutorial was removed from the level records (logged as quit, it was completed:
-    20261003-200925-chrono-2FYKPJ#8)'
+  note: 'Solver reads every board in sessions 20261005-20261006 (L20-L44). The 2-of-5
+    bypass sign came from 2 quit study levels (ad cadence L43, L44 under the phone''s
+    dim with touch blocked), not hand placements. New refusal notes: the fail screen
+    names Restart; a screen dimmed evenly by the phone is named as not the game.'
   best_s: 13
 features:
 - id: consent
@@ -228,10 +227,11 @@ features:
     version: 1.0.2
   - id: chk-elements
     text: 'Numbered walls from L1; 0 tiles from L6 (tip popup on X marking); boxes
-      from L11 (tip popup: boxes block cats); nothing else through L20'
+      from L11 (tip popup: boxes block cats); nothing else through L46 (L44 8x8, L45
+      10x10, L46 9x9 boards show only boxes and numbered/0 tiles)'
     done: true
     version: 1.0.2
-    source: 20261005-080420-chrono-2FYKPJ#30
+    source: 20261006-124837-chrono-2FYKPJ#13
   - id: chk-quit
     text: 'Back arrow leaves for Home at once: no confirmation, no cost; reopening
       the level KEEPS the board (wrong-cat X and 2 of 3 hearts intact on L26)'
@@ -258,6 +258,12 @@ features:
       win-box cats; no collection or album entry
     done: true
     source: 20261006-002027-chrono-2FYKPJ#20
+  - id: win-title
+    text: 'Win title (BRILLIANT, PERFECT, INCREDIBLE) is random: same 3 hearts no
+      booster gave INCREDIBLE on L35 and PERFECT on L38; hearts lost or booster used
+      do not set it'
+    done: true
+    source: 20261006-044907-chrono-2FYKPJ#25
   type: core-level
   appeared:
     text: first launch, after tutorial
@@ -457,11 +463,11 @@ features:
     source: 20261003-232850-chrono-2FYKPJ#26
     version: 1.0.2
   - id: chk-refill
-    text: 'Refill by rewarded video seen for both: cat (20261003-232850#26) and bulb
-      (+1 per video, 20261005-221436#17). Both badges at 1 after level 25 (frame 20);
-      whether a timer or daily refill exists is not verified (exp-booster-refill)'
-    done: false
+    text: 'L42 start, frame 4: both badges show AD (count 0), no increase over ~14h+
+      and several sessions; no timer/daily refill seen'
+    done: true
     version: 1.0.2
+    source: 20261006-102842-chrono-2FYKPJ#4
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
@@ -519,6 +525,12 @@ features:
     done: true
     source: 20261005-002947-chrono-2FYKPJ#10
     version: 1.0.2
+  - id: revive
+    text: Revive on Almost! (rewarded ad ~65 s, ends in Play Store, launch returns)
+      gives 1 of 3 hearts and keeps the board (placed cats, red X, counter); losing
+      the last heart again offers Revive a 2nd time, no limit seen
+    done: true
+    source: 20261006-044907-chrono-2FYKPJ#18
   found_at:
     text: level 1
     value: null
@@ -660,10 +672,12 @@ features:
     done: true
     source: 20261006-002027-chrono-2FYKPJ#21
   - id: under-exit-app
-    text: 'Force-stop and relaunch mid-level on a Hard level (next Hard: Level 40):
-      as the base (Home with the same Level N, reset board, booster not refunded)
-      or what differs'
-    done: false
+    text: 'As the base: force-stop mid-level on Hard L40 (2 cats placed) lands on
+      Home with Hard badge and Level 40 button; reopening gives a reset board 0/18,
+      3 hearts, boosters unchanged (AD)'
+    done: true
+    source: 20261006-080945-chrono-2FYKPJ#7
+    version: 1.0.2
   - id: under-out-of-moves
     text: 'Does not apply: MeowTrail has no move limit; the only loss is out of hearts
       (core-level outcomes: win, out-of-hearts, restart, quit, exit-app)'
@@ -745,13 +759,15 @@ features:
     done: true
     source: 20261005-080420-chrono-2FYKPJ#41
   - id: chk-frequency
-    text: 'Alternates over ALL level starts, any route: after the Restart ad: L31
-      (win button) none, L32 ad, L33 none, L34 ad, L34 re-start from Home none, L35
-      ad. The Home start did count in the alternation (a win-only counter would have
-      predicted no ad at L35). Ad also on in-level Restart. Ads 1-2 min apart, so
-      time cooldown not the driver'
+    text: 'A level-start count, not time: starts alternate none/ad. L31-L35 [20261006-023308-chrono-2FYKPJ#20];
+      L39 none, L40 ad, L40 reopen after force-stop none, L41 ad [20261006-080945-chrono-2FYKPJ#11];
+      L42 none, L43 ad, 3.5 min on Home and a quit, L43 none, L44 ad [20261006-102842-chrono-2FYKPJ#14];
+      L44 none, cat booster rewarded video, L45 ad, L46 none [20261006-124837-chrono-2FYKPJ#8].
+      The count survives a force-stop, a quit to Home, a 3.5 min gap and a booster
+      rewarded video. Unexplained: in 20261006-044907 L36, L37, the L37 Almost! Restart
+      (after a Revive video) and L38 all had ads [#23]; goal exp-interstitial-after-loss'
     done: true
-    source: 20261006-023308-chrono-2FYKPJ#20
+    source: 20261006-124837-chrono-2FYKPJ#8
     version: 1.0.2
   - id: chk-close
     text: 'Two ads (L22 step 3, L24): no close cross appeared in ~20-28 s; the ad
@@ -986,13 +1002,20 @@ tasks:
     on level 2)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:16:13'
   feature: core-level
   source: session
   plan: Win one level with 3 hearts and no booster, one after losing a heart, one
     with a booster; compare the title. Confirmed if the title follows hearts kept
     or boosters used; otherwise it is random praise
+  closed: '2026-10-06T05:01:45'
+  closed_by: 20261006-044907-chrono-2FYKPJ#25
+  note: 'L35 3 hearts no booster INCREDIBLE; L36 2 hearts no booster INCREDIBLE; L37
+    3 hearts + cat booster PERFECT; L38 3 hearts no booster PERFECT. Same conditions
+    (L35 vs L38) gave different titles: title does not follow hearts or boosters;
+    looks random (titles seen: BRILLIANT, PERFECT, INCREDIBLE).'
+  result: refuted
 - id: study-notifications
   title: 'Study the notification prompt: whether it comes back after Don''t allow,
     and any in-game toggle for it'
@@ -1055,7 +1078,7 @@ tasks:
     kept) after its rewarded ad'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:36:41'
   feature: hearts
   source: session
@@ -1063,6 +1086,13 @@ tasks:
     wait out the ad, launch back if it ends in the Play Store. Confirmed if the same
     board continues with placed cats kept; record hearts restored (1 or 3) and whether
     a 2nd Revive is offered on the next loss.
+  closed: '2026-10-06T04:57:39'
+  closed_by: 20261006-044907-chrono-2FYKPJ#18
+  note: Revive (rewarded ad ~65s, ended in Play Store, launch returned) restored 1
+    of 3 hearts; same board kept (2 cats, 3 red X intact, counter 2/16). Losing the
+    last heart again offered Revive a 2nd time (no limit seen). Restart is free but
+    plays an interstitial, gives 3 hearts and empty board.
+  result: confirmed
 - id: exp-bulb-cancel
   title: 'Open the bulb hint and close it without Apply: is the unit refunded?'
   kind: experiment
@@ -1112,7 +1142,7 @@ tasks:
     lands on Home with the same Level N button; reopening gives a RESET board'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:30:57'
   feature: hard-level
   source: session
@@ -1121,6 +1151,9 @@ tasks:
     mark the outcome screen (mark --feature hard-level --as result) and close its
     cell: case hard-level under-<outcome> "as the base" or "what differs" --done'
   rank: 7
+  closed: '2026-10-06T08:14:33'
+  closed_by: planner
+  note: every known outcome of the base level was run under Hard levels
 - id: exp-hard-level
   title: Find first Hard level (badge on level entry, banner)
   kind: experiment
@@ -1330,7 +1363,7 @@ tasks:
     (timer or daily)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T22:19:33'
   feature: boosters
   not_before: '2026-10-06T10:19:33'
@@ -1340,6 +1373,12 @@ tasks:
     frame 20). Confirmed if either count is above 1 with no video watched (record
     the new count and the hours since); refuted if both are still 1 after 12+ hours;
     then close boosters chk-refill with the result'
+  closed: '2026-10-06T10:30:11'
+  closed_by: 20261006-102842-chrono-2FYKPJ#2
+  note: 'Frame 4 at L42: cat and bulb badges both AD (0). Last known 1 each at L25
+    end, ~12+ h earlier; nothing above 1, so no passive refill by timer or daily.
+    Caveat: counts probably spent in later sessions'' booster tests.'
+  result: refuted
 - id: exp-in-level-restart
   title: 'Experiment: tap Restart in the in-level Settings: is there a confirmation,
     what it costs, and is the board cleared with 3 hearts'
@@ -1388,7 +1427,7 @@ tasks:
     relaunch'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-06T02:45:11'
   feature: interstitial-ad
   source: session
@@ -1398,6 +1437,115 @@ tasks:
     if the first start after relaunch has no ad and the next has one; refuted if the
     first start after relaunch plays an ad. Close interstitial-ad chk-frequency with
     the result
+  closed: '2026-10-06T04:51:32'
+  closed_by: 20261006-044907-chrono-2FYKPJ#5
+  note: 'After force-stop: L35 start from Home no ad; L36 start from win screen ad.
+    Counter persists across relaunch.'
+  result: confirmed
+- id: exp-interstitial-cadence
+  title: 'Experiment: find what decides an interstitial at a level start (every 2nd
+    start, a time cooldown, or reset by rewarded videos)'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T05:03:36'
+  feature: interstitial-ad
+  source: session
+  plan: 'With no rewarded video at all: (A) start 4 levels back to back as fast as
+    possible (win, Level N at once), note ad/none and the clock for each start; (B)
+    then wait 3 min on the win screen before each of 2 starts. (C) Then watch one
+    rewarded video (bulb AD) and start the next 2 levels quickly. Strict alternation
+    in A = count rule; ads on every start in B but not A = time cooldown; ads on both
+    starts after C only = rewarded videos reset the counter. Record the rule in interstitial-ad
+    chk-frequency.'
+  closed: '2026-10-06T08:20:58'
+  closed_by: 20261006-080945-chrono-2FYKPJ#11
+  note: 'Part A only: starts alternated none/ad/none/ad (L39 none, L40 ad, L40 reopen
+    none, L41 ad), supporting a count rule. B/C not run: 3-min idle on win screen
+    dimmed the screen and touch protection blocked taps. Follow-up task exp-interstitial-cadence-b.'
+  result: inconclusive
+- id: exp-interstitial-cadence-b
+  title: 'Cadence B and C: (B) 3-min gap on win screen before 2 starts, then (C) rewarded
+    video and 2 quick starts; keep screen alive by tapping a harmless control (not
+    possible on win screen: use Home gear) during the wait; part A showed strict alternation
+    none/ad/none/ad over 4 starts'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T08:20:50'
+  feature: interstitial-ad
+  source: session
+  plan: start parity first (note last start was an ad at L41, so next start should
+    be none); wait 3 min with periodic harmless taps; note ad/none; then bulb AD video,
+    2 quick starts
+  closed: '2026-10-06T10:44:39'
+  closed_by: 20261006-102842-chrono-2FYKPJ#18
+  note: 'Parity: L42 start none (predicted), L43 start ad (frame 11), then 3.5 min
+    on Home with gear taps: L43 start none (frame 27), L44 start ad (frame 32). Strict
+    alternation none/ad survives a 3.5 min gap and a quit-to-Home; time does not reset
+    it. Part C (rewarded video then 2 quick starts) not finished: bulb video paid
+    (bulb 1), but the screen then stuck dimmed, taps/back ignored, restart refused
+    by Samsung touch protection; split into exp-interstitial-cadence-c.'
+  result: confirmed
+- id: exp-interstitial-cadence-c
+  title: 'Cadence C: after a bulb rewarded video, 2 quick level starts: ad or none?
+    (B done: strict alternation holds after 3.5 min gap)'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T10:44:23'
+  feature: interstitial-ad
+  source: session
+  plan: start parity, bulb AD video (launch if stuck), then 2 quick starts; keep proximity
+    sensor clear
+  closed: '2026-10-06T12:54:17'
+  closed_by: 20261006-124837-chrono-2FYKPJ#8
+  note: 'Start before video (L44): no ad. Cat AD video (not bulb; bulb had 1). Then
+    L45 start: ad (Open Store video), L46 start: none. Strict alternation none/ad/none
+    continues; rewarded video neither resets nor shifts parity.'
+  result: confirmed
+- id: exp-post-reward-veil
+  title: Find whether the dim veil over the level after a bulb AD video is the game's
+    own overlay or the phone's touch protection, and how to clear it
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T10:48:37'
+  feature: boosters
+  source: session
+  plan: 'After the bulb AD video (Reward granted, launch back), the L44 board stayed
+    dimmed while the banner below stayed bright (frames 44-50), and the harness refused
+    taps as touch-blocked. A system overlay would dim the banner too, so the veil
+    looks like the game''s (e.g. a hint popup that never opened). Next time: phone
+    screen up, proximity sensor clear; after the launch back, wait 10 s and shoot;
+    if dimmed, tap the bulb once, then the veil, then key back, shooting each. Game
+    overlay = a hint/popup appears or a tap clears it; touch protection = the harness
+    still reports touch_blocked with the sensor clear. If stuck, force-stop and relaunch
+    (the board resets, bulb count kept?) and record the bulb count.'
+  closed: '2026-10-06T12:57:26'
+  closed_by: 20261006-124837-chrono-2FYKPJ#13
+  note: 'Bulb AD video on L46 (after bulb use + Apply, count 0->AD->1 refilled): launch
+    back from Play Store, wait 10 s, board bright, no veil, taps work; cat AD video
+    on L44 same. So no game overlay after reward; the L44 veil in 20261006-102842
+    was the phone''s touch protection/proximity dim, not reproducible with sensor
+    clear.'
+  result: refuted
+- id: exp-interstitial-after-loss
+  title: Find whether a lost level (Almost!), a Revive video or an Almost! Restart
+    shifts the interstitial none/ad alternation
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T12:59:19'
+  feature: interstitial-ad
+  source: session
+  plan: Note the parity (last start ad or none). Start a level, lose all 3 hearts
+    on purpose, take Revive (rewarded video), lose again, tap Restart; then win and
+    make 2 more starts from the win screen. Shoot each start 3-5 s after the tap.
+    Confirmed if the Almost! Restart or the starts after it break strict alternation
+    (two ads in a row, as in 20261006-044907 L36-L38); refuted if none/ad alternation
+    continues through the loss. Keep the proximity sensor clear and do not idle on
+    the win screen
 discovery_note: 'Home through level 30 has only the Level N button and the gear (shot
   68); Settings (Home and in-level, incl. Restart), Help Center (all 12 tabs read,
   nothing unseen named), level HUD, win/fail screens and ads all mapped; no locked

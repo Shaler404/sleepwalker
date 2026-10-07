@@ -3,7 +3,7 @@ game: com.crypt.gram.puzz
 title: "Lessons"
 type: agent
 version_seen: 3.6.1
-verified_at: 2026-10-06
+verified_at: 2026-10-07
 ---
 
 # Lessons for the agent: Cryptogram: Word Logic Puzzles
@@ -20,3 +20,7 @@ verified_at: 2026-10-06
   *Confirmed: 20261005-221933-chrono-2FYKPJ, 3.6.1.* [s:20261005-221933-chrono-2FYKPJ#36]
 - The keyboard moves the promo-code dialog: take a frame after focusing the field, or taps land on keyboard keys.
   *Confirmed: 20261005-143208-chrono-2FYKPJ, 3.6.1.* [s:20261005-143208-chrono-2FYKPJ#3]
+- A playable end card with no X after an interstitial ignores Back: restart the app at once. Level progress and wins are kept (the Secret Level board kept its letters and 0 mistakes).
+  *Confirmed: 20261006-052618-chrono-2FYKPJ, 20261006-082255-chrono-2FYKPJ, 20261006-131052-chrono-2FYKPJ, 3.6.1.* [s:20261006-052618-chrono-2FYKPJ#10] [s:20261006-052618-chrono-2FYKPJ#12] [s:20261006-082255-chrono-2FYKPJ#9] [s:20261006-082255-chrono-2FYKPJ#11] [s:20261006-131052-chrono-2FYKPJ#7] [s:20261006-131052-chrono-2FYKPJ#10]
+- The Chest Hunt panel counts its bar up when it opens: read the number only after it settles (two frames agree). An early frame showed 15 while the home card and the settled panel showed 17.
+  *Confirmed: 20261006-131052-chrono-2FYKPJ, 3.6.1.* [s:20261006-131052-chrono-2FYKPJ#9] [s:20261006-131052-chrono-2FYKPJ#26]

@@ -1,0 +1,17 @@
+name: open-water-sort
+game: com.block.juggle
+description: Home menu > More Games > Water Sort board (the level reached opens)
+status: candidate
+version: 10.8.1
+pre_hash: 93112c2cbc979e6e
+post_hash: 94342beb4b1db496
+steps:
+- tap:
+  - 0.5
+  - 0.7202
+  wait: 10.5
+- tap:
+  - 0.5
+  - 0.537
+  wait: 1.5
+source: 20261006-084209-chrono-2FYKPJ#1-2

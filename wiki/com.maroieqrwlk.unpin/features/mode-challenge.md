@@ -142,7 +142,7 @@ What turns the retry free (the time since the loss, or a count of retries) was n
 The fourth try was won with the last of the 10 moves: the counter went from 1 to 0 and the balls fell into
 the cup [^s17]:
 
-*The last pull opens the floor under the pile of painted balls; the balls pour into the cup, the counter at 0 Moves* (clip dropped: per-dream clip limit) [^s17]
+![The last pull opens the floor under the pile of painted balls; the balls pour into the cup, the counter at 0 Moves](../clips/20261006-challenge1-last-pull-win.webp) [^s17]
 *Clip 3.9 s · [original on YouTube from 22:31](https://youtu.be/j9sNlnJxE4Y?t=1351); the tenth pull drops the painted balls into the cup (a local banner ad blacked out)*
 
 The screen reads **Epic!** and **Challenge completed!**, with a coin card **x300 Coins**. Under it a bar of
