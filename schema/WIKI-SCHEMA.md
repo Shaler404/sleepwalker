@@ -303,7 +303,10 @@ global `research.yaml` (`sw.py snapshot`), and `sw.py render` rebuilds `tasks.md
 - Media are added, not rewritten: git keeps the history. No more than 5 new clips per game per
   dream. GitHub recommends keeping a repository under 1 GB.
 - Personal data — nicknames, email, avatars, notifications, other apps, payment windows — never goes
-  into the wiki. `sw.py mark` refuses to mark a frame that is not from the game.
+  into the wiki. `sw.py mark` refuses to mark a frame that is not from the game. The account's
+  auto-assigned player name or id is personal data too: a text names it as `[auto-assigned id]`
+  (`local.yaml` `privacy.names` makes `sw.py case`, `mark` and `task add` refuse it and `snapshot`
+  redact it).
 - `sw.py check-zones` rejects MP4 and files over the limits.
 
 ## 6. Skills

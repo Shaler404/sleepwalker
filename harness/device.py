@@ -45,16 +45,51 @@ class Device(Protocol):
 # [s:20261003-235233-chrono-2FYKPJ#35], a `wait 15` that lost the only frame of a win screen
 # [s:20261003-194350-chrono-2FYKPJ#6], a tap [s:20261003-195050-chrono-2FYKPJ#6]); the next command worked.
 TRANSIENT = (ConnectionResetError, ConnectionAbortedError, BrokenPipeError)
+# The phone drops off USB and is back seconds later: 2026-10-06, 12 of 36 sessions met "device 'R5GL72FYKPJ' not
+# found" (adb's answer while the phone re-enumerates) or a reset; the next command, seconds later, worked in nine
+# of them, and four sessions ended blocked on it [s:20261006-105231-chrono-2FYKPJ#15]
+# [s:20261006-104733-chrono-2FYKPJ#4] [s:20261006-113518-chrono-2FYKPJ#27] [s:20261006-122751-chrono-2FYKPJ#48].
+# The one retry a second later was too early for most: now the phone is waited for (local.yaml android.reconnect_s,
+# 30 s by default) before the call is made once more.
+RECONNECT_S = 30
+
+
+def device_gone(ex: Exception) -> bool:
+    """adb's errors while the phone is off the bus: the serial not found, or the server itself unreachable."""
+    msg = str(ex)
+    return "not found" in msg or "connect to adb server failed" in msg
 
 
 class Retrying:
-    """adbutils' device behind one retry: a call that dies of a transient error is made once more a second later
-    on a fresh connection. Anything else (the device gone, an adb error) comes through as it is."""
+    """adbutils' device behind one retry: a call that dies of a transient error, or finds the device gone, waits
+    for the device to be back (up to reconnect_s) and is made once more on a fresh connection. Anything else
+    comes through as it is."""
 
-    def __init__(self, make, sleep_s: float = 1.0):
-        self._make, self._sleep = make, sleep_s
+    def __init__(self, make, sleep_s: float = 1.0, present=None, reconnect_s: float = RECONNECT_S):
+        self._make, self._sleep, self._present, self._reconnect_s = make, sleep_s, present, reconnect_s
         self._dev = make()
         self.reconnects = 0
+        self.waited_s = 0.0
+
+    def _back(self) -> bool:
+        """Wait for the device to be present again; True when it is (or when nothing can tell)."""
+        time.sleep(self._sleep)
+        if self._present is None:
+            return True
+        t0 = time.monotonic()
+        waited = 0.0
+        while True:
+            try:
+                if self._present():
+                    self.waited_s += waited
+                    return True
+            except Exception:
+                pass
+            if waited >= self._reconnect_s:
+                self.waited_s += waited
+                return False
+            time.sleep(self._sleep)
+            waited = max(waited + self._sleep, time.monotonic() - t0)
 
     def __getattr__(self, name):
         attr = getattr(self._dev, name)
@@ -65,10 +100,13 @@ class Retrying:
             try:
                 return attr(*a, **k)
             except TRANSIENT:
-                time.sleep(self._sleep)
-                self._dev = self._make()
-                self.reconnects += 1
-                return getattr(self._dev, name)(*a, **k)
+                self._back()
+            except Exception as ex:
+                if not device_gone(ex) or not self._back():
+                    raise
+            self._dev = self._make()
+            self.reconnects += 1
+            return getattr(self._dev, name)(*a, **k)
 
         return call
 
@@ -84,11 +122,15 @@ class AndroidDevice:
         "wake": "KEYCODE_WAKEUP",
     }
 
-    def __init__(self, serial: str, prepare: bool = True):
+    def __init__(self, serial: str, prepare: bool = True, reconnect_s: float = RECONNECT_S):
         import adbutils
 
         self.name = serial
-        self.adb = Retrying(lambda: adbutils.adb.device(serial=serial))
+
+        def present() -> bool:
+            return any(d.serial == serial for d in adbutils.adb.device_list())
+
+        self.adb = Retrying(lambda: adbutils.adb.device(serial=serial), present=present, reconnect_s=reconnect_s)
         size = self.adb.window_size()
         self.width, self.height = size.width, size.height
         if prepare:

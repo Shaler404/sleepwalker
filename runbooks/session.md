@@ -78,7 +78,15 @@ Goal and task kinds:
   seconds), and the dream counts them (`sw.py stats`: `errors`, `error_minutes`). Read the message and
   fix the command once; do not retry it unchanged.
 - You write only to `state/<game>/progress.md`, `inbox.md`, `playbook.md` and `solvers/*.py`.
-  `sw.py` maintains everything else for you.
+  `sw.py` maintains everything else for you. A merged playbook or solver from the repository reaches
+  your copy by content, never by file time: a copy you have not touched is replaced, your edits are
+  merged three ways, and a conflict leaves your copy alone and puts the merged one beside it as
+  `playbook.incoming.md` or `solvers/<mechanic>.incoming.py` (`start`, `level start`, `solve` and
+  `sw.py playbook` warn while it exists): read it, bring what is new into your copy, delete the
+  `.incoming` file.
+- The account's auto-assigned player name or id and other players' names are personal data: never
+  write them into a case, a mark, a task or a note — write `[auto-assigned id]`. A name listed in
+  `local.yaml` `privacy.names` is refused by `case`, `mark` and `task add`.
 - **Every phone action goes through `sw.py`; never call `adb` yourself.** `sw.py` logs each step for the
   dream, stops at once when the owner takes the phone, and cuts a batch short when a payment sheet or
   another app comes up; a direct `adb` tap does none of that. If `sw.py` lacks something you need (a
@@ -260,7 +268,8 @@ taps. Games without levels: treat each goal (a stage, an order, a quest) as a le
    lose and retry (Retry Stage, Restart, a new board under the same number) is
    `level end lost --note "…" --retry`: the loss is recorded and the same level opens again on a new
    clock. A loss fixed by a retry is still a loss (Pull the Pin L23: one stage lost, the session records
-   4 won, 0 lost).
+   4 won, 0 lost). A loss whose screen you have already left (Back, Restart) names its frame like a
+   win: `level end lost --shot N` (the frame that showed the game-over screen).
 5. **Make it fast.** Two levels in a row within the budget mark the mechanic `mastered`; two lost or
    slow levels in a row mark it `broken`. When levels stay slow, change the method, not the effort:
    - **solver** — logic puzzles where every piece is visible (mahjong, sudoku-like, light-up,

@@ -132,9 +132,15 @@ in `project.yaml`), no more than 5 at a time
 - **How to play** — for each game with sessions: merge this machine's `state/<game>/playbook.md` into
   `wiki/<game>/agent/playbook.md` (keep what other machines contributed; one section per mechanic;
   numbers and claims with sources). Add the level times per mechanic from `sw.py playbook --game
-  <game>` and what the analysts saw: which methods made levels fast, which plans failed.
+  <game>` and what the analysts saw: which methods made levels fast, which plans failed. The local
+  copy is the newest work: `sw.py` reconciles it with the merged one by content (an untouched copy is
+  replaced, edits are merged three ways, a conflict leaves `state/<game>/playbook.incoming.md` beside
+  it and the players are warned). An `.incoming` file present at dream time means the local copy never
+  absorbed the last merged version: merge the local sections into the wiki copy as usual.
 - **Solvers** — copy `state/<game>/solvers/<mechanic>.py` to `solvers/<game>/` when the mechanic's
-  levels with it were won within the budget (`research.yaml` → `mechanics`). A solver only computes:
+  levels with it were won within the budget (`research.yaml` → `mechanics`). The local solver is the
+  one that played: a `<mechanic>.incoming.py` beside it means the last published version never reached
+  it (a conflict), which the report says. A solver only computes:
   `check-zones` refuses code that touches files, the network or processes. The critic reads every
   solver in full.
 - **Routes** `agent/routes.md`, **tactics** `agent/tactics.md`. For a route that has a skill, give
@@ -186,7 +192,10 @@ in `project.yaml`), no more than 5 at a time
   - speed;
   - skills;
   - what was rejected and why;
-  - which feedback items were carried out.
+  - which feedback items were carried out;
+  - personal data found in the records (the account's auto-assigned name or id, other players' names
+    in case texts): redact the wiki copy and list the names for the owner to put into `local.yaml`
+    `privacy.names`, so that `snapshot` redacts them and `case`, `mark`, `task add` refuse them.
 
 ## 6. Critic
 
