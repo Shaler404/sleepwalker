@@ -143,8 +143,8 @@ r = sw("level", "end", "won", "--note", "x", "--shot", str(first), expect_ok=Fal
 check("not a frame of this level" in json.dumps(r), "a frame from before the level is refused")
 r = sw("level", "end", "won", "--note", "x", "--shot", str(last + 5), expect_ok=False)
 check("not a frame of this level" in json.dumps(r), "a frame that does not exist is refused")
-r = sw("level", "end", "lost", "--note", "x", "--shot", str(last), expect_ok=False)
-check("level end won --shot" in json.dumps(r), "--shot is for wins")
+r = sw("level", "end", "quit", "--note", "x", "--shot", str(last), expect_ok=False)
+check("won|lost --shot" in json.dumps(r), "--shot is for wins and losses, not a quit (2026-10-07: a loss names its game-over frame too)")
 sw("shot")
 sw("level", "end", "won", "--note", "x")
 check(ops("level")[-1]["shot"] == session()["last_shot"] and "shot_named" not in ops("level")[-1],

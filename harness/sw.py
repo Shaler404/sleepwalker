@@ -170,7 +170,12 @@ LOCAL_DEFAULTS = {
     "machine": "",
     "games": [],
     # stay_awake: a phone setting, so off unless local.yaml turns it on (the owner, 2026-10-02)
-    "android": {"serials": [], "hours": "0-24", "dnd": True, "stay_awake": False, "max_temp_c": 42, "min_battery": 20},
+    # reconnect_s: how long a phone that dropped off USB is waited for before a command fails (device.py Retrying)
+    "android": {"serials": [], "hours": "0-24", "dnd": True, "stay_awake": False, "max_temp_c": 42, "min_battery": 20,
+                "reconnect_s": 30},
+    # names and ids that are personal data on this phone (the player's auto-assigned name or id, other players'
+    # names): case, mark and task texts naming one are refused, and snapshot writes [auto-assigned id] in their place
+    "privacy": {"names": []},
     "fake_devices": {},
     # games being onboarded on this machine: not in games.yaml yet, never handed out by claim; the line goes
     # to games.yaml with its chosen models once the onboarding is done (runbooks/onboard.md)
@@ -815,14 +820,15 @@ def open_device(cur: dict, prepare: bool = False):
     # adb's connection is reset now and then (WinError 10054) and is back a second later: six sessions of one
     # night met it, three were refused with "phone unavailable" and went on fine after a repeat
     # [s:20261003-234451-chrono-2FYKPJ#4] [s:20261004-001551-chrono-2FYKPJ#51]. One second, one more try.
+    reconnect_s = L()["android"].get("reconnect_s", 30)
     try:
-        return AndroidDevice(cur["device"], prepare=prepare)
+        return AndroidDevice(cur["device"], prepare=prepare, reconnect_s=reconnect_s)
     except TRANSIENT:
         time.sleep(1.0)
     except Exception as ex:
         refuse_blocked(cur, f"phone {cur['device']} unavailable: {ex}", unavailable=True)
     try:
-        return AndroidDevice(cur["device"], prepare=prepare)
+        return AndroidDevice(cur["device"], prepare=prepare, reconnect_s=reconnect_s)
     except Exception as ex:
         refuse_blocked(cur, f"phone {cur['device']} unavailable: {ex}", unavailable=True)
 
@@ -1696,7 +1702,10 @@ UNKNOWN_TYPE = "unknown"  # typed, but no type fits yet: the reviewer starts the
 BASE_TYPE = "core-level"  # the base level of a mechanic: its outcome cases are the outcomes of the matrix
 # a case text that says the case was not seen: not a closure
 NOT_OBSERVED = re.compile(r"\s*(?:not\s+(?:yet\s+)?(?:verified|tested|reached|seen|tried|checked|observed|done)\b"
-                          r"|unverified\b|untested\b|unobserved\b|open\s*[:(—-]|to be (?:verified|tested)\b|tbd\b)", re.I)
+                          r"|unverified\b|untested\b|unobserved\b|open\s*[:—-]|to be (?:verified|tested)\b|tbd\b)", re.I)
+# "open" counts only before a colon or a dash: "Open (video): about 60 s rewarded video, 'Reward granted' X" named a
+# button and was refused twice as "not observed" (Pull the Pin, 2026-10-06 [s:20261006-061608-chrono-2FYKPJ#28]
+# [s:20261006-061608-chrono-2FYKPJ#34])
 _CATALOG: dict = {}
 
 
@@ -2260,34 +2269,179 @@ def playbook_paths(game: str) -> tuple[Path, Path]:
     return STATE() / game / "playbook.md", WIKI() / game / "agent" / "playbook.md"
 
 
+# Personal data in the records: the players' case texts carried the account's auto-assigned name or id into the
+# published map four times in one dream (Meowdoku profile chk-screen [s:20261006-044214-chrono-2FYKPJ#11], Amaze GO
+# [s:20261006-041006-chrono-2FYKPJ#3], Candy Crush [s:20261006-120721-chrono-2FYKPJ#3], Vita Mahjong
+# [s:20261006-071736-chrono-2FYKPJ#4]); the dream redacted the wiki copy by hand and the next snapshot would have
+# brought them back. local.yaml privacy.names lists them: the texts are refused, the snapshot is redacted.
+REDACTED = "[auto-assigned id]"
+
+
+def personal_pattern(name: str) -> str:
+    return rf"(?<![\w-]){re.escape(str(name))}(?![\w-])"
+
+
+def personal_name_in(text: str | None) -> str | None:
+    """The first name of local.yaml privacy.names in the text (a whole word, case kept), or None."""
+    for n in L()["privacy"].get("names") or []:
+        if n and re.search(personal_pattern(n), text or ""):
+            return str(n)
+    return None
+
+
+def refuse_personal(*texts: str | None) -> None:
+    for t in texts:
+        n = personal_name_in(t)
+        if n:
+            fail(f"{n!r} is a player's name or id (local.yaml privacy.names): personal data does not go into the "
+                 f"record or the wiki. Write {REDACTED} in its place")
+
+
+def redact_personal(text: str) -> str:
+    for n in L()["privacy"].get("names") or []:
+        if n:
+            text = re.sub(personal_pattern(n), REDACTED, text)
+    return text
+
+
+def playbook_template(game: str) -> str:
+    title = next((g.get("title", game) for g in games() if g["id"] == game), game)
+    return PLAYBOOK_TEMPLATE.format(title=title, game=game)
+
+
 def ensure_playbook(game: str) -> Path:
-    """The local copy starts from the global playbook and is replaced when a newer global one arrives
-    (a merged dream); the old local copy is kept as playbook.prev.md."""
+    """The local copy starts from the global playbook; a newer global one (a merged dream) reaches it by
+    content (reconcile_copy), never by file time. The old local copy is kept as playbook.prev.md."""
     local, glob_ = playbook_paths(game)
-    if glob_.exists() and (not local.exists() or glob_.stat().st_mtime > local.stat().st_mtime):
-        text = glob_.read_text(encoding="utf-8")
-        if local.exists() and local.read_text(encoding="utf-8") != text:
-            shutil.copy2(local, local.with_name("playbook.prev.md"))
+    reconcile_copy(local, glob_, "playbook", template=playbook_template(game))
+    if not local.exists():
         local.parent.mkdir(parents=True, exist_ok=True)
-        local.write_text(text, encoding="utf-8")
-    elif not local.exists():
-        title = next((g.get("title", game) for g in games() if g["id"] == game), game)
-        local.parent.mkdir(parents=True, exist_ok=True)
-        local.write_text(PLAYBOOK_TEMPLATE.format(title=title, game=game), encoding="utf-8")
+        local.write_text(playbook_template(game), encoding="utf-8")
     return local
 
 
 def solver_path(game: str, mech: str) -> Path | None:
-    """The local solver, replaced by the merged one (solvers/<game>/) when that is newer, like the playbook:
-    a fix merged by the dream reaches the phone. The old local copy is kept as <mechanic>.prev.py.
+    """The local solver; the merged one (solvers/<game>/) reaches it by content, like the playbook: a fix
+    merged by the dream reaches the phone. The old local copy is kept as <mechanic>.prev.py.
     (2026-10-01: the merged queens.py with real double taps never ran; the stale local draft did.)"""
     local, merged = STATE() / game / "solvers" / f"{mech}.py", ROOT / "solvers" / game / f"{mech}.py"
-    if merged.exists() and (not local.exists() or merged.stat().st_mtime > local.stat().st_mtime):
-        if local.exists() and local.read_bytes() != merged.read_bytes():
-            shutil.copy2(local, local.with_name(f"{mech}.prev.py"))
-        local.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(merged, local)
+    reconcile_copy(local, merged, "solver")
     return local if local.exists() else None
+
+
+# A local working copy (the playbook, a solver) against the merged copy in the repository. The rule used to be
+# the file time: a merged file newer than the local one replaced it. A git pull writes the merged files, so after
+# every pull they were "newer" than any local work: at the pull of 2026-10-06 18:47 four solvers (Block Blast
+# classic and water-sort, Cryptogram cryptogram, Pull the Pin pin-pull) were replaced by the older merged
+# versions and the lab fixes of that day survived only in .prev.py; at the sync of the 2026-10-07 dream all eight
+# playbooks lost their 2026-10-06 lab and session sections the same way (one .prev generation; the dream merged
+# by hand) [s:20261006-105231-chrono-2FYKPJ#0] [s:20261006-064018-chrono-2FYKPJ#0]. Now the content decides:
+# <name>.base.<ext> beside the local copy records the merged version it was last reconciled with.
+#   merged == local                       -> nothing (the base is brought up to date)
+#   merged == base                        -> nothing: the merged side has nothing new, the local edits stand
+#   merged != base, local == base         -> the local copy is untouched since the last take: replaced
+#   both changed                          -> a three-way merge (git merge-file); clean (and, for a solver, it
+#                                            compiles) -> written; a conflict -> the local copy stays and the
+#                                            merged one waits as <name>.incoming.<ext> (incoming_notes warns)
+# A missing base (the first run after this rule, or a deleted file) is taken as "untouched" only when the local
+# copy is the playbook template or equals a version of the merged file committed in the repository.
+
+def _norm(p: Path) -> str:
+    return p.read_text(encoding="utf-8").replace("\r\n", "\n")
+
+
+def _sidecar(local: Path, tag: str) -> Path:
+    return local.with_name(f"{local.stem}.{tag}{local.suffix}")
+
+
+def committed_versions(merged: Path, n: int = 12) -> list[str]:
+    """The last n committed contents of a file of the repository (the bootstrap of a missing base)."""
+    try:
+        rel = merged.resolve().relative_to(ROOT.resolve()).as_posix()
+        shas = run(["git", "-C", str(ROOT), "log", "-n", str(n), "--format=%H", "--", rel],
+                   capture_output=True, text=True, encoding="utf-8").stdout.split()
+        return [run(["git", "-C", str(ROOT), "show", f"{s}:{rel}"], capture_output=True, text=True,
+                    encoding="utf-8", errors="replace").stdout.replace("\r\n", "\n") for s in shas]
+    except Exception:
+        return []
+
+
+def three_way(base: str, local: str, merged: str, work: Path) -> str | None:
+    """git merge-file of the three texts: the result when it is clean, None on a conflict or without git."""
+    work.mkdir(parents=True, exist_ok=True)
+    files = []
+    for tag, text in (("local", local), ("base", base), ("merged", merged)):
+        f = work / f"{tag}.txt"
+        f.write_text(text, encoding="utf-8", newline="\n")
+        files.append(str(f))
+    try:
+        r = run(["git", "merge-file", "-p", "-L", "local", "-L", "base", "-L", "merged", *files], capture_output=True)
+    except Exception:
+        return None
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    return r.stdout.decode("utf-8", errors="replace").replace("\r\n", "\n") if r.returncode == 0 else None
+
+
+def reconcile_copy(local: Path, merged: Path, kind: str, template: str | None = None) -> str | None:
+    """See above. Returns what happened: None, "taken", "merged" or "incoming"."""
+    if not merged.exists():
+        return None
+    base, incoming, prev = _sidecar(local, "base"), _sidecar(local, "incoming"), _sidecar(local, "prev")
+    m = _norm(merged)
+    write = lambda p, text: (p.parent.mkdir(parents=True, exist_ok=True), p.write_text(text, encoding="utf-8"))  # noqa: E731
+    if not local.exists():
+        write(local, m)
+        write(base, m)
+        return "taken"
+    lo = _norm(local)
+    if lo == m:
+        if not base.exists() or _norm(base) != m:
+            write(base, m)
+        if incoming.exists() and _norm(incoming) == m:
+            incoming.unlink()
+        return None
+    b = _norm(base) if base.exists() else None
+    if b is None:
+        if template is not None and lo.strip() == template.replace("\r\n", "\n").strip():
+            b = lo
+        elif lo in committed_versions(merged):
+            b = lo
+    if b == m:
+        return "incoming" if incoming.exists() else None
+    result = None
+    if b is not None and lo == b:
+        result = m
+    elif b is not None:
+        result = three_way(b, lo, m, local.parent / f".merge-{local.stem}")
+        if result is not None and kind == "solver":
+            try:
+                compile(result, local.name, "exec")
+            except SyntaxError:
+                result = None
+    if result is not None:
+        shutil.copy2(local, prev)
+        write(local, result)
+        write(base, m)
+        incoming.unlink(missing_ok=True)
+        return "taken" if result == m else "merged"
+    write(incoming, m)
+    write(base, m)
+    return "incoming"
+
+
+def incoming_notes(game: str) -> list[str]:
+    """The merged copies that could not be brought into the local ones: the player merges them by hand."""
+    st = STATE() / game
+    notes = []
+    if (st / "playbook.incoming.md").exists():
+        notes.append(f"a newer merged playbook could not be merged into your local copy by itself: {st / 'playbook.incoming.md'}"
+                     " has it; bring what is new into playbook.md, then delete the .incoming file")
+    for p in sorted((st / "solvers").glob("*.incoming.py")):
+        mech = p.name[:-len(".incoming.py")]
+        notes.append(f"a newer merged solver for {mech} could not be merged into your local copy by itself: {p} has it; "
+                     f"bring what is new into {mech}.py (or replace it), then delete the .incoming file")
+    return notes
 
 
 # A solver is pure computation: a screenshot (and a board the model wrote down) in, moves out. It is run on
@@ -2912,7 +3066,8 @@ def cmd_start(args) -> None:
     shot = take_shot(cur, devobj)
     log_step(cur, {"type": "shot", **shot_rec(cur, shot)})
     save_session(cur)
-    warns = screen_warn + shot.get("warnings", [])
+    playbook = ensure_playbook(args.game)  # reconciled with the merged copy first: a conflict is warned about below
+    warns = screen_warn + shot.get("warnings", []) + incoming_notes(args.game)
     hint = {"unknown": "this game has not been looked at on this phone yet: judge from the first screens whether it is a "
                        "fresh install or progressed, and record it: sw.py device-state fresh|progressed --note \"...\"",
             "fresh": "fresh install: play FTUE from the start and record how features unlock",
@@ -2928,7 +3083,7 @@ def cmd_start(args) -> None:
          "model": cur["model"], "effort": cur.get("effort"), "model_role": cur["model_role"],
          "role_hint": "a benchmark slot: play the levels the brief names; no handoff, no status changes"
          if cur.get("bench") else role_hint[cur["model_role"]], **({"bench": cur["bench"]} if cur.get("bench") else {}),
-         "mode": mode, "mode_hint": mode_why, "playbook": str(ensure_playbook(args.game)),
+         "mode": mode, "mode_hint": mode_why, "playbook": str(playbook),
          "tasks": tasks, "research": summary_of(view), "feature_types": type_menu(),
          **({"screen": screen} if screen else {}), **shot,
          **({"warnings": warns} if warns else {})})
@@ -3157,6 +3312,7 @@ def cmd_mark(args) -> None:
     n, app, size = mark_frame(cur, args.frame)
     if app not in (cur["game"], None):
         fail(f"frame {n} is not from the game ({app}): it will not go into the wiki")
+    refuse_personal(args.title, args.desc)
     role = args.role
     if role and not (role in MARK_ROLES or (role.startswith("tab:") and len(role) > 4)):
         fail(f"--as is one of {', '.join(MARK_ROLES)} or tab:<name>")
@@ -3294,6 +3450,7 @@ def cmd_case(args) -> None:
         if cid.startswith(("chk-", "under-")):
             fail("an outcome is named by how the level ends (out-of-moves, bomb, timer): not chk- or under-")
         op["outcome"] = True
+    refuse_personal(args.text)
     if args.text and not re.search(r"[^\W\d_]{2}", args.text):
         # `case mg-tic-tac-toe chk-win "x" --done` replaced a case's real text with "x" (restored by hand nine
         # seconds later), and `case hard-level under-out-of-moves "x"` made a case with nothing to check
@@ -3368,6 +3525,7 @@ def cmd_task(args) -> None:
             fail('an unlock goal names its target: --target "level 20" --target-value 20')
         if args.kind == "experiment" and not args.plan:
             fail('an experiment states how it is tested: --plan "what to do, what result confirms it"')
+        refuse_personal(args.title, args.plan, args.note)
         base = {"op": "task", "title": args.title, "kind": args.kind, "requires": args.requires,
                 "source": "game" if args.kind in ("followup", "daily") else "session", "reopen": True}
         if args.feature:
@@ -3565,9 +3723,11 @@ def level_start(cur: dict, args, now: float) -> None:
     res = {"ok": True, "level": args.name, "mechanic": mechanic_brief(m), "new_mechanic": new,
            "budget_min": P()["play"]["level_budget_min"], "hint": level_hint(m, cur["game"]),
            "playbook": str(ensure_playbook(cur["game"]))}
+    if incoming_notes(cur["game"]):
+        res["warnings"] = incoming_notes(cur["game"])
     if before:
         res["moves_before"] = before
-        res["warnings"] = [f"{before} moves and solver calls since the last level end are not in this level; the "
+        res["warnings"] = res.get("warnings", []) + [f"{before} moves and solver calls since the last level end are not in this level; the "
                            "clock starts now. Start the level before you read the board"]
     if m.get("status") != "mastered" and cur.get("model_role") == "play" and not cur.get("bench"):
         res["handoff"] = (f"mechanic {mid} is {m.get('status')}: the study model learns it. Note what you see in "
@@ -3591,8 +3751,10 @@ def level_end(cur: dict, args, lv: dict, now: float) -> None:
         # Continue reset the "looked" flag, the second claim was refused again and the record was written on the
         # home screen and on the next board (2026-10-05 [s:20261005-004506-chrono-2FYKPJ#24]
         # [s:20261005-003925-chrono-2FYKPJ#14])
-        if args.result != "won":
-            fail("--shot names the frame that showed the win screen: level end won --shot N")
+        if args.result == "quit":
+            # a loss has its screen too: `level end lost --shot N` was refused with the win wording twice (Block
+            # Blast game over, 2026-10-06 [s:20261006-105231-chrono-2FYKPJ#2] [s:20261006-133549-chrono-2FYKPJ#15])
+            fail("--shot names the frame that showed the win or the game-over screen: level end won|lost --shot N")
         lo, hi = lv.get("shot0") or 0, cur.get("last_shot") or 0
         if not (lo < named <= hi) or not (Path(cur["dir"]) / "shots" / f"{named:05d}.jpg").exists():
             fail(f"--shot {named}: not a frame of this level (its frames are {lo + 1}..{hi})", level=lv["name"])
@@ -3939,6 +4101,8 @@ def cmd_playbook(args) -> None:
     mech = [{**mechanic_brief(m), "solver_file": str(solver_path(game, m["id"]) or ""),
              **({"solver_sign": signs[m["id"]]} if m["id"] in signs else {})} for m in view["mechanics"]]
     print(f"# file: {p} (edit this file)\n")
+    for note in incoming_notes(game):
+        print(f"# WARNING: {note}\n")
     print(p.read_text(encoding="utf-8"))
     print("---\n" + yaml.safe_dump({"mechanics": mech, "level_budget_min": P()["play"]["level_budget_min"]},
                                    allow_unicode=True, sort_keys=False))
@@ -4089,6 +4253,21 @@ def board_file(arg: str) -> str:
     return str(board)
 
 
+def solve_phone_lost(cur: dict, mech: str, rounds: int, total: int, args, ex: Exception) -> None:
+    """A `solve --run` whose phone vanished mid-round used to die with a Python traceback (exit 1): no solve_end
+    step, the rounds played unlogged, the player left to guess the state (Block Blast, five runs in one session
+    [s:20261006-105231-chrono-2FYKPJ#15] [s:20261006-105231-chrono-2FYKPJ#49]; Vita Mahjong
+    [s:20261006-122751-chrono-2FYKPJ#17] [s:20261006-122751-chrono-2FYKPJ#45]; Cryptogram
+    [s:20261006-131052-chrono-2FYKPJ#31]). Now the run ends like any other phone loss: the solve_end step, the
+    session saved, exit 3 with the rounds and moves it made."""
+    stop = f"phone lost in round {rounds}: {type(ex).__name__}: {ex}"
+    log_step(cur, {"type": "solve_end", "mechanic": mech, "rounds": rounds, "n": total,
+                   "board": bool(getattr(args, "board", None)), "gave_up": False, "stopped": stop})
+    save_session(cur)
+    refuse_blocked(cur, f"phone {cur['device']} unavailable in solve --run: {type(ex).__name__}: {ex}",
+                   unavailable=True, rounds=rounds, moves_done=total)
+
+
 def cmd_solve(args) -> None:
     """Run the mechanic's solver. Without --run the moves are only drawn on a fresh full-resolution frame
     for checking. With --run, rounds of frame -> solver -> moves until the solver has no moves or says the
@@ -4121,70 +4300,76 @@ def cmd_solve(args) -> None:
         return solve_check(cur, args, mech, frame(), gap)
     cap, pause = P()["play"]["batch_max"] * 5, args.gap if args.gap is not None else P()["play"]["batch_gap_s"]
     total, stop, notes, n, prev, changed, gave_up, t0 = 0, None, [], 0, None, False, False, time.time()
-    for n in range(1, max(1, args.rounds) + 1):
-        before, h_before = frame(), cur["last_hash"]
-        res = run_solver(cur["game"], mech, before, args.board if n == 1 else None, cur["scale"],
-                         state=solver_state(cur, mech))
-        moves = solver_moves(res, *cur["phys"])
-        rep = solve_repeat(cur, mech, moves) if n == 1 else None
-        if rep is not None and not args.force:
-            return solve_refused(cur, args, mech, res, moves, rep, before, gap, info)
-        keep_solver_state(cur, mech, res)
-        notes.append(res.get("note"))
-        if not moves:
-            # "solved" needs a round of this call that changed the frame: a solver that says done on a frame
-            # nothing changed may be reading an ad or the last win screen (2026-10-01, dream: Meowdoku level 46)
-            stop = (("solved" if changed else "the solver says done on a frame that did not change: look at it")
-                    if res.get("done") else f"the solver has no moves: {res.get('note') or 'no note'}")
-            gave_up = not res.get("done")
-            break
-        if moves == prev:
-            # the same moves after playing them: the solver does not see their result (a misread board,
-            # another screen on top); tapping them again would be blind
-            stop = f"the solver repeats the moves of the previous round: its reading does not change ({res.get('note')})"
-            gave_up = True
-            break
-        prev = moves
-        done, stopped = run_moves(cur, dev, moves[:cap], 1.0, pause)
-        total += done
-        cur["step"] += 1
-        cur["moves"] = cur.get("moves", 0) + done
-        cur["last_action"] = time.time()
-        time.sleep(args.settle)
-        info = take_shot(cur, dev, args.hi)
-        cur["last_solve"] = {"mech": mech, "hash": h_before, "moves": [list(m) for m in moves], "step": cur["step"]}
-        log_step(cur, {"type": "solve", "mechanic": mech, "round": n, "n": done, "moves": [list(m) for m in moves[:done]],
-                       "note": res.get("note"), "rescan": bool(res.get("rescan")), "done": bool(res.get("done")),
-                       "why": args.why, **shot_rec(cur, info), "gap_s": gap if n == 1 else None,
-                       **({"stopped": stopped} if stopped else {}),
-                       **({"repeated": True, "forced": True} if rep is not None else {})})
-        save_session(cur)
-        if stopped:
-            stop = stopped
-            break
-        # any pixel of the game area changed since the frame the round was planned on (pHash would miss two
-        # small tiles): the same measure as the step's `changed`
-        changed = bool(info.get("changed"))
-        if res.get("done"):
-            stop = ("the solver says these moves finish the level" if changed
-                    else "the solver says done on a frame that did not change: look at it")
-            break
-        if not changed:
-            stop = "the moves changed nothing on screen: the solver misreads the board"
-            gave_up = True
-            break
-        lv = cur.get("level")
-        if lv and time.time() - lv["t0"] > P()["play"]["level_budget_min"] * 60 and not lv.get("budget_stop"):
-            # said once a level: after the look, every later `solve --run` was cut to one round and had to be
-            # called again, 53 calls for the rest of one Hard level (Amaze GO!, 2026-10-05
-            # [s:20261005-010045-chrono-2FYKPJ#39] to [s:20261005-010045-chrono-2FYKPJ#91])
-            lv["budget_stop"] = True
-            stop = ("the level is over its time budget: look at the board yourself (said once: the next solve --run "
-                    "in this level plays its rounds)")
-            break
-    else:
-        stop = f"{args.rounds} round(s) played" + ("; the solver wants another look (rescan)" if res.get("rescan") else "")
-    add_warnings(info, book_moves(cur, "solve", total, t0))
+    try:
+        for n in range(1, max(1, args.rounds) + 1):
+            before, h_before = frame(), cur["last_hash"]
+            res = run_solver(cur["game"], mech, before, args.board if n == 1 else None, cur["scale"],
+                             state=solver_state(cur, mech))
+            moves = solver_moves(res, *cur["phys"])
+            rep = solve_repeat(cur, mech, moves) if n == 1 else None
+            if rep is not None and not args.force:
+                return solve_refused(cur, args, mech, res, moves, rep, before, gap, info)
+            keep_solver_state(cur, mech, res)
+            notes.append(res.get("note"))
+            if not moves:
+                # "solved" needs a round of this call that changed the frame: a solver that says done on a frame
+                # nothing changed may be reading an ad or the last win screen (2026-10-01, dream: Meowdoku level 46)
+                stop = (("solved" if changed else "the solver says done on a frame that did not change: look at it")
+                        if res.get("done") else f"the solver has no moves: {res.get('note') or 'no note'}")
+                gave_up = not res.get("done")
+                break
+            if moves == prev:
+                # the same moves after playing them: the solver does not see their result (a misread board,
+                # another screen on top); tapping them again would be blind
+                stop = f"the solver repeats the moves of the previous round: its reading does not change ({res.get('note')})"
+                gave_up = True
+                break
+            prev = moves
+            done, stopped = run_moves(cur, dev, moves[:cap], 1.0, pause)
+            total += done
+            cur["step"] += 1
+            cur["moves"] = cur.get("moves", 0) + done
+            cur["last_action"] = time.time()
+            time.sleep(args.settle)
+            info = take_shot(cur, dev, args.hi)
+            cur["last_solve"] = {"mech": mech, "hash": h_before, "moves": [list(m) for m in moves], "step": cur["step"]}
+            log_step(cur, {"type": "solve", "mechanic": mech, "round": n, "n": done, "moves": [list(m) for m in moves[:done]],
+                           "note": res.get("note"), "rescan": bool(res.get("rescan")), "done": bool(res.get("done")),
+                           "why": args.why, **shot_rec(cur, info), "gap_s": gap if n == 1 else None,
+                           **({"stopped": stopped} if stopped else {}),
+                           **({"repeated": True, "forced": True} if rep is not None else {})})
+            save_session(cur)
+            if stopped:
+                stop = stopped
+                break
+            # any pixel of the game area changed since the frame the round was planned on (pHash would miss two
+            # small tiles): the same measure as the step's `changed`
+            changed = bool(info.get("changed"))
+            if res.get("done"):
+                stop = ("the solver says these moves finish the level" if changed
+                        else "the solver says done on a frame that did not change: look at it")
+                break
+            if not changed:
+                stop = "the moves changed nothing on screen: the solver misreads the board"
+                gave_up = True
+                break
+            lv = cur.get("level")
+            if lv and time.time() - lv["t0"] > P()["play"]["level_budget_min"] * 60 and not lv.get("budget_stop"):
+                # said once a level: after the look, every later `solve --run` was cut to one round and had to be
+                # called again, 53 calls for the rest of one Hard level (Amaze GO!, 2026-10-05
+                # [s:20261005-010045-chrono-2FYKPJ#39] to [s:20261005-010045-chrono-2FYKPJ#91])
+                lv["budget_stop"] = True
+                stop = ("the level is over its time budget: look at the board yourself (said once: the next solve --run "
+                        "in this level plays its rounds)")
+                break
+        else:
+            stop = f"{args.rounds} round(s) played" + ("; the solver wants another look (rescan)" if res.get("rescan") else "")
+    except Exception as ex:  # the phone gone in the middle of a round (adb: "device not found", a reset)
+        from device import TRANSIENT, device_gone
+        if not (isinstance(ex, TRANSIENT) or device_gone(ex) or type(ex).__name__.startswith("Adb")):
+            raise  # a bug elsewhere stays a crash with its traceback
+        solve_phone_lost(cur, mech, n, total, args, ex)
+    add_warnings(info, book_moves(cur, "solve", total, t0) + incoming_notes(cur["game"]))
     # how the run ended, with --board or not: the lab sees a solver the player works around (lab_needed)
     log_step(cur, {"type": "solve_end", "mechanic": mech, "rounds": n, "n": total, "board": bool(args.board),
                    "gave_up": gave_up, "stopped": stop})
@@ -5040,7 +5225,7 @@ def cmd_snapshot(args) -> None:
     view["synced"][machine()] = now_iso(until)
     outp.parent.mkdir(parents=True, exist_ok=True)
     outp.write_text("# Tasks and feature map of the game. Written only by the \"dream\" (sw.py snapshot + edits per the schema).\n" +
-                    yaml.safe_dump(view, allow_unicode=True, sort_keys=False), encoding="utf-8")
+                    redact_personal(yaml.safe_dump(view, allow_unicode=True, sort_keys=False)), encoding="utf-8")
     out({"written": str(outp), **summary_of(view)})
 
 
@@ -6250,8 +6435,8 @@ def parser() -> argparse.ArgumentParser:
     q.add_argument("--deliberate", action="store_true",
                    help="lost on purpose, to run an outcome under a feature: not counted against the mechanic")
     q.add_argument("--retry", action="store_true", help="lost: open the same level again on a new clock")
-    q.add_argument("--shot", type=int, help="won: the frame (shot_n) that showed the win screen, when you have "
-                                            "already left it; the record keeps that frame")
+    q.add_argument("--shot", type=int, help="won or lost: the frame (shot_n) that showed the win or the game-over "
+                                            "screen, when you have already left it; the record keeps that frame")
     p = sub.add_parser("mechanic")
     p.add_argument("id")
     p.add_argument("name", nargs="?")

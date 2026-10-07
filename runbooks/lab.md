@@ -11,7 +11,10 @@ Run every command from the root: `cd <root> && python harness/sw.py …`.
 ## Read
 
 - `state/<game>/playbook.md` — the mechanic's rules, risks, method and pitfalls;
-- `python harness/sw.py playbook --game <game>` — level times per mechanic;
+- `python harness/sw.py playbook --game <game>` — level times per mechanic; it warns when a merged
+  copy waits as `state/<game>/playbook.incoming.md` or `solvers/<mechanic>.incoming.py` (it could not
+  be merged into the local file by itself): bring what is new into the local file, then delete it. The
+  local file is never replaced by file time: your edits stay;
 - `python harness/sw.py level-frames <game> <mechanic>` — past levels with their frames; `start_frames`
   are the boards at the start of each level (look at `…_m.jpg` next to each, 730 px wide);
 - the level notes (`level end --note`) in `raw/<game>/<session>/steps.jsonl`. A note that says the

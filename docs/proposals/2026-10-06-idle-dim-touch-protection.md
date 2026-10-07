@@ -75,3 +75,23 @@ away with the dim; `145445`'s timing says it stays longer.
   research.yaml`, task `chest-open-followup`): one session with the option on ends with the chest opened.
 - With the fake phone: `wait 120` with `keep_awake` set sends the input twice and records `nudges: 2`;
   without it, none (the fake device counts its inputs).
+
+## 2026-10-07 update (chrono, 36 sessions): still the first cause of blocked sessions
+
+Five more sessions ended on the protection window, 7 refused commands; with the four adb drops they make 9
+of 36 sessions blocked (25%):
+
+| Session | What idled | Idle before the block |
+|---|---|---|
+| `20261006-053412-chrono-2FYKPJ#19` (Block Blast) | the player's own thinking between two `taps` | 186 s |
+| `20261006-111957-chrono-2FYKPJ#23` (Block Blast) | an interstitial held with `wait` | about 3.5 min |
+| `20261006-080945-chrono-2FYKPJ#11` (MeowTrail) | the win screen while the notes were written | about 3 min |
+| `20261006-102842-chrono-2FYKPJ#18` (MeowTrail) | four refused retries without clearing the cause | — |
+| `20261006-093640-chrono-2FYKPJ#23` (Amaze GO) | offline solver debugging in the middle of a level | 229.8 s |
+
+Two of the five did not wait at all: the idle time was the model's own thinking or offline work between two
+commands. So the keep-awake cannot live inside `wait` alone (the 50 s slices above): it has to be a background
+nudge that runs while a session is open and the last touch is older than about 100 s — a thread of a small
+helper process started by `start` and stopped by `end`, or the same check at the start of every `sw.py` command
+(too late for a 186 s gap). The rest of the proposal stands: the input is chosen on the phone, off by default,
+`local.yaml` turns it on.

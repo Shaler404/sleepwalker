@@ -43,12 +43,18 @@ try:
     merged = merged_dir / "tmech.py"
     merged.write_text("# merged fix\n", encoding="utf-8")
     p = swm.solver_path(G, "tmech")
+    check(p == local and "draft" in local.read_text() and "merged fix" in (local.parent / "tmech.incoming.py").read_text(),
+          "a merged solver of unknown relation to the local draft (no base) does not replace it: it waits as .incoming.py")
+    # the draft was taken from the merged copy once (the base says so): the merged fix replaces it, the draft is kept
+    (local.parent / "tmech.base.py").write_text("# local draft\n", encoding="utf-8")
+    (local.parent / "tmech.incoming.py").unlink()
+    p = swm.solver_path(G, "tmech")
     check(p == local and "merged fix" in local.read_text() and "draft" in (local.parent / "tmech.prev.py").read_text(),
-          "a newer merged solver replaces the local draft, which is kept as .prev.py")
+          "a newer merged solver replaces a local copy untouched since its take, which is kept as .prev.py")
     time.sleep(0.05)
     local.write_text("# the lab's newer work\n", encoding="utf-8")
     swm.solver_path(G, "tmech")
-    check("lab's newer work" in local.read_text(), "a local solver newer than the merged one is kept")
+    check("lab's newer work" in local.read_text(), "a local solver edited after the take is kept (2026-10-07: by content, not by file time)")
     check(swm.solver_path(G, "nothing") is None, "no solver at all: None")
 finally:
     (merged_dir / "tmech.py").unlink(missing_ok=True)
