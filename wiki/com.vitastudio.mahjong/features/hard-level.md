@@ -41,7 +41,7 @@ Once leagues were open the button also carried a purple "x2" tag with a 福 tile
 The level opens on an empty table with a dark red banner across it: a flame icon, "Hard" in red and a
 one-line subtitle, "Even pros sweat here." [^s3]. Then the board is laid out [^s3]:
 
-*A tap on the red Level 20 Hard button: the red Hard banner over the empty table, then the denser board with green backs is laid out* (clip dropped: per-dream clip limit) [^s3]
+![A tap on the red Level 20 Hard button: the red Hard banner over the empty table, then the denser board with green backs is laid out](../clips/20261005-hard-level-banner.webp) [^s3]
 *Clip 5.6 s · [original on YouTube from 16:13](https://youtu.be/nmXrQmoLWlU?t=973)*
 
 ![The Hard banner: a flame icon, "Hard" and "Even pros sweat here." over the empty table; IQ 40, an empty 4-slot tray, boosters Shuffle 2, Hint "+", Undo 9](../img/20261005-hard-level-popup-d9fa753c.webp) [^s3]

@@ -21,7 +21,10 @@ The next round reads the board again: no unlit solution cell left means the leve
 
 Screens that are not a level board (2026-10-03):
 - the win screen (the page under a dark veil): the counter is read with the veil taken off; N/N -> done
-  (no moves), so `solve --run` ends as "solved"; any other dimmed screen is refused with its counter;
+  (no moves), so `solve --run` ends as "solved"; any other dimmed screen is refused with its counter; the
+  fail screen ("Almost!", orange Revive over green Restart) is refused naming Restart (364,1285); a level page
+  dimmed evenly as a whole (the phone's idle dim or Samsung touch protection, about 0.1 of the light, no game
+  popup: level 44 of 20261006-102842) is refused as "not the game", with the reading of the board under it;
 - the tutorial (page veiled to (150,149,147), the cell(s) to tap left bright): double taps on exactly the
   bright floor cells (at most 4, never two that see each other); the finished tutorial board on the light
   page (250,249,245) with every cell lit and the orange "Got it!" button -> done.
@@ -510,16 +513,54 @@ def _tutorial(rd, R, C, shown):
                     f"(row, col from 1; H bright, L lit, ? under the hand). Read: {shown}"}
 
 
-def _from_image(image):
+def _fail_screen(a):
+    """The fail screen "Almost!" over the veiled page: an orange Revive and a green Restart button."""
+    H, W, _ = a.shape
+    if np.median(a[int(H * 0.45):int(H * 0.75), int(W * 0.04):int(W * 0.06)]) > 120:
+        return False  # a light panel at the left edge: the Settings popup (also orange over green Restart)
+    reg = a[int(H * 0.79):int(H * 0.83), int(W * 0.3):int(W * 0.7)].reshape(-1, 3)
+    return ((reg[:, 1] > 150) & (reg[:, 0] < 100) & (reg[:, 2] < 120)).mean() > 0.4 and _orange_button(a, 0.70, 0.73, 0.4)
+
+
+def _under_even_dim(a):
+    """A level page dimmed evenly as a whole (the phone's own dim, about 0.1 of the light), not under a game popup:
+    -> the solver's reading of the page with the dim taken off (moves or done), or None."""
+    from PIL import Image
+    H, W, _ = a.shape
+    bg = np.median(a[int(H * 0.285):int(H * 0.78), 3:max(6, int(W * 0.025))].reshape(-1, 3), axis=0)
+    if bg.min() < 8:
+        return None
+    lifted = np.clip(a * (BG / bg), 0, 255).astype(np.uint8)
+    res = _from_image(Image.fromarray(lifted), _depth=1)
+    if not (res.get("moves") or res.get("done")):
+        return None
+    return (f"{len(res['moves'])} double taps" if res.get("moves") else "complete") + ", " + res["note"]
+
+
+def _from_image(image, _depth=0):
     try:
         rd = _read(image)
     except _Dimmed as e:
+        if _depth:
+            return _no(str(e))
         cnt = _counter(e.a, dimmed=True)
         if cnt and cnt[0] == cnt[1] > 0:
             return {"moves": [], "rescan": False, "done": True,
                     "note": f"the win screen: the counter reads {cnt[0]}/{cnt[1]} under the veil, the level is won. "
                             "Take a shot of it for level end won, then tap the \"Level N+1\" button (364,1285)"}
-        return _no(str(e) + (f"; the counter reads {cnt[0]}/{cnt[1]}" if cnt else ""))
+        tail = f"; the counter reads {cnt[0]}/{cnt[1]}" if cnt else ""
+        if _fail_screen(e.a):
+            return _no("the fail screen (\"Almost!\", no hearts left): tap the green Restart (364,1285 in a 730x1583 "
+                       "frame) for the same board with 3 hearts (free; Revive is a video), wait 2 s and run solve "
+                       "again" + tail)
+        under = _under_even_dim(e.a)
+        if under:
+            return _no("the whole screen is dimmed evenly (the board, the bar and the ad banner alike), with no game "
+                       "popup on it: the phone dimmed its screen (idle) or Samsung touch protection covers it, not "
+                       "the game. Game taps and back do nothing here: wake the screen (sw.py shot; if sw.py says "
+                       "touches are blocked, the proximity sensor is covered), then run solve again. The board "
+                       f"under the dim reads: {under}" + tail)
+        return _no(str(e) + tail)
     except ValueError as e:
         return _no(str(e))
     grid = rd["grid"]

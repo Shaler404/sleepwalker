@@ -4,8 +4,8 @@ title: "Daily Victories streak"
 type: feature
 feature: daily-victories
 version_seen: 3.40.1
-verified_at: 2026-10-05
-sources: [20261005-073409-chrono-2FYKPJ, 20261005-073804-chrono-2FYKPJ, 20261005-133525-chrono-2FYKPJ, 20261005-221108-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261005-073409-chrono-2FYKPJ, 20261005-073804-chrono-2FYKPJ, 20261005-133525-chrono-2FYKPJ, 20261005-221108-chrono-2FYKPJ, 20261006-072809-chrono-2FYKPJ, 20261006-122751-chrono-2FYKPJ]
 ---
 
 # Daily Victories streak
@@ -105,7 +105,22 @@ was not tapped.
 ### OK
 
 <!-- no-frame: the button is on the Result frame above -->
-On the post-win panel: closes it; the level's win screen follows [^s3].
+On the next day (2026-10-06) the first win, level 21, brought the panel with the leaf at 2 and a new
+week row that starts on Tuesday, the day of the win: Tu checked, gift icons on Friday and Monday (the
+4th and 7th places of the row), the same caption [^s16]. The home counter read "x2" afterwards [^s17].
+Inferred: the row is the 7 days of the streak, not the calendar week, so the gifts sit on streak days 4
+and 7; not verified.
+
+![The panel after the level 21 win on day 2: the leaf with "2", a row Tu to Mo with Tuesday checked, gift icons on Friday and Monday, "You are ready for a great week!" and OK](../img/20261006-daily-victories-result-d8f8e3f2.webp) [^s16]
+*Day 2 of the streak: the row starts on Tuesday*
+
+Later the same day the level 22 win brought the panel once more: the leaf animated from 1 to 2 again, the
+same Tuesday-to-Monday row with Tuesday checked and the gifts on Friday and Monday, the same caption
+[^s18]. The frame is the same as the one above. No third day was added (the count stayed 2)
+[^s18].
+
+On the post-win panel: closes it; the level's win screen follows [^s3]. After the level 22 win OK led to the
+Rate Us popup over the win screen [^s19].
 
 ## How it works
 
@@ -115,6 +130,9 @@ Version 3.40.1.
   ("x1") and the Daily Victories screen [^s3] [^s2] [^s11].
 - One day per day: a second won level on the same day left the streak at 1; the post-win panel still came
   up [^s4] [^s5].
+- A win on the next day added the second day: leaf 2 on the panel, "x2" on home [^s16] [^s17].
+- A second win on day 2 (level 22) showed the panel again at 2, as on day 1: one day per calendar day
+  [^s18]. Inferred: with one win a day the 10-day chest is reached on 2026-10-14 at the earliest.
 - Quitting a level with the back arrow after the day's win left the counter at "x1"
   [^s2].
 - Nothing about the streak shows inside a level (the level 19 and level 20 HUDs are unchanged); it shows
@@ -138,17 +156,19 @@ Version 3.40.1.
 | Offers to keep it after a break and their price (a video, coins) <!-- case:chk-save --> | — | not verified |  |
 | Win under Daily Victories streak: as the base, or what differs <!-- case:under-win --> | Won level 19 | ✅ After the board clears, the Daily Victories panel comes up before the win screen: leaf 0 to 1, today checked, OK to go on | [^s3] |
 | Quit with the back arrow under Daily Victories streak: as the base, or what differs <!-- case:under-quit --> | After the day's win, left the Hard level 20 with the back arrow | ✅ As the base; the leaf counter stays "x1" | [^s2] |
-| A second win on the same day <!-- case:one-leaf-per-day --> | Won the Hard level 20 on the day level 19 was won | ✅ No second leaf: the panel shows day 1 again, the home counter stays "x1" | [^s5] |
+| A second win on the same day <!-- case:one-leaf-per-day --> | Won the Hard level 20 on the day level 19 was won; won level 22 on the day level 21 was won | ✅ No second leaf: the panel shows day 1 again, the home counter stays "x1"; on day 2 the panel shows 2 again | [^s5] [^s18] |
 | A tap on a locked chest <!-- case:chest-tap-no-preview --> | Tapped the 10-day chest at streak 1 | ✅ No preview or tooltip; contents shown only when reached | [^s8] [^s14] |
 | The month arrows <!-- case:month-arrows --> | Tapped the left (previous month) arrow at streak 1 | ✅ No change: the calendar stays on 10/2026 | [^s15] |
 | Restart in the Out of space window under Daily Victories streak: as the base, or what differs <!-- case:under-restart --> | — | not verified |  |
 | Exit the app mid-level (a force-stop after one pair) under Daily Victories streak: as the base, or what differs <!-- case:under-exit-app --> | — | not verified |  |
 | Restart row in the in-level Options under Daily Victories streak: as the base, or what differs <!-- case:under-restart-menu --> | — | not verified |  |
 | Out of space under Daily Victories streak: as the base, or what differs <!-- case:under-out-of-space --> | Ran out of space in the Hard level 20 with a 1-day streak, revived with "-4 to revive" | ✅ As the base; the streak and the leaf counter unchanged | [^s12] |
+| The next day <!-- case:day-2 --> | Won level 21 on 2026-10-06, the day after the first win | ✅ Leaf 2 on the panel, a new week row starting Tuesday with Tuesday checked, gifts on Friday and Monday; "x2" on home | [^s16] |
+| A second win on day 2 <!-- case:second-win-day2 --> | Won level 22 on 2026-10-06, after level 21 earlier that day | ✅ The panel again at 2, the same row with Tuesday checked; no third day | [^s18] |
 
 ## Not verified
 
-- The reward in each chest (10, 20, 30 days), and the gifts on Thursday and Sunday of the week row <!-- case:chk-rewards -->
+- The reward in each chest (10, 20, 30 days), and the gifts on days 4 and 7 of the week row <!-- case:chk-rewards -->
 - What breaks the streak and what the break costs <!-- case:chk-break -->
 - Offers to keep the streak after a break <!-- case:chk-save -->
 - A Restart in the Out of space window and an app exit mid-level with a streak running: whether either touches the streak <!-- case:under-restart --> <!-- case:under-exit-app -->
@@ -170,3 +190,8 @@ Version 3.40.1.
 [^s13]: session 20261005-221108-chrono-2FYKPJ, step 1 — [video at 0:32](https://youtu.be/3FoFiC5gYbs?t=32)
 [^s14]: session 20261005-221108-chrono-2FYKPJ, step 2 — [video at 0:52](https://youtu.be/3FoFiC5gYbs?t=52)
 [^s15]: session 20261005-221108-chrono-2FYKPJ, step 3 — [video at 1:04](https://youtu.be/3FoFiC5gYbs?t=64)
+[^s16]: session 20261006-072809-chrono-2FYKPJ, step 53 — [video at 22:33](https://youtu.be/lmyXziDOcNk?t=1353)
+[^s17]: session 20261006-072809-chrono-2FYKPJ, step 59 — [video at 26:29](https://youtu.be/lmyXziDOcNk?t=1589)
+
+[^s18]: session 20261006-122751-chrono-2FYKPJ, step 42 — [video at 12:09](https://youtu.be/B2PSO6tOKeQ?t=729)
+[^s19]: session 20261006-122751-chrono-2FYKPJ, step 43 — [video at 12:39](https://youtu.be/B2PSO6tOKeQ?t=759)

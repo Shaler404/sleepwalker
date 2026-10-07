@@ -1,16 +1,16 @@
 # Tasks: Vita Mahjong
 
-Status: **▶️ active** — ready now: 29
+Status: **▶️ active** — ready now: 26
 
 Mode: **goals** — work through the session goals in order; play levels only as far as an unlock or experiment goal needs; register anything new you notice as a feature or a goal, do not pursue it now
 
-Progress reached: **level 21 (Hard L20 won)** · last new feature found at: **level 21 (Hard L20 won)**
+Progress reached: **level 23** · last new feature found at: **level 23**
 
-Goals: study 7, unlock 1, experiment 21 · maps: level 19 (restored by Sync Data) — 11 new
+Goals: study 1, unlock 1, experiment 25 · maps: level 19 (restored by Sync Data) — 11 new
 
-Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **core-match** — broken, solver, levels won 2, typical 16.2 min
+Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **core-match** — broken, solver, levels won 4, typical 17.5 min
 
-Google Play version: **3.40.1** (checked 2026-10-05 22:05:43) · analyzed version: **3.40.1** · FTUE from a fresh install: **never**
+Google Play version: **3.40.1** (checked 2026-10-06 10:09:39) · analyzed version: **3.40.1** · FTUE from a fresh install: **never**
 
 Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit by hand. Feature map: [features.md](features.md).
 
@@ -22,38 +22,33 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 | Unlock Name colors: 8 achievement points for color 2 | unlock | [Name colors](features/name-colors.md) | knowledge gap | the lock seen on screen (feature --locked) |
 | Run each outcome once under Hard level: Restart in the Out of space window, Force-stop after one pair cleared (IQ 40.4), Restart row in the in-level Options | experiment | [Hard level](features/hard-level.md) | knowledge gap |  |
 | Which home buttons appear as levels go up (shop, daily, events)? | experiment | [Home screen](features/home.md) | knowledge gap |  |
-| Study Profile: open it, walk its screens and tabs, verify its cases | study | [Profile](features/profile.md) | external |  |
-| Study Theme (tiles and background): open it, walk its screens and tabs, verify its cases | study | [Theme (tiles and background)](features/theme.md) | external |  |
-| Study Settings: open it, walk its screens and tabs, verify its cases | study | [Settings](features/settings.md) | external |  |
-| Study No Ads purchase: open it, walk its screens and tabs, verify its cases | study | [No Ads purchase](features/no-ads.md) | external |  |
-| Tile set vs board: find whether the chosen tile set or the level decides the board's faces and face-down color | experiment | [Theme (tiles and background)](features/theme.md) | knowledge gap |  |
 | Look for daily rewards or a daily challenge: open the game on a new day and check the home and launch popups | experiment | [Home screen](features/home.md) | knowledge gap |  |
-| Find what an age bracket changes: pick 55+ on the age popup when it shows on a relaunch and compare the home and the next level to the X-closed runs | experiment | [Age selection](features/age-select.md) | knowledge gap |  |
 | Find whether Shuffle turns face-down tiles face up (count the backs before and after one Shuffle) | experiment | [Boosters: Shuffle, Hint, Undo](features/boosters.md) | knowledge gap |  |
-| Find what set the board's tiles on L19: purple backs in 195050, cream faces with red backs in 231804, no theme change in between | experiment | [Theme (tiles and background)](features/theme.md) | knowledge gap |  |
-| Find why IQ bonus tiles appeared: tiles with a blue IQ+N banner (IQ+6, IQ+9 on L19, frames 6, 19); seen from level 8 in 20260930-225122 (IQ+10), first level not seen | experiment | IQ bonus tiles | knowledge gap |  |
 | Study IQ bonus tiles: match an IQ+N tile pair and record how much the IQ score grows | experiment | IQ bonus tiles | knowledge gap |  |
 | Find what Revive in the Out of space window costs (badge 5: a rewarded video or free revives) | experiment | [Tray mahjong level](features/core-level.md) | knowledge gap |  |
 | Run each outcome once under Daily Victories streak: Restart in the Out of space window, Force-stop after one pair cleared (IQ 40.4), Restart row in the in-level Options | experiment | Daily Victories streak | knowledge gap |  |
 | Daily Victories: see what the 10-day chest gives (a tap on the chest shows nothing) | experiment | Daily Victories streak | knowledge gap |  |
-| See what Shuffle and Undo offer at 0 (as Hint: a video for 2?) | experiment | [Boosters: Shuffle, Hint, Undo](features/boosters.md) | knowledge gap |  |
-| Find why Picture tiles (framed art, zodiac, blank card) appeared: ordinary pairs among tile faces; framed art first noted on L12-L19 | experiment | Picture tiles (framed art, zodiac, blank card) | knowledge gap |  |
-| Study Picture tiles (framed art, zodiac, blank card): open it, walk its screens and tabs, verify its cases | study | Picture tiles (framed art, zodiac, blank card) | external |  |
 | Hard every 10 levels: check that Level 30 is Hard (and L22-29 are not) | experiment | [Hard level](features/hard-level.md) | knowledge gap |  |
-| Study spinning tiles (L21): how the spin works, what stops it | study | Spinning tiles | knowledge gap |  |
 | Solver: read the 5th tile set (white faces, blue backs, Hard L20 of session 133525) - it read 'purple' and found no pair on shots 00005-00045 | experiment | [Tray mahjong level](features/core-level.md) | knowledge gap |  |
+| Leagues: after the period ends (about 24h from 13:56 on 2026-10-05) mark the results screen, the reward and the new league | check | [Leagues](features/leagues.md) | from the game |  |
 | Study Combo: what breaks the streak (a pause, a tray tile), whether a tier gives anything beyond the win-screen number, its first level | experiment | Combo streak | knowledge gap |  |
-| Rate Us prompt: after closing it with X, does it come back on later wins (which level)? | experiment | Rate us button | knowledge gap |  |
-| Study Notification prompt: open it, walk its screens and tabs, verify its cases | study | Notification prompt | external |  |
 | Find what the x2 league tag on a normal Level button means: win L21 and count the 福 league points it adds | experiment | [Leagues](features/leagues.md) | knowledge gap |  |
 | Check Level 20 frame in Frame tab and Save of an equipped frame | experiment | [Level avatar frames](features/level-frames.md) | knowledge gap |  |
+| Play a level and match two framed-art tiles: rules, zodiac and blank card variants, interaction with spin tiles | experiment | Picture tiles (framed art, zodiac, blank card) | knowledge gap |  |
+| Facebook Connect button in Profile: what it asks (do not sign in) | experiment | [Profile](features/profile.md) | knowledge gap |  |
+| Rate Us prompt: record on which wins it shows (every win, or every Nth) from L22 to L30, closing it with X each time | experiment | Rate us button | knowledge gap |  |
+| Solver: play the L21-style spin ring without stalls (wait for the ring to settle after each removed tile, send at most one ring tile per batch as its first tap) | experiment | Spinning tiles | knowledge gap |  |
+| Theme: confirm a non-default set, leave the game with Home (no force-stop), come back after a few minutes and see if the pick and the board set are kept | experiment | [Theme (tiles and background)](features/theme.md) | knowledge gap |  |
+| Find what chooses the board's tile set when it differs from the Theme picker: same red-back set on every relaunch, a new one each launch, or set by the level | experiment | [Theme (tiles and background)](features/theme.md) | knowledge gap |  |
+| Find what brings up the mid-level 'challenge' banner (mascot on a skateboard) and whether it changes anything | experiment | Combo streak | knowledge gap |  |
+| Answer the Important Notice with Continue on the next win: where it leads (system settings or a permission dialog), and whether it still comes after the following win | experiment | Notification prompt | knowledge gap |  |
+| Rewarded video: can a booster video be watched again at once, and does any unasked ad (interstitial) show between levels | experiment | Rewarded videos | knowledge gap |  |
+| Study Rewarded videos: open it, walk its screens and tabs, verify its cases | study | Rewarded videos | external |  |
 
 ## Waiting
 
 | Task | Not before | Kind | Feature |
 |---|---|---|---|
-| Daily Victories: win a level tomorrow and see whether the streak shows 2 and how a missed day looks — day 1 of 2 | 2026-10-06 07:59:09 | daily | Daily Victories streak |
-| Leagues: after the period ends (about 24h from 13:56 on 2026-10-05) mark the results screen, the reward and the new league | 2026-10-06 14:00:00 | check | [Leagues](features/leagues.md) |
 | Daily Victories: win a level tomorrow and see whether the streak shows 2 and how a missed day looks — day 2 of 2 | 2026-10-07 07:59:09 | daily | Daily Victories streak |
 
 ## Needs a human
@@ -64,11 +59,31 @@ The agent cannot do these tasks until it is given a suitable phone.
 |---|---|---|
 | Check Terms/Privacy links on the consent window | a phone with a fresh install: uninstall the game and install it again (or clear its data), then connect the phone | [Terms consent](features/consent.md) |
 | Replay the 3.40.1 FTUE on a fresh install with the cloud restore declined (levels 1-18 were skipped by Sync Data) | a phone with a fresh install: uninstall the game and install it again (or clear its data), then connect the phone |  |
+| IQ bonus tiles on a fresh install: note on which level IQ+N tiles first appear and whether they stop after leagues or a set level | a phone with a fresh install: uninstall the game and install it again (or clear its data), then connect the phone | IQ bonus tiles |
+| Find what the 55+ age bracket changes: on a fresh install tap 55+ on the age popup and compare home and the first levels to the 35-55 fresh run (195050) | a phone with a fresh install: uninstall the game and install it again (or clear its data), then connect the phone | [Age selection](features/age-select.md) |
 
 ## Done
 
 | Task | Closed | By | Note |
 |---|---|---|---|
+| Win Hard L30 and answer the Important Notice prompt both ways (X, Continue); check whether it returns (cancelled) | 2026-10-06 12:51:50 | review-20261006 | Premise wrong: the Important Notice is not Hard-only; it came after the league panel of normal L21 and L22 too (X closes it, it returns on the next win, 20261006-122751-chrono-2FYKPJ#41). Replaced by notif-prompt-continue, which any win serves |
+| See what Shuffle and Undo offer at 0 (as Hint: a video for 2?) | 2026-10-06 12:33:22 | 20261006-122751-chrono-2FYKPJ#16 | L22 opened with Shuffle '+' (0), Hint '+', Undo 1 (counts in the plan were stale). Shuffle at 0 -> 'Free Shuffle' popup: watch a video to get 1 Shuffle (Get One). Used the last Undo on a tray single, then Undo at 0 -> 'Free Undo' popup: watch a video to get 2 Undos (Get Two). Both have an X that closes with nothing spent. So all three boosters at 0 turn into a rewarded-video offer: Hint and Undo give 2, Shuffle 1 (shots 6, 24). |
+| Find what an age bracket changes: pick 55+ on the age popup when it shows on a relaunch and compare the home and the next level to the X-closed runs (cancelled) | 2026-10-06 10:30:06 | review-20261006 | Not reachable on a progressed phone: the age popup did not show on three normal launches (072809 start, this session #0 and the relaunch #11); it came only on Level 1 / saved-game-offer launches. Replaced by age-bracket-fresh (requires a fresh install, where the popup shows for sure) |
+| Find what set the board's tiles on L19: purple backs in 195050, cream faces with red backs in 231804, no theme change in between | 2026-10-06 10:29:57 | 20261006-101909-chrono-2FYKPJ#15 | The board's tile set does not follow the Theme picker: after a force-stop relaunch the picker showed Simple + dark green (shot 19) but L22 drew a red-back set with symbol faces on dark green (shot 22); before the relaunch the confirmed Classic + red was drawn as picked (shot 12). The drift needs no restore or Level 1 reset, so the solver must read the backs on every board. What chooses the red-back set is left to tileset-relaunch-source |
+| Find why IQ bonus tiles appeared: IQ+N tiles are dealt on the opening board only in an early or freshly installed game state: both boards of 20261005-002327 (fresh reinstall restored by Sync Data, boosters at install defaults 3/5/10, frames 6, 19) had them, and 3.39.1 L8 (early game); no opening board since (L19 073804 #6, L20 #63, L21 221108 #10 and 001538 #15, L22 this session shots 12, 22) had any; from L20 the gold x2 (league) tiles take their place | 2026-10-06 10:26:45 | 20261006-101909-chrono-2FYKPJ#16 | No IQ+N tile on either L22 board this session (shots 12, 22) nor on the opening boards of L19-L21 since 073804; only the two boards of 002327 (fresh reinstall + Sync, boosters 3/5/10) had them. Trigger not seen on a frame; next check needs a fresh install (task iq-bonus-fresh) |
+| Theme: pick another tile set and background, Confirm, open a level and compare; then set Simple + dark green back; also check whether X discards an unconfirmed pick | 2026-10-06 10:26:20 | 20261006-101909-chrono-2FYKPJ#16 | Confirm applies both tabs to the board at once (Classic white/blue + red background, shot 12); X discards an unconfirmed pick; but the pick does not survive a force-stop relaunch: picker resets to Simple + dark green and the tile set on the next board is red-back (shot 22). Theme was left at the default Simple + dark green |
+| Study Theme (tiles and background): open it, walk its screens and tabs, verify its cases | 2026-10-06 10:26:19 | 20261006-101909-chrono-2FYKPJ#16 | Tiles (6 sets) and Background (5) walked; Classic + red confirmed and drawn on L22 (shot 12), home unchanged; X discards an unconfirmed pick (shots 4, 6); after a relaunch the picker is back to Simple + dark green and the board drew the red-back set on dark green (shots 18, 19, 22) |
+| Tile set vs board: find whether the chosen tile set or the level decides the board's faces and face-down color (cancelled) | 2026-10-06 08:02:26 | 20261006-072809-chrono-2FYKPJ#61 | Duplicate of theme-options (pick another set and background, Confirm, compare the board); this session Theme showed Simple + dark green and the L21/L22 boards matched it (theme simple-matches-board) |
+| Rate Us prompt: after closing it with X, does it come back on later wins (which level)? | 2026-10-06 08:02:26 | 20261006-072809-chrono-2FYKPJ#54 | Not once only: closed with X on L20, the prompt came back over the very next win (L21, shot 93). It returns on wins; whether every win or every Nth is still open (see rate-us-cadence) |
+| Daily Victories: win a level tomorrow and see whether the streak shows 2 and how a missed day looks — day 1 of 2 | 2026-10-06 07:56:56 | 20261006-072809-chrono-2FYKPJ#62 | Day 2 (2026-10-06): after the L21 win the Daily Victories panel showed leaf 2 and a new week row starting Tuesday with Tu checked ('You are ready for a great week!'), home leaf counter x2 |
+| Play L21 match by match and compare the board before and after each match: which tiles move in the spin and when it stops | 2026-10-06 07:53:05 | 20261006-072809-chrono-2FYKPJ#55 | Played L21 to a win: the ring turns per removed tile, not on a timer; flips and locked taps do not turn it |
+| Study spinning tiles (L21): how the spin works, what stops it | 2026-10-06 07:53:04 | 20261006-072809-chrono-2FYKPJ#55 | Spin = a ring of lower-layer edge tiles turns one place clockwise (chevrons) after every tile that leaves the board (tray take, match, flip-and-twin clear); flips do not turn it. L21 won by hand (one ring tile per call, then look). Spin stops only with the board cleared |
+| Study Profile: open it, walk its screens and tabs, verify its cases | 2026-10-06 07:24:04 | 20261006-071736-chrono-2FYKPJ#34 | Profile: avatar grid, rename field, country list, PHOTO picker, Frame tab marked; FB Connect untested |
+| Study Settings: open it, walk its screens and tabs, verify its cases | 2026-10-06 07:24:04 | 20261006-071736-chrono-2FYKPJ#34 | 4 toggles, Feedback (Helpshift), FB group/Terms/Privacy (Chrome), About 3.40.1, Share sheet |
+| Study Picture tiles (framed art, zodiac, blank card): open it, walk its screens and tabs, verify its cases | 2026-10-06 04:48:05 | 20261006-044557-chrono-2FYKPJ#5 | Marked L21 board with framed-art tiles; entry/screen/appeared closed; rules, zodiac/blank card, interactions need play: task picture-tiles-play |
+| Study Notification prompt: open it, walk its screens and tabs, verify its cases | 2026-10-06 04:48:05 | 20261006-044557-chrono-2FYKPJ#5 | Cannot be opened now: the prompt only shows after the league standing screen following a Hard level win (seen at L20). Answers and recurrence moved to task notif-prompt-answers |
+| Find why Picture tiles (framed art, zodiac, blank card) appeared: ordinary pairs among tile faces; framed art first noted on L12-L19 | 2026-10-06 04:47:57 | planner | the trigger is recorded as a fact: ordinary tile faces on the board itself: teapot and white-rabbit framed art seen on L21 (also noted on L12-L19), no intro or trigger [20261006-044557-chrono-2FYKPJ#5] |
+| Study No Ads purchase: open it, walk its screens and tabs, verify its cases | 2026-10-06 04:47:49 | 20261006-044557-chrono-2FYKPJ#5 | Walked Options > No Ads: single RSD 849 Forever offer, Restore (no visible effect), ToS/Privacy not opened, X closes; price never tapped |
 | Study In-level Options: open it, walk its screens and tabs, verify its cases | 2026-10-06 02:31:48 | 20261006-022624-chrono-2FYKPJ#21 | all rows and toggles walked on L21; toggles restored ON |
 | Study Level avatar frames: open it, walk its screens and tabs, verify its cases | 2026-10-06 02:28:47 | 20261006-022624-chrono-2FYKPJ#6 | Profile Frame tab walked: Level section (10) and Default 6 colours, preview and X-discard verified; Save and L20 frame left as task |
 | Study Loading screen: open it, walk its screens and tabs, verify its cases | 2026-10-06 02:27:18 | 20261006-022624-chrono-2FYKPJ#0 | Loading screen re-verified on 3.40.1: green screen, tagline, bar with tile icon, Games Today and Playing Now counters; all cases were closed earlier, frame marked |
@@ -101,14 +116,3 @@ The agent cannot do these tasks until it is given a suitable phone.
 | Does a relaunch or restore regenerate the L19 board (layout and back art changed between 231301 shot 22 and 231804 shot 8)? | 2026-10-05 00:31:22 | 20261005-002327-chrono-2FYKPJ#13 | Restart from Out of space (frame 12) and force-stop + Sync (frame 19) both open a new L19 layout with a different tile/back set; board progress not kept |
 | Study Face-down tiles: open it, walk its screens and tabs, verify its cases | 2026-10-05 00:28:31 | 20261005-002327-chrono-2FYKPJ#13 | 6/7 cases; entry, rules, interactions, loss verified on L19 green set |
 | Study Terms consent: open it, walk its screens and tabs, verify its cases | 2026-10-03 23:20:26 | 20261003-231804-chrono-2FYKPJ#8 | Consent not shown this launch (only on first launch); cannot reverify now, needs a fresh install |
-| Study Saved game sync: open it, walk its screens and tabs, verify its cases | 2026-10-03 23:20:26 | 20261003-231804-chrono-2FYKPJ#8 | Prompt reappeared on a reset install; Start Over shows confirm, No kept level 19 (restored) |
-| Study Boosters: Shuffle, Hint, Undo: open it, walk its screens and tabs, verify its cases | 2026-10-03 23:20:25 | 20261003-231804-chrono-2FYKPJ#8 | Hint/Undo/Shuffle each used once, counts drop by 1; empty/refill left to booster-refill |
-| Does the chosen age bracket change anything (tile size, difficulty, ads)? (cancelled) | 2026-10-03 23:19:16 | 20261003-231301-chrono-2FYKPJ#1 | superseded by age-bracket-effect: the age popup returns on relaunch of the progressed phone, so the test does not need a fresh install |
-| How many achievement points one achievement gives | 2026-10-03 23:19:06 | 20261003-231301-chrono-2FYKPJ#11 | Medal detail reads '+1 Achievement Points' (First-Try Wins 30); the bar is empty, next name color at 8 points, so color 2 needs 8 medals. The bar's fill after a first medal is left to unlock-name-colors |
-| Study Age selection: open it, walk its screens and tabs, verify its cases | 2026-10-03 23:17:29 | 20261003-231301-chrono-2FYKPJ#21 | Popup appeared again on a relaunch of the progressed phone (home showed Level 1) before the sync offer; close X verified; bracket choice effect left to age-select-effect (fresh) |
-| Study Auto Complete: open it, walk its screens and tabs, verify its cases | 2026-10-03 23:17:11 | 20261003-231301-chrono-2FYKPJ#20 | Toggle verified ON/OFF/ON; actual auto-clear behavior left to auto-complete-check |
-| Study Achievements: open it, walk its screens and tabs, verify its cases | 2026-10-03 23:16:07 | 20261003-231301-chrono-2FYKPJ#14 | Walked the screen, both scroll pages, info (Name Colors) popup, medal detail; marked all |
-| A new avatar frame at level 20 or 30? (cancelled) | 2026-10-03 20:02:44 | review-20261003 | duplicate of appeared-level-frames (same hypothesis: a level frame per 10 levels, check after L20/L30) |
-| Leagues open at some level after 19 (Achievements list League Reached)? (cancelled) | 2026-10-03 20:02:44 | review-20261003 | duplicate of appeared-leagues and unlock-leagues (same question: the level where Leagues opens) |
-| Study Rate us button: open it, walk its screens and tabs, verify its cases (cancelled) | 2026-10-03 20:02:43 | review-20261003 | rate-us was registered by mistake: the thumbs-up/star button opens Achievements (feature achievements, entry marked at 20261003-195050-chrono-2FYKPJ#23); duplicate to merge |
-| Map the game: play until the main menu and every entry point is visible; list each entry point as open (a study goal), locked with its unlock condition (an unlock goal) or unclear (an experiment) | 2026-10-03 19:59:36 | 20261003-195050-chrono-2FYKPJ#28 | Fresh reinstall; Sync Data restored level 19 with no account. Home at L19: avatar/Profile (Avatar, Frame tabs), Achievements (appears after leaving a level), Theme (6 tile sets, 5 backgrounds, all free), Settings (Save progress sign-in, About 3.40.1), Level 19. In level: IQ score, 4-slot tray, Shuffle 3/Hint 5/Undo 10, Options (Auto Complete, Colorful Effects, How to Play 2 pages, No Ads, Restart). Locked: Name colors (8 achievement points), Leagues (guess, not shown). No shop/daily/events at L19. |

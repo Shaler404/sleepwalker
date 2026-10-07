@@ -5,12 +5,12 @@ type: feature
 feature: quote-race
 version_seen: 3.6.1
 verified_at: 2026-10-06
-sources: [20261006-024420-chrono-2FYKPJ]
+sources: [20261006-024420-chrono-2FYKPJ, 20261006-052618-chrono-2FYKPJ]
 ---
 
 # Quote Race event
 
-A 12-hour race against four opponents: each regular level won counts one level for the player, and the first to solve 10 levels finishes the race in first place. A chest with a lock waits at the finish line. The race has its own screen with a podium of five busts and shows the standings on every win card [^s1] [^s2] [^s3].
+A 12-hour race against four opponents: each regular level won counts one level for the player, and the first to solve 10 levels finishes the race in first place. A locked chest waits at the finish line; its contents are not shown before the end [^s13]. The race has its own screen with a podium of five busts and shows the standings on every win card [^s1] [^s2] [^s3].
 
 ## Why it appeared
 
@@ -18,7 +18,7 @@ The session started with the game at level 9 (eight levels won); the first launc
 
 ## Where to find it
 
-Two ways in: the start popup's GO on the launch that starts the race [^s4], and on home the race badge at the right edge, above Leagues: a green laurel wreath with the player's rank in it and the time left under it [^s5]. The badge read rank 3 and 11h 56m before the first race level, and rank 2 and 11h 49m after level 9 was won [^s6].
+Two ways in: the start popup's GO on the launch that starts the race [^s4], and on home the race badge at the right edge, above Leagues: a green laurel wreath with the player's rank in it and the time left under it [^s5]. The badge read rank 3 and 11h 56m before the first race level, and rank 2 and 11h 49m after level 9 was won [^s6]; in the next session, with 2 levels solved, it read rank 5 and 9h 17m [^s15].
 
 ![Home with the race badge at the right edge above Leagues: a laurel wreath with 3 and 11h 56m under it](../img/20261006-quote-race-entry-e98d09b5.webp) [^s5]
 *The laurel badge at the right edge of home, above Leagues, opens the Quote Race*
@@ -28,7 +28,12 @@ Two ways in: the start popup's GO on the launch that starts the race [^s4], and 
 The Quote Race screen: the title "Quote Race" with a stopwatch and the time left (11h 59m), a home button at the top left and an "i" at the top right, the rule "Solve 10 levels faster than your opponents to finish the race in 1st place.", a red chest with a padlock beside a checkered finish line, a temple in the background, and five busts on pedestals. Each pedestal shows the racer's rank badge (5 to 1 from left to right at the start), a name and the levels solved (0 Levels for all); the player is the blue bust in the middle, labelled "Me" with "YOU" above it, ranked 3. A white PLAY button is at the bottom [^s2].
 
 ![The Quote Race screen: 11h 59m, the rule, the locked chest at the finish line, five busts with 0 Levels each, the player 3rd in blue, PLAY](../img/20261006-quote-race-screen-daf00fa5.webp) [^s2]
-*The race screen: the podium of five, the finish line with the chest, PLAY (the opponents' names are blacked out)*
+*The race screen at the start: the podium of five, the finish line with the chest, PLAY (the opponents' names are blacked out)*
+
+About 2 h 40 min later the pedestals' heights follow the levels solved: the player 5th with 2 levels on the lowest pedestal at the left, the opponents at 6, 7, 7 and 8 levels, the leader (8 levels) crowned with a golden laurel at the right [^s12].
+
+![The race screen at 9h 17m: the player 5th with 2 levels on the lowest pedestal, opponents at 6, 7, 7 and 8 levels, the leader with a laurel, the locked chest at the finish](../img/20261006-quote-race-screen-daa10778.webp) [^s12]
+*Mid-race: pedestals rise with the levels solved; the player is last (the opponents' names are blacked out)*
 
 ## What you can do
 
@@ -36,10 +41,12 @@ The Quote Race screen: the title "Quote Race" with a stopwatch and the time left
 |---|---|
 | [The event has started!](#the-event-has-started) | The start popup; GO opens the race with a tutorial |
 | [Tutorial](#tutorial) | One screen: complete levels |
-| [PLAY](#play) | Starts the next regular level |
+| [Info (i)](#info-i) | The rules in three pictures; nothing about the reward's contents |
+| [Chest at the finish line](#chest-at-the-finish-line) | Locked; a tap does nothing |
+| [PLAY](#play) | Starts the next regular level, after an interstitial ad |
 | [Race strip on the win card](#race-strip-on-the-win-card) | The standings after each level won |
 
-The "i" and the home button of the race screen were not tapped.
+The home button of the race screen was not tapped.
 
 ### The event has started!
 
@@ -55,9 +62,22 @@ Over the dimmed race screen: "Quote Race", the word EVENT as a solved cryptogram
 ![The tutorial: the word EVENT written as a cryptogram, Complete levels, Tap to continue](../img/20261006-quote-race-popup-d6c6832d.webp) [^s4]
 *The one-screen tutorial of the race*
 
+### Info (i)
+
+The "i" at the top right dims the race screen and shows "Quote Race" with three pictures joined by arrows: the word EVENT as a cryptogram with "Complete levels", five busts with the blue "Me" first under "Get to the finish line first!", and a chest between two laurel branches with "Get rewards!". "Tap to continue" at the bottom; a tap closes it. The chest's contents and the rewards per place are not listed [^s13].
+
+![The race info: Complete levels, Get to the finish line first!, Get rewards! with a chest; Tap to continue](../img/20261006-quote-race-popup-c68a3fb4.webp) [^s13]
+*The "i" of the race screen: three steps, no reward list*
+
+### Chest at the finish line
+
+A red chest with a golden padlock at the right end of the checkered finish line. Tapped twice: the screen stayed the same [^s14]. It is shown on the race screen frame above.
+
+<!-- no-frame: the tap changes nothing; the chest is in the race screen frame -->
+
 ### PLAY
 
-PLAY started loading the next level (level 9); an interstitial ad came first, and the session restarted the game to leave it [^s7]. The race levels are the regular levels: the level 9 board has no race element (the HUD shows only Mistakes, the home icon, the AD button and the gear) [^s8].
+PLAY started loading the next level (level 9); an interstitial ad came first, and the session restarted the game to leave it [^s7]. In the next session PLAY again showed an interstitial before the board, and it was a playable word-game ad, then a Play Store page, and its end card did not close with Back; the game was restarted [^s16]. CONTINUE on home opened level 11 with no ad once [^s17], and a minute later showed an interstitial before the board too, so the ad is not tied to the race's PLAY [^s18]. The race levels are the regular levels: the level 9 board has no race element (the HUD shows only Mistakes, the home icon, the AD button and the gear) [^s8].
 
 ![Level 9, the first race level: the regular board with key cells and lockers; no race element on the HUD (the +20 price tag blacked out)](../img/20261006-quote-race-tab-play-cbb54a87.webp) [^s8]
 *A race level is a regular level: nothing on the board shows the race*
@@ -78,7 +98,9 @@ All in 3.6.1:
 - Progress: each regular level won adds 1 level for the player [^s3].
 - The opponents gain levels too: after the player's first win three of them had 1 level, after the second, two had 2 [^s3] [^s9]. The home badge showed rank 2 about 2 minutes after the win card showed rank 1 [^s6]; inferred: the opponents advance on their own over time.
 - A loss and its Restart change nothing in the race [^s10] [^s11].
-- Reward: a locked chest at the finish line; what it holds, and what places 2 to 5 get, was not seen.
+- In the next session, about 2 h 40 min into the race, the opponents had 6 to 8 levels while the player (who had not played) had 2 [^s12]; inferred: the opponents keep advancing while the player is away.
+- Reward: a locked chest at the finish line; tapping it does nothing and the info lists only "Get rewards!" [^s14] [^s13]. What it holds, and what places 2 to 5 get, was not seen.
+- Quitting a level by the home icon costs nothing: lives stay 5, the rank is unchanged [^s17].
 
 ## Outcomes
 
@@ -87,7 +109,7 @@ All in 3.6.1:
 | Win | Differs: the win card adds the race strip with the standings and the levels still needed | [^s3] |
 | Loss: 3 mistakes | As the base: the 3-mistakes popup, heart -1, Home, Restart, REVIVE; nothing about the race | [^s10] |
 | Restart after a loss | As the base for the race (standing unchanged); the level itself came back after an interstitial ad with the same quote, mistakes reset, and the key and lock cells on other cells | [^s11] |
-| Quit by the home icon | Not seen | |
+| Quit by the home icon | As the base: straight to home with no popup, lives stay 5 (FULL), the race rank and timer badge unchanged (5th, 9h 13m) | [^s17] |
 | Close the app mid-level | Not seen | |
 
 ![The 3-mistakes popup on level 11 with the race running: You will lose a heart, Home, Restart, REVIVE](../img/20261006-quote-race-result-c0976b3e.webp) [^s10]
@@ -106,18 +128,16 @@ All in 3.6.1:
 | Lose by 3 mistakes under Quote Race event <!-- case:under-loss-3-mistakes --> | Typed three wrong letters on level 11 | As the base: heart -1, Home, Restart, REVIVE; nothing about the race | [^s10] |
 | Restart from the loss popup under Quote Race event <!-- case:under-restart --> | Tapped Restart | An interstitial, then the same quote with mistakes reset and the key and lock cells moved; race standing unchanged | [^s11] |
 | Why it appeared <!-- case:chk-appeared --> | Launched the game with 8 levels won | "The event has started!" popup with 11h 59m and GO | [^s1] |
-| What it looks like <!-- case:chk-screen --> | Opened the race with GO | The race screen above; the case is still open in the map | [^s2] |
-| The rewards <!-- case:chk-rewards --> | — | not verified | |
+| What it looks like <!-- case:chk-screen --> | Opened the race with GO | The race screen: home, timer, i, the rule, the locked chest at the finish, five busts with levels solved, PLAY | [^s2] |
+| The rewards <!-- case:chk-rewards --> | Tapped the chest twice, opened the i | The chest is locked and does nothing; the info lists only "Get rewards!"; contents not shown before the end | [^s13] |
 | The end <!-- case:chk-end --> | — | not verified | |
-| Home icon in level under Quote Race event <!-- case:under-quit --> | — | not verified | |
+| Interstitial before a race level <!-- case:play-interstitial --> | Tapped PLAY on the race screen; later CONTINUE on home | An interstitial (a playable word-game ad, then a Play Store page) before the board; its end card ignored Back and the game was restarted, twice; CONTINUE once showed no ad | [^s16] |
+| Home icon in level under Quote Race event <!-- case:under-quit --> | Opened level 11 and tapped the home icon with no move | Straight to home, no popup, lives stay 5, race rank unchanged | [^s17] |
 | Force-stop mid-level under Quote Race event <!-- case:under-exit-app --> | — | not verified | |
 
 ## Not verified
 
-- What it looks like: the screen is shown above, but the "i" (rules) screen was not opened and the map's case is still open <!-- case:chk-screen -->
-- The rewards per rank: what the chest at the finish holds and what the other places get <!-- case:chk-rewards -->
-- The end: the results at 10 levels or at the timer's end, and when the next race starts <!-- case:chk-end -->
-- Home icon in level under Quote Race event: whether quitting costs anything in the race (the home icon was blocked by a hint tutorial on the level 11 retry) <!-- case:under-quit -->
+- The end: the results at 10 levels or at the timer's end, what the chest holds and what places 2 to 5 get, and when the next race starts; not reached (9h 13m left), task quote-race-end <!-- case:chk-end -->
 - Force-stop mid-level under Quote Race event <!-- case:under-exit-app -->
 
 [^s1]: session 20261006-024420-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/ZmbMZC7iP0E?t=0)
@@ -131,3 +151,10 @@ All in 3.6.1:
 [^s9]: session 20261006-024420-chrono-2FYKPJ, step 28 — [video at 13:43](https://youtu.be/ZmbMZC7iP0E?t=823)
 [^s10]: session 20261006-024420-chrono-2FYKPJ, step 35 — [video at 16:34](https://youtu.be/ZmbMZC7iP0E?t=994)
 [^s11]: session 20261006-024420-chrono-2FYKPJ, step 39 — [video at 17:52](https://youtu.be/ZmbMZC7iP0E?t=1072)
+[^s12]: session 20261006-052618-chrono-2FYKPJ, step 2 — [video at 0:52](https://youtu.be/w3lLhvQap0A?t=52)
+[^s13]: session 20261006-052618-chrono-2FYKPJ, step 5 — [video at 1:10](https://youtu.be/w3lLhvQap0A?t=70)
+[^s14]: session 20261006-052618-chrono-2FYKPJ, step 4 — [video at 1:07](https://youtu.be/w3lLhvQap0A?t=67)
+[^s15]: session 20261006-052618-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/w3lLhvQap0A?t=0)
+[^s16]: session 20261006-052618-chrono-2FYKPJ, step 7 — [video at 1:24](https://youtu.be/w3lLhvQap0A?t=84)
+[^s17]: session 20261006-052618-chrono-2FYKPJ, step 14 — [video at 4:28](https://youtu.be/w3lLhvQap0A?t=268)
+[^s18]: session 20261006-052618-chrono-2FYKPJ, step 15 — [video at 4:45](https://youtu.be/w3lLhvQap0A?t=285)

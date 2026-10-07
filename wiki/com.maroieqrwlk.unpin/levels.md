@@ -2,7 +2,7 @@
 game: com.maroieqrwlk.unpin
 title: "Levels: Pull the Pin"
 type: levels
-verified_at: 2026-10-06
+verified_at: 2026-10-07
 ---
 
 # Levels: Pull the Pin
@@ -25,13 +25,21 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 |---|---|---|---|---|
 | ![level 16](levels/0016.webp) | ![level 17](levels/0017.webp) | ![level 18](levels/0018.webp) | ![level 19](levels/0019.webp) | ![level 20](levels/0020.webp) |
 
-| level 21 | level 22 | level 23 | challenge 1 | challenge 1 try 2 |
+| level 21 | level 22 | level 23 | level 24 | level 25 |
 |---|---|---|---|---|
-| ![level 21](levels/0021.webp) | ![level 22](levels/0022.webp) | ![level 23](levels/0023.webp) | ![challenge 1](levels/challenge-1.webp) | ![challenge 1 try 2](levels/challenge-1-try-2.webp) |
+| ![level 21](levels/0021.webp) | ![level 22](levels/0022.webp) | ![level 23](levels/0023.webp) | ![level 24](levels/0024.webp) | ![level 25](levels/0025.webp) |
 
-| challenge 1 try 3 | sketchman 1 replay | sketchman 1 try again | Sketchman L1 |
-|---|---|---|---|
-| ![challenge 1 try 3](levels/challenge-1-try-3.webp) | ![sketchman 1 replay](levels/sketchman-1-replay.webp) | ![sketchman 1 try again](levels/sketchman-1-try-again.webp) | ![Sketchman L1](levels/sketchman-l1.webp) |
+| level 26 | level 27 | level 28 | level 29 | level 30 |
+|---|---|---|---|---|
+| ![level 26](levels/0026.webp) | ![level 27](levels/0027.webp) | no frame | no frame | no frame |
+
+| level 31 | level 32 | level 33 | challenge 1 | challenge 1 try 2 |
+|---|---|---|---|---|
+| ![level 31](levels/0031.webp) | ![level 32](levels/0032.webp) | no frame | ![challenge 1](levels/challenge-1.webp) | ![challenge 1 try 2](levels/challenge-1-try-2.webp) |
+
+| challenge 1 try 3 | Merge Balls L1 | sketchman 1 replay | sketchman 1 try again | Sketchman L1 |
+|---|---|---|---|---|
+| ![challenge 1 try 3](levels/challenge-1-try-3.webp) | ![Merge Balls L1](levels/merge-balls-l1.webp) | ![sketchman 1 replay](levels/sketchman-1-replay.webp) | ![sketchman 1 try again](levels/sketchman-1-try-again.webp) | ![Sketchman L1](levels/sketchman-l1.webp) |
 
 ## Tries
 
@@ -60,9 +68,20 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 | level 21 | pin-pull | 2 won | 49 s | solver library order LP G RP |
 | level 22 | pin-pull | 1 won | 63 s | solver library Y D B |
 | level 23 | pin-pull | 1 won | 296 s | 4 stages by solver library; stage 4 last pin by hand after the view moved; between-stage interstitial after stage 2 closed by Back |
+| level 24 | pin-pull | 1 won | 57 s | solver library L24, 3 rounds after V, first try; league board shown (rank 258 -> 230) |
+| level 25 | pin-pull | 1 won | 34 s | solver library L25, 2 pulls; league board |
+| level 26 | pin-pull | 1 won | 20 s | solver library L26, 1 pull |
+| level 27 | pin-pull | 1 won | 79 s | New L27 board (Boss declined with No, thanks): T C V F won first try. Boards written: boards/L27.json and boards/L27-after-T.json (view moves ~ +5,-12 px after the bombs meet; solver refused the shift |
+| level 28 | pin-pull | 2 won | 55 s | new board by hand: top diagonal pin first (bomb onto bomb, both gone, top balls painted), then shelf, lower diagonal, bottom pin |
+| level 29 | pin-pull | 1 won | 57 s | single-colour bucket: top pin, wait 5 s, bottom pin |
+| level 30 | pin-pull | 1 won, 1 lost | 168 s | retry won: top shelf 592, middle shelf 118, left divider 272, then right divider 442 last |
+| level 31 | pin-pull | 1 won | 411 s | L31 multi stage 4 stages by hand: bomb-on-bomb pulls first, greys onto colours, floor last. Two between-stage interstitials left by launch, stage kept. |
+| level 32 | pin-pull | 1 won, 2 quit | 84 s | hand order shelf 112,552; vertical 443,390; big diagonal 550,798; lower-left 136,818 |
+| level 33 | pin-pull | 1 won | 93 s | Challenge popup declined (No, thanks). Pin 286,468, then hooks are drag-out gates: swipe lower hook 330,790->190,835, upper 553,615->350,590 |
 | challenge 1 | pin-pull | 1 won, 1 lost | 117 s | solver C1 played the first pull(s), final floor pin by hand; 2 moves of 10 |
 | challenge 1 try 2 | pin-pull | 1 lost | — | tapped ring (608,636) at 2 moves left: it was the triangle's vertical side, greys fell out. Rings at the triangle tip: the LOWER-LEFT one (588,668 on that frame) is the floor. Order that worked to the |
 | challenge 1 try 3 | pin-pull | 1 lost | — | both rings at the triangle tip (upper-right and lower-left) dump the greys out of the level: Balls fell out. Next try: never touch the triangle; after bombs+E,F,G and colored shelf, pull gray shelf th |
+| Merge Balls L1 | merge-balls | 1 quit | — | new mechanic merge-balls, handoff; first pull merged 20+12=32 |
 | sketchman 1 replay | pin-pull | 1 won | 58 s | Deliberate bad play (all rods pulled, 71% in the cup) did not fail: Sketchman scores the share in the cup: IQ 122, Get 179 coins, Try again by video |
 | sketchman 1 try again | pin-pull | 1 lost | — | 0% in the cup on purpose: Sketchman has no fail screen; the result screen shows IQ 50 (minimum) and Get 0 coins; Try again costs a video |
 | Sketchman L1 | pin-pull | 1 won | 58 s | solver library IQ1, order T L1 L2 R1 |

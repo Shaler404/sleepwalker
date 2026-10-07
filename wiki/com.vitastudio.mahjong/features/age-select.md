@@ -4,8 +4,8 @@ title: "Age selection"
 type: feature
 feature: age-select
 version_seen: 3.40.1
-verified_at: 2026-10-03
-sources: [20261003-195050-chrono-2FYKPJ, 20261003-231301-chrono-2FYKPJ, 20261003-231804-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-195050-chrono-2FYKPJ, 20261003-231301-chrono-2FYKPJ, 20261003-231804-chrono-2FYKPJ, 20261006-101909-chrono-2FYKPJ]
 ---
 
 # Age selection
@@ -21,6 +21,11 @@ screen behind it read Level 1, and the saved-game prompt followed [^s2] [^s3]. T
 happened on the next launch, in the third session [^s6]. That launch also began with
 Android's notification permission request [^s2]. Hypothesis: the game's local data had been reset before
 that session (reinstall or cleared data), so the game treated it as a first launch; not verified.
+
+On 2026-10-06 it did not show on two launches of the progressed game, the session start and a relaunch
+after a force-stop: both came up on the home screen at Level 22 with no saved-game prompt [^s7] [^s8].
+Hypothesis: the popup comes only with a launch that starts at Level 1 and offers the saved game (a reset
+local state), not with every launch; not verified.
 
 ## Where to find it
 
@@ -61,7 +66,8 @@ the sessions with the other answers [^s6].
 
 ## How it works
 
-Version 3.40.1. Shown before the saved-game prompt on a first launch [^s1] [^s2]. Whether closing it
+Version 3.40.1. Shown before the saved-game prompt on a first launch [^s1] [^s2]. Not shown on a normal launch or
+relaunch of a game that opens at its current level (Level 22) [^s7] [^s8]. Whether closing it
 with the X brings it back on a later launch, and what a bracket changes (tile size, difficulty, ads),
 is not verified [^s4].
 
@@ -76,6 +82,7 @@ is not verified [^s4].
 | Every option or button and what it changes <!-- case:chk-options --> | Picked 35-55 (first session), closed with the X (second) | ✅ partly: both close the popup and lead to the saved-game prompt; what a bracket changes not seen | [^s5] [^s4] |
 | What each answer does and whether it comes back <!-- case:chk-answers --> | Closed with the X | ✅ partly: dismissed, saved-game prompt follows; whether it returns after the X not seen | [^s4] |
 | Picked the 0-35 bracket <!-- case:bracket-0-35 --> | Tapped 0-35 | ✅ The saved-game prompt followed, as after the X; the home after the restore and the level 19 board showed no visible difference | [^s6] |
+| Not shown on a normal launch or a force-stop relaunch <!-- case:not-on-normal-relaunch --> | Launched the game at Level 22, later force-stopped and relaunched it | ✅ Home at Level 22 both times, no age popup and no saved-game prompt | [^s7] [^s8] |
 | Links out <!-- case:chk-links --> | — | ✅ none on the popup | [^s4] |
 | Why it appeared <!-- case:chk-appeared --> | Fresh install; a relaunch on a progressed phone | ✅ First home arrival; also on a relaunch that showed Level 1 | [^s1] [^s2] |
 
@@ -83,7 +90,7 @@ is not verified [^s4].
 
 - What each bracket changes in the game (0-35 and 35-55 showed no visible difference; 55+ not tried) <!-- case:chk-options -->
 - Whether the popup comes back on a later launch after the X <!-- case:chk-answers -->
-- Why it showed again on a phone that already had progress
+- Why it showed again on a phone that already had progress, and whether a Level 1 reset is what brings it back
 
 [^s1]: session 20261003-195050-chrono-2FYKPJ, step 2 — [video at 0:35](https://youtu.be/KUKs3cQ-xqY?t=35)
 [^s2]: session 20261003-231301-chrono-2FYKPJ, step 1 — [video at 0:28](https://youtu.be/D73ofuYaPzY?t=28)
@@ -91,3 +98,5 @@ is not verified [^s4].
 [^s4]: session 20261003-231301-chrono-2FYKPJ, step 21 — [video at 3:55](https://youtu.be/D73ofuYaPzY?t=235)
 [^s5]: session 20261003-195050-chrono-2FYKPJ, step 3 — [video at 1:05](https://youtu.be/KUKs3cQ-xqY?t=65)
 [^s6]: session 20261003-231804-chrono-2FYKPJ, step 1 — [video at 0:40](https://youtu.be/ssTmhwls_uc?t=40)
+[^s7]: session 20261006-101909-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/MfG1MZSxvio?t=0)
+[^s8]: session 20261006-101909-chrono-2FYKPJ, step 12 — [video at 4:31](https://youtu.be/MfG1MZSxvio?t=271)

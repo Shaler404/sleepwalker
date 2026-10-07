@@ -4,8 +4,8 @@ title: "Interstitial video ad after a win"
 type: feature
 feature: interstitial
 version_seen: 241.5.2
-verified_at: 2026-10-05
-sources: [20261003-203702-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261003-214021-chrono-2FYKPJ, 20261004-004411-chrono-2FYKPJ, 20261004-005453-chrono-2FYKPJ, 20261005-141756-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-203702-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261003-214021-chrono-2FYKPJ, 20261004-004411-chrono-2FYKPJ, 20261004-005453-chrono-2FYKPJ, 20261005-141756-chrono-2FYKPJ, 20261006-060944-chrono-2FYKPJ]
 ---
 
 # Interstitial video ad after a win
@@ -30,7 +30,9 @@ it can also start by itself when a stage is completed, before the next board
 [^s8]. A third route: the restart button top right of a level, then **Restart** on the "You can do better!"
 popup; the screen greys out with the ad network's loading logo and the video follows [^s11]. See
 [Pin-pull level](core-level.md#restart). A fourth route: **Retry** on the "Level failed!" screen; the
-same loading logo, then the video [^s15]. See [Pin-pull level](core-level.md#level-failed).
+same loading logo, then the video [^s15]. See [Pin-pull level](core-level.md#level-failed). A fifth route
+(version 241.5.2): **Leave** on the "Leave Merge Balls" popup, after the X of a Merge Balls level; the video
+followed, then the modes list [^s30]. See [Merge Balls](mode-merge-balls.md#leave-merge-balls).
 
 ![Level 6 win screen: Tap to continue; the video ad came after this tap](../img/20261003-interstitial-entry-b933c2c2.webp) [^s2]
 *The level 6 win screen: the video ad started on Tap to continue*
@@ -155,6 +157,8 @@ Version 241.5.1.
 - Version 241.5.2, level 15: the interstitials after the stage 1 and the stage 2 wins both ended in a
   playable with no working close, and only a game restart got out; the restart sent level 15 back to stage 1
   [^s29] [^s27]. See [Dead playable](#dead-playable).
+- Version 241.5.2: leaving a Merge Balls level (X, then Leave) brought one too, with a skip control after
+  about 30 s; then the All You Can Play! modes list [^s30].
 - Nothing is given for watching [^s4].
 - Where the close control sits changes from creative to creative: an X at top right, a skip icon at top left
   or top right on the end card, then a Close button [^s3] [^s4].
@@ -180,6 +184,7 @@ Version 241.5.1.
 | Interstitial after the level 11 win, about 5 min after the last ad <!-- case:after-win-l11 --> | Won level 11, tapped Tap to continue, waited out the video and the end card, tapped the skip icon, launched the game | ✅ Loading logo, about 50 s of video, an end card with only the skip icon, which opened the Play Store; the launch brought the map at level 12 with the win kept | [^s19] [^s21] |
 | Interstitials after two wins in a row <!-- case:back-to-back --> | Won levels 11 and 12, about 3 min apart | ✅ One after each win, in two different formats: no cooldown between consecutive wins | [^s20] |
 | Between-stage interstitials on L15 (241.5.2) twice turned into a playable ad after a store sheet: its 'Next' label and Back did nothing, no close appeared; only a restart got out <!-- case:dead-playable --> | Won level 15 stage 1, closed the store sheet, tapped Next, waited, pressed Back; on the next try won stage 2 and waited 20 s | ✅ No way out but a restart, both times | [^s27] |
+| Leaving a Merge Balls level plays an interstitial <!-- case:after-mode-leave --> | X in Merge Level 1, then Leave (version 241.5.2) | ✅ A video with a skip control after about 30 s, then the modes list | [^s30] |
 
 ## Not verified
 
@@ -222,3 +227,5 @@ Version 241.5.1.
 [^s27]: session 20261005-141756-chrono-2FYKPJ, step 22 — [video at 5:58](https://youtu.be/pvvfGQcAObg?t=358)
 [^s28]: session 20261005-141756-chrono-2FYKPJ, step 23 — [video at 6:37](https://youtu.be/pvvfGQcAObg?t=397)
 [^s29]: session 20261005-141756-chrono-2FYKPJ, step 13 — [video at 3:55](https://youtu.be/pvvfGQcAObg?t=235)
+
+[^s30]: session 20261006-060944-chrono-2FYKPJ, step 5 — [video at 1:40](https://youtu.be/QrD_qekwXHQ?t=100)

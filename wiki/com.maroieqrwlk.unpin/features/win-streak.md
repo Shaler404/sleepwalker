@@ -5,7 +5,7 @@ type: feature
 feature: win-streak
 version_seen: 241.5.2
 verified_at: 2026-10-06
-sources: [20261005-151039-chrono-2FYKPJ, 20261005-235042-chrono-2FYKPJ, 20261006-033538-chrono-2FYKPJ]
+sources: [20261005-151039-chrono-2FYKPJ, 20261005-235042-chrono-2FYKPJ, 20261006-033538-chrono-2FYKPJ, 20261006-091133-chrono-2FYKPJ]
 ---
 
 # Win streak meter
@@ -109,6 +109,17 @@ Tap to continue led to **Puzzle Piece Found!** (one piece of a 3x3 picture, Get 
 continue), then the level's coin screen, +17 coins with the gift meter at 62%
 [^s13] [^s14].
 
+A second streak was completed on the first level 28 win, on 6 October: **Streak completed!** again, the prize
+the striped ball skin of the second dial, **Claim Prize**, then **Claimed** on the card [^s17] [^s18]. The
+next dial read **10** under **Next streak level**, with +1000 coins, +1500 coins, a puzzle piece and a
+rainbow ball trail around it and **0h 18m** left [^s18]:
+
+![Awesome! Level completed! with Next streak level: the dial at 10, +1000 and +1500 coins, a puzzle piece and a rainbow ball trail around it, Keep your streak! 0h 18m, coins 6640](../img/20261006-win-streak-result-ef6094c0.webp) [^s18]
+*The third streak level after the second prize: counter 10, rewards +1000, +1500, a puzzle piece and a ball trail; 0h 18m left*
+
+That level 28 win was then lost to a restart out of an ad with no close; whether the ball skin was kept was
+not checked [^s24].
+
 ### Keep it!
 
 ![Watch your streak! after the level 20 loss: the dial at 1, the five rewards around it (+150 in grey), Keep your streak! 7h 55m, Keep it! with a video icon and No, thanks](../img/20261005-win-streak-popup-faa6c1a4.webp) [^s5]
@@ -119,6 +130,13 @@ the dial with its needle and the flame at **1**, the same five rewards around it
 the other four in colour), the ribbon **Keep your streak!** with **7h 55m**, a green **Keep it!** button
 with a video icon and a plain **No, thanks** [^s5]. Keep it! was not tapped: what the video keeps was not seen.
 
+![Watch your streak! on the level 30 loss: the grey dial at 12, +1000, +1500, a puzzle piece and a ball trail around it, Keep your streak! 0h 5m, Keep it! and No, thanks](../img/20261006-win-streak-tab-keep-it-afe39474.webp) [^s19]
+*The same popup on the level 30 loss, 6 October: counter 12, the third dial's rewards, 0h 5m left*
+
+The second time, at level 30 (a Color Bucket level) with the counter at 12, the dial was grey and the
+countdown read **0h 5m**; the rewards were those of the third dial (+1000, +1500, a puzzle piece, a ball
+trail) [^s19].
+
 ### No, thanks
 
 ![The fail screen after No, thanks: So Close! Level failed!, a tip about grey balls, Skip with a video icon and Retry](../img/20261005-win-streak-tab-no-thanks-b297cf39.webp) [^s6]
@@ -126,7 +144,9 @@ with a video icon and a plain **No, thanks** [^s5]. Keep it! was not tapped: wha
 
 Led to the level's fail screen: **So Close! Level failed!**, a tip card, **Skip** with a video icon and
 **Retry** [^s6]. See [Pin-pull level](core-level.md#level-failed). Whether the counter went back to 0 was not
-seen.
+seen. At level 30 No, thanks led to "Almost! Level failed!" with the same tip, Skip and Retry [^s20]; the
+level was won on the retry, and its win flow had no streak dial: the league board, then Level completed! with
+the gift meter and the coin multiplier [^s21].
 
 ## How it works
 
@@ -155,6 +175,12 @@ Version 241.5.2.
   the level 20 loss [^s2] [^s5].
 - The level 16 win paid +21 coins on the Level completed! screen, with no multiplier bar this time [^s2].
 - On a loss with the counter at 1 (level 20, a Color Bucket level) the countdown read 7h 55m [^s5].
+- 6 October, next session: the second streak completed on the first level 28 win (the striped ball skin);
+  the next dial read 10 with 0h 18m left [^s17] [^s18]. The Level completed! screens of the replayed level 28
+  win and the level 29 win carried no dial [^s22] [^s23]. At the level 30 loss the counter read 12 with 0h 5m
+  left [^s19]. Inferred: the two wins counted although no dial was shown.
+- Declining Keep it! at 12 led to the fail screen; the retry's win flow showed no dial [^s20] [^s21]. Whether
+  the streak was lost, or the countdown simply ran out at about the same time, is not verified.
 
 ## Cases
 
@@ -171,6 +197,8 @@ Version 241.5.2.
 | What breaks it <!-- case:chk-break --> | Lost level 20, declined Keep it! | not verified: a loss puts the streak at risk (Watch your streak!); the counter after it was not looked at | [^s6] |
 | A loss with the counter at 1 <!-- case:on-loss --> | Lost level 20, tapped No, thanks | ✅ Watch your streak! came first: Keep it! (video) or No, thanks; No, thanks led to the fail screen | [^s6] |
 | Offers to keep it after a break <!-- case:chk-save --> | Lost level 20 | not verified: Keep it! for a video is offered on a loss; not tapped, so what it keeps is not seen | [^s5] |
+| The second streak <!-- case:second-streak-complete --> | Won level 28 (6 October) | ✅ Streak completed! with a striped ball skin, Claim Prize; the next dial at 10; that win was then reverted by a restart out of a stuck ad (the skin not checked) | [^s17] [^s18] [^s24] |
+| Declined at 12 <!-- case:declined-at-12 --> | Lost level 30 with the counter at 12 and 0h 5m left, tapped No, thanks | ✅ Watch your streak! (dial +1000, +1500, a puzzle piece, a ball trail), Keep it! (video) or No, thanks; No, thanks led to the fail screen; the retry's win flow had no streak screen (league board, then Level completed!) | [^s19] [^s20] [^s21] |
 | Win screen under Win streak meter <!-- case:under-win --> | Won level 16 | ✅ The base win screen (+21 coins, no multiplier offer) with the dial at 0 | [^s2] |
 | Restart under Win streak meter <!-- case:under-restart --> | — | not verified |  |
 | Quit under Win streak meter <!-- case:under-quit --> | — | not verified |  |
@@ -207,3 +235,12 @@ Version 241.5.2.
 [^s14]: session 20261006-033538-chrono-2FYKPJ, step 53 — [video at 18:24](https://youtu.be/j9sNlnJxE4Y?t=1104)
 [^s15]: session 20261006-033538-chrono-2FYKPJ, step 11 — [video at 3:53](https://youtu.be/j9sNlnJxE4Y?t=233)
 [^s16]: session 20261006-033538-chrono-2FYKPJ, step 30 — [video at 11:44](https://youtu.be/j9sNlnJxE4Y?t=704)
+
+[^s17]: session 20261006-091133-chrono-2FYKPJ, step 6 — [video at 2:21](https://youtu.be/nKqzeXFw6rA?t=141)
+[^s18]: session 20261006-091133-chrono-2FYKPJ, step 7 — [video at 2:38](https://youtu.be/nKqzeXFw6rA?t=158)
+[^s19]: session 20261006-091133-chrono-2FYKPJ, step 34 — [video at 15:07](https://youtu.be/nKqzeXFw6rA?t=907)
+[^s20]: session 20261006-091133-chrono-2FYKPJ, step 35 — [video at 15:27](https://youtu.be/nKqzeXFw6rA?t=927)
+[^s21]: session 20261006-091133-chrono-2FYKPJ, step 45 — [video at 19:30](https://youtu.be/nKqzeXFw6rA?t=1170)
+[^s22]: session 20261006-091133-chrono-2FYKPJ, step 18 — [video at 7:23](https://youtu.be/nKqzeXFw6rA?t=443)
+[^s23]: session 20261006-091133-chrono-2FYKPJ, step 25 — [video at 11:22](https://youtu.be/nKqzeXFw6rA?t=682)
+[^s24]: session 20261006-091133-chrono-2FYKPJ, step 12 — [video at 5:41](https://youtu.be/nKqzeXFw6rA?t=341)

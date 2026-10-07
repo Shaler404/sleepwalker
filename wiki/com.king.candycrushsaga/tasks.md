@@ -1,16 +1,16 @@
 # Tasks: Candy Crush Saga
 
-Status: **▶️ active** — ready now: 28
+Status: **▶️ active** — ready now: 29
 
 Mode: **goals** — work through the session goals in order; play levels only as far as an unlock or experiment goal needs; register anything new you notice as a feature or a goal, do not pursue it now
 
-Progress reached: **level 1** · last new feature found at: **level 1**
+Progress reached: **level 3 wrapped study** · last new feature found at: **level 3 wrapped study**
 
-Goals: study 3, unlock 6, experiment 19 · maps: level 1 won, on map before level 2 — 11 new
+Goals: unlock 12, experiment 17 · maps: level 1 won, on map before level 2 — 11 new
 
-Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **core-match** — mastered, manual, levels won 4, typical 4.9 min
+Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **core-match** — mastered, manual, levels won 5, typical 3.8 min
 
-Google Play version: **1.337.0.2** (checked 2026-10-05 22:05:43) · analyzed version: **1.337.0.2** · FTUE from a fresh install: **never**
+Google Play version: **1.337.0.2** (checked 2026-10-06 10:09:39) · analyzed version: **1.337.0.2** · FTUE from a fresh install: **never**
 
 Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit by hand. Feature map: [features.md](features.md).
 
@@ -20,21 +20,13 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 |---|---|---|---|---|
 | Unlock Candy Teams: level 20 | unlock | [Candy Teams](features/candy-teams.md) | knowledge gap | the lock seen on screen (feature --locked) |
 | Unlock Boosters (hand, lollipop hammer etc.): not shown, about level 3-10 | unlock | [Boosters (hand, lollipop hammer etc.)](features/boosters.md) | knowledge gap | the lock seen on screen (feature --locked) |
-| Find why Mailbox icon appeared: envelope icon in the top bar of the map from the start; tap did nothing (inbox empty or needs account) | experiment | [Mailbox icon](features/mailbox.md) | knowledge gap |  |
 | Mailbox envelope tap does nothing: test again after a few levels or when it shows a badge | experiment | [Mailbox icon](features/mailbox.md) | knowledge gap |  |
 | Run each outcome once under Events tab: Order done, Gear > Settings > Quit level > confirm 'Play on' / 'Quit -1 heart'; shows Level failed with Score and Retry, X goes to map; life 5->4, Out of moves, Force-stop mid level, No Restart button in the in-level settings (sound, Audio, Save progress, Quit level); restart only by quit and replay from map popup | experiment | [Events tab](features/events-tab.md) | knowledge gap |  |
-| Study Terms of Use consent: open it, walk its screens and tabs, verify its cases | study | Terms of Use consent | external |  |
 | Find what the 3 Select boosters slots in the level start popup do at 0 balance (free trial, gold bars, or locked) | experiment | [Boosters (hand, lollipop hammer etc.)](features/boosters.md) | knowledge gap |  |
 | Look for typical features not seen yet: daily reward or login calendar, starter or limited-time offer popups, rewarded ads, piggy bank, season pass, language option | experiment |  | knowledge gap |  |
-| Colour bomb combined with striped, wrapped and another colour bomb | experiment | [Colour bomb](features/color-bomb.md) | knowledge gap |  |
 | Lose a level by running out of moves and record the fail screen, retry and life cost | experiment | [Level (core match-3)](features/core-level.md) | knowledge gap |  |
 | Record the full win sequence: Sugar Crush with moves left, final stars, score and any reward on Level completed | experiment | [Level (core match-3)](features/core-level.md) | knowledge gap |  |
-| Study Wrapped candy: make or meet it in a level, mark it, verify its cases | study | Wrapped candy | knowledge gap |  |
 | Tap the mail and gold-bar icons from the Map tab (not the Shop tab) and record what opens | experiment | Gold bars | knowledge gap |  |
-| Find why Sweet gift (launch gift) appeared: comeback gift on the first launch after a long absence (about 25 h away before the 10-05 00:19 gift); not shown at 10-06 02:09 when the previous session ended about 2 h earlier, so not a fixed daily calendar | experiment | Sweet gift (launch gift) | knowledge gap |  |
-| Find what the level 4 cap (colour-bomb icon) releases and when | experiment | Candy dispenser | knowledge gap |  |
-| Study Sweet gift (launch gift): open it, walk its screens and tabs, verify its cases | study | Sweet gift (launch gift) | external |  |
-| Fish combos: swap fish with striped/wrapped/colour bomb, fish as an order, fish in a loss | experiment | Fish candy | knowledge gap |  |
 | Reach 0 lives and record the out-of-lives screen and its refill offers | experiment | [Lives](features/lives.md) | knowledge gap |  |
 | Win level 4 and keep winning up to level 10: progress recorded past level 3, boosters lock watched | experiment | [Level (core match-3)](features/core-level.md) | knowledge gap | Progress stuck: 6 quits on L4 across sessions 20261003-225003..20261005-220615, no win since L3; unlock-candy-teams (L20), unlock-boosters, boosters-lock-exp, lives-zero and look-genre-features all wait on it |
 | Pins: win more levels and re-open Pins to see when the first pin appears and what earns it | experiment | [Pins collection](features/pins.md) | knowledge gap |  |
@@ -44,8 +36,17 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 | Unlock Colour bomb booster (inventory): level 10 | unlock | Colour bomb booster (inventory) | knowledge gap | the lock seen on screen (feature --locked) |
 | Unlock Striped + wrapped booster: level 20 | unlock | Striped + wrapped booster | knowledge gap | the lock seen on screen (feature --locked) |
 | Unlock Round candy booster (inventory row 2 #1): level 65 | unlock | Round candy booster (inventory row 2 #1) | knowledge gap | the lock seen on screen (feature --locked) |
-| Profile inventory: read the Unlocks at level N tooltip of the 6 slots not tapped yet (row 2 #2-4, row 3 #1-3) | experiment | [Profile and inventory](features/profile.md) | knowledge gap |  |
 | Profile Edit > Frames: find what the locked frame with the 20000 badge needs (tap it and read the tooltip) | experiment | [Profile and inventory](features/profile.md) | knowledge gap |  |
+| Check Sweet gift popup at launch again (not shown on 10-06 04:35 relaunch either) | check | Sweet gift (launch gift) | from the game |  |
+| Win level 4 with the dispensed colour bombs and record progress level 4 | experiment | [Level (core match-3)](features/core-level.md) | knowledge gap |  |
+| Unlock Inventory slot row2 #2 (hand icon): level 43 | unlock | Inventory slot row2 #2 (hand icon) | knowledge gap | the lock seen on screen (feature --locked) |
+| Unlock Inventory slot row2 #3 (fish icon): level 35 | unlock | Inventory slot row2 #3 (fish icon) | knowledge gap | the lock seen on screen (feature --locked) |
+| Unlock Inventory slot row2 #4 (check icon): level 50 | unlock | Inventory slot row2 #4 (check icon) | knowledge gap | the lock seen on screen (feature --locked) |
+| Unlock Inventory slot row3 #1 (candy icon): level 73 | unlock | Inventory slot row3 #1 (saucer/UFO icon) | knowledge gap | the lock seen on screen (feature --locked) |
+| Unlock Inventory slot row3 #2 (lollipop icon): level 58 | unlock | Inventory slot row3 #2 (ball with brush icon) | knowledge gap | the lock seen on screen (feature --locked) |
+| Unlock Inventory slot row3 #3 (party icon): level 88 | unlock | Inventory slot row3 #3 (party icon) | knowledge gap | the lock seen on screen (feature --locked) |
+| Fish in a 3-match and next to striped/bomb on L1 open board | experiment | Fish candy | knowledge gap |  |
+| Find whether the L4 cap drops a bomb every 3 moves or only when the cell under it is free | experiment | Candy dispenser | knowledge gap |  |
 
 ## Waiting
 
@@ -58,11 +59,24 @@ The agent cannot do these tasks until it is given a suitable phone.
 | Task | What to provide | Feature |
 |---|---|---|
 | Study the notification permission prompt on a fresh install: screen, both answers, whether it returns | a phone with a fresh install: uninstall the game and install it again (or clear its data), then connect the phone | Notification permission prompt |
+| See Terms of Use consent answers and links on first launch | a phone with a fresh install: uninstall the game and install it again (or clear its data), then connect the phone | Terms of Use consent |
+| On a fresh install, record when the Mailbox envelope first shows on the map (first map, or after a level) and whether a tap opens anything | a phone with a fresh install: uninstall the game and install it again (or clear its data), then connect the phone | [Mailbox icon](features/mailbox.md) |
 
 ## Done
 
 | Task | Closed | By | Note |
 |---|---|---|---|
+| Fish combos: swap fish with striped/wrapped/colour bomb, fish as an order, fish in a loss | 2026-10-06 12:19:18 | 20261006-120721-chrono-2FYKPJ#25 | Made a red fish on L4 by swapping into a 2x2 red square (fish landed at lower-right square cell). Could not put it in a 3-match or beside a special in 13 moves; no combo observed. Retry on L1 with an open board. |
+| Colour bomb + wrapped/fish/striped combos on L4 using dispensed bombs | 2026-10-06 12:19:17 | 20261006-120721-chrono-2FYKPJ#25 | Bomb+striped swap not reachable: bomb sits in the top row (or fell to the bottom row between meringue) and a striped cannot be moved next to it by a valid match. Observed: bomb swapped with purple cleared all purple incl. a purple striped and a blue striped, both fired in the clear and cascaded (meringue 23 to 18). Dispenser bomb did not appear while r0c4 held a candy; it appeared only after a vertical stripe cleared column 4. Striped inside a red 3-match fired its column. |
+| Profile inventory: read the Unlocks at level N tooltip of the 6 slots not tapped yet (row 2 #2-4, row 3 #1-3) | 2026-10-06 12:09:16 | 20261006-120721-chrono-2FYKPJ#7 | Levels: r2#2=43, r2#3=35, r2#4=50, r3#1=73, r3#2=58, r3#3=88 (shots 4-9); registered as locked features |
+| Find what the level 4 cap (colour-bomb icon) releases and when | 2026-10-06 10:05:09 | 20261006-094912-chrono-2FYKPJ#32 | Cap above column 4 releases a colour bomb every 3 moves: bombs appeared after moves 3, 6 and 9 with no 5-line made by me (moves 4, 5, 7, 8 gave none). It does not need a match in the cap column (move 9 was elsewhere). Bomb 1 landed at the bottom of the open column, later ones at row 1 below the cap cell. |
+| Colour bomb + striped/wrapped/bomb combos on a many-colour level | 2026-10-06 09:57:46 | 20261006-094912-chrono-2FYKPJ#19 | L1 replay, 6 moves: no 5-line colour bomb could be built (each setup swap matched on its own and cascades reshuffled). Observed: striped+striped swap clears row+column. Wrapped and fish appear by cascade. Retry with a board where X X _ X X exists, or L2. |
+| Colour bomb combined with striped, wrapped and another colour bomb | 2026-10-06 07:11:23 | 20261006-070942-chrono-2FYKPJ#3 | L4 gives one bomb (dispenser) but no striped/wrapped/second bomb with its 4 colours and meringue; needs a board with more colours (L1/L2 replay) to build a striped first, then swap it with the bomb. |
+| Find why Mailbox icon appeared: envelope icon in the top bar of the map from the start; tap did nothing (inbox empty or needs account) | 2026-10-06 07:10:08 | 20261006-070942-chrono-2FYKPJ#0 | Icon present on the map from the first frame; progressed install cannot show its appearance. Needs a fresh install (FTUE). Still inert at L4. |
+| Find why Sweet gift (launch gift) appeared: comeback gift on the first launch after a long absence (about 25 h away before the 10-05 00:19 gift); not shown at 10-06 02:09 when the previous session ended about 2 h earlier, so not a fixed daily calendar | 2026-10-06 07:10:08 | 20261006-070942-chrono-2FYKPJ#0 | Launch at 10-06 07:09 showed no gift (previous session ended ~2h earlier). Trigger still unknown; only the one 25h-absence sighting. |
+| Study Sweet gift (launch gift): open it, walk its screens and tabs, verify its cases | 2026-10-06 04:40:45 | 20261006-043504-chrono-2FYKPJ#13 | Gift did not appear on relaunch at 04:35; earlier cases verified; appeared/calendar/next-day/missed left open, followup set |
+| Study Terms of Use consent: open it, walk its screens and tabs, verify its cases | 2026-10-06 04:40:44 | 20261006-043504-chrono-2FYKPJ#13 | Not reachable on progressed install: no Terms link in Settings or Account & Help; set terms-consent-fresh (fresh phone) |
+| Study Wrapped candy: make or meet it in a level, mark it, verify its cases | 2026-10-06 04:40:44 | 20261006-043504-chrono-2FYKPJ#13 | L3 replay: pre-placed wrappeds, striped row detonation, blue wrapped 3x3 blast |
 | Study Striped candy: open it, walk its screens and tabs, verify its cases | 2026-10-06 02:13:23 | 20261006-020945-chrono-2FYKPJ#9 | Made striped via 4-line swap on L1, fired by matching with 2 blue: row cleared (32->18). Combos untested. |
 | Study Shop: open it, walk its screens and tabs, verify its cases | 2026-10-06 02:11:05 | 20261006-020945-chrono-2FYKPJ#3 | Walked tab, More Offers; frequency, close, timer closed. chk-buy-path left open: price buttons open a payment sheet, never tapped. |
 | Sweet gift: launch the next day and note whether the gift comes again, what it gives and at what hour (calendar or one-off) | 2026-10-06 02:10:33 | 20261006-020945-chrono-2FYKPJ#1 | Launch 2026-10-06 02:09: no Sweet gift popup (frames 1-2), lives 5 Full. Not a daily calendar at this hour; trigger likely a comeback after a long absence or lives not full. Gift at 10-05 was 00:19. |

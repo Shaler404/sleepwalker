@@ -4,8 +4,8 @@ title: "Pull Fest Ranking (Bronze League)"
 type: feature
 feature: pull-fest
 version_seen: 241.5.2
-verified_at: 2026-10-05
-sources: [20261003-203702-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261004-005453-chrono-2FYKPJ, 20261005-151039-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-203702-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261004-005453-chrono-2FYKPJ, 20261005-151039-chrono-2FYKPJ, 20261006-091133-chrono-2FYKPJ]
 ---
 
 # Pull Fest Ranking (Bronze League)
@@ -14,7 +14,8 @@ A timed leaderboard event: every pin pulled in a won level is a point, and the p
 leagues (six league cups, the first is Bronze) [^s2] [^s3]. It opened after the level 5 win; from then on
 the leaderboard shows after every won level, before the "Level completed!" screen [^s1] [^s4]. On version
 241.5.2, after the level 17 win, a **LEAGUES** screen paid 1000 coins and the map's banner turned from Bronze
-League to **Silver League** [^s14] [^s16].
+League to **Silver League** [^s14] [^s16]. After the level 28 win, the same screen paid 1500 coins and the
+league became **Gold League** [^s22] [^s23].
 
 ## Why it appeared
 
@@ -79,6 +80,16 @@ coins rose from 766 to 1781 together with the +15 of Level completed! [^s20]. Ba
 ![The map at level 18 after the promotion: SILVER LEAGUE banner, Rank 999; the podium button at the right with 96 pins and 7 golden pins](../img/20261005-map-keys-screen-9df22dca.webp) [^s16]
 *The map at level 18: the Silver League banner with rank 999 (the player's name and a local banner ad blacked out)*
 
+![After the L28 win: the LEAGUES ladder with You on the Gold row, 'You are in the top: 79% of players', a prize of x1500 coins, the multiplier bar with Get x4 6000 by video and Get 1500](../img/20261006-pull-fest-tab-leagues-916e66b1.webp) [^s22]
+*After the level 28 win (241.5.2): the second promotion, from Silver to Gold; the prize x1500 coins, Get x4 6000 by video or Get 1500 (the flag by You blacked out)*
+
+The second time, after the level 28 board (Silver League, Pins 199, Golden Pins 8, Total Score 239, the
+player's row at 133, Time Left 3d 17h), the LEAGUES screen read "You are in the top: 79% of players", the
+**You** marker sat on the Gold row, and the prize was **x1500** coins with the video button **Get x4 6000** and
+**Get 1500** [^s22]. Get 1500 was taken [^s22]. The next league board, after the level 28 win was played again,
+was titled **GOLD LEAGUE**: Pins 203, Golden Pins 8, Total Score 243, the player's row at 979, Time Left 3d
+17h, the video button +5 golden pins and Next Level! [^s23].
+
 ## How it works
 
 Version 241.5.1.
@@ -115,6 +126,12 @@ Version 241.5.1.
   league became Silver, rank 999 [^s14] [^s16]. After level 16, at rank 124, there was no LEAGUES screen
   [^s21]. Hypothesis: a rank threshold (top 100) triggers the promotion during the event, not the end of
   the period; not verified.
+- Second promotion, 6 October: after the level 28 win, at rank 133 in the Silver League (Total Score 239),
+  the LEAGUES screen paid 1500 coins and the league became Gold, rank 979 [^s22] [^s23]. The first promotion
+  paid 1000 coins at rank 89 [^s14]. That first level 28 win was then lost: an ad with no close forced a
+  restart and the map was back at level 28, but the Gold League and the coins were kept [^s24]. The
+  replayed win showed the Gold board with Pins 203 [^s23]; after level 29 it read Pins 205, Total Score 245,
+  rank 967 [^s25].
 - The other names on the leaderboard are first names with country flags; inferred: generated opponents, not
   verified.
 
@@ -129,10 +146,11 @@ Version 241.5.1.
 | The 'Bronze League' board after a win (Time Left 6d 5h, Pins 27, rank 868 -> 847, Next Level!) is this leaderboard <!-- case:bronze-league-is-league --> | Compared the board after the level 10 win with the map's banner | ✅ The same league: the separate Bronze League page was merged here | [^s8] [^s12] |
 | Pins scored in the post-win flow were kept (27) when a force-stop reverted the L10 win itself <!-- case:pins-kept-on-revert --> | Force-stopped during the level 10 win flow, relaunched | ✅ Pins 27 kept, the win lost | [^s9] |
 | After the L17 win: LEAGUES ladder reward 1000 coins (top 91%), then the map banner turned SILVER LEAGUE, rank 999 <!-- case:promoted-silver --> | Won level 17 at rank 89, took Get 1000 | ✅ 1000 coins, Silver League, rank 999 | [^s14] [^s16] |
+| Promoted to Gold <!-- case:promoted-gold --> | Won level 28 at rank 133 in the Silver League, took Get 1500 | ✅ LEAGUES: top 79%, x1500 coins (Get x4 6000 by video not taken); then the Gold League board, Time Left 3d 17h, Pins 203, Golden Pins 8, score 243, rank 979; the promotion and the coins kept when the level 28 win was reverted | [^s22] [^s23] [^s24] |
 | Where to find it <!-- case:chk-entry --> | — | not verified: the podium button was not tapped by itself | [^s1] |
 | The board <!-- case:chk-board --> | Watched the leaderboard | not verified: the number of players is not shown (ranks near 1000) |  |
 | The period and its timer <!-- case:chk-period --> | Read Time Left over three days | not verified: 6d 6h, 6d 5h, 4d 11h left; the reset not seen | [^s21] |
-| Rewards per rank <!-- case:chk-rewards --> | Won level 17 | not verified: one reward seen, 1000 coins on the promotion out of Bronze; the gift boxes of the higher leagues not opened | [^s14] |
+| Rewards per rank <!-- case:chk-rewards --> | Won level 17 | not verified: two rewards seen, 1000 coins on the promotion out of Bronze and 1500 out of Silver; the gift boxes of the higher leagues not opened | [^s14] [^s22] |
 | The end of a period <!-- case:chk-end --> | — | not verified: needs a session after the timer ends |  |
 
 ## Not verified
@@ -168,3 +186,8 @@ Version 241.5.1.
 
 [^s20]: session 20261005-151039-chrono-2FYKPJ, step 34 — [video at 15:10](https://youtu.be/r5lFTdFC8_s?t=910)
 [^s21]: session 20261005-151039-chrono-2FYKPJ, step 26 — [video at 9:36](https://youtu.be/r5lFTdFC8_s?t=576)
+
+[^s22]: session 20261006-091133-chrono-2FYKPJ, step 5 — [video at 1:58](https://youtu.be/nKqzeXFw6rA?t=118)
+[^s23]: session 20261006-091133-chrono-2FYKPJ, step 17 — [video at 7:04](https://youtu.be/nKqzeXFw6rA?t=424)
+[^s24]: session 20261006-091133-chrono-2FYKPJ, step 12 — [video at 5:41](https://youtu.be/nKqzeXFw6rA?t=341)
+[^s25]: session 20261006-091133-chrono-2FYKPJ, step 24 — [video at 10:59](https://youtu.be/nKqzeXFw6rA?t=659)

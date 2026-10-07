@@ -141,7 +141,7 @@ of praise with the number of places climbed, and Continue. Continue leads to the
 [^s3] [^s18]. The player's row rises from the
 bottom of the list to its new rank:
 
-*The league card after level 11: the player's row slides up past ranks 47-49 to rank 38 with 4 rank arrows and lights up; Nice work! You rose by 12 places., then Continue* (clip dropped: per-dream clip limit) [^s3]
+![The league card after level 11: the player's row slides up past ranks 47-49 to rank 38 with 4 rank arrows and lights up; Nice work! You rose by 12 places., then Continue](../clips/20261005-league-card-after-level-11-win.webp) [^s3]
 *Clip 3 s · [original on YouTube from 2:26](https://youtu.be/oc6wFXd4jzs?t=146)*
 
 - Level 11: 0 to 4, rank 50 to 38, "Nice work! You rose by 12 places." [^s3]

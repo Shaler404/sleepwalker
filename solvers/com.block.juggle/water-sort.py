@@ -8,6 +8,8 @@ Reading (lab 2026-10-06 on 1080x2340 frames of session 20261005-231555, levels 1
 - a standard tube: liquid fills from bbox top + 0.136 h (full) to bbox bottom - 0.015 h; 4 layers of equal
   height (75 model px). Each layer is sampled at its middle, right of the glass highlight: a dark sample is
   empty, a saturated one a colour; colours are grouped by RGB distance < 60;
+- a cork can split a tube's outline into two components: intersecting tall components are merged (lab
+  2026-10-06 (3), session 20261006-053412 frame 7);
 - refused: a tube raised above its row (selected, or a pour animating), corks (a finished level animating),
   a colour count that is not a multiple of the capacity, a layer floating over an empty one.
 
@@ -15,9 +17,10 @@ Rules: pour moves the top run of one colour from a tube into an empty tube or on
 as much as fits. Win: every tube empty or full of one colour. Search: depth-first with memo over canonical
 states (tube order ignored), pours that move a whole uniform tube into an empty one skipped.
 
-Moves: taps [x, y] on tube centres, source then target, MAX_POURS pours per round, cut before a pour whose source
-took part in the previous pour (rescan after), done when
-the last pour of the solution is in the batch.
+Moves: taps [x, y] on tube centres, source then target, MAX_POURS pours per round; a pour whose source took part
+in the previous pour is never next (its tap is lost): a later independent pour (no tube shared with any unplayed
+pour before it) is moved forward instead, else the round ends (rescan after) (schedule(), lab 2026-10-06 (5));
+done when the last pour of the solution is in the batch.
 """
 import numpy as np
 
@@ -45,6 +48,26 @@ def read_tubes(a):
     glass[:int(H * .15)] = False
     glass[int(H * .80):] = False
     comps, _ = _components(glass)
+    # a cork (or confetti over the rim) can split one tube's outline in two: session 20261006-053412 frame 7
+    # read the corked red tube as a full tube plus a phantom 1-layer tube (5 reds). Tall pieces whose boxes
+    # intersect are one tube.
+    big = [list(c) for c in comps if c[3] >= H * .05]
+    merged = True
+    while merged:
+        merged = False
+        for i in range(len(big)):
+            for j in range(i + 1, len(big)):
+                x1, y1, w1, h1 = big[i]
+                x2, y2, w2, h2 = big[j]
+                if x1 < x2 + w2 and x2 < x1 + w1 and y1 < y2 + h2 and y2 < y1 + h1:
+                    nx, ny = min(x1, x2), min(y1, y2)
+                    big[i] = [nx, ny, max(x1 + w1, x2 + w2) - nx, max(y1 + h1, y2 + h2) - ny]
+                    del big[j]
+                    merged = True
+                    break
+            if merged:
+                break
+    comps = [tuple(c) for c in big]
     tubes = []
     for x, y, w, h in comps:
         if h < H * .05 or w < W * .08 or w > W * .25 or h < w:
@@ -195,6 +218,30 @@ def dfs(start, caps, limit=200000):
     return path if rec(tuple(start)) else None
 
 
+def schedule(path):
+    """The pours of one round: (batch, rest). A pour only touches its two tubes, so two pours on four different
+    tubes commute exactly; a later pour may be played early when it shares no tube with any unplayed pour
+    before it. The batch takes, in order, the first such ready pour whose source is not a tube of the pour
+    just before (that tube is still moving and loses the tap, session -231555 step 32), up to MAX_POURS. Two
+    pours into one tube in a row land (session -084209 step 10: 1>2 4>2, tube 2 read AAAA after).
+    Lab 2026-10-06 (5): the plain cut of the BFS order played 1-2 pours a round (L5 of session -084209: 10
+    rounds for 14 pours); the same rule with independent pours moved forward needs fewer rounds."""
+    rest = list(path)
+    batch = [rest.pop(0)]
+    while rest and len(batch) < MAX_POURS:
+        busy = set()
+        pick = None
+        for k, (i, j) in enumerate(rest):
+            if i not in busy and j not in busy and i not in batch[-1]:
+                pick = k
+                break
+            busy |= {i, j}
+        if pick is None:
+            break
+        batch.append(rest.pop(pick))
+    return batch, rest
+
+
 def solve(image, board=None, frame_scale=1.0):
     a = np.asarray(image.convert("RGB")).astype(int)
     H, W, _ = a.shape
@@ -247,12 +294,10 @@ def solve(image, board=None, frame_scale=1.0):
         return _no(f"no solution found for {txt} (add a tube with the booster, or undo)")
     # a tube still busy with the previous pour does not take a tap: session -231555 step 32 sent 1>4 2>1 3>2 3>4
     # with 0.35 s between taps and the tap on tube 3 (the source of the pour before) was lost, so the tap on
-    # tube 4 only selected it. The batch ends before a pour whose source took part in the previous pour.
-    batch = path[:1]
-    for i, j in path[1:MAX_POURS]:
-        if i in batch[-1]:
-            break
-        batch.append((i, j))
+    # tube 4 only selected it. schedule() never plays such a pour next: a later pour that shares no tube with any
+    # unplayed pour before it is played in its place, and the batch ends only when none is ready (lab 2026-10-06 (5)).
+    batch, rest = schedule(path)
+    path = batch + rest  # the same pours, independent ones moved forward: the note shows the order played
     moves = [[round(raised[0]["cx"]), round(raised[0]["cy"])]] if raised else []
     for i, j in batch:
         moves.append([round(tubes[i]["cx"]), round(tubes[i]["cy"])])

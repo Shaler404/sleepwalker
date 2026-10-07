@@ -5,7 +5,7 @@ type: feature
 feature: fish-leaderboard
 version_seen: 1.19.1
 verified_at: 2026-10-06
-sources: [20261003-200440-chrono-2FYKPJ, 20261003-201915-chrono-2FYKPJ, 20261005-003925-chrono-2FYKPJ, 20261005-143752-chrono-2FYKPJ, 20261005-223641-chrono-2FYKPJ, 20261006-010939-chrono-2FYKPJ]
+sources: [20261003-200440-chrono-2FYKPJ, 20261003-201915-chrono-2FYKPJ, 20261005-003925-chrono-2FYKPJ, 20261005-143752-chrono-2FYKPJ, 20261005-223641-chrono-2FYKPJ, 20261006-010939-chrono-2FYKPJ, 20261006-071212-chrono-2FYKPJ]
 ---
 
 # Fish leaderboard
@@ -89,8 +89,28 @@ Over the dimmed level [^s2] [^s3]:
 - After Level 130, early in a new period, a toast "Nice work! You rose by 3 places." and the player's row at
   rank 6 with 3 fish (frame not shown: it carries other players' names and the account ID)
   [^s7].
+- After Level 139 on 6 October, the toast "Impressive progress! You jumped up 3 places." at the top, and the
+  account's own row on the podium, 2nd with 26 fish and 17 hearts, "Online now"; 1st had 26 fish, 3rd 25,
+  rank 4 had 24 [^s30].
 - "Tap to continue" closes it; on the day's first win the [Daily Streak](daily-streak.md) comes next,
   otherwise the win screen [^s8] [^s9].
+
+![Leaderboard over the won Level 139 (names and the account ID blacked out): a rank-up bubble, a cheer toast, timer 17:53:58, the podium at 26, 26 and 25 fish with 17, 0 and 4 hearts, rows 4 to 7 with outline hearts 3, 0, 0](../img/20261006-fish-leaderboard-screen-940b2b97.webp) [^s30]
+*After Level 139: the account 2nd on the podium with 26 fish and 17 hearts; a toast "… he cheered for you" with a heart; every row has a heart and its count*
+
+### Hearts
+
+![The same board after a tap on rank 4's heart (names and the account ID blacked out): the heart solid red, its count 4](../img/20261006-fish-leaderboard-tab-hearts-944b6b96.webp) [^s31]
+*After tapping rank 4's outline heart on the post-win board: the heart turned solid red and its count went from 3 to 4*
+
+On the post-win board every podium place and every row carries a heart and a count; other players' hearts
+are pale outlines [^s30]. Tapping the heart on rank 4's row filled it solid red and raised its
+count from 3 to 4 [^s31]. A second tap on the same heart changed nothing: no toggle back, no
+second heart [^s32]. No reward, coin or fish was seen for giving a heart [^s32].
+Hearts come the other way as toasts after a win: a player's handle with "loved your …", then "… he cheered
+for you" with a heart [^s30]; the account's own count stood at 17 [^s30]. The board
+opened from Home late on 5 October showed no hearts on its rows [^s21]. Inferred: hearts are sent from the
+post-win board; not verified from the board opened from Home.
 
 ### Rules overlay
 
@@ -146,8 +166,9 @@ ended period was shown, and the coin balance on Home was still 0 [^s5].
   every rival at 3 fish half a minute in [^s5]. Inferred: other players gain
   fish over time; whether they are real or generated is not verified.
 - Hearts: every row has a heart count; the player's went from 0 to 2 with the two toasts
-  [^s3]. Inferred: hearts are cheers sent by other players; what they give is
-  not verified.
+  [^s3], and stood at 17 after the Level 139 win [^s30]. A tap on another row's heart adds 1 to its
+  count, once [^s31] [^s32]. Hearts are cheers between players; no reward for them was
+  seen.
 - A player with 0 fish has no rank ("-") [^s1].
 - The badge on the Home podium icon read 32 when the board showed the player 32nd [^s15] [^s14].
 - A clean Level 132 win on 5 October: the overlay showed the player 47th, the count rising (8 in the frame);
@@ -160,7 +181,8 @@ ended period was shown, and the coin balance on Home was still 0 [^s5].
   00:39 that started it [^s17] [^s14]. The timer read 02:02:42 on Home and 02:02:20 on the board at about
   22:45 on 5 October, which again puts the end at about 00:45 on 6 October [^s21]. At the launch at 01:09 on 6 October that period
 had ended and a new one began (23:59:51 on the New Session popup); its timer read 23:55:49 at 01:13, which puts
-its end at about 01:09 on 7 October, 24 h after the launch [^s27] [^s29].
+its end at about 01:09 on 7 October, 24 h after the launch [^s27] [^s29]. The board after the Level 139 win
+read 17:53:58 at about 07:16 on 6 October, the same end [^s30].
 - The end of a period with the game closed: no results screen and no reward at the next launch; fish and rank
   start again at zero [^s5]. Seen twice: on 5 October and on 6 October [^s27].
 - The back arrow returned to Home [^s13].
@@ -176,7 +198,7 @@ Version 1.19.1.
 | Leaderboard: 24h timer, podium top 3 with gift boxes, list of players with fish counts, the player's row at the bottom (0 fish, unranked), info button, Go to Collect <!-- case:chk-screen --> | Opened from the podium icon on Home, frame marked | ✅ | [^s1] |
 | Fish are earned by clearing main levels (event info) <!-- case:chk-points --> | The i button tapped; two levels won: +3 and +2 | ✅ | [^s10] |
 | Board: top-3 podium with fish and hearts, rows with rank, avatar, name, Online/Playing now or last seen, fish, hearts; the player at rank 21 with 3 fish, then 22 with 5; other players send cheers (hearts 0 to 2) <!-- case:chk-board --> | Two levels won; the overlay read after each | ✅ | [^s3] |
-| Each row has a heart counter (own row 2, others 0): what gives hearts and whether tapping a heart likes a player <!-- case:hearts --> | Hearts seen on the post-win overlay, never tapped | not verified | [^s3] |
+| Hearts are cheers between players: after a win, toasts "<player> loved your …" / "… he cheered for you" arrive; tapping another row's outline heart fills it red and adds 1 (3 to 4); a second tap does nothing (no toggle); no reward seen for giving or getting hearts <!-- case:hearts --> | After the Level 139 win, rank 4's heart tapped twice | ✅ | [^s31] [^s32] |
 | Why it appeared: the podium icon on Home <!-- case:chk-appeared --> | The podium icon on Home | ✅ | [^s1] |
 | The Home podium icon (with the rank badge and the period timer) opens it; the post-win overlay shows it too <!-- case:chk-entry --> | Podium icon on Home tapped on three occasions; shown by itself after each won level | ✅ | [^s18] |
 | The period and its timer: 02:02:20 on the board and 02:02:42 on the Home podium at about 22:45 on 5 October; the period ends about 00:45 on 6 October, the same 24 h cycle started by the launch <!-- case:chk-period --> | Timer read on Home and on the board | ✅ | [^s21] |
@@ -188,7 +210,8 @@ Version 1.19.1.
 
 ## Not verified
 
-- Hearts: what gives them and whether tapping a heart cheers a player <!-- case:hearts -->
+- Hearts: whether they give anything to the sender or the receiver, whether there is a daily limit, and
+  whether the board opened from Home ever shows them
 - Whether any route besides the Home podium icon and the post-win overlay opens it (the New Session popup)
 - The period: whether it is a global schedule or a per-install cycle; every timer read so far fits a 24 h period started by the launch that follows the end of the previous one (00:39 on 5 October, 01:09 on 6 October)
 - The rewards per rank: the gift box contents and the frames; nothing was given after a period ended with the game closed
@@ -227,3 +250,7 @@ Version 1.19.1.
 [^s27]: session 20261006-010939-chrono-2FYKPJ, step 0 — [video at 0:00](https://youtu.be/hWdnTswKtkU?t=0)
 [^s28]: session 20261006-010939-chrono-2FYKPJ, step 1 — [video at 0:33](https://youtu.be/hWdnTswKtkU?t=33)
 [^s29]: session 20261006-010939-chrono-2FYKPJ, step 33 — [video at 6:29](https://youtu.be/hWdnTswKtkU?t=389)
+
+[^s30]: session 20261006-071212-chrono-2FYKPJ, step 14 — [video at 3:26](https://youtu.be/rwKHO-fD0pA?t=206)
+[^s31]: session 20261006-071212-chrono-2FYKPJ, step 15 — [video at 3:44](https://youtu.be/rwKHO-fD0pA?t=224)
+[^s32]: session 20261006-071212-chrono-2FYKPJ, step 16 — [video at 3:53](https://youtu.be/rwKHO-fD0pA?t=233)

@@ -2,53 +2,28 @@
 game: com.oakever.meowdoku
 version: 1.19.1
 play_version: 1.18.0
-play_checked: '2026-10-05T22:05:43'
+play_checked: '2026-10-06T10:09:39'
 phone_version: 1.19.1
 discovery: closed
 ftue_verified: null
 progress:
-  text: level 139
-  value: 139.0
-  at: '2026-10-06T02:24:34'
-  session: 20261006-021434-chrono-2FYKPJ
+  text: level 145
+  value: 145.0
+  at: '2026-10-06T12:25:23'
+  session: 20261006-122109-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-06T04:02:50'
+  chrono: '2026-10-06T15:01:50'
 mechanics:
 - id: queens
   name: Cat placement on color regions (Queens-like)
   status: mastered
   method: solver
   levels:
-    won: 16
+    won: 22
     lost: 1
     quit: 2
   recent:
-  - level: L132 visit
-    result: won
-    seconds: 66
-    model: sonnet
-  - level: level 133
-    result: won
-    seconds: 62
-    model: sonnet
-    moves_before: 8
-  - level: level 134
-    result: won
-    seconds: 34
-    model: sonnet
-  - level: level 135
-    result: won
-    seconds: 80
-    model: sonnet
-  - level: level 136
-    result: won
-    seconds: 53
-    model: sonnet
-  - level: level 137
-    result: won
-    seconds: 57
-    model: sonnet
   - level: level 138
     result: won
     seconds: 63
@@ -65,11 +40,35 @@ mechanics:
     result: won
     seconds: 47
     model: sonnet
+  - level: level 139
+    result: won
+    seconds: 206
+    model: sonnet
+  - level: level 140
+    result: won
+    seconds: 154
+    model: sonnet
+  - level: level 142
+    result: won
+    seconds: 81
+    model: sonnet
+    moves_before: 9
+  - level: level 143
+    result: won
+    seconds: 39
+    model: sonnet
+  - level: level 144
+    result: won
+    seconds: 36
+    model: sonnet
+  - level: level 145
+    result: won
+    seconds: 34
+    model: sonnet
   solver: solvers/com.oakever.meowdoku/queens.py
-  note: Solver reads the board and returns every missing cat as a double tap in one
-    round with done=True (unique solution), so solve --run stops after 1 round without
-    looking at the win/Daily popup; dark tooltip boards are refused with a 'dimmed
-    by an overlay' note.
+  note: 'Solver unchanged since 2026-10-06 02:32: 1 round, done, won on L139-L143
+    frames. Gave-up sign is stale (Daily 10/06 runs before the fix); record every
+    level (level start before solve, level end won on the win shot) to clear it.'
   best_s: 28
 features:
 - id: consent
@@ -306,7 +305,7 @@ features:
   status: in_progress
   cases:
   - id: chk-screen
-    text: 'Profile popup: editable name (8W2G1Y), avatar, tabs Skins / Avatar / Frame,
+    text: 'Profile popup: editable name ([auto-assigned id]), avatar, tabs Skins / Avatar / Frame,
       Confirm'
     done: true
     source: 20261003-200440-chrono-2FYKPJ#7
@@ -507,8 +506,10 @@ features:
     source: 20261005-143752-chrono-2FYKPJ#14
     version: 1.19.1
   - id: chk-in-level
-    text: What shows during a level while the streak runs
-    done: false
+    text: 'Nothing: the level HUD shows Level, Score, cat bar, fish, the three rules
+      and the boosters; no yarn counter or streak sign during a level (L141-L143)'
+    done: true
+    source: 20261006-101030-chrono-2FYKPJ#15
   - id: second-break
     text: 'Second break on 2026-10-05 (first win of the day, L130): popup ''2 days
       of Daily Streak interrupted'', Restore (video) or Give up; Give up -> ''Tap
@@ -521,6 +522,13 @@ features:
       is Monday 10-05: row starts at streak day 1, not at the calendar weekday; cause
       of the 2 unresolved'
     done: false
+  - id: count-1006
+    text: 'Tue 10-06 12:22, before this session''s wins: current 3, best 3, MON TUE
+      WED ticked, SUN gift; 10-06 already had wins in earlier sessions (the first,
+      L133, about 01:10). Wins of L143-L145 showed no streak popup and left it at
+      3. The row labels count streak days, not weekdays (WED ticked on a Tuesday)'
+    done: true
+    source: 20261006-122109-chrono-2FYKPJ#1
   type: streak
   appeared:
     text: yarn counter at top of Home opens it; current 0, best 2, 7-day row with
@@ -550,9 +558,12 @@ features:
     done: true
     source: 20261003-201915-chrono-2FYKPJ#17
   - id: hearts
-    text: 'Each leaderboard row has a heart counter (own row 2, others 0): what gives
-      hearts and whether tapping a heart likes a player'
-    done: false
+    text: 'Hearts are cheers between players: on a win, toasts ''X loved your ...
+      he cheered for you'' arrive; tapping another row''s outline heart fills it red
+      and adds 1 (3->4), a second tap does nothing (no toggle); no reward seen for
+      giving or getting hearts'
+    done: true
+    source: 20261006-071212-chrono-2FYKPJ#16
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
@@ -682,6 +693,25 @@ features:
       test'
     done: true
     source: 20261003-200440-chrono-2FYKPJ#3
+  - id: score-formula
+    text: 'Final score depends on board size only: 8x8 = 7296 (L141), 10x10 = 10080
+      (L140 tagged Hard, L142 untagged) = 48*N*(N+11); the Hard tag and the praise
+      word (Supreme, Expert, Flawless) do not change it'
+    done: true
+    source: 20261006-101030-chrono-2FYKPJ#14
+  - id: start-toast
+    text: 'Level start after a win skipped from the praise screen showed a fading
+      toast over the board: ''Only 23.8% of players solved the last level without
+      hints - you''re one of them!'' (L143, after a hint-free L142)'
+    done: true
+    source: 20261006-101030-chrono-2FYKPJ#15
+  - id: no-toast-after-hint-win
+    text: After a win that used one hint Apply (L144) the next level (L145) opened
+      with no interstitial and no 'without hints' toast on the board (shot 20, about
+      1 s after the next-level tap); the toast seen on L143 came after a hint-free
+      L142
+    done: true
+    source: 20261006-122109-chrono-2FYKPJ#12
   found_at:
     text: level 127 home
     value: 127.0
@@ -786,24 +816,30 @@ features:
     source: 20261003-202631-chrono-2FYKPJ#23
     version: 1.19.1
   - id: chk-sources
-    text: 'Not seen: hint never reached 0; expected a rewarded video like the cat
-      and mouse boosters, not verified'
-    done: false
+    text: 'Rewarded ad from the 0 badge: tap starts the ad at once (playable, then
+      Play Store page); after launch back the badge shows 1 (+1 per ad). Start stock
+      4 at L127; no shop or purchase seen'
+    done: true
     version: 1.19.1
+    source: 20261006-071212-chrono-2FYKPJ#13
   - id: chk-sinks
     text: Spent per Apply
     done: true
     source: 20261003-202631-chrono-2FYKPJ#23
     version: 1.19.1
   - id: chk-empty
-    text: 'Not seen: hint never reached 0 (2 left at session end)'
-    done: false
+    text: At 0 the hint badge turns into a green video-play icon, like the cat and
+      mouse boosters (L139, after 2 Applies)
+    done: true
     version: 1.19.1
+    source: 20261006-071212-chrono-2FYKPJ#11
   - id: chk-refill
-    text: 'No refill seen: the count only goes down with use and stays across levels
-      and restarts; what restores it at 0 is not seen yet'
-    done: false
+    text: 'Sources of hints: a rewarded video at 0 gives +1 (L139); no refill from
+      a level change, Restart (L127-L130) or a level win (badge 1 from end of L139
+      through L140, L141, L142 to L143 start). The new-day refill is checked by hint-newday-check-d1'
+    done: true
     version: 1.19.1
+    source: 20261006-101030-chrono-2FYKPJ#15
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
@@ -927,6 +963,12 @@ features:
       slots (shot 16): the tab shows only the tuxedo cat as owned'
     done: true
     source: 20261005-223641-chrono-2FYKPJ#13
+  - id: trial-listed-timer
+    text: 'Profile > Skins lists the daily trial skin (bow cat) in slot 2 with a countdown
+      badge (21:37 at about 04:5x on 10-06), next to the owned default cat; 6 silhouettes
+      locked. Earlier (20261005-223641#13) it was not listed: the grid shows it now'
+    done: true
+    source: 20261006-044214-chrono-2FYKPJ#13
   found_at:
     text: level 127 home
     value: 127.0
@@ -1048,6 +1090,14 @@ features:
       opened the Play Store, not a close; launch returned to the game
     done: true
     source: 20261006-010939-chrono-2FYKPJ#28
+  - id: start-pattern-1006
+    text: 'Interstitial at level start on 10-06 (next-level tap after a win): L136
+      yes, L137 no (71 s after the L136 ad), L138 yes (128 s), L140-L142 yes, L143
+      no (54 s after the L142 ad), L144 yes, L145 no (73 s after the L144 ad), L146
+      yes (131 s). Fits a cooldown of roughly 75-120 s since the last interstitial,
+      not a level count; not verified'
+    done: true
+    source: 20261006-122109-chrono-2FYKPJ#15
   found_at:
     text: level 129 home
     value: 129.0
@@ -1171,9 +1221,15 @@ features:
     source: 20261005-123456-chrono-2FYKPJ#11
     version: 1.19.1
   - id: daily-retry
-    text: Daily Challenge Retry after a clear is a rewarded placement (AD badge);
-      not watched, what it gives unknown
-    done: false
+    text: 'Daily Challenge Retry (AD) after a clear: about 8 s video then X; gives
+      the same board again with cats, timer and fish reset; best time kept'
+    done: true
+    source: 20261006-021434-chrono-2FYKPJ#33
+  - id: hint-refill
+    text: 'Hint booster at 0: the green video badge starts a rewarded playable ad
+      at once that ends on the Play Store; launch back grants 1 hint'
+    done: true
+    source: 20261006-071212-chrono-2FYKPJ#13
   found_at:
     text: level 129 home
     value: 129.0
@@ -1257,6 +1313,12 @@ features:
     text: 'Android Back on Home opens Quit popup; X cancels under Golden Fish bonus
       board: as the base, or what differs'
     done: false
+  - id: interval
+    text: 'Offered again on the L142 Flawless win screen (Golden Fish button, Skip
+      to Level 143 below) after L138: every 4th main level holds; the player skipped
+      it'
+    done: true
+    source: 20261006-101030-chrono-2FYKPJ#14
   found_at:
     text: level 134
     value: 134.0
@@ -1727,33 +1789,53 @@ tasks:
     badge at 0 and its refill (video, timer, level win) are marked'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:38:33'
   feature: booster-hint
   source: session
   plan: Hints are at 2 and carry over between levels. On a level use Apply twice,
     mark the badge at 0; tap it once and mark what comes (video, offer); after the
     next win check whether the count changed. Confirmed when the source at 0 is marked
+  closed: '2026-10-06T07:16:34'
+  closed_by: 20261006-071212-chrono-2FYKPJ#16
+  note: '2 hints used via Apply; badge at 0 turns into green video icon; tapping it
+    starts a rewarded ad (playable then store); after return badge shows 1 (+1 per
+    ad). Win-based refill not checked: win screen did not change in this session (steps
+    8-14).'
+  result: confirmed
 - id: exp-pattern-mode
   title: 'Toggle Pattern Mode in the in-level settings once: confirmed when the board
     with Pattern Mode on is marked and the toggle is set back'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:38:34'
   feature: level
   source: session
   plan: In a level open the gear (671,110), turn Pattern Mode on, close, mark the
     board (expected patterns on the color regions), then turn it off again. Confirmed
     when the board's look with it on is marked
+  closed: '2026-10-06T07:13:35'
+  closed_by: 20261006-071212-chrono-2FYKPJ#7
+  note: Pattern Mode ON shows icons on each color region (yarn, bell, paw, grass,
+    fish, bow, whiskers, sparkles, triangles, sprout); rules unchanged; toggled back
+    OFF (step 6)
+  result: confirmed
 - id: exp-score-per-cat
   title: What decides the score a placed cat gives (+576 on L128, +672 on L130)?
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T01:10:05'
   feature: level
   source: session
+  closed: '2026-10-06T10:17:04'
+  closed_by: 20261006-101030-chrono-2FYKPJ#16
+  note: 'Total score is a function of board size only: 10x10 = 10080 (L140 and L142),
+    8x8 = 7296 (L141); both equal 48*N*(N+11). Per-cat +576/+672 (L128/L130) are the
+    per-placement increments within one board, not constant; the final total does
+    not depend on order or fish (all 3 fish here).'
+  result: confirmed
 - id: exp-streak-restore
   title: 'Daily Streak interrupted: try Restore (video) once and record the day-7
     gift'
@@ -1784,7 +1866,7 @@ tasks:
     the days lost'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:46:08'
   feature: daily-streak
   source: session
@@ -1792,6 +1874,12 @@ tasks:
     and best; win the first level of the day and mark the break popup if it comes.
     Confirmed when its N equals one of them; 2026-10-05 showed 2 while the streak
     should have been 1 after the 10-03 Give up
+  closed: '2026-10-06T10:17:08'
+  closed_by: 20261006-101030-chrono-2FYKPJ#16
+  note: '10-06 already had a win (L139 at 07:12) so no break popup came; streak screen
+    showed Current 3, Best 3, Mon-Wed ticked. Needs the first win of a new day: follow-up
+    task streak-break-popup-count.'
+  result: inconclusive
 - id: exp-consent-links
   title: 'Open Terms of Service and Privacy Policy from Settings: done when each link''s
     destination (browser, in-app page) and the way back are marked'
@@ -1815,11 +1903,18 @@ tasks:
     when its 24h trial ends
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T14:43:01'
   feature: daily-challenge
   source: session
   plan: clear a daily with a mistake, compare; reopen after 24h
+  closed: '2026-10-06T04:45:02'
+  closed_by: 20261006-044214-chrono-2FYKPJ#14
+  note: 'Trial skin (bow cat) is in Profile > Skins with a 21:37 countdown at 04:5x
+    10-06, so the grant lasts 24h; earlier retry with 2 fish gave no new skin (prior
+    session). Expiry behaviour needs time: follow-up daily-trial-skin-expiry set for
+    10-07 02:40.'
+  result: inconclusive
 - id: exp-streak-rewards
   title: What the Daily Streak day-7 gift gives
   kind: experiment
@@ -1879,7 +1974,7 @@ tasks:
     is explained'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T14:46:15'
   feature: daily-streak
   not_before: '2026-10-06T08:00:00'
@@ -1889,6 +1984,13 @@ tasks:
     a day is the local calendar day and the 10-05 count of 2 came from the 00:39 Give-up
     win counting as day 1 and a later win as day 2 (so the day boundary is not midnight);
     if it stays 2 the day already counted. Closes daily-streak count-shown'
+  closed: '2026-10-06T12:26:05'
+  closed_by: 20261006-122109-chrono-2FYKPJ#16
+  note: 'Streak counter was already 3/best 3 (Mon-Wed ticked) on 10-06 before this
+    session''s wins: today''s first win happened in earlier sessions, so no pre-first-win
+    baseline exists. Wins of L143-145 did not change it (no streak popup). Needs a
+    session at the start of 10-07 before any win.'
+  result: inconclusive
 - id: daily-challenge-next-day
   title: 'Open the Daily Challenge on 2026-10-06: done when the renewed Home button
     (timer, check gone, skin) and the new dated board are marked; then skip one day
@@ -1909,28 +2011,42 @@ tasks:
     does anything'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T22:38:25'
   feature: fish-leaderboard
   source: session
   plan: win a level, open leaderboard, note heart counters and tap them
+  closed: '2026-10-06T07:16:34'
+  closed_by: 20261006-071212-chrono-2FYKPJ#16
+  note: 'After win the leaderboard shows hearts per row (podium 17/0/4, rows 3/0/0)
+    and toasts ''X loved your ... cheered for you'' (incoming cheers). Tapping an
+    outline heart on row 4 turned it solid red and 3->4; second tap no change (no
+    toggle). Source of others'' hearts: other players cheer; no reward seen (steps
+    15-16).'
+  result: confirmed
 - id: exp-frame-rank-tiers
   title: 'Leaderboard frames 5/15/30/50: verify they are given for top-N placement
     at period end'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T22:40:58'
   feature: profile
   not_before: '2026-10-06T01:40:58'
   source: session
   plan: after period end at ~00:45 10-06 check Frame tab for new unlocked frame
+  closed: '2026-10-06T04:44:29'
+  closed_by: 20261006-044214-chrono-2FYKPJ#11
+  note: 'Profile > Frame at 04:4x on 10-06 after the period rollover: all five Leaderboard
+    frames (1,5,15,30,50) still locked; the tooltips say first place only, so tier-by-rank
+    is not supported but not disproved (our rank at period end unknown).'
+  result: inconclusive
 - id: exp-frame-conditions
   title: 'Read the own condition of each Leaderboard frame (5, 15, 30, 50): done when
     each frame''s tooltip is marked'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T22:44:10'
   feature: profile
   source: session
@@ -1939,6 +2055,12 @@ tasks:
     (step 18) left the rank-1 text 'Get first place in the challenge' on screen, so
     the tags may count first places, not ranks. Confirmed (tiers by rank) when the
     texts name top-5/15/30/50; refuted when they name a number of first places
+  closed: '2026-10-06T04:44:29'
+  closed_by: 20261006-044214-chrono-2FYKPJ#11
+  note: 'Tapping locked frames 5, 30 and 50 (steps 4-11, frame 12) shows the same
+    tooltip as rank 1: get first place in the challenge to get this frame, with GO.
+    Texts name first place, not top-5/15/30/50; the numbers on the tags are unexplained.'
+  result: refuted
 - id: fish-event-end-open-2
   title: 'Watch a fish leaderboard period end with the game open: period ends about
     01:09 phone time on 2026-10-07 (timer read 23:55:49 at 01:13 on 10-06); open the
@@ -2005,6 +2127,166 @@ tasks:
   source: game
   note: closes daily-challenge chk-missed; sessions on 10-07 must not open or clear
     the daily
+- id: daily-trial-skin-expiry
+  title: 'After 02:30 on 10-07 open Profile > Skins: is the bow-cat trial skin gone
+    or locked?'
+  kind: followup
+  requires: any
+  status: open
+  created: '2026-10-06T04:44:51'
+  feature: daily-challenge
+  not_before: '2026-10-07T02:40:00'
+  source: game
+- id: exp-frame-tier-after-period
+  title: 'Leaderboard frames after a period end: open Profile > Frame right after
+    the fish period results and note which of frames 1/5/15/30/50 unlocked against
+    the final rank'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T04:46:13'
+  feature: profile
+  not_before: '2026-10-07T01:10:00'
+  source: session
+  plan: 'In the same session as fish-event-end-open-2: note the final rank on the
+    results screen, then Profile > Frame, scroll to Leaderboard, mark the five frames.
+    Confirms tiers if a frame tagged N >= final rank unlocks while rank 1 stays locked;
+    refutes if all stay locked with a rank of 50 or better'
+- id: exp-daily-trial-skin-2fish
+  title: 'First daily clear with one mistake (2 fish kept): does it still give the
+    24 h trial skin?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T04:46:13'
+  feature: daily-challenge
+  not_before: '2026-10-08T08:00:00'
+  source: session
+  plan: On 10-08 or later (after daily-missed-day has seen the missed day), play the
+    new daily and make exactly one mistake, then clear it. Confirms the 3-fish rule
+    if no trial skin offer appears on the win screen and Profile > Skins has no new
+    countdown; refutes it if the trial offer appears
+- id: exp-hint-after-win
+  title: Check hint count after next level win (does a win refill hints?)
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-06T07:16:35'
+  feature: booster-hint
+  source: session
+  plan: note hint badge (1 now) at next level start after a win
+  closed: '2026-10-06T07:19:12'
+  closed_by: review-20261006
+  note: duplicate of exp-hint-win-refill, which has a plan with a confirm/refute result
+    and covers the new-day case
+- id: exp-hint-win-refill
+  title: 'Does a level win or a new day add hints: done when the hint badge before
+    and after a won level (and at the first level of a new day) is marked'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T07:19:07'
+  feature: booster-hint
+  source: session
+  plan: Hint is 1 after L139 (frame 19 of 20261006-071212). At the next level start
+    mark the badge (1 = no win refill, 2+ = a win adds hints); win without using the
+    hint and mark the badge at the next level start again; at the first level after
+    the day changes mark it once more. Confirmed when a count change is tied to a
+    win or a new day, refuted when it stays 1 across both
+  closed: '2026-10-06T10:17:05'
+  closed_by: 20261006-101030-chrono-2FYKPJ#16
+  note: 'Hint badge was 1 at end of L139, 1 at L140 start, 1 at L141 start and 1 at
+    L143 start after three wins without using the hint: a win adds no hints. The new-day
+    part was not observable (day did not change in session); see follow-up task.'
+  result: refuted
+- id: hint-newday-check-d1
+  title: Check hint badge at the first level after the date changes (was 1 on 10-06
+    after 4 wins) — day 1 of 1
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-06T10:17:06'
+  feature: booster-hint
+  not_before: '2026-10-07T10:17:06'
+  source: game
+- id: streak-break-popup-count-d1
+  title: Before the first win of a new day note current/best streak (3/3 on 10-06,
+    MON-WED ticked), win and mark the break popup if it shows N — day 1 of 1
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-06T10:17:07'
+  feature: daily-streak
+  not_before: '2026-10-07T10:17:07'
+  source: game
+  plan: mark yarn counter, win first level, compare popup N
+- id: exp-no-hint-toast
+  title: 'Find when the ''Only N% of players solved the last level without hints''
+    toast shows: done when a level start after a hint-free win and one after a win
+    with a hint Apply are both shot within 1 s of the level opening'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T10:20:33'
+  feature: level
+  source: session
+  plan: Win one level without hints and one with one hint Apply; take a shot right
+    after the next level opens (before or without an interstitial). Confirmed if the
+    toast shows only after the hint-free win; refuted if it shows after both or on
+    every start. Note the % and whether it changes per level.
+  closed: '2026-10-06T12:26:04'
+  closed_by: 20261006-122109-chrono-2FYKPJ#16
+  note: After hint-free win L143 and L145 the next level opened under a full-screen
+    interstitial (shots 11-13, 27-28); after launch no toast on L144/L146 board. After
+    the hint win L144 (one Apply) L145 opened with no ad and no toast (shot 20). Toast
+    never seen this session; the ad hides the first second, so the toast cannot be
+    tied to hint-free wins. Retry needs a hint-free win followed by a no-ad start.
+  result: inconclusive
+- id: exp-streak-day-boundary-1007
+  title: 'Daily Streak day rollover: done when the yarn counter is marked on 2026-10-07
+    before any win and again after the first win of that day'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T12:26:12'
+  feature: daily-streak
+  source: session
+  plan: 'First thing in the first session of 10-07, before any level or golden or
+    daily win: Home yarn counter (365,110), mark current/best and ticked slots (expect
+    3/3, MON-WED). Win one main level, reopen and mark. 3 to 4 (THU ticked) confirms
+    a local calendar day; staying 3 means the day boundary is not midnight (compare
+    with the 10-05 double count, daily-streak count-shown)'
+  not_before: '2026-10-07T00:05:00'
+- id: exp-no-hint-toast-2
+  title: 'Toast after a hint-free win with no interstitial: done when a level start
+    that follows a hint-free win and had no ad is shot within 1 s'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T12:26:13'
+  feature: level
+  source: session
+  plan: Interstitials seem to need about 75-120 s since the last one (ad-interstitial
+    start-pattern-1006). Right after a level start that had an ad, win it hint-free
+    fast (solver, about 35 s), Tap to Continue and tap the next Level within about
+    60 s of the ad; shot at once. Confirmed if the 'Only N% of players solved the
+    last level without hints' toast shows (note N%); refuted if absent. The hint-win
+    side is done (no toast on L145 after the L144 hint win)
+- id: exp-interstitial-cooldown
+  title: 'Find what spaces the level-start interstitials: done when level starts at
+    known seconds since the last ad show whether a time cooldown (about 75-120 s)
+    or a level count decides'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T12:29:16'
+  feature: ad-interstitial
+  source: session
+  plan: Over 6 or more consecutive wins, note for each next-level tap the seconds
+    since the last interstitial ended and whether one played (shot right after the
+    tap). Alternate fast (under 60 s) and slow (wait 150 s on the praise screen) wins.
+    Confirmed if every start under about 75 s has no ad and every start over about
+    120 s has one, whatever the level number
 discovery_note: 'Golden Fish (the last new entry) was played through at L138: its
   board, popup and win lead only back to the next main level, no new entry point;
   Home, Settings, Profile, leaderboard and daily walked earlier; the one lock (cat

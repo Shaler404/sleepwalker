@@ -83,6 +83,16 @@ the dream merges it here. Level times: `sw.py playbook`. Positions are in the 73
   touches another block of the piece; once every block has been tried it also aims 0.2 cell higher
   (0.4 after two cycles). The RETRY note says "slotN missed Kx, touch block B" and, from 4 misses on,
   "place it by hand from a tray block" (lab 2026-10-03, third pass).
+- Gameover mode ends the game by BLOCKING (lab 2026-10-06 (4)): the game deals a tray that fits the board
+  as dealt, so filling the board never ends a game (session 20261006-084209: 84 trays, 10.7 min, 11366, the
+  tray turned to 1x1s and diagonals), but it does not check the order of the three pieces. Once a tray
+  allows it, the solver places only 1 or 2 pieces so that the rest of the tray fits nowhere; the note
+  starts `[mode gameover] BLOCK: after ... no room is left for slotN`. On the 84 recorded trays of that game
+  such a line existed from round 5 on (79 of 80; 73 of 110 trays over three sessions), so a game should end
+  in about 5-6 rounds (~2 min). Until then it fills the board as before. Not yet seen on the phone: check
+  that the game ends with pieces still in the tray (expected: the No Space Left banner); if it does not,
+  `--run` again: the next round says "GAME OVER: no tray piece fits" or plays on.
+  ⚠️ Superseded: the BLOCK line was seen on the phone, 15 of 15 classic games over in 0.4-1.3 min (sessions 20261006-105231, 20261006-111957, 20261006-133549 below).
 - Level plan: start the level, `solve classic` once and open the drawn frame (the red circles must sit
   on tray blocks), then `solve classic --run --rounds 20` with no `--board`; when it stops, read its last
   note and run it again. "GAME OVER" (no tray piece fits, or the No Space Left banner) ends the level:
@@ -97,6 +107,10 @@ the dream merges it here. Level times: `sw.py playbook`. Positions are in the 73
   - Playing for score: game 1 ran 517 s and game 2 489 s with no game over, both quit; 724 points
     after ~45 placements and the board still open [s:20261001-200952-chrono-2FYKPJ#42]
     [s:20261001-230945-chrono-2FYKPJ#63]. Use the gameover mode when the goal is the end screen.
+  - Filling the board is not a way to lose: the tray adapts (small pieces on a crowded board) and forced
+    clears follow [s:20261006-084209-chrono-2FYKPJ#103]. The BLOCK line is the way; a BLOCK round leaves
+    tray pieces unplaced on purpose: do not place them by hand. If the drop of a BLOCK round missed, the
+    next round bars it and finds another block.
   - Solver retry loops (before the lab fix): the same plan on the same frame was sent 5, 11-12 and 7
     times in a row (~24 of 63 steps, ~2.5 min); only a hand drag started on a tray block broke them
     [s:20261001-230945-chrono-2FYKPJ#14-19] [s:20261001-230945-chrono-2FYKPJ#42-53]
@@ -130,7 +144,17 @@ the dream merges it here. Level times: `sw.py playbook`. Positions are in the 73
     0.2 lead, fixed lab 2026-10-04); 0 "did not drop". If "an earlier piece landed on its cells" appears,
     the next round replans by itself: just run again.
   - `solve --run` may crash on an adb hiccup (ConnectionResetError 10054 inside a swipe, session
-    20261003-235233 step 35): look at the frame and run `--run` again; the round may replan from scratch.
+    20261003-235233 step 35; "device not found" / "adb server refused" 5 times in session 20261006-105231):
+    `shot` to reconnect, then `--run` again. Since lab 2026-10-06 (5) the solver sees that nothing of the
+    crashed round happened (same board, same tray) and plays that plan again once, warm-up included (note
+    "last round: nothing changed (the moves were probably not sent: adb drop?): planned again once");
+    before, it barred all three placements as "did not drop" and skipped the warm-up (games 3 and 5 of
+    105231). A second unchanged round in a row bars them as before.
+  - The result screen ends the run: "GAME OVER: the classic result screen (Score, Best Score, Play)"
+    (done) on the blue page with the green Play or the purple new-best page with the orange Play (lab
+    2026-10-06 (5)). Before, a game over with no interstitial reached that screen during the run and the run
+    stopped as "not a classic board" (gave up, game 2 of 105231). A new game whose tray is still growing in
+    gives a WAIT round instead of "tray empty".
   - `--board` on every solver call reads to the lab as a bypassed solver (sign of session
     20261003-193423, where `--board` carried only the gameover mode): do not pass it in classic.
 
@@ -184,6 +208,23 @@ make-classic-fast (lab fixes checked in play + gameover mode).
   a row. Before this, 7 of 8 adventure runs of three sessions ended as "gave up" on exactly those
   screens. After the goal: the win panel slides in (Consecutive Victories xN counts up ~3 s; green
   "Next Level" or purple "Next Hard Level"), sometimes an interstitial first (skip icon top left).
+- Since lab 2026-10-06 (7) two more endings are "done", not "gave up": "LEVEL OVER: the Adventure result
+  panel is coming in" (the page dims to navy, the Consecutive Victories banner slides down or the score
+  counts up in a disc; session 20261006-133549 frames 91, 149) and "LEVEL OVER: an interstitial covers the
+  screen right after an Adventure round" (the ad plays BEFORE the result panel: frames 100, 142). On either:
+  close the ad if there is one, take a `shot` of the result panel and `level end won` (Next Level / Next Hard
+  Level) or `lost` (Retry). The score-target "Well Done!" panel (button higher, frame 150) now reads as
+  LEVEL WON too. In that session 3 of 4 adventure runs had ended "gave up" on exactly these frames after
+  the winning round; nothing was wrong with the play (L6 2.7, L7 0.9, L8 1.6, L9 ~2 min of solver play).
+  Also fixed: stars flying over the page under the board (gem-fly, session 20261006-141221 frame 102) made
+  the run stop with "page background ... is not the game's blue: popup or dim"; it is now a WAIT round.
+- Scoring, read off the Adventure score bar (session 20261006-141221, L11 and L12, 47 rounds, exact): a
+  placement scores 1 per cell plus 10 x k(k+1)/2 for k lines cleared at once (1 line 10, 2 lines 30, 3 lines
+  60); past ~81% of the target (about 520/641, 595/733) cells stop counting and only clears score. So
+  the last fifth of a score-target level is 10 points per single-line round (L12: 599 -> 733 took 11
+  rounds). Score-target levels take longer as the target grows (L11 641: 3.6 min of play, L12 733: ~5.8
+  min). Weighting multi-line clears in the search was tried offline (96 simulated games): +3% points
+  and more game overs, so it stays off. Budget ~6 min for a score target over 700.
 - Results (session 20261003-235233): L1 won 2.2 min, L2 lost (deliberate), L2 won 3.1 min (incl. ad),
   L3 won 2.3 min. Mastered.
 
@@ -228,12 +269,21 @@ Each solver is `solve <mechanic> --run` with no `--board`; open the drawn frame 
 per new mini-game. They were checked only on the recorded frames of one session each: watch the first
 level played with them.
 - water-sort: solver `solvers/com.block.juggle/water-sort.py`. Reads tubes and 4-layer colours, finds the
-  fewest pours, taps source then target. A round stops before a pour whose source took part in the
-  pour just before (that tap is lost while the tube is still moving: session 20261005-231555 step 32 lost
-  the tap of 3>4 and only selected tube 4), so a level takes 2-3 rounds. A raised tube is a selection: the
+  fewest pours, taps source then target. A pour whose source took part in the pour just before is never
+  next (that tap is lost while the tube is still moving: session 20261005-231555 step 32 lost the tap of
+  3>4 and only selected tube 4); since lab 2026-10-06 (5) a later pour on other tubes (sharing no tube with
+  any unplayed pour before it, so the result is the same) is played in its place, and the round ends only
+  when none is ready. L5 of session 20261006-084209 took 10 rounds for 14 pours; the same line now takes 6
+  (124 boards offline: 764 rounds -> 560). The note lists the pours in the order played. Two pours into the
+  same tube in a row land (084209 step 10). A raised tube is a selection: the
   solver taps it first to put it down (frames 48-53 of that session: the bottom-left tube of L2 sat
   selected through the whole level). The small add-tube tube is planned only when nothing else works
-  (its capacity is a guess). Refuses corks/the win glow and tilted (pouring) tubes: run again.
+  (its capacity is a guess). Refuses the win glow and tilted (pouring) tubes: run again. A corked
+  (finished) tube mid-level is read as a full tube (lab 2026-10-06 (3): its cork split the outline and
+  the solver saw a phantom tube, "colour counts [4, 4, 5]", session 20261006-053412 frame 7; fixed).
+  Its BFS line is the shortest one: on L2-L4 of that session it gave exactly the lines the player
+  worked out by hand (L4: 11 pours 1>5 3>6 1>3 4>3 ...). Play every level by `solve water-sort --run`;
+  do not write the tubes and a BFS by hand (that counts as a bypassed solver).
 - sudoku: solver `solvers/com.block.juggle/sudoku.py`. Reads the grid (N and the box shape from the thick
   lines) and the digits (matched against the tray glyphs and kept 1-6 bitmaps), solves, then taps a tray
   digit and every cell that takes it, digit by digit (the whole board in one round on L1-L2). Refuses a
@@ -244,8 +294,13 @@ level played with them.
   path over the board makes it refuse (odd picture counts): run again after the path fades. If it says
   "no order clears": shuffle.
 - one-line: solver `solvers/com.block.juggle/one-line.py`. Finds the path from the coloured start square
-  over every square and sends one swipe per straight run (the line stays between swipes). Only a fresh
-  board: with a line already drawn it refuses; restart the level (arrow top right) first.
+  over every square and sends one swipe per straight run (the line stays between swipes). Since lab
+  2026-10-06 (6) it also finishes a line already drawn (by an earlier run, by hand or by the hint): it
+  reads the drawn chain from the start disc to its head and swipes the rest from the head (note "line
+  drawn ...; continue from the head rXcY"). Do not restart a half-drawn level: run the solver. It says
+  "dead end ... restart the level" only when no path covers the open squares from the head, and
+  "solved" (done) when every square is drawn or the crown shows. Pitfall: session 20261005-125535 called
+  an 8/11 line a dead end and spent a hint, but the head r3c1 could still go r2c1 r2c0 r1c0.
 - mahjong-mg: manual. Tiles are stacked (half-hidden lower layers), so the free test needs the eye: a
   tile is free when nothing lies on it and its left or right side is open. Pair free twins, buried twins
   last; three of a kind free: keep the one that frees the most. MATCHES N at the top = free pairs now;
@@ -257,7 +312,57 @@ level played with them.
   fruits at the side where the smallest fruits are, keep the largest in one corner; 3) never drop
   a large fruit on top of small ones. Past the 5-minute budget: quit.
 
-## Level times by mechanic (dream 2026-10-06)
+## Water Sort L2-L4 (2026-10-06, session 20261006-053412)
+- Boards are fixed per level: Restart and an app restart deal the identical layout. L3: 4 colours, 4 full tubes, 2 empties; L4: 4 colours mixed.
+- Method that worked: write the tubes as strings (bottom->top), run a BFS for the shortest line, then send pours by tube centres (730 frame: top row x 177/365/553 y 520; bottom row with 3 tubes x 103/277/452 y 990; with 2 tubes + small tube x 177/365 y 990). Never two pours in a row from the same source in one batch; keep the BFS order (an interleave I made broke a pour, the game just ignored it).
+  ⚠️ Superseded: play Water Sort with `solve water-sort --run` (its BFS gives the same lines); since lab 2026-10-06 (5) the solver plays a later pour early only when it shares no tube with an unplayed pour before it and its source was not in the previous pour.
+- The solver misread a corked tube after round 1 (colour counts not multiples of 4) and L2-L4 were then finished by hand. Fixed in lab 2026-10-06 (3) (the cork split the tube outline in two); now it reads that frame (`ABB | CCCC | BBA | AA`, 3 pours). If a count error still appears, run `--run` again once the confetti is gone, and place by hand only if it repeats.
+- Dead ends: BFS over all 5132 reachable L4 states found none; L2-L3 cannot dead-end either (a colour on top of another colour in a full tube only comes from the initial layout). Look for a loss on later levels with more colours.
+
+## Water Sort L4-L7 and classic gameover mode (2026-10-06, session 20261006-084209)
+- Water Sort: solver `--run` won L4 (resumed mid-board), L5, L6 in 1-2 calls each (0.7-2 min). L5 4 colours mixed, L6 3 colours, L7 4 colours; all keep 2 empties. BFS (scratch script: tubes as strings, pour = top run up to free space) found no dead end on L4, L5, L7: losing by pouring is impossible this early.
+- Water Sort: the L6 win played a store-header video interstitial; wait ~35 s for the end card, then one `key back` returns to the next level. Back arrow leaves to More Games over the classic board.
+- Classic gameover mode does NOT reach game over: 84 trays, 10.7 min, score 11366; when the board is crowded the tray deals small pieces (1x1, 2-cell diagonals, 2x1) and placements force clears. Do not start a classic game for a game-over goal with less than 15 min left. Fixed in lab 2026-10-06 (4): the gameover mode now blocks the rest of the tray (see "Gameover mode ends the game by BLOCKING" under classic); budget ~3 min for a game over until that is seen on the phone.
+  ⚠️ Superseded: that was the fill-fast mode; the BLOCK line added by lab 2026-10-06 (4) ends games in 0.4-1.3 min (sessions 20261006-105231, 20261006-111957, 20261006-133549 below).
+
+## Classic gameover mode on the phone (2026-10-06, session 20261006-105231)
+- The BLOCK line works on the phone: 6 of 6 classic games ended in No Space Left with pieces left in the
+  tray, 0.5-1.3 min each from an empty board (5-6 solver rounds; the resumed 11366 board ended on round 1).
+  Plan for any game-over goal: `level start`, `solve classic --run --rounds 15` (no `--board`), read the
+  "GAME OVER" note, `level end lost`. To push the game over later (a timing test), first run score mode
+  with a `--board` file holding {"mode":"score"}, then pass a file with {"mode":"gameover"} on the next
+  `--run`: the mode switched as asked.
+  ⚠️ A `--board` mode file counts as a bypassed solver (see the classic pitfall above): use it only for a timing experiment and say "experiment" in `level end --note`.
+- Game-over interstitial: a time cooldown, not every game over.
+  ⚠️ Previously "~5 min from the previous ad's start": sessions 20261006-133549 and 20261006-141221 showed it counts from the previous ad's close (about 3-4.7 min), shared with Adventure wins.
+  Several end cards: (1) the ad auto-opens a Play Store sheet: close it with the sheet's X (677,408); if the
+  Play Store home stays behind, `launch` (it pressed Back for you); (2) a playable end card with no X that
+  ignores Back and 40 s of waiting: `restart` (game over and best are already saved); (3) an end card with
+  an X top left (59,97): tap it; (4) Royal Match store-header video: wait ~50 s, one Back.
+- The result screen title rotates (Can you Top that?, Your Best is Next, Your High Score is Calling!,
+  Unbeaten? Try Again!, Just One More!) and counts the score up before the Play button is drawn.
+- A Rating popup can cover the result screen: close it with its X (628,500), never the thumbs-up.
+- adb dropped 4 times inside `solve --run` this session (traceback "device not found" / "adb server
+  refused"): a plain `shot` reconnects; then re-run the solver (pass the `--board` mode again if the
+  first round never ran).
+
+## Classic game-over timing (2026-10-06, session 20261006-111957)
+- BLOCK mode: 4 of 4 classic games over in 0.4-0.6 min (scores 37-41) from an empty board.
+- Interstitials: none at the first game over 1.7 min after an app launch; ads at 5.6 min after the previous ad's start. An ad held open untouched for 3.5 min let the screen dim (session blocked): never hold an ad longer than ~2.5 min.
+- New end card: coloring-game video -> auto Play Store sheet (close its X 677,408) -> playable with no X that ignores Back: restart.
+
+## Ads and Adventure (2026-10-06, session 20261006-133549)
+- Classic interstitial cooldown counts from the previous ad's CLOSE (~3 min): game over 3.3 min after a close (4.4 after its start) got an ad. The first game over after a cold launch had no ad at 3.2 and 3.9 min after the launch (hypothesis: the first game over after a launch is exempt).
+- Holding the board for a timing test: `wait 55` + a harmless tap at (365,1500) below the tray, repeated; the screen never dimmed.
+- Store-header ads: never tap the top-left ">| Next" / "Open Store"; the video auto-opens a Play Store sheet (X at 677,408); if the Play Store home is left, `launch` (presses Back for you). Then either an end card with X top right (670,97), a frozen end frame closed by Back, or a playable with no X that ignores Back: restart (classic game over and Adventure wins are saved before the ad: L7 kept after a restart).
+- Adventure L6 (gems 40/40/40), L7 (gems 22/22/20), L8 (gems) and L9 hard (score bar to 687) all won by the solver in score mode, 0.9-2.7 min of play each. In Adventure the win interstitial plays before the win panel. The solver stops with "board block is not square (1080x2340)" on the win panel or a black ad-loading frame: take a shot. (Lab 2026-10-06 (7): these frames now end the run as "LEVEL OVER ..." (done), see "How a run ends" under adventure.)
+
+## Ad timing in Adventure and classic (2026-10-06, session 20261006-141221)
+- Adventure L10-L13 won by `solve classic --run` (score mode, no --board): L10 score 395 in ~1.1 min of play, L11 641 ~3.6 min, L12 733 ~5.8 min (hit the over-budget stop once: just run again), L13 gems 34+34 ~2 min of play.
+- To time a result, run the solver in short bursts (`--rounds 4-6`), read the goal counter, and hold with `wait` (<=60 s at a time) before the last clear.
+- Classic BLOCK mode: game overs in 0.5-0.8 min (scores ~40). The first game over after a cold launch can get an ad.
+
+## Level times by mechanic (dream 2026-10-07)
 
 ```yaml
 ---
@@ -269,26 +374,24 @@ mechanics:
   solver: solvers/com.block.juggle/classic.py
   levels:
     won: 0
-    lost: 1
-    quit: 2
+    lost: 19
+    quit: 3
   typical_min: null
   best_min: null
   solver_file: solvers/com.block.juggle/classic.py
-  solver_sign: 'solver bypassed: 2 of 4 levels placed by hand; solver gave up in 2
-    of 4 levels (no moves, the same moves, or no change on screen)'
 - id: adventure
   name: adventure
-  status: mastered
+  status: broken
   method: solver
   solver: solvers/com.block.juggle/classic.py
   levels:
-    won: 5
+    won: 13
     lost: 1
     quit: 1
-  typical_min: 3.1
-  best_min: 2.2
+  typical_min: 4.8
+  best_min: 1.9
   solver_file: ''
-  solver_sign: solver gave up in 4 of 5 levels (no moves, the same moves, or no change
+  solver_sign: solver gave up in 2 of 5 levels (no moves, the same moves, or no change
     on screen)
 - id: fruit-merge
   name: fruit-merge
@@ -350,15 +453,16 @@ mechanics:
   solver_file: solvers/com.block.juggle/sudoku.py
 - id: water-sort
   name: water-sort
-  status: studying
+  status: mastered
   method: solver
   solver: solvers/com.block.juggle/water-sort.py
   levels:
-    won: 1
-    lost: 0
-    quit: 0
+    won: 6
+    lost: 1
+    quit: 1
   typical_min: 1.0
-  best_min: 1.0
+  best_min: 0.7
   solver_file: solvers/com.block.juggle/water-sort.py
+  solver_sign: 'solver bypassed: 2 of 5 levels placed by hand'
 level_budget_min: 5
 ```

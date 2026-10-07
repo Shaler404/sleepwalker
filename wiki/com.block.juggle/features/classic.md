@@ -4,8 +4,8 @@ title: "Classic mode (endless 8x8)"
 type: feature
 feature: classic
 version_seen: 10.8.1
-verified_at: 2026-10-04
-sources: [20261003-193423-chrono-2FYKPJ, 20261003-212548-chrono-2FYKPJ, 20261003-235233-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-193423-chrono-2FYKPJ, 20261003-212548-chrono-2FYKPJ, 20261003-235233-chrono-2FYKPJ, 20261006-105231-chrono-2FYKPJ]
 ---
 
 # Classic mode (endless 8x8)
@@ -119,10 +119,10 @@ Version 10.8.1.
 
 | Outcome | What happens | Source |
 |---|---|---|
-| Loss: no tray piece fits | "No Space Left" banner with the piece that does not fit, the empty cells fill with colour, an interstitial ad, then "Can you Top that?" with the score and Play | [^s1] |
+| Loss: no tray piece fits | "No Space Left" banner with the piece that does not fit, the empty cells fill with colour, an interstitial ad (not at every game over), then the result screen with the score and Play; its title changes from game to game | [^s1] [^s20] |
 | Restart: Settings > Replay | An interstitial ad, then a new empty board, score 0, best kept; no confirmation | [^s17] |
 | Quit: the Back key | The home menu at once, no confirmation, no cost; whether a game in progress is kept is not verified (the board left was empty) | [^s3] |
-| Leaving the app | Not verified for classic: after the Replay ad led to the store, the return was a fresh board (score 0), so nothing in progress was left | [^s17] |
+| Leaving the app | The game in progress is kept: a game left at 11366 when the app was stopped at the end of a session came back on the same board at 11366 on the next launch, and went on to 11386 | [^s21] |
 | Win | Does not exist: the board is endless, a game only ends in a loss | [^s1] |
 
 ### Loss
@@ -138,9 +138,17 @@ Version 10.8.1.
 4. "Can you Top that?" on purple, a crown, "Score" and the score, one orange Play button [^s1].
 
 No revive or second-chance offer was shown, and the end screen has no home or menu button [^s1].
+Six game overs on 6 October went the same way with no revive offer; two of them had no ad at all
+(see [Interstitial ad](ad-interstitial-classic.md)) [^s20]. Their result screens were blue, with "Score",
+"Best Score" and a green Play button, under a title that changed between games: "Your Best is Next",
+"Your High Score is Calling!", "Unbeaten? Try Again!" and "Just One More!" [^s22] [^s23] [^s24] [^s25].
+After the sixth one a [Rating popup](rate-us.md) came over that screen [^s25].
 
 ![Game over: "Can you Top that?" with Score 327 and one orange Play button](../img/20261003-classic-result-9c392242.webp) [^s1]
 *The end screen after the first game: score 327, no revive offer*
+
+![The result screen of 6 October: the title Unbeaten? Try Again!, Score 47, Best Score 11386, the green Play button](../img/20261006-ad-interstitial-classic-result-c941672e.webp) [^s24]
+*A later result screen: blue, with the best score and a green Play; the title is one of several*
 
 ## Cases
 
@@ -155,8 +163,10 @@ No revive or second-chance offer was shown, and the end screen has no home or me
 | No Space Left: no tray piece fits; banner with the piece, board fills with colour, interstitial, then "Can you Top that?" and Play (a new board) <!-- case:no-space-left --> | Played until no piece fitted, then tapped Play | ✅ | [^s1] |
 | Win <!-- case:chk-win --> | First game | ✅ Does not apply: the board is endless and scored; a game ends only when no piece fits | [^s1] |
 | Restart: Settings gear > Replay <!-- case:chk-restart --> | Tapped Replay at 2516 | ✅ Interstitial ad, then a new empty board, score 0, best kept (2516) | [^s17] |
-| After a loss or restart: retry and continue offers <!-- case:chk-retry --> | Replay mid-game | ✅ Restarts without a revive offer; best kept | [^s17] |
+| After a loss or restart: retry and continue offers <!-- case:chk-retry --> | Replay mid-game; six game overs on 6 October | ✅ Restarts without a revive offer; best kept; no revive or continue at any of the six game overs | [^s17] [^s20] |
 | A piece dropped into the bottom row <!-- case:row7-drop --> | Dragged a 1-row piece onto the bottom row by hand | ✅ It landed there; the finger ended about two cells under the board's edge | [^s19] |
+| Leaving the app mid-game <!-- case:chk-exit-app --> | A session ended with a game at 11366 (the app stopped); Classic opened at the next launch | ✅ The same board at 11366; the game went on to 11386 | [^s21] |
+| Result screen titles <!-- case:result-titles --> | Six game overs in one session | ✅ The title changes: "Can you Top that?", "Your Best is Next", "Your High Score is Calling!", "Unbeaten? Try Again!", "Just One More!"; the layout is always Score, Best Score and a green Play | [^s24] |
 | Level elements: obstacles or special pieces <!-- case:chk-elements --> | Two games, up to 2516 | ✅ Does not apply: plain coloured pieces only; a cyan diamond badge behind the score at high scores | [^s9] |
 
 > ⚠️ **Previously** (corrected 2026-10-04): this page listed two cases as verified.
@@ -173,9 +183,7 @@ No revive or second-chance offer was shown, and the end screen has no home or me
   [^s3], but it was pressed on an empty board at score 0 right after Replay, and Classic then opened a
   board with score 0 [^s6]; whether a game with a score is kept is not verified (to retest with a score
   above 0).
-- Leaving the app mid-game and coming back <!-- case:chk-exit-app -->: not verified for classic. The
-  return after the Replay ad sent the phone to the store was a fresh board [^s17]; the screen that was
-  back after a later launch was Block Slide's game-over screen, not classic's [^s10].
+- What decides the result screen's title (random or a rule)
 - The cyan diamond badge behind the score: what it marks
 - The green dot ring around the board: what it marks
 - The points for each clear (placing a 2-cell piece gave 2)
@@ -199,3 +207,10 @@ No revive or second-chance offer was shown, and the end screen has no home or me
 [^s17]: session 20261003-212548-chrono-2FYKPJ, step 28 — [video at 5:17](https://youtu.be/ReMKqt9albk?t=317)
 [^s18]: session 20261003-193423-chrono-2FYKPJ, step 29 — [video at 5:10](https://youtu.be/A6Wh-xa4ryg?t=310)
 [^s19]: session 20261003-235233-chrono-2FYKPJ, step 4 — [video at 1:05](https://youtu.be/RE70Idi_jrA?t=65)
+
+[^s20]: session 20261006-105231-chrono-2FYKPJ, step 51 — [video at 16:39](https://youtu.be/yIChzBeRjtU?t=999)
+[^s21]: session 20261006-105231-chrono-2FYKPJ, step 1 — [video at 0:40](https://youtu.be/yIChzBeRjtU?t=40)
+[^s22]: session 20261006-105231-chrono-2FYKPJ, step 12 — [video at 5:17](https://youtu.be/yIChzBeRjtU?t=317)
+[^s23]: session 20261006-105231-chrono-2FYKPJ, step 25 — [video at 10:17](https://youtu.be/yIChzBeRjtU?t=617)
+[^s24]: session 20261006-105231-chrono-2FYKPJ, step 34 — [video at 11:40](https://youtu.be/yIChzBeRjtU?t=700)
+[^s25]: session 20261006-105231-chrono-2FYKPJ, step 50 — [video at 15:03](https://youtu.be/yIChzBeRjtU?t=903)

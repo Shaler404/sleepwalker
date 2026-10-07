@@ -5,7 +5,7 @@ type: feature
 feature: puzzle-pieces
 version_seen: 241.5.2
 verified_at: 2026-10-05
-sources: [20261003-203702-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261005-230946-chrono-2FYKPJ]
+sources: [20261003-203702-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261005-230946-chrono-2FYKPJ, 20261006-145232-chrono-2FYKPJ]
 ---
 
 # Puzzle piece collection
@@ -74,6 +74,10 @@ Version 241.5.1.
   change [^s7] [^s8]. Inferred from the picture:
   it belongs to the Food album; not verified.
 - Inferred from the mountain on the piece: the first picture belongs to the Landscapes album; not verified.
+- Not every puzzle-piece node gives a piece (6 October, version 241.5.2): a puzzle-piece node beside level 34
+  was on the map at levels 32 and 33; after the level 33 win no piece screen came, and on the map at level 34
+  the node was gone. The next puzzle-piece node is beside level 39 [^s9]. Not seen: whether the node belonged
+  to level 34 or to level 33.
 
 ## Cases
 
@@ -82,6 +86,7 @@ Version 241.5.1.
 | Why it appeared <!-- case:chk-appeared --> | Won level 6 | ✅ Puzzle Piece Found! | [^s1] |
 | The L10 multi stage win gives 'Puzzle Piece Found' 1/9 with a Get Another (video) button and Tap to continue, before the league and coin screens <!-- case:after-l10 --> | Won level 10 | ✅ One piece of a second picture | [^s5] |
 | The map chest is a second source of pieces: chest 2 gave the centre piece of a 3x3 pancake <!-- case:chest-source --> | Opened the map chest at level 18 | ✅ Puzzle Piece Found! with one pancake piece; coins unchanged | [^s7] |
+| The node beside level 34 gone <!-- case:node-l34-vanished --> | Won level 33, looked at the map at level 34 | ✅ The puzzle-piece node beside 34 (on the maps at 32 and 33) gone; no piece screen after the level 33 win; next node beside 39 | [^s9] |
 | Where to find it <!-- case:chk-entry --> | Opened the puzzle tab in Collections | not verified: the albums were not opened | [^s3] |
 | What it looks like <!-- case:chk-screen --> | — | not verified: an album's inside not seen |  |
 | The progress <!-- case:chk-progress --> | Won level 6 | not verified: 1 of 9 pieces in the first picture | [^s1] |
@@ -110,3 +115,4 @@ Version 241.5.1.
 
 [^s7]: session 20261005-230946-chrono-2FYKPJ, step 9 — [video at 3:40](https://youtu.be/sunhCvwxYTk?t=220)
 [^s8]: session 20261005-230946-chrono-2FYKPJ, step 10 — [video at 4:10](https://youtu.be/sunhCvwxYTk?t=250)
+[^s9]: session 20261006-145232-chrono-2FYKPJ, step 18 — [video at 5:45](https://youtu.be/2PFrqVa_52w?t=345)

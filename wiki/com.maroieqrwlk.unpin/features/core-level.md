@@ -5,7 +5,7 @@ type: feature
 feature: core-level
 version_seen: 241.5.2
 verified_at: 2026-10-06
-sources: [20261003-193015-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261003-214021-chrono-2FYKPJ, 20261004-004411-chrono-2FYKPJ, 20261005-013818-chrono-2FYKPJ, 20261005-235042-chrono-2FYKPJ, 20261006-033538-chrono-2FYKPJ]
+sources: [20261003-193015-chrono-2FYKPJ, 20261003-211035-chrono-2FYKPJ, 20261003-214021-chrono-2FYKPJ, 20261004-004411-chrono-2FYKPJ, 20261005-013818-chrono-2FYKPJ, 20261005-235042-chrono-2FYKPJ, 20261006-033538-chrono-2FYKPJ, 20261006-145232-chrono-2FYKPJ]
 ---
 
 # Pin-pull level
@@ -173,6 +173,14 @@ Version 241.5.1.
   reaching the cup has not been seen yet. On a board with colour cups, balls in a cup of another colour turn
   grey and fail the level ("So Close! Level failed!", version 241.5.2) [^s19].
 - Elements seen by level 10: grey and coloured balls, bombs, slider pins, colour buckets [^s11].
+- Hook gates (level 33, version 241.5.2): a pin bent into a hook at its top end, standing across a channel at
+  the end of a dotted track. It has no ring to tap; it is swiped out along its dots, which opens the channel.
+  Level 33 had one plain pin under a jar of blue balls and two hook gates below it; the pin and then both hooks
+  (the lower one first) were opened and the level was won [^s22] [^s23].
+
+![Level 33: the lower hook gate is dragged left along its dotted track; the blue balls held in the channel run down into the cup, which goes from 0% to 80%](../clips/20261006-hook-gate-swipe.webp) [^s23]
+*Clip 4.1 s · [original on YouTube from 4:03](https://youtu.be/2PFrqVa_52w?t=243)*
+
 - Restart: a confirmation popup, then an interstitial, then the current stage only is reloaded; free
   [^s10] [^s11].
 - Loss: no coin cost; the fail screen offers Skip (video) and a free Retry, which plays an interstitial and
@@ -213,6 +221,7 @@ Version 241.5.1.
 | Leaving the app on the post-win league board reverted the L13 win: map back at 13 the next day; the league's 49 pins stayed <!-- case:win-reverted-league-board --> | Won level 13; the app was left on the Bronze League board; relaunched the next day | ✅ Level 13 to play again, pins 49 kept | [^s17] |
 | Colours mixed on a colour-bucket board <!-- case:colour-mix --> | Lost level 20 (Color Bucket) | ✅ Balls in the wrong cup turn grey; "So Close! Level failed!" with the grey-balls tip; Skip (video) / Retry; a running win streak shows "Watch your streak!" first | [^s19] |
 | A playable ad with no close after the level 21 win; the game restarted <!-- case:win-revert-playable-ad --> | Won level 21; after the coin screen a playable ad had no close for 50 s, Back did nothing; restarted the game | ✅ The map back at level 21; the +16 coins (2156) and the league pins (150) kept | [^s21] |
+| Hook gates <!-- case:hook-gates --> | Level 33: pulled the pin under the jar, then swiped the lower and the upper hook along their dotted tracks | ✅ A hook gate has no ring and is not tapped; swiped along its dots it slides aside and opens its channel; level 33 won | [^s22] [^s23] |
 | Each loss <!-- case:chk-loss --> | Lost level 11 by balls falling out, level 20 by mixed colours | not verified: a grey ball or a bomb in the single cup not seen | [^s19] |
 
 ## Not verified
@@ -220,7 +229,7 @@ Version 241.5.1.
 - Each loss: a grey ball or a bomb in the cup not seen yet; seen: balls fell out, colours mixed <!-- case:chk-loss -->
 - What Skip on the fail screen does after its video (task exp-fail-skip).
 - Whether a restart on a single-stage level also brings an interstitial.
-- Each level element (bombs, slider pins, colour buckets) with the level it first shows on.
+- Each level element (bombs, slider pins, colour buckets, hook gates) with the level it first shows on.
 
 [^s1]: session 20261003-193015-chrono-2FYKPJ, step 2 — [video at 0:55](https://youtu.be/JjeHh2uiLgE?t=55)
 [^s2]: session 20261003-193015-chrono-2FYKPJ, step 7 — [video at 2:25](https://youtu.be/JjeHh2uiLgE?t=145)
@@ -244,3 +253,5 @@ Version 241.5.1.
 [^s19]: session 20261005-235042-chrono-2FYKPJ, step 39 — [video at 13:40](https://youtu.be/PZ3ujKA8euo?t=820)
 [^s20]: session 20261005-235042-chrono-2FYKPJ, step 42 — [video at 15:04](https://youtu.be/PZ3ujKA8euo?t=904)
 [^s21]: session 20261006-033538-chrono-2FYKPJ, step 11 — [video at 3:53](https://youtu.be/j9sNlnJxE4Y?t=233)
+[^s22]: session 20261006-145232-chrono-2FYKPJ, step 14 — [video at 4:24](https://youtu.be/2PFrqVa_52w?t=264)
+[^s23]: session 20261006-145232-chrono-2FYKPJ, step 13 — [video at 4:07](https://youtu.be/2PFrqVa_52w?t=247)

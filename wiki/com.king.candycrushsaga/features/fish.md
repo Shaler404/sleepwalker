@@ -4,8 +4,8 @@ title: "Fish candy"
 type: feature
 feature: fish
 version_seen: 1.337.0.2
-verified_at: 2026-10-05
-sources: [20261003-225003-chrono-2FYKPJ, 20261005-072135-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-225003-chrono-2FYKPJ, 20261005-072135-chrono-2FYKPJ, 20261006-120721-chrono-2FYKPJ]
 ---
 
 # Fish candy
@@ -28,7 +28,8 @@ There is no button: the fish is made on the board of a level. On level 1 (plain 
 order of 40 blue candies in version 1.337.0.2) the top row has a blue candy between two greens, under a pair
 of greens in the second row; swapping that blue with the green on its right closes a 2x2 green square
 [^s4]. On levels 3 and 4 the meringue left no room for a 2x2 square in the
-session's attempts [^s5].
+attempts of 2026-10-05 [^s5]; on 2026-10-06 a red square was closed on level 4, in the candy rows above the
+meringue [^s8].
 
 ![Level 1 at its start, 28 moves, order 40 blue: in the top row a blue candy, third from the left, stands between two greens, with two greens under it and to its left in the second row](../img/20261005-fish-entry-aafec4a0.webp) [^s4]
 *Level 1 before the swap: the blue third in the top row and the green right of it are swapped*
@@ -54,7 +55,7 @@ the square that made it [^s1].
 Version 1.337.0.2, level 1.
 
 - **Making it.** Four candies of one colour in a 2x2 square, with no line of three, clear and leave a fish
-  of that colour in one of the four cells (the lower right one in the one case seen). It cost one move
+  of that colour in one of the four cells (the lower right one in both cases seen). It cost one move
   (28 to 27); the blue order did not change (40), as the square was green [^s1].
 - **A plain swap does not fire it.** The fish swapped with the purple candy below it moved down one cell and
   the purple moved up; nothing cleared, and the swap cost a move (27 to 26) [^s6].
@@ -63,11 +64,18 @@ Version 1.337.0.2, level 1.
   swam across the board and cleared a candy where it landed. The cascade then made a striped and two
   wrapped candies; the blue order went from 40 to 21 in that move and the game showed "Divine!"
   [^s2].
+- **Level 4, a red fish.** With 14 moves left (meringue 16, green 27), a blue candy was swapped up with
+  the red above it, closing a 2x2 red square on the right side of the board above the meringue. The four
+  reds burst and a red fish appeared in the square's lower right cell, as on level 1. Moves 14 to 13;
+  the meringue and green orders did not change [^s8].
 - Inferred from one firing, not verified: how the fish picks the cell it flies to (the order's colour, a
   blocker, or at random).
 
 ![Level 1: a swap in the top row lines up three greens; in the cascade the fish joins a green line, rises and flies across the board to clear a candy; the move ends with "Divine!"](../clips/20261005-level1-fish-match-flies.webp) [^s2]
 *Clip 7.9 s · [original on YouTube from 6:56](https://youtu.be/UOyVRJxygXc?t=416)*
+
+![Level 4, 14 moves: a blue swapped up with a red closes a 2x2 red square; the four reds burst and a red fish is left in the square's lower right cell; 13 moves](../clips/20261006-level4-red-square-makes-fish.webp) [^s8]
+*Clip 6 s · [original on YouTube from 8:06](https://youtu.be/d7On5DG_97A?t=486)*
 
 ## Outcomes
 
@@ -77,7 +85,7 @@ The base level is [core-level](core-level.md).
 |---|---|---|
 | Win: order done | Same as the base level: level 1 (a replay) was won after the fish move; the lives stayed at 3 | [^s7] |
 | Out of moves | Not reached with a fish on the board | [^s7] |
-| Quit | Not tried with a fish on the board | [^s7] |
+| Quit | Same as the base level: level 4 was quit from the gear's Quit level and its confirm with a red fish on the board | [^s9] |
 
 ## Cases
 
@@ -88,16 +96,17 @@ The base level is [core-level](core-level.md).
 | What it looks like <!-- case:chk-screen --> | Looked at the board after the swap | ✅ A small green fish in one cell, the colour of the square | [^s1] |
 | The first level where it is seen <!-- case:chk-first-level --> | Replayed level 1 (plain candies) after levels 3 and 4 gave no room for a square | ✅ Made on level 1; a fish was also on the level 3 board on 2026-10-03 | [^s1] [^s3] |
 | The rules: what fires it and what it does <!-- case:chk-rules --> | Swapped the fish with a plain candy; then made a move after which it was in a line of three greens | ✅ The plain swap only moved it and cost a move; in the line of three it flew across the board and cleared a candy | [^s6] [^s2] |
-| How it interacts with the other pieces <!-- case:chk-interactions --> | — | not verified |  |
+| How it interacts with the other pieces <!-- case:chk-interactions --> | Made a red fish on level 4 and tried to put it in a line of three or next to a striped candy or a colour bomb | not verified: no such swap came up before the level was quit | [^s9] |
 | Whether it adds a way to lose <!-- case:chk-loss --> | — | not verified |  |
 
 ## Not verified
 
 - How the fish combines with a striped candy, a wrapped candy, a colour bomb or another fish, and what it does
-  to meringue and other blockers (task fish-interactions) <!-- case:chk-interactions -->
+  to meringue and other blockers: the level 4 try on 2026-10-06 made a fish but found no swap to fire it or
+  put it next to a special; next on level 1's open board (task fish-combo-l1) [^s9] <!-- case:chk-interactions -->
 - Whether it adds a way to lose; the level with the fish was won, out of moves not reached <!-- case:chk-loss -->
 - How the fish chooses the cell it flies to
-- Which cell of the square keeps the fish when the square is made by different swaps
+- Which cell of the square keeps the fish when the square is made by different swaps: the lower right in both cases seen, a swap in the top row (level 1) and a swap in the right column (level 4)
 
 [^s1]: session 20261005-072135-chrono-2FYKPJ, step 26 — [video at 6:16](https://youtu.be/UOyVRJxygXc?t=376)
 [^s2]: session 20261005-072135-chrono-2FYKPJ, step 28 — [video at 7:03](https://youtu.be/UOyVRJxygXc?t=423)
@@ -106,3 +115,5 @@ The base level is [core-level](core-level.md).
 [^s5]: session 20261005-072135-chrono-2FYKPJ, step 18 — [video at 4:33](https://youtu.be/UOyVRJxygXc?t=273)
 [^s6]: session 20261005-072135-chrono-2FYKPJ, step 27 — [video at 6:38](https://youtu.be/UOyVRJxygXc?t=398)
 [^s7]: session 20261005-072135-chrono-2FYKPJ, step 31 — [video at 8:51](https://youtu.be/UOyVRJxygXc?t=531)
+[^s8]: session 20261006-120721-chrono-2FYKPJ, step 22 — [video at 8:11](https://youtu.be/d7On5DG_97A?t=491)
+[^s9]: session 20261006-120721-chrono-2FYKPJ, step 25 — [video at 8:27](https://youtu.be/d7On5DG_97A?t=507)

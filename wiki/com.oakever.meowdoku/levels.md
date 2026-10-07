@@ -2,7 +2,7 @@
 game: com.oakever.meowdoku
 title: "Levels: Meowdoku: Brain Puzzle Games"
 type: levels
-verified_at: 2026-10-06
+verified_at: 2026-10-07
 ---
 
 # Levels: Meowdoku: Brain Puzzle Games
@@ -17,13 +17,17 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 |---|---|---|---|---|
 | ![level 132](levels/0132.webp) | ![level 133](levels/0133.webp) | ![level 134](levels/0134.webp) | ![level 135](levels/0135.webp) | ![level 136](levels/0136.webp) |
 
-| level 137 | level 138 | daily 10/05 | daily 10/06 | daily 10/06 retry |
+| level 137 | level 138 | level 139 | level 140 | level 142 |
 |---|---|---|---|---|
-| ![level 137](levels/0137.webp) | ![level 138](levels/0138.webp) | ![daily 10/05](levels/daily-10-05.webp) | ![daily 10/06](levels/daily-10-06.webp) | ![daily 10/06 retry](levels/daily-10-06-retry.webp) |
+| ![level 137](levels/0137.webp) | ![level 138](levels/0138.webp) | ![level 139](levels/0139.webp) | ![level 140](levels/0140.webp) | ![level 142](levels/0142.webp) |
 
-| golden after L138 | L132 visit |
-|---|---|
-| ![golden after L138](levels/golden-after-l138.webp) | ![L132 visit](levels/l132-visit.webp) |
+| level 143 | level 144 | level 145 | daily 10/05 | daily 10/06 |
+|---|---|---|---|---|
+| ![level 143](levels/0143.webp) | ![level 144](levels/0144.webp) | ![level 145](levels/0145.webp) | ![daily 10/05](levels/daily-10-05.webp) | ![daily 10/06](levels/daily-10-06.webp) |
+
+| daily 10/06 retry | golden after L138 | L132 visit |
+|---|---|---|
+| ![daily 10/06 retry](levels/daily-10-06-retry.webp) | ![golden after L138](levels/golden-after-l138.webp) | ![L132 visit](levels/l132-visit.webp) |
 
 ## Tries
 
@@ -41,6 +45,12 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 | level 136 | queens | 1 won | 53 s | interstitial video at start, banner |
 | level 137 | queens | 1 won | 57 s | no interstitial at start, banner |
 | level 138 | queens | 1 won | 63 s | interstitial at start (L138), golden offer on win |
+| level 139 | queens | 1 won | 206 s | pattern mode + 2 hints + rewarded ad refill, solver 1 round |
+| level 140 | queens | 1 won | 154 s | L140 won Supreme, score 10080 |
+| level 142 | queens | 1 won | 81 s | L142 Flawless, score 10080 |
+| level 143 | queens | 1 won | 39 s | hint-free, one solver round |
+| level 144 | queens | 1 won | 36 s | one hint Apply used (research), solver 8 cats |
+| level 145 | queens | 1 won | 34 s | hint-free |
 | daily 10/05 | queens | 1 won | 28 s | daily solved by solver, 18s |
 | daily 10/06 | queens | 1 won | 58 s | daily 10/06 3 fish 22 s |
 | daily 10/06 retry | queens | 1 won | 47 s | retry board same, one deliberate wrong cat |

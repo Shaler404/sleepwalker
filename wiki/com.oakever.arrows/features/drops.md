@@ -4,8 +4,8 @@ title: "Drops (mistake allowance in the level HUD)"
 type: feature
 feature: drops
 version_seen: 1.33.0
-verified_at: 2026-10-05
-sources: [20261003-232108-chrono-2FYKPJ, 20261003-232357-chrono-2FYKPJ, 20261003-233532-chrono-2FYKPJ, 20261005-224323-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-232108-chrono-2FYKPJ, 20261003-232357-chrono-2FYKPJ, 20261003-233532-chrono-2FYKPJ, 20261005-224323-chrono-2FYKPJ, 20261006-114946-chrono-2FYKPJ]
 ---
 
 # Drops (mistake allowance in the level HUD)
@@ -59,9 +59,11 @@ lives." and Continue carried a video icon [^s13] [^s12]. More on the popup on th
 
 Version 1.33.0.
 
-- Each level starts with three drops, Hard level 5 too [^s2] [^s6].
+- Each level starts with three drops, Hard level 5 and a Daily Challenge board (Oct 4) too [^s2] [^s6] [^s17].
 - A tap on the drops does nothing: no popup or explanation [^s8].
-- One blocked tap costs one drop [^s5].
+- One blocked tap costs one drop [^s5]. A second tap on an arrow already shown red (blocked, tapped
+  before) cost no drop: on the Oct 4 Daily Challenge board two drops were left before and after the
+  re-tap, and the next tap on a different blocked arrow took the next drop [^s16].
 - The spent drop stayed grey to the end of level 4 [^s3], and the mistake shows on the win card [^s4]:
 
 | Mistakes | Title | Accuracy | Source |
@@ -80,7 +82,8 @@ Version 1.33.0.
   asked for an ad. Earlier, on Hard level 5, Continue stayed Free three times in a row [^s13]
   [^s12]. Hypothesis: one free Continue per session or per day, not verified (exp-continue-free-once).
 - Restart on the ad version of the popup sent level 16 back to its first layout with three drops, with no
-  ad seen [^s15].
+  ad seen [^s15]. On a Daily Challenge board (Oct 4) Restart on the same popup played an interstitial
+  before the board came back with three drops [^s17].
 
 ## Outcomes
 
@@ -98,13 +101,14 @@ Running out of drops is the base [level](level.md)'s Out of Lives outcome: the p
 | A blocked tap <!-- case:blocked-tap --> | Tapped an arrow with another in its way on level 4 | ✅ Costs one drop, the arrow flashes red; counted as a mistake on the win card (x1, accuracy 87%), the title drops from Flawless! to Perfect! | [^s5] [^s4] |
 | The first level it shows on <!-- case:chk-first-level --> | — | not verified: present on level 3, the first level of this install; levels 1-2 not seen in these sessions | |
 | What it does <!-- case:chk-rules --> | Blocked taps until no drop was left, on levels 14 and 16 | ✅ A blocked tap costs one; at zero the Out of Lives! popup comes up | [^s5] [^s13] [^s12] |
-| How it interacts with other pieces <!-- case:chk-interactions --> | Switched the level theme; took a Continue on level 14 and won | partly: the drops follow the theme colour; after a Continue the spent drops still count as mistakes (Comeback Win!, 4 mistakes). Hints and Zen Mode not tried | [^s9] [^s10] [^s14] |
+| How it interacts with other pieces <!-- case:chk-interactions --> | Switched the level theme; took a Continue on level 14 and won; lost and restarted a Daily Challenge board; re-tapped a red arrow | ✅ The drops follow the theme colour. Continue gives 3 more and Restart gives 3 again (on the daily board after an interstitial). Spent drops count as mistakes on the win card (Comeback Win!, 4 mistakes). A re-tap of a red arrow is free. The same 3 drops on main, Hard and Daily boards | [^s9] [^s10] [^s14] [^s15] [^s16] [^s17] |
+| Re-tapping a red arrow <!-- case:red-retap --> | On the Oct 4 daily board, tapped the same blocked (red) arrow a second time, then a different blocked arrow | ✅ The re-tap cost no drop (2 left before and after); the different blocked arrow took the next one | [^s16] |
 | A way to lose <!-- case:chk-loss --> | Spent all three drops on Normal levels 14 and 16 | ✅ Out of Lives!: Continue (Free the first time, an ad the second) or Restart; the level is not lost for good | [^s11] [^s12] |
 
 ## Not verified
 
 - The first level the drops show on, and whether the game introduces them <!-- case:chk-first-level -->
-- How drops interact with the hint bulb and with Zen Mode (only the theme colour and Continue were seen) <!-- case:chk-interactions -->
+- How drops interact with the hint bulb and with Zen Mode (not tried)
 - When Continue is free and when it asks for an ad (exp-continue-free-once)
 
 [^s1]: session 20261003-232108-chrono-2FYKPJ, step 8 — [video at 1:09](https://youtu.be/KL7evNlX6oU?t=69)
@@ -123,3 +127,5 @@ Running out of drops is the base [level](level.md)'s Out of Lives outcome: the p
 [^s13]: session 20261005-224323-chrono-2FYKPJ, step 28 — [video at 8:03](https://youtu.be/qnyS1lQt1kE?t=483)
 [^s14]: session 20261005-224323-chrono-2FYKPJ, step 34 — [video at 9:27](https://youtu.be/qnyS1lQt1kE?t=567)
 [^s15]: session 20261005-224323-chrono-2FYKPJ, step 54 — [video at 20:30](https://youtu.be/qnyS1lQt1kE?t=1230)
+[^s16]: session 20261006-114946-chrono-2FYKPJ, step 36 — [video at 8:56](https://youtu.be/eUlwkqa6B6w?t=536)
+[^s17]: session 20261006-114946-chrono-2FYKPJ, step 40 — [video at 11:04](https://youtu.be/eUlwkqa6B6w?t=664)

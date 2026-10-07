@@ -20,3 +20,5 @@ How to reach each place from the main screen, with tap points in the 730-px mode
 | Shop and lives | Map gold counter (530,110) opens the Shop; heart (200,110) opens Refill Lives, X (672,335) | [s:20261005-072135-chrono-2FYKPJ#2] [s:20261005-133157-chrono-2FYKPJ#1] |
 | Level 4 and quit | Map node 4 (397,535), Play (365,950); quit: gear (137,1519) > Quit level (365,988) > Quit -1 (390,940) > X (680,325) | [s:20261005-220615-chrono-2FYKPJ#4-11] |
 | Profile | Map avatar (365,110) > avatar (215,480) > Next > Next > Edit; pencil renames | [s:20261006-000939-chrono-2FYKPJ#4-13] |
+| Inventory unlock levels | map avatar (365,110) > Profile; inventory rows y 905 and y 1050, x 235/300/366/432/497/564; a tap shows "Unlocks at level N" | [s:20261006-120721-chrono-2FYKPJ#1] [s:20261006-120721-chrono-2FYKPJ#7] |
+| Quit a level | `key back` > Quit (390,940) > confirm (390,940) > close the fail popup (680,325); take a frame between taps | [s:20261006-094912-chrono-2FYKPJ#33] [s:20261006-094912-chrono-2FYKPJ#36] |

@@ -38,7 +38,7 @@ arrow, level number, palette, gear), three drops, the hint bulb and the guidelin
 ![Level 12 with Zen Mode on: the blocked arrow drawn red, two blue drops and one grey, the hint bulb, the guideline button bottom right](../img/20261005-zen-mode-screen-aa87945e.webp) [^s2]
 *Level 12 with Zen Mode on, after a blocked tap: the arrow turns red and a drop goes grey, as without Zen Mode*
 
-*A tap on a blocked arrow with Zen Mode on: the arrow flashes red and the third drop goes grey* (clip dropped: per-dream clip limit) [^s2]
+![A tap on a blocked arrow with Zen Mode on: the arrow flashes red and the third drop goes grey](../clips/20261005-zen-on-blocked-tap-costs-a-drop.webp) [^s2]
 *Clip 4 s · [original on YouTube from 5:43](https://youtu.be/nK0PubVvnuA?t=343)*
 
 ## How it works

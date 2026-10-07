@@ -1,16 +1,16 @@
 # Tasks: MeowTrail
 
-Status: **▶️ active** — ready now: 4
+Status: **▶️ active** — ready now: 1
 
 Mode: **cases** — all features are found: study goals and checks only; do not advance
 
-Progress reached: **level 34** · last new feature found at: **level 21**
+Progress reached: **level 46** · last new feature found at: **level 21**
 
-Goals: experiment 5 · maps: level 2 — 4 new · search for features closed: Home through level 30 has only the Level N button and the gear (shot 68); Settings (Home and in-level, incl. Restart), Help Center (all 12 tabs read, nothing unseen named), level HUD, win/fail screens and ads all mapped; no locked entry points; genre checklist: no shop/IAP, no-ads, daily, events, collection or currency entry exists (exp-late-entries and exp-no-ads refuted); timed refill is under exp-booster-refill
+Goals: experiment 1 · maps: level 2 — 4 new · search for features closed: Home through level 30 has only the Level N button and the gear (shot 68); Settings (Home and in-level, incl. Restart), Help Center (all 12 tabs read, nothing unseen named), level HUD, win/fail screens and ads all mapped; no locked entry points; genre checklist: no shop/IAP, no-ads, daily, events, collection or currency entry exists (exp-late-entries and exp-no-ads refuted); timed refill is under exp-booster-refill
 
-Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **Cat placement (Light Up rules)** — mastered, solver, levels won 34, typical 0.4 min
+Gameplay (target: a level within 5 min; how to play: [agent/playbook.md](agent/playbook.md)): **Cat placement (Light Up rules)** — mastered, solver, levels won 46, typical 0.6 min
 
-Google Play version: **1.0.2** (checked 2026-10-05 22:05:43) · analyzed version: **1.0.2** · FTUE from a fresh install: **never**
+Google Play version: **1.0.2** (checked 2026-10-06 10:09:39) · analyzed version: **1.0.2** · FTUE from a fresh install: **never**
 
 Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit by hand. Feature map: [features.md](features.md).
 
@@ -18,16 +18,11 @@ Generated from [`research.yaml`](research.yaml) by `sw.py render`; do not edit b
 
 | Task | Kind | Feature | Source | Note |
 |---|---|---|---|---|
-| Experiment: find what sets the win title (BRILLIANT on level 1, PERFECT on level 2) | experiment | [Akari level](features/core-level.md) | knowledge gap |  |
-| Experiment: what Revive on the Almost! screen gives (hearts back, board kept) after its rewarded ad | experiment | [Hearts (3 per level)](features/hearts.md) | knowledge gap |  |
-| Run each outcome once under Hard levels: Force-stop and relaunch mid-level lands on Home with the same Level N button; reopening gives a RESET board | experiment | Hard levels | knowledge gap |  |
-| Experiment: does the every-2nd-start interstitial counter survive an app relaunch | experiment | Interstitial ads | knowledge gap |  |
+| Find whether a lost level (Almost!), a Revive video or an Almost! Restart shifts the interstitial none/ad alternation | experiment | Interstitial ads | knowledge gap |  |
 
 ## Waiting
 
-| Task | Not before | Kind | Feature |
-|---|---|---|---|
-| Experiment: do the cat and bulb boosters refill by themselves over time (timer or daily) | 2026-10-06 10:19:33 | experiment | [Cat and bulb boosters](features/boosters.md) |
+None.
 
 ## Needs a human
 
@@ -43,6 +38,15 @@ The agent cannot do these tasks until it is given a suitable phone.
 
 | Task | Closed | By | Note |
 |---|---|---|---|
+| Find whether the dim veil over the level after a bulb AD video is the game's own overlay or the phone's touch protection, and how to clear it | 2026-10-06 12:57:26 | 20261006-124837-chrono-2FYKPJ#13 | Bulb AD video on L46 (after bulb use + Apply, count 0->AD->1 refilled): launch back from Play Store, wait 10 s, board bright, no veil, taps work; cat AD video on L44 same. So no game overlay after reward; the L44 veil in 20261006-102842 was the phone's touch protection/proximity dim, not reproducible with sensor clear. |
+| Cadence C: after a bulb rewarded video, 2 quick level starts: ad or none? (B done: strict alternation holds after 3.5 min gap) | 2026-10-06 12:54:17 | 20261006-124837-chrono-2FYKPJ#8 | Start before video (L44): no ad. Cat AD video (not bulb; bulb had 1). Then L45 start: ad (Open Store video), L46 start: none. Strict alternation none/ad/none continues; rewarded video neither resets nor shifts parity. |
+| Cadence B and C: (B) 3-min gap on win screen before 2 starts, then (C) rewarded video and 2 quick starts; keep screen alive by tapping a harmless control (not possible on win screen: use Home gear) during the wait; part A showed strict alternation none/ad/none/ad over 4 starts | 2026-10-06 10:44:39 | 20261006-102842-chrono-2FYKPJ#18 | Parity: L42 start none (predicted), L43 start ad (frame 11), then 3.5 min on Home with gear taps: L43 start none (frame 27), L44 start ad (frame 32). Strict alternation none/ad survives a 3.5 min gap and a quit-to-Home; time does not reset it. Part C (rewarded video then 2 quick starts) not finished: bulb video paid (bulb 1), but the screen then stuck dimmed, taps/back ignored, restart refused by Samsung touch protection; split into exp-interstitial-cadence-c. |
+| Experiment: do the cat and bulb boosters refill by themselves over time (timer or daily) | 2026-10-06 10:30:11 | 20261006-102842-chrono-2FYKPJ#2 | Frame 4 at L42: cat and bulb badges both AD (0). Last known 1 each at L25 end, ~12+ h earlier; nothing above 1, so no passive refill by timer or daily. Caveat: counts probably spent in later sessions' booster tests. |
+| Experiment: find what decides an interstitial at a level start (every 2nd start, a time cooldown, or reset by rewarded videos) | 2026-10-06 08:20:58 | 20261006-080945-chrono-2FYKPJ#11 | Part A only: starts alternated none/ad/none/ad (L39 none, L40 ad, L40 reopen none, L41 ad), supporting a count rule. B/C not run: 3-min idle on win screen dimmed the screen and touch protection blocked taps. Follow-up task exp-interstitial-cadence-b. |
+| Run each outcome once under Hard levels: Force-stop and relaunch mid-level lands on Home with the same Level N button; reopening gives a RESET board | 2026-10-06 08:14:33 | planner | every known outcome of the base level was run under Hard levels |
+| Experiment: find what sets the win title (BRILLIANT on level 1, PERFECT on level 2) | 2026-10-06 05:01:45 | 20261006-044907-chrono-2FYKPJ#25 | L35 3 hearts no booster INCREDIBLE; L36 2 hearts no booster INCREDIBLE; L37 3 hearts + cat booster PERFECT; L38 3 hearts no booster PERFECT. Same conditions (L35 vs L38) gave different titles: title does not follow hearts or boosters; looks random (titles seen: BRILLIANT, PERFECT, INCREDIBLE). |
+| Experiment: what Revive on the Almost! screen gives (hearts back, board kept) after its rewarded ad | 2026-10-06 04:57:39 | 20261006-044907-chrono-2FYKPJ#18 | Revive (rewarded ad ~65s, ended in Play Store, launch returned) restored 1 of 3 hearts; same board kept (2 cats, 3 red X intact, counter 2/16). Losing the last heart again offered Revive a 2nd time (no limit seen). Restart is free but plays an interstitial, gives 3 hearts and empty board. |
+| Experiment: does the every-2nd-start interstitial counter survive an app relaunch | 2026-10-06 04:51:32 | 20261006-044907-chrono-2FYKPJ#5 | After force-stop: L35 start from Home no ad; L36 start from win screen ad. Counter persists across relaunch. |
 | Experiment: find the interstitial rule: every 2nd level start from the win-screen button (a counter), not even level numbers | 2026-10-06 02:42:43 | 20261006-023308-chrono-2FYKPJ#20 | Hypothesis 'counter of win-screen starts only' refuted: Home start shifts the alternation. Rule seen: an ad on every 2nd level start counting any start (win button, Home, in-level Restart), none after an ad. Sequence L31 none, L32 ad, L33 none, L34 ad, L34(Home) none, L35 ad. Not even level numbers (L31..35). Time cooldown not excluded but starts were 1-2 min apart with strict alternation. |
 | Experiment: tap Restart in the in-level Settings: is there a confirmation, what it costs, and is the board cleared with 3 hearts | 2026-10-06 02:36:14 | 20261006-023308-chrono-2FYKPJ#5 | Free full reset: no confirmation, empty board, 3 hearts, boosters unchanged; but an interstitial ad plays right after the tap (~50 s, ended in Play Store, launch returned to fresh board). Level 30 was started from Home with no ad, the ad came from Restart. |
 | Experiment: home shows only Level button and gear; do shop/daily/map entries appear at later levels? | 2026-10-06 00:33:48 | 20261006-002027-chrono-2FYKPJ#45 | At level 30 Home still shows only the logo, settings gear and the Level 30 button (with a Hard badge), shot 68; no shop, daily, map or collection entry appeared over levels 2-30 |

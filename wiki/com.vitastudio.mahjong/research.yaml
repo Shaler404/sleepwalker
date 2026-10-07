@@ -2,53 +2,28 @@
 game: com.vitastudio.mahjong
 version: 3.40.1
 play_version: 3.40.1
-play_checked: '2026-10-05T22:05:43'
+play_checked: '2026-10-06T10:09:39'
 phone_version: 3.40.1
 discovery: open
 ftue_verified: null
 progress:
-  text: level 21 (Hard L20 won)
-  value: 21.0
-  at: '2026-10-05T13:56:35'
-  session: 20261005-133525-chrono-2FYKPJ
+  text: level 23
+  value: 23.0
+  at: '2026-10-06T12:43:34'
+  session: 20261006-122751-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-06T04:02:50'
+  chrono: '2026-10-06T15:01:50'
 mechanics:
 - id: core-match
   name: core-match
   status: broken
   method: solver
   levels:
-    won: 2
+    won: 4
     lost: 1
-    quit: 7
+    quit: 11
   recent:
-  - level: level 19
-    result: quit
-    seconds: 38
-    model: sonnet
-  - level: level 19
-    result: lost
-    seconds: 93
-    model: sonnet
-    deliberate: true
-  - level: level 19
-    result: quit
-    seconds: 150
-    model: sonnet
-  - level: level 19
-    result: quit
-    seconds: 30
-    model: sonnet
-  - level: level 19
-    result: won
-    seconds: 895
-    model: opus
-  - level: level 20
-    result: quit
-    seconds: 160
-    model: opus
   - level: level 20
     result: won
     seconds: 1048
@@ -65,10 +40,37 @@ mechanics:
     result: quit
     seconds: 170
     model: sonnet
-  note: solver reads all 6 tile sets, booster badges, Hint-lit pairs and now book
-    picture tiles (186x227) in non-cream sets; run solve --run --rounds 40 --settle
-    2 from a settled frame
-  best_s: 895
+  - level: level 21
+    result: quit
+    seconds: 85
+    model: sonnet
+    moves_before: 4
+  - level: level 21
+    result: won
+    seconds: 1418
+    model: opus
+  - level: level 22
+    result: quit
+    seconds: 130
+    model: opus
+  - level: level 22
+    result: quit
+    seconds: 48
+    model: opus
+  - level: level 22
+    result: won
+    seconds: 801
+    model: opus
+  - level: level 23
+    result: quit
+    seconds: 145
+    model: opus
+  note: 'Lab 2026-10-06 (5th): solver reads the L22 red-set raised top tiles (dark
+    side band g/r 0.29 was read as a right neighbour), art cards 1 px apart (coffee,
+    latte, vase-bird), art/cream twins (L23 rabbit cards) and dense faces 2 px off
+    (9-circles). Play solve --run --rounds 40 --settle 2 from the first settled frame;
+    no art pairs by eye.'
+  best_s: 801
   solver: solvers/com.vitastudio.mahjong/core-match.py
 features:
 - id: consent
@@ -202,6 +204,14 @@ features:
       test'
     done: true
     source: 20261003-195050-chrono-2FYKPJ#2
+  - id: not-on-normal-relaunch
+    text: 'On 2026-10-06 the popup did not show at the session start or after a force-stop
+      relaunch (shots 2, 17; also session 072809): it showed on 10-03 only on launches
+      that came up at Level 1 with the saved-game offer, so it looks tied to that
+      reset/restore state, not to every launch'
+    done: true
+    source: 20261006-101909-chrono-2FYKPJ#11
+    version: 3.40.1
   type: system
   appeared:
     text: on the first home arrival of a fresh install, and again on every relaunch
@@ -330,7 +340,7 @@ features:
   page: features/home.md
 - id: profile
   name: Profile
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: Avatar button, home top left
@@ -348,16 +358,24 @@ features:
     done: true
     source: 20261003-195050-chrono-2FYKPJ#5
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: 'Rename brush opens system text field (edit and OK); country dropdown list
+      with None; PHOTO opens system photo picker; Avatar grid and Frame tab; Save/X.
+      Not tapped: Facebook Connect (sign-in). Typing a char then backspace restored
+      the name; nothing saved'
+    done: true
+    source: 20261006-071736-chrono-2FYKPJ#10
+    version: 3.40.1
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: No prompt in Profile; X closes without saving (earlier), no confirm
+    done: true
+    source: 20261006-071736-chrono-2FYKPJ#34
+    version: 3.40.1
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: Facebook Connect not tapped (sign-in, avoided); PHOTO leads to the Android
+      photo picker, Back returns to Profile
+    done: true
+    source: 20261006-071736-chrono-2FYKPJ#13
+    version: 3.40.1
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -368,6 +386,7 @@ features:
     certainty: fact
     source: 20261003-195050-chrono-2FYKPJ#5
   page: features/profile.md
+  version_seen: 3.40.1
 - id: level-frames
   name: Level avatar frames
   status: documented
@@ -432,7 +451,7 @@ features:
   version_seen: 3.40.1
 - id: theme
   name: Theme (tiles and background)
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: Palette button, home top right next to the gear
@@ -456,16 +475,45 @@ features:
     done: true
     source: 20261003-195050-chrono-2FYKPJ#7
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: 'Tiles tab: 6 sets (Simple green back, Classic blue back, Vintage red back,
+      ...), Background tab: 5 (dark green, bamboo panda, red, dark blue, purple).
+      Classic + red, Confirm: L22 board drew white faces, blue backs, red plum background
+      (shot 12); the home screen does not change. X without Confirm discards the pick
+      (shots 4, 6)'
+    done: true
+    source: 20261006-101909-chrono-2FYKPJ#9
+    version: 3.40.1
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: 'Not a prompt: Theme is a picker opened from the palette button (Tiles and
+      Background tabs, Confirm, X); no question to answer'
+    done: true
+    source: 20261006-072809-chrono-2FYKPJ#61
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: 'No links out: the Theme popup has only the two tabs, the set/background
+      cards, Confirm and X (shots 104, 106)'
+    done: true
+    source: 20261006-072809-chrono-2FYKPJ#61
+  - id: simple-matches-board
+    text: 'On 2026-10-06 Theme shows Tiles = Simple (green back) and Background =
+      dark green, and the L21/L22 boards had green backs on that dark green background:
+      the board matched the selected theme this time'
+    done: true
+    source: 20261006-072809-chrono-2FYKPJ#61
+    version: 3.40.1
+  - id: x-discards
+    text: 'Close X discards an unconfirmed pick: Classic checked, X, reopen shows
+      Simple still checked (shots 4, 6)'
+    done: true
+    source: 20261006-101909-chrono-2FYKPJ#4
+    version: 3.40.1
+  - id: pick-not-kept-on-relaunch
+    text: 'A confirmed pick (Classic + red, shot 12) is not kept across a force-stop
+      relaunch: the picker shows Simple + dark green again (shots 18, 19); the next
+      L22 board drew dark green background but RED-back tiles (shot 22), so the tile
+      set on the board does not follow the picker after a relaunch'
+    done: true
+    source: 20261006-101909-chrono-2FYKPJ#15
+    version: 3.40.1
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -476,9 +524,10 @@ features:
     certainty: fact
     source: 20261003-195050-chrono-2FYKPJ#7
   page: features/theme.md
+  version_seen: 3.40.1
 - id: settings
   name: Settings
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: Gear button, home top right
@@ -496,16 +545,23 @@ features:
     done: true
     source: 20261003-195050-chrono-2FYKPJ#11
   - id: chk-options
-    text: Every option or button and what it changes (each toggle once, set back after)
-    done: false
+    text: Four toggles (music, sound, voice, vibration) each toggled to OFF and back
+      ON; toast 'Vibrations is off'; states persisted after reopening
+    done: true
+    source: 20261006-071736-chrono-2FYKPJ#21
+    version: 3.40.1
   - id: chk-answers
-    text: 'For a prompt (consent, rate us, notifications): what each answer does and
-      whether it comes back'
-    done: false
+    text: No prompts in Settings; Save your progress covered earlier (sign-in, Start
+      Over/Sync Data); no confirm on toggles
+    done: true
+    source: 20261006-071736-chrono-2FYKPJ#34
+    version: 3.40.1
   - id: chk-links
-    text: 'Links out (privacy, terms, help): where they lead (back to the game at
-      once)'
-    done: false
+    text: Feedback = in-app Helpshift Vita Support; Facebook Group, Terms, Privacy
+      = Chrome (launch returns to game); Share = Android share sheet
+    done: true
+    source: 20261006-071736-chrono-2FYKPJ#34
+    version: 3.40.1
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -515,6 +571,7 @@ features:
     certainty: fact
     source: 20261003-195050-chrono-2FYKPJ#11
   page: features/settings.md
+  version_seen: 3.40.1
 - id: core-level
   name: Tray mahjong level
   status: in_progress
@@ -642,10 +699,13 @@ features:
     source: 20261003-231804-chrono-2FYKPJ#8
     version: 3.40.1
   - id: chk-sources
-    text: 'Open: where boosters come from was not seen (no shop, reward or refill
-      offer yet); booster-refill'
-    done: false
+    text: 'Two sources seen, no shop: the 10-level chest (Hint x1, Undo x1 at L20)
+      and a rewarded video at 0 (Free Hint 2, Free Undo 2, Free Shuffle 1; one Free
+      Shuffle watched gave Shuffle 1). No booster for sale and none from a win or
+      Daily Victories so far'
+    done: true
     version: 3.40.1
+    source: 20261006-122751-chrono-2FYKPJ#31
   - id: chk-sinks
     text: One unit per use, no price; Hint 5-4, Undo 10-9, Shuffle 3-2 observed
     done: true
@@ -658,9 +718,12 @@ features:
     version: 3.40.1
     source: 20261005-073804-chrono-2FYKPJ#53
   - id: chk-refill
-    text: 'Open: no timer or refill seen, not tested; booster-refill'
-    done: false
+    text: 'No timer refill: Hint has stayed at 0 (''+'') from 2026-10-05 07:5x (073804#53)
+      to L22 on 2026-10-06 12:28 (shot 6), and Shuffle stayed at 0 at the same start;
+      the only refill is the rewarded video'
+    done: true
     version: 3.40.1
+    source: 20261006-122751-chrono-2FYKPJ#2
   - id: shuffle-reveals
     text: Shuffle reshuffled the faces and fewer tiles were face-down after it (about
       13 red backs before, about 7 after; picture tiles came up), so Shuffle may also
@@ -682,6 +745,11 @@ features:
       1, Hint 1, Undo 2'
     done: true
     source: 20261005-133525-chrono-2FYKPJ#47
+  - id: zero-offers
+    text: 'All three boosters at 0 show ''+'' and open a rewarded-video window: Hint
+      2, Undo 2, Shuffle 1; X closes it with nothing spent'
+    done: true
+    source: 20261006-122751-chrono-2FYKPJ#16
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -867,7 +935,7 @@ features:
   version_seen: 3.40.1
 - id: no-ads
   name: No Ads purchase
-  status: in_progress
+  status: documented
   cases:
   - id: chk-entry
     text: No Ads row (crown) in the in-level Options
@@ -892,9 +960,11 @@ features:
     done: true
     source: 20261006-022624-chrono-2FYKPJ#17
   - id: chk-frequency
-    text: How often it comes up by itself (after a level, a loss, a session start)
-      and whether it comes back
-    done: false
+    text: Popup never came up by itself; it appears only when the Options row is tapped
+      (this session L21 and earlier sessions)
+    done: true
+    source: 20261006-044557-chrono-2FYKPJ#4
+    version: 3.40.1
   - id: chk-timer
     text: 'No timer, countdown or limit on the popup: a permanent offer in the Options
       menu'
@@ -910,6 +980,17 @@ features:
       is under it, next tap lands on the board
     done: true
     source: 20261006-022624-chrono-2FYKPJ#18
+  - id: restore-tap
+    text: 'Restore row tapped: no visible change, no toast in the frame, popup stays'
+    done: true
+    source: 20261006-044557-chrono-2FYKPJ#4
+    version: 3.40.1
+  - id: offer-text
+    text: No Ads popup sells a one-time 'Forever Super Offer' (RSD 849) yet carries
+      a subscription-cancellation disclaimer (manage/cancel in Google Play, no refund
+      for current period); ToS and Privacy links below
+    done: true
+    source: 20261006-044557-chrono-2FYKPJ#3
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -920,6 +1001,7 @@ features:
     certainty: fact
     source: 20261003-195050-chrono-2FYKPJ#18
   page: features/no-ads.md
+  version_seen: 3.40.1
 - id: auto-complete
   name: Auto Complete
   status: documented
@@ -1055,6 +1137,18 @@ features:
       cases (button = Achievements) stand for the home button only'
     done: true
     source: 20261005-133525-chrono-2FYKPJ#44
+  - id: returns-after-x
+    text: 'The Rate Us prompt (''Are you enjoying Vita Mahjong?'') came again over
+      the L21 win after it was closed with X on L20: it returns on the next win, not
+      once only'
+    done: true
+    source: 20261006-072809-chrono-2FYKPJ#54
+  - id: after-l22
+    text: 'Rate Us (''Are you enjoying Vita Mahjong?'') shown after the L22 win too,
+      after Daily Victories and before the win screen: third win in a row (L20, L21,
+      L22) closed with X'
+    done: true
+    source: 20261006-122751-chrono-2FYKPJ#43
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -1173,6 +1267,18 @@ features:
   - id: chk-end
     text: 'The end of a period: the results screen and the reward (a follow-up)'
     done: false
+  - id: l21-points
+    text: After the L21 win (Level button had the x2 tag) the league standing shows
+      12 points, rank 28 of Bronze, period ending in 05h44m; the plan recorded 8 before
+      L21, so +4; the number of gold tiles matched on L21 was not counted
+    done: true
+    source: 20261006-072809-chrono-2FYKPJ#51
+  - id: l22-points
+    text: 'After the L22 win (x2 tag): 20 points, 6th of Bronze (TOP 10 promotion
+      zone), timer 00h53m50s at about 12:43 on 2026-10-06, so the period ends about
+      13:37; from 12 after L21, +8; gold tiles matched were not counted'
+    done: true
+    source: 20261006-122751-chrono-2FYKPJ#40
   found_at:
     text: level 19 (restored by Sync Data)
     value: 19.0
@@ -1359,10 +1465,14 @@ features:
     value: 19.0
   type: level-element
   appeared:
-    text: tiles with a blue IQ+N banner (IQ+6, IQ+9 on L19, frames 6, 19); seen from
-      level 8 in 20260930-225122 (IQ+10), first level not seen
+    text: 'IQ+N tiles are dealt on the opening board only in an early or freshly installed
+      game state: both boards of 20261005-002327 (fresh reinstall restored by Sync
+      Data, boosters at install defaults 3/5/10, frames 6, 19) had them, and 3.39.1
+      L8 (early game); no opening board since (L19 073804 #6, L20 #63, L21 221108
+      #10 and 001538 #15, L22 this session shots 12, 22) had any; from L20 the gold
+      x2 (league) tiles take their place'
     certainty: hypothesis
-    source: 20261005-002327-chrono-2FYKPJ#2
+    source: 20261006-101909-chrono-2FYKPJ#16
 - id: leaves
   name: Leaf counter (home)
   status: in_progress
@@ -1506,6 +1616,18 @@ features:
     text: 'Restart row in the in-level Options under Daily Victories streak: as the
       base, or what differs'
     done: false
+  - id: day-2
+    text: 'Day 2 (2026-10-06): after the L21 win the panel shows leaf 2, a new week
+      row starting Tuesday with Tu checked, ''You are ready for a great week!''; home
+      leaf counter x2'
+    done: true
+    source: 20261006-072809-chrono-2FYKPJ#53
+  - id: second-win-day2
+    text: A second win on day 2 (L22 after L21 earlier the same day) re-showed the
+      panel at 2 with only Tu checked; the counter did not grow (one leaf per day
+      holds on day 2)
+    done: true
+    source: 20261006-122751-chrono-2FYKPJ#42
   found_at:
     text: level 19 (restored from the cloud save on a fresh install)
     value: 19.0
@@ -1627,20 +1749,26 @@ features:
   version_seen: 3.40.1
 - id: picture-tiles
   name: Picture tiles (framed art, zodiac, blank card)
-  status: seen
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
       test'
-    done: false
+    done: true
+    source: 20261006-044557-chrono-2FYKPJ#5
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: On the level board itself, no button; seen on L21 opened from the Level
+      button
+    done: true
+    source: 20261006-044557-chrono-2FYKPJ#5
+    version: 3.40.1
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'L21 board: framed art tiles (teapot, rabbit with cards) among symbol tiles,
+      same size as normal tiles'
+    done: true
+    source: 20261006-044557-chrono-2FYKPJ#5
+    version: 3.40.1
   - id: chk-first-level
     text: The first level it shows on and how the game introduces it
     done: false
@@ -1659,12 +1787,13 @@ features:
     value: 20.0
   type: level-element
   appeared:
-    text: ordinary pairs among tile faces; framed art first noted on L12-L19
-    certainty: hypothesis
-    source: 20261005-133404-chrono-2FYKPJ#0
+    text: 'ordinary tile faces on the board itself: teapot and white-rabbit framed
+      art seen on L21 (also noted on L12-L19), no intro or trigger'
+    certainty: fact
+    source: 20261006-044557-chrono-2FYKPJ#5
 - id: spin-tiles
   name: Spinning tiles
-  status: in_progress
+  status: documented
   cases:
   - id: chk-first-level
     text: 'Level 21 (the first after Hard L20): intro banner ''Clear every tile to
@@ -1682,18 +1811,50 @@ features:
     done: true
     source: 20261005-133525-chrono-2FYKPJ#48
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'L21 board: a ring of lower-layer tiles round the board''s edge (top row,
+      both side columns, bottom row) with faint yellow chevrons beside it (left side
+      up, right side down) that light up when the ring turns (shot 62); top-layer
+      tiles and the two bottom stacks sit outside the ring. The earlier reading ''yellow
+      fleur tiles are the spin tiles'' was wrong: those were face-down backs'
+    done: true
+    source: 20261006-072809-chrono-2FYKPJ#37
   - id: chk-rules
-    text: What it does and how it is used
-    done: false
+    text: A ring of lower-layer tiles around the board's edge (top row, both side
+      columns, bottom row) turns one place clockwise every time a tile is taken into
+      the tray (single or pair, shots 21->22, 23->24); flipping a face-down tile moves
+      nothing (shots 11->12, 19->20). Faint yellow chevrons on the ring show the direction
+      (left side up, right side down). Top-layer tiles and the two bottom stacks do
+      not move. A tap sent while the ring turns misses (the tile has moved)
+    done: true
+    source: 20261006-072809-chrono-2FYKPJ#13
+    version: 3.40.1
   - id: chk-interactions
-    text: How it interacts with the other pieces
-    done: false
+    text: 'The ring carries every kind of tile: face-down backs, picture tiles (cage,
+      ship), gold x2 tiles; a flip-and-twin clear also turns the ring (shots 64->66);
+      Shuffle re-deals the ring tiles with the rest (shot 34); top-layer tiles and
+      the two bottom stacks never move. A tap sent during the turn lands on whatever
+      moved under it (shot 22: two later taps lost)'
+    done: true
+    source: 20261006-072809-chrono-2FYKPJ#39
+    version: 3.40.1
   - id: chk-loss
-    text: 'Whether it adds a way to lose: then that loss is an outcome of the base
-      level (case <base> <kind> "..." --outcome)'
-    done: false
+    text: 'No new way to lose: the ring only moves tiles; the tray and Out of space
+      work as on other levels. L21 won with the ring turning to the end; the spin
+      stops only when the board is cleared (win chain: league standing, notice, Daily
+      Victories, Rate Us, win screen shot 95)'
+    done: true
+    source: 20261006-072809-chrono-2FYKPJ#55
+    version: 3.40.1
+  - id: after-match-rearrange
+    text: 'After one match on L21 (frames 46 -> 48/50) many face-up lower-layer tiles
+      changed faces in place: top-left circle-1 became an x2 fu tile, a cat partial
+      became circles, the rabbit picture became circles, the right dog became circles,
+      bamboo became ''one'', ''fa'' became flowers. The green face-down tiles, the
+      chair, the centre ''three'' and the bottom stacks stayed. So the spin is a rearrangement
+      of the board after a match, not an idle animation (the player read it as ''no
+      rotation''; its own clip_end note says positions changed)'
+    done: true
+    source: 20261006-071736-chrono-2FYKPJ#38
   found_at:
     text: level 20
     value: 20.0
@@ -1703,6 +1864,7 @@ features:
       every tile to stop the spin!'' with a 3x3 tile icon and rotate arrows'
     certainty: fact
     source: 20261005-133525-chrono-2FYKPJ#48
+  version_seen: 3.40.1
 - id: combo
   name: Combo streak
   status: in_progress
@@ -1736,6 +1898,12 @@ features:
     text: 'Whether it adds a way to lose: then that loss is an outcome of the base
       level (case <base> <kind> "..." --outcome)'
     done: false
+  - id: challenge-banner
+    text: 'A mid-level ''challenge'' ribbon with the mascot on a skateboard rode across
+      the L22 board at about 70% cleared, right after a second single went into the
+      4-slot tray (shot 42: 1 single, shot 43: 2). What brings it up and whether it
+      gives anything is unknown (task challenge-banner)'
+    done: false
   found_at:
     text: level 21 (Hard L20 won)
     value: 21.0
@@ -1762,9 +1930,10 @@ features:
     done: true
     source: 20261005-133525-chrono-2FYKPJ#42
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'No entry: it comes by itself after Continue on the league panel of a won
+      level (L20 Hard, L21, L22); not found in Settings or Options'
+    done: true
+    source: 20261006-122751-chrono-2FYKPJ#41
   - id: chk-options
     text: Every option or button and what it changes (each toggle once, set back after)
     done: false
@@ -1776,6 +1945,18 @@ features:
     text: 'Links out (privacy, terms, help): where they lead (back to the game at
       once)'
     done: false
+  - id: x-returns
+    text: 'Closed with X after the Hard L20 win, the Important Notice came back after
+      the league standing of the next win (L21): X does not stop it; Continue not
+      tried yet'
+    done: true
+    source: 20261006-072809-chrono-2FYKPJ#52
+  - id: after-normal-win
+    text: 'The Important Notice came after the league panel of a normal level (L22),
+      the third win in a row (L20 Hard, L21, L22) closed with X: it is not tied to
+      Hard levels'
+    done: true
+    source: 20261006-122751-chrono-2FYKPJ#41
   found_at:
     text: level 21 (Hard L20 won)
     value: 21.0
@@ -1785,6 +1966,58 @@ features:
       open app notifications to stay on top of the leaderboard'''
     certainty: fact
     source: 20261005-133525-chrono-2FYKPJ#42
+- id: rewarded-video
+  name: Rewarded videos
+  status: in_progress
+  cases:
+  - id: chk-entry
+    text: 'Three places seen: a booster at 0 in a level (Free Hint/Free Undo ''Get
+      Two'', Free Shuffle ''Get One''), Collect x2 on the level chest, and possibly
+      Revive in the Out of space window (revive-cost)'
+    done: true
+    source: 20261006-122751-chrono-2FYKPJ#29
+  - id: chk-reward
+    text: 'Free Shuffle window: ''Watch a video to get 1 Shuffle'', green Get One
+      with a video icon, X; watching gave Shuffle 1 (badge ''+'' -> 1, shot 50). Free
+      Undo and Free Hint give 2'
+    done: true
+    source: 20261006-122751-chrono-2FYKPJ#31
+  - id: chk-kind
+    text: Rewarded video, opt-in only, full screen; the one watched was a playable
+      ad for another game (Traffic Escape, Google Play badge, PLAY button)
+    done: true
+    source: 20261006-122751-chrono-2FYKPJ#30
+  - id: chk-close
+    text: The Free Shuffle video ran about 50 s and ended on a playable end card with
+      no close X; launch (bring the game back) returned to the board and the reward
+      was kept. The offer window itself closes with X at 666,489 with nothing spent
+    done: true
+    source: 20261006-122751-chrono-2FYKPJ#31
+  - id: chk-screen
+    text: The offer window (shot 46-47) and the ad itself (shots 48-49, a playable
+      car-puzzle ad)
+    done: true
+    source: 20261006-122751-chrono-2FYKPJ#30
+  - id: chk-frequency
+    text: 'Not answered: whether a booster video can be watched again right away,
+      and whether any interstitial (unasked) ad shows between levels; none seen after
+      L19-L22 wins'
+    done: false
+  - id: chk-appeared
+    text: 'Why it appeared: the trigger that brought it up (the first launch, a level
+      won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
+      test'
+    done: true
+    source: 20261005-073804-chrono-2FYKPJ#53
+  found_at:
+    text: level 23
+    value: 23.0
+  type: ad-placement
+  appeared:
+    text: 'a booster at 0 in a level: tapping Hint (then Shuffle, Undo) with a ''+''
+      badge opens a Free <booster> window with a video button'
+    certainty: fact
+    source: 20261005-073804-chrono-2FYKPJ#53
 tasks:
 - id: analyze
   title: Analyze the game
@@ -2043,10 +2276,14 @@ tasks:
   title: 'Study Profile: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: profile
   source: external
+  closed: '2026-10-06T07:24:04'
+  closed_by: 20261006-071736-chrono-2FYKPJ#34
+  note: 'Profile: avatar grid, rename field, country list, PHOTO picker, Frame tab
+    marked; FB Connect untested'
 - id: study-level-frames
   title: 'Study Level avatar frames: open it, walk its screens and tabs, verify its
     cases'
@@ -2065,18 +2302,28 @@ tasks:
     verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: theme
   source: external
+  closed: '2026-10-06T10:26:19'
+  closed_by: 20261006-101909-chrono-2FYKPJ#16
+  note: Tiles (6 sets) and Background (5) walked; Classic + red confirmed and drawn
+    on L22 (shot 12), home unchanged; X discards an unconfirmed pick (shots 4, 6);
+    after a relaunch the picker is back to Simple + dark green and the board drew
+    the red-back set on dark green (shots 18, 19, 22)
 - id: study-settings
   title: 'Study Settings: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: settings
   source: external
+  closed: '2026-10-06T07:24:04'
+  closed_by: 20261006-071736-chrono-2FYKPJ#34
+  note: 4 toggles, Feedback (Helpshift), FB group/Terms/Privacy (Chrome), About 3.40.1,
+    Share sheet
 - id: study-core-level
   title: 'Study Tray mahjong level: open it, walk its screens and tabs, verify its
     cases'
@@ -2142,10 +2389,14 @@ tasks:
   title: 'Study No Ads purchase: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:01:26'
   feature: no-ads
   source: external
+  closed: '2026-10-06T04:47:49'
+  closed_by: 20261006-044557-chrono-2FYKPJ#5
+  note: 'Walked Options > No Ads: single RSD 849 Forever offer, Restore (no visible
+    effect), ToS/Privacy not opened, X closes; price never tapped'
 - id: study-auto-complete
   title: 'Study Auto Complete: open it, walk its screens and tabs, verify its cases'
   kind: study
@@ -2212,7 +2463,7 @@ tasks:
     the board''s faces and face-down color'
   kind: experiment
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-03T20:03:22'
   feature: theme
   source: session
@@ -2221,6 +2472,11 @@ tasks:
     switch Theme to Classic in level Options, mark the board again; set back to Simple.
     Confirmed if the backs/faces change with the set (then pick the set the solver
     reads); refuted if the board stays purple (a per-level skin)
+  closed: '2026-10-06T08:02:26'
+  closed_by: 20261006-072809-chrono-2FYKPJ#61
+  note: Duplicate of theme-options (pick another set and background, Confirm, compare
+    the board); this session Theme showed Simple + dark green and the L21/L22 boards
+    matched it (theme simple-matches-board)
 - id: lose-flow
   title: Reach a level loss on purpose and record the lose screen (tray full), its
     continue offer and retry cost
@@ -2295,7 +2551,7 @@ tasks:
     on a relaunch and compare the home and the next level to the X-closed runs'
   kind: experiment
   requires: any
-  status: open
+  status: cancelled
   created: '2026-10-03T23:19:15'
   feature: age-select
   source: session
@@ -2304,6 +2560,12 @@ tasks:
     anything differs from the X-closed run in 231301 (shots 8, 22); refuted if nothing
     differs. Note whether the popup comes back on the following launch after a bracket
     was picked
+  closed: '2026-10-06T10:30:06'
+  closed_by: review-20261006
+  note: 'Not reachable on a progressed phone: the age popup did not show on three
+    normal launches (072809 start, this session #0 and the relaunch #11); it came
+    only on Level 1 / saved-game-offer launches. Replaced by age-bracket-fresh (requires
+    a fresh install, where the popup shows for sure)'
 - id: consent-links
   title: Check Terms/Privacy links on the consent window
   kind: replay
@@ -2331,7 +2593,7 @@ tasks:
     with red backs in 231804, no theme change in between'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T23:22:39'
   feature: theme
   source: session
@@ -2340,6 +2602,15 @@ tasks:
     restore or the Level 1 reset changes the set if Theme shows a set other than Simple,
     or the board does not match the selected set; the solver must then check the backs
     each level
+  closed: '2026-10-06T10:29:57'
+  closed_by: 20261006-101909-chrono-2FYKPJ#15
+  note: 'The board''s tile set does not follow the Theme picker: after a force-stop
+    relaunch the picker showed Simple + dark green (shot 19) but L22 drew a red-back
+    set with symbol faces on dark green (shot 22); before the relaunch the confirmed
+    Classic + red was drawn as picked (shot 12). The drift needs no restore or Level
+    1 reset, so the solver must read the backs on every board. What chooses the red-back
+    set is left to tileset-relaunch-source'
+  result: confirmed
 - id: ftue-replay-340
   title: Replay the 3.40.1 FTUE on a fresh install with the cloud restore declined
     (levels 1-18 were skipped by Sync Data)
@@ -2411,20 +2682,33 @@ tasks:
     chest bar ''Reach Level 20'', red Level 20 Hard button; no coins'
   result: confirmed
 - id: appeared-iq-bonus-tiles
-  title: 'Find why IQ bonus tiles appeared: tiles with a blue IQ+N banner (IQ+6, IQ+9
-    on L19, frames 6, 19); seen from level 8 in 20260930-225122 (IQ+10), first level
-    not seen'
+  title: 'Find why IQ bonus tiles appeared: IQ+N tiles are dealt on the opening board
+    only in an early or freshly installed game state: both boards of 20261005-002327
+    (fresh reinstall restored by Sync Data, boosters at install defaults 3/5/10, frames
+    6, 19) had them, and 3.39.1 L8 (early game); no opening board since (L19 073804
+    #6, L20 #63, L21 221108 #10 and 001538 #15, L22 this session shots 12, 22) had
+    any; from L20 the gold x2 (league) tiles take their place'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T00:31:30'
   feature: iq-bonus-tiles
   source: session
-  plan: 'find the moment IQ bonus tiles shows up and what comes just before it (tiles
-    with a blue IQ+N banner (IQ+6, IQ+9 on L19, frames 6, 19); seen from level 8 in
-    20260930-225122 (IQ+10), first level not seen); confirmed when a frame shows the
-    trigger. Record it with feature iq-bonus-tiles --appeared "...": the goal closes
-    by itself'
+  plan: 'find the moment IQ bonus tiles shows up and what comes just before it (IQ+N
+    tiles are dealt on the opening board only in an early or freshly installed game
+    state: both boards of 20261005-002327 (fresh reinstall restored by Sync Data,
+    boosters at install defaults 3/5/10, frames 6, 19) had them, and 3.39.1 L8 (early
+    game); no opening board since (L19 073804 #6, L20 #63, L21 221108 #10 and 001538
+    #15, L22 this session shots 12, 22) had any; from L20 the gold x2 (league) tiles
+    take their place); confirmed when a frame shows the trigger. Record it with feature
+    iq-bonus-tiles --appeared "...": the goal closes by itself'
+  closed: '2026-10-06T10:26:45'
+  closed_by: 20261006-101909-chrono-2FYKPJ#16
+  note: No IQ+N tile on either L22 board this session (shots 12, 22) nor on the opening
+    boards of L19-L21 since 073804; only the two boards of 002327 (fresh reinstall
+    + Sync, boosters 3/5/10) had them. Trigger not seen on a frame; next check needs
+    a fresh install (task iq-bonus-fresh)
+  result: inconclusive
 - id: study-leaves
   title: 'Study the home leaf counter: tap it, mark what opens, and record what leaves
     are for'
@@ -2560,11 +2844,16 @@ tasks:
     and how a missed day looks — day 1 of 2'
   kind: daily
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T07:59:09'
   feature: daily-victories
   not_before: '2026-10-06T07:59:09'
   source: game
+  closed: '2026-10-06T07:56:56'
+  closed_by: 20261006-072809-chrono-2FYKPJ#62
+  note: 'Day 2 (2026-10-06): after the L21 win the Daily Victories panel showed leaf
+    2 and a new week row starting Tuesday with Tu checked (''You are ready for a great
+    week!''), home leaf counter x2'
 - id: dv-day2-d2
   title: 'Daily Victories: win a level tomorrow and see whether the streak shows 2
     and how a missed day looks — day 2 of 2'
@@ -2644,19 +2933,28 @@ tasks:
   title: 'See what Shuffle and Undo offer at 0 (as Hint: a video for 2?)'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T08:06:03'
   feature: boosters
   source: session
   plan: Shuffle is at 2, Undo at 9. Use Shuffle when stuck until 0, then tap it and
     mark the popup without paying. Confirmed if a video offer like Free Hint appears;
     else note what opens
+  closed: '2026-10-06T12:33:22'
+  closed_by: 20261006-122751-chrono-2FYKPJ#16
+  note: 'L22 opened with Shuffle ''+'' (0), Hint ''+'', Undo 1 (counts in the plan
+    were stale). Shuffle at 0 -> ''Free Shuffle'' popup: watch a video to get 1 Shuffle
+    (Get One). Used the last Undo on a tray single, then Undo at 0 -> ''Free Undo''
+    popup: watch a video to get 2 Undos (Get Two). Both have an X that closes with
+    nothing spent. So all three boosters at 0 turn into a rewarded-video offer: Hint
+    and Undo give 2, Shuffle 1 (shots 6, 24).'
+  result: confirmed
 - id: appeared-picture-tiles
   title: 'Find why Picture tiles (framed art, zodiac, blank card) appeared: ordinary
     pairs among tile faces; framed art first noted on L12-L19'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T13:34:27'
   feature: picture-tiles
   source: session
@@ -2664,6 +2962,11 @@ tasks:
     what comes just before it (ordinary pairs among tile faces; framed art first noted
     on L12-L19); confirmed when a frame shows the trigger. Record it with feature
     picture-tiles --appeared "...": the goal closes by itself'
+  closed: '2026-10-06T04:47:57'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: ordinary tile faces on the board itself:
+    teapot and white-rabbit framed art seen on L21 (also noted on L12-L19), no intro
+    or trigger [20261006-044557-chrono-2FYKPJ#5]'
 - id: study-face-down-backs
   title: 'Study Face-down backs (flip tiles): open it, walk its screens and tabs,
     verify its cases'
@@ -2682,10 +2985,14 @@ tasks:
     screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T13:34:55'
   feature: picture-tiles
   source: external
+  closed: '2026-10-06T04:48:05'
+  closed_by: 20261006-044557-chrono-2FYKPJ#5
+  note: 'Marked L21 board with framed-art tiles; entry/screen/appeared closed; rules,
+    zodiac/blank card, interactions need play: task picture-tiles-play'
 - id: first-look-leagues
   title: 'First look at Leagues: open it once, record what it is and decide whether
     it needs a full study'
@@ -2714,10 +3021,16 @@ tasks:
   title: 'Study spinning tiles (L21): how the spin works, what stops it'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T13:56:51'
   feature: spin-tiles
   source: session
+  closed: '2026-10-06T07:53:04'
+  closed_by: 20261006-072809-chrono-2FYKPJ#55
+  note: Spin = a ring of lower-layer edge tiles turns one place clockwise (chevrons)
+    after every tile that leaves the board (tray take, match, flip-and-twin clear);
+    flips do not turn it. L21 won by hand (one ring tile per call, then look). Spin
+    stops only with the board cleared
 - id: solver-white-blue
   title: 'Solver: read the 5th tile set (white faces, blue backs, Hard L20 of session
     133525) - it read ''purple'' and found no pair on shots 00005-00045'
@@ -2769,22 +3082,33 @@ tasks:
     (which level)?'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T14:02:54'
   feature: rate-us
   source: session
   plan: Close Rate Us with X (never rate); on each later win note whether it shows
     again. Confirmed 'once only' if it does not return by L30; else record the levels
     it returns on
+  closed: '2026-10-06T08:02:26'
+  closed_by: 20261006-072809-chrono-2FYKPJ#54
+  note: 'Not once only: closed with X on L20, the prompt came back over the very next
+    win (L21, shot 93). It returns on wins; whether every win or every Nth is still
+    open (see rate-us-cadence)'
+  result: refuted
 - id: study-notifications-prompt
   title: 'Study Notification prompt: open it, walk its screens and tabs, verify its
     cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T14:10:19'
   feature: notifications-prompt
   source: external
+  closed: '2026-10-06T04:48:05'
+  closed_by: 20261006-044557-chrono-2FYKPJ#5
+  note: 'Cannot be opened now: the prompt only shows after the league standing screen
+    following a Hard level win (seen at L20). Answers and recurrence moved to task
+    notif-prompt-answers'
 - id: x2-tag-normal-level
   title: 'Find what the x2 league tag on a normal Level button means: win L21 and
     count the 福 league points it adds'
@@ -2809,3 +3133,208 @@ tasks:
   source: session
   plan: open Profile Frame tab, look for Level 20 frame, equip Level 10 frame and
     Save, check home avatar
+- id: picture-tiles-play
+  title: 'Play a level and match two framed-art tiles: rules, zodiac and blank card
+    variants, interaction with spin tiles'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T04:47:58'
+  feature: picture-tiles
+  source: session
+  plan: play a level, match framed-art pairs, note what matches and whether zodiac/blank
+    card tiles appear
+- id: notif-prompt-answers
+  title: Win Hard L30 and answer the Important Notice prompt both ways (X, Continue);
+    check whether it returns
+  kind: experiment
+  requires: any
+  status: cancelled
+  created: '2026-10-06T04:48:04'
+  feature: notifications-prompt
+  source: session
+  plan: after the league standing screen of a Hard win, tap X once, next win see if
+    it returns; then Continue and Don't allow
+  closed: '2026-10-06T12:51:50'
+  closed_by: review-20261006
+  note: 'Premise wrong: the Important Notice is not Hard-only; it came after the league
+    panel of normal L21 and L22 too (X closes it, it returns on the next win, 20261006-122751-chrono-2FYKPJ#41).
+    Replaced by notif-prompt-continue, which any win serves'
+- id: profile-fb-connect
+  title: 'Facebook Connect button in Profile: what it asks (do not sign in)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T07:24:03'
+  feature: profile
+  source: session
+  plan: tap Connect, record the prompt, back out
+- id: spin-tiles-play
+  title: 'Play L21 match by match and compare the board before and after each match:
+    which tiles move in the spin and when it stops'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T07:26:02'
+  feature: spin-tiles
+  source: session
+  plan: 'Mark the board, make one match, mark again; repeat 5 matches. Confirmed when
+    the frames show the same set of positions changing after each match (or a pattern:
+    ring, layer) and when the spin stops; do not count the greens (face-down-tiles),
+    they do not move'
+  closed: '2026-10-06T07:53:05'
+  closed_by: 20261006-072809-chrono-2FYKPJ#55
+  note: 'Played L21 to a win: the ring turns per removed tile, not on a timer; flips
+    and locked taps do not turn it'
+  result: confirmed
+- id: theme-options
+  title: 'Theme: pick another tile set and background, Confirm, open a level and compare;
+    then set Simple + dark green back; also check whether X discards an unconfirmed
+    pick'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T07:56:56'
+  feature: theme
+  source: session
+  plan: 'Tiles: Classic, Confirm, open the level, mark the board; Background: red,
+    Confirm, mark; restore Simple + dark green. Confirmed the theme drives the board
+    if the backs/background follow the pick'
+  closed: '2026-10-06T10:26:20'
+  closed_by: 20261006-101909-chrono-2FYKPJ#16
+  note: 'Confirm applies both tabs to the board at once (Classic white/blue + red
+    background, shot 12); X discards an unconfirmed pick; but the pick does not survive
+    a force-stop relaunch: picker resets to Simple + dark green and the tile set on
+    the next board is red-back (shot 22). Theme was left at the default Simple + dark
+    green'
+  result: confirmed
+- id: rate-us-cadence
+  title: 'Rate Us prompt: record on which wins it shows (every win, or every Nth)
+    from L22 to L30, closing it with X each time'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T08:02:27'
+  feature: rate-us
+  source: session
+  plan: On each win L22-L30 note whether 'Are you enjoying Vita Mahjong?' shows after
+    Daily Victories (never rate, close with X). Confirmed 'every win' if it shows
+    on each; else record the gap
+- id: solver-spin-ring
+  title: 'Solver: play the L21-style spin ring without stalls (wait for the ring to
+    settle after each removed tile, send at most one ring tile per batch as its first
+    tap)'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T08:02:27'
+  feature: spin-tiles
+  source: session
+  plan: Run solve --image on 20261006-072809 shots 21-24, 33-35, 58-62 (ring turning,
+    'fewer open tiles than after the last round'). Confirmed when the solver reads
+    the settled board after each ring turn and plays a spin level to a win without
+    the hand play the session needed (two stalls, time budget passed at step 16)
+- id: theme-persist-close
+  title: 'Theme: confirm a non-default set, leave the game with Home (no force-stop),
+    come back after a few minutes and see if the pick and the board set are kept'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T10:26:33'
+  feature: theme
+  source: session
+  plan: Classic + red, Confirm, Android Home, return via launch; open the picker and
+    a level. Confirmed persistent if Classic + red are still checked and the board
+    is white/blue on red
+- id: iq-bonus-fresh
+  title: 'IQ bonus tiles on a fresh install: note on which level IQ+N tiles first
+    appear and whether they stop after leagues or a set level'
+  kind: experiment
+  requires: fresh
+  status: open
+  created: '2026-10-06T10:26:46'
+  feature: iq-bonus-tiles
+  source: session
+  plan: From a fresh install mark every opening board; confirmed if IQ+N tiles show
+    from an early level and vanish at a set point (league join at L20 or another level)
+- id: tileset-relaunch-source
+  title: 'Find what chooses the board''s tile set when it differs from the Theme picker:
+    same red-back set on every relaunch, a new one each launch, or set by the level'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T10:29:57'
+  feature: theme
+  source: session
+  plan: With the picker on Simple + dark green, open the current level, mark the board
+    backs and faces; quit, force-stop and relaunch, open it again and mark; repeat
+    once more, then open the next level after a win. Confirmed 'fixed per install'
+    if the same red-back set shows each time; 'per launch' if it changes across relaunches;
+    'per level' if it changes only with the level. Fold into a level session, no extra
+    session
+- id: age-bracket-fresh
+  title: 'Find what the 55+ age bracket changes: on a fresh install tap 55+ on the
+    age popup and compare home and the first levels to the 35-55 fresh run (195050)'
+  kind: experiment
+  requires: fresh
+  status: open
+  created: '2026-10-06T10:30:06'
+  feature: age-select
+  source: session
+  plan: On the fresh install's first home, tap 55+ (not X), mark the next popup, the
+    home and the first level board (tile size, layout, ads, prompts); relaunch once
+    and note whether the popup returns. Confirmed if anything differs from 20261003-195050
+    (35-55) and 231804 (0-35); refuted if nothing differs. Fold into the fresh-install
+    session with ftue-replay-340, consent-links and iq-bonus-fresh
+- id: challenge-banner
+  title: Find what brings up the mid-level 'challenge' banner (mascot on a skateboard)
+    and whether it changes anything
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T12:51:40'
+  feature: combo
+  source: session
+  plan: 'In a level, note the tray before and after each single goes in. Hypothesis:
+    it shows when the 4-slot tray reaches 2 singles (half full) for the first time
+    in a level. Confirmed if it shows again right when a second single enters the
+    tray on another level, and not with 1; refuted if it shows with 0-1 singles or
+    at a fixed share of the board cleared. Mark it and check IQ, combo and boosters
+    before/after'
+- id: notif-prompt-continue
+  title: 'Answer the Important Notice with Continue on the next win: where it leads
+    (system settings or a permission dialog), and whether it still comes after the
+    following win'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T12:51:51'
+  feature: notifications-prompt
+  source: session
+  plan: After the next won level, on the Important Notice tap Continue (not X); mark
+    what opens (Android notification settings or an Allow/Don't allow dialog); choose
+    Don't allow or leave notifications off, return to the game. On the following win
+    note whether the notice shows again. Confirmed 'nags until enabled' if it returns;
+    else it stops after Continue
+- id: rewarded-video-repeat
+  title: 'Rewarded video: can a booster video be watched again at once, and does any
+    unasked ad (interstitial) show between levels'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T12:51:51'
+  feature: rewarded-video
+  source: session
+  plan: 'At a dead end with Shuffle at 0, take Free Shuffle (Get One), use it, then
+    tap Shuffle at 0 again: note whether the offer comes back at once, later, or says
+    no video. Across the next 5 wins note any ad that plays without being asked. Confirmed
+    ''no cooldown, rewarded only'' if the offer returns at once and no interstitial
+    shows'
+- id: study-rewarded-video
+  title: 'Study Rewarded videos: open it, walk its screens and tabs, verify its cases'
+  kind: study
+  requires: any
+  status: open
+  created: '2026-10-06T13:09:53'
+  feature: rewarded-video
+  source: external

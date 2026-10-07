@@ -5,7 +5,7 @@ type: feature
 feature: leagues
 version_seen: 3.40.1
 verified_at: 2026-10-06
-sources: [20261003-195050-chrono-2FYKPJ, 20261005-133525-chrono-2FYKPJ, 20261006-001538-chrono-2FYKPJ]
+sources: [20261003-195050-chrono-2FYKPJ, 20261005-133525-chrono-2FYKPJ, 20261006-001538-chrono-2FYKPJ, 20261006-072809-chrono-2FYKPJ, 20261006-122751-chrono-2FYKPJ]
 ---
 
 # Leagues
@@ -59,6 +59,13 @@ time left under it [^s4]. A tap on it opens the league screen after a short door
   [^s3].
 - The list: rank, avatar, name and country flag, the 福 tile count, a heart with a number (1 on the
   player's row, 0 on the others) [^s3]. What the hearts count was not seen.
+
+![The standing after the level 22 win: "Well done! You reached the 6th position.", "Bronze League", the timer 00h 53m 50s, the bronze trophy figure, the 10-segment bar full, "You're in the TOP 10! Keep your position!", ranks 4 to 8 with 22, 20, 20, 18 and 18 福 tiles and heart counts, the player's row 6 highlighted, Continue](../img/20261006-leagues-result-956b6b94.webp) [^s22]
+*The standing after the level 22 win: 6th, inside the top 10; names, avatars and flags blacked out*
+
+After the level 22 win the top line read "Well done! You reached the 6th position.", the bar was full and
+the line under it "You're in the TOP 10! Keep your position!"; the player had 20 福 tiles, level with rank
+5 [^s22].
 
 ### Matchmaking
 
@@ -134,12 +141,16 @@ Version 3.40.1.
   matched [^s10]. After the Hard level 20 the player had 8 and rank 18,
   having climbed 32 places [^s3]. The next day, with no level played in between, the player was rank 24
   with the same 8; rank 1 had 30 [^s12].
+- The count over the event: 8 福 after the Hard level 20 (rank 18), 12 after level 21 (rank 28), 20
+  after level 22 (rank 6) [^s3] [^s23] [^s22]. Level 21 and level 22 both had the x2 tag; how many 福
+  tiles were matched on them was not counted [^s23] [^s22].
 - The Hard level 20 button carried a purple "x2" tag with a 福 tile, and so does the Level 21 button, an
   ordinary (orange) level; on the level 21 board the 福 tiles carry a red "x2" badge [^s1]
   [^s11] [^s21]. Inferred: each 福 tile counts twice on these levels; not verified. The x2 tag is not
   limited to Hard levels [^s21].
 - The event's timer: 23h 43m left right after the join, 13h 19m left about 10.5 hours later [^s3]
-  [^s12]. Inferred: an event lasts about a day and this one ends about 24 hours after the join.
+  [^s12]; 05h 44m left after the level 21 win and 00h 53m 50s after the level 22 win at 12:43 on
+  2026-10-06 [^s23] [^s22]. Inferred: an event lasts about a day and this one ends about 24 hours after the join.
 - Promotion: the top 10 of the group are "To be promoted" to the next league, by the rules page
   [^s15]. Leagues seen: Bronze, Silver, then a gold one (the trophy stage and rules page 1); the join
   popup draws five [^s1] [^s15] [^s18].
@@ -162,11 +173,12 @@ Version 3.40.1.
 | What earns points <!-- case:chk-points --> | Won the Hard level 20 | ✅ 福 tiles, 8 after one level with an x2 tag | [^s3] |
 | The period and its timer <!-- case:chk-period --> | Read the timer after the join and the next day | ✅ 23h 43m, then 13h 19m left: about a day | [^s3] [^s12] |
 | Rewards per rank, promotion and relegation <!-- case:chk-rewards --> | Opened the league screen and its rules | ✅ Gift boxes for ranks 1 (red-gold), 2 (orange), 3 (blue), 4+ (green); top 10 promoted; Glory stars +5/+3/+2/+1, −2 in the demotion zone; box contents not seen | [^s12] [^s15] [^s16] [^s19] |
-| The end of a period <!-- case:chk-end --> | — | not verified | |
+| The end of a period <!-- case:chk-end --> | — | not verified: 00h 53m left at the session's end | [^s22] |
+| Points after the level 21 win <!-- case:l21-points --> | Won level 21 (x2 tag) | ✅ 12 福, rank 28, 05h 44m left: +4 on the 8 before; the 福 tiles matched on the level were not counted | [^s23] |
 
 ## Not verified
 
-- The end of an event: the results screen, what the gift boxes hold, promotion to Silver <!-- case:chk-end -->
+- The end of an event: the results screen, what the gift boxes hold, promotion to Silver (the player was 6th, inside the top 10, with 00h 53m left) <!-- case:chk-end -->
 - Which ranks get a gift box (seen on 1-6, none on 15-20 and 23-31; 7-14 not seen)
 - What the hearts on the standing count
 - Whether the Bronze League demotes anyone (no demotion zone seen on its list)
@@ -193,3 +205,6 @@ Version 3.40.1.
 [^s19]: session 20261006-001538-chrono-2FYKPJ, step 8 — [video at 1:58](https://youtu.be/urpt1SjTsek?t=118)
 [^s20]: session 20261006-001538-chrono-2FYKPJ, step 9 — [video at 2:13](https://youtu.be/urpt1SjTsek?t=133)
 [^s21]: session 20261006-001538-chrono-2FYKPJ, step 13 — [video at 3:08](https://youtu.be/urpt1SjTsek?t=188)
+
+[^s22]: session 20261006-122751-chrono-2FYKPJ, step 40 — [video at 11:12](https://youtu.be/B2PSO6tOKeQ?t=672)
+[^s23]: session 20261006-072809-chrono-2FYKPJ, step 51 — [video at 22:34](https://youtu.be/lmyXziDOcNk?t=1354)

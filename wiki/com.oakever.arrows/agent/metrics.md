@@ -14,3 +14,4 @@ One line per dream from `sw.py stats` over the sessions of that dream (the wiki 
 | 2026-10-04 | chrono | 6 | 23.0 | 22% / 11% | 0/0 | arrows-escape typical 1.8 min (best 0.6), 3 won / 0 lost / 3 quit, mastered | 0 | 1 | 6 (0.0 min) | 0 (0 min) | sonnet:low (play) 6 |
 | 2026-10-05 | chrono | 2 | 16.2 | 7% / 8% | 0/0 | levels 6 won / 0 lost | 0 | 0 | 0 (0.0 min) | 0 (0 min) | opus (study) |
 | 2026-10-06 | chrono | 6 | 5.7 | 20% / 19% | 0/0 | median of medians 4.5 min; 12 won / 2 lost | 9 | 0 | 8 (0.2 min) | 0 (0 min) | sonnet:low (play) 3, opus (study) 3 |
+| 2026-10-07 | chrono | 4 | 11.1 | 35% / 31% | 0/0 | arrows-escape typical 4.3 min (best 0.6), 26 won / 3 lost / 6 quit, mastered; worms-escape typical 4.5 min (best 4.5), 1 won / 0 lost / 2 quit, studying | 0 | 0 | 5 (3.9 min) | 0 (0 min) | opus (study) 4 |

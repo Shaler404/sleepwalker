@@ -4,8 +4,8 @@ title: "IQ bonus tiles"
 type: feature
 feature: iq-bonus-tiles
 version_seen: 3.40.1
-verified_at: 2026-10-05
-sources: [20261005-002327-chrono-2FYKPJ, 20261005-133404-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261005-002327-chrono-2FYKPJ, 20261005-133404-chrono-2FYKPJ, 20261006-101909-chrono-2FYKPJ]
 ---
 
 # IQ bonus tiles
@@ -17,10 +17,18 @@ No banner tile has been matched yet, so what it gives is not verified.
 
 ## Why it appeared
 
-Hypothesis: they are part of the board the game generates for a level, the way face-down and picture
-tiles are. Two boards of level 19 on 3.40.1 had them: "IQ+9" on the first, "IQ+6" after the app was
-reopened [^s1] [^s3]. An earlier session saw an "IQ+10" tile on level 8 [^s4]. The first level they show
-on is not known. Not verified.
+Hypothesis: banner tiles are dealt on the opening board only in an early or freshly installed game state;
+not verified [^s6]. What was seen:
+
+- Both boards that had them were level 19 right after a reinstall whose progress was restored by the
+  saved-game sync, with the boosters at their install counts (Shuffle 3, Hint 5, Undo 10): "IQ+9" on
+  the first, "IQ+6" after the app was reopened [^s1] [^s3]. An earlier session, on 3.39.1, saw an
+  "IQ+10" tile on level 8 [^s4].
+- No opening board since had any: levels 19 to 21 in three later sessions, and level 22 twice in this
+  one, before and after a relaunch [^s6] [^s7] [^s8]. From level 20 the boards carry gold tiles with a
+  red "x2" tag instead (see [Leagues](leagues.md)) [^s8].
+
+The first level they show on is not known.
 
 ## Where to find it
 
@@ -50,6 +58,7 @@ Version 3.40.1.
   earlier session [^s1] [^s3] [^s4].
 - An ordinary pair adds +0.4 IQ on a fresh board (40 to 40.4) [^s5]. What a banner pair adds is not
   verified.
+- Not seen on any opening board of levels 19 (after the first two boards) to 22 [^s6].
 - Nothing else about these tiles has been seen yet: they are not tapped any differently, and the game
   did not introduce them on the boards seen.
 
@@ -69,7 +78,7 @@ Version 3.40.1.
 |---|---|---|---|
 | Where to find it <!-- case:chk-entry --> | Opened Level 19 from the home screen | ✅ On the board of the level from the home Level button; no separate entry | [^s1] |
 | What it looks like <!-- case:chk-screen --> | Opened level 19, then again after reopening the app | ✅ A blue "IQ+9" / "IQ+6" banner on the top edge of a tile, on mahjong faces and on picture tiles alike | [^s3] |
-| Why it appeared <!-- case:chk-appeared --> | — | not verified: seen on level 19 and level 8 boards, trigger unknown | [^s1] |
+| Why it appeared <!-- case:chk-appeared --> | Looked for banners on the opening boards of levels 19 to 22 since the reinstall, last on two level 22 boards | not verified: only the two boards right after the reinstall (and level 8 on 3.39.1) had them; hypothesis: an early or fresh game state | [^s1] [^s6] |
 | The first level it shows on and how the game introduces it <!-- case:chk-first-level --> | — | not verified | |
 | What it does and how it is used <!-- case:chk-rules --> | — | not verified: no banner tile matched | |
 | How it interacts with the other pieces <!-- case:chk-interactions --> | — | not verified | |
@@ -77,7 +86,7 @@ Version 3.40.1.
 
 ## Not verified
 
-- Why it appeared: what puts banner tiles on a board <!-- case:chk-appeared -->
+- Why it appeared: what puts banner tiles on a board; to test from a fresh install, marking every opening board <!-- case:chk-appeared -->
 - The first level they show on and whether the game introduces them <!-- case:chk-first-level -->
 - What matching a banner pair adds to the IQ, and whether the banner is on both tiles of the pair <!-- case:chk-rules -->
 - How they interact with face-down tiles, the combo and the boosters <!-- case:chk-interactions -->
@@ -88,3 +97,6 @@ Version 3.40.1.
 [^s3]: session 20261005-002327-chrono-2FYKPJ, step 11 — [video at 3:46](https://youtu.be/2aQPmh7YksQ?t=226)
 [^s4]: session 20260930-225122-chrono-2FYKPJ, step 76
 [^s5]: session 20261005-002327-chrono-2FYKPJ, step 13 — [video at 4:31](https://youtu.be/2aQPmh7YksQ?t=271)
+[^s6]: session 20261006-101909-chrono-2FYKPJ, step 16 — [video at 5:35](https://youtu.be/MfG1MZSxvio?t=335)
+[^s7]: session 20261006-101909-chrono-2FYKPJ, step 9 — [video at 2:09](https://youtu.be/MfG1MZSxvio?t=129)
+[^s8]: session 20261006-101909-chrono-2FYKPJ, step 15 — [video at 5:05](https://youtu.be/MfG1MZSxvio?t=305)

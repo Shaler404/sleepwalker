@@ -122,7 +122,7 @@ in Silver. At 21h25m rank 30 had 16 rank arrows and rank 31 had 12 [^s13].
 ![After the Level 17 win: the Silver League card over the level, the silver medal, the list at ranks 41-45 with the player 43rd at 4, Bravo! Your rank increased by 7 spots, Continue](../img/20261006-silver-league-result-944b6bb4.webp) [^s15]
 *Right after a won level, before the win card: the player went from 50th to 43rd*
 
-*The last arrow of level 17 leaves the board, the Silver League card opens over the level with confetti, the player's row (50th, 0) rises to 43rd with 4 rank arrows, then Continue appears* (clip dropped: per-dream clip limit) [^s15]
+![The last arrow of level 17 leaves the board, the Silver League card opens over the level with confetti, the player's row (50th, 0) rises to 43rd with 4 rank arrows, then Continue appears](../clips/20261006-silver-rank-jump-after-level-17-win.webp) [^s15]
 *Clip 7.9 s · [original on YouTube from 4:50](https://youtu.be/cXWwykdpuIE?t=290). Names, and a player's name on a reaction bubble over the board, are blacked out*
 
 After a won level the Silver League card comes first, before the level's win card and the interstitial

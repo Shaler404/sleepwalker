@@ -2,7 +2,7 @@
 game: com.crypt.gram.puzz
 title: "Levels: Cryptogram: Word Logic Puzzles"
 type: levels
-verified_at: 2026-10-06
+verified_at: 2026-10-07
 ---
 
 # Levels: Cryptogram: Word Logic Puzzles
@@ -17,9 +17,9 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 |---|---|---|---|---|
 | ![level 6](levels/0006.webp) | ![level 7](levels/0007.webp) | ![level 8](levels/0008.webp) | ![level 9](levels/0009.webp) | ![level 10](levels/0010.webp) |
 
-| level 11 deliberate loss |
-|---|
-| ![level 11 deliberate loss](levels/0011.webp) |
+| level 11 deliberate loss | level 12 | secret level | secret level retry |
+|---|---|---|---|
+| ![level 11 deliberate loss](levels/0011.webp) | ![level 12](levels/0012.webp) | ![secret level](levels/secret-level.webp) | ![secret level retry](levels/secret-level-retry.webp) |
 
 ## Tries
 
@@ -35,4 +35,7 @@ Every level the agents met, as its board looked at the start (the ad strips crop
 | level 8 | cryptogram | 1 won | 116 s | solver, last cell by hand |
 | level 9 | cryptogram | 1 won | 279 s | solver stalled on last 5 cells (1 mistake from solver toss), typed by hand; 4m10s; first level with race+chest keys+lockers |
 | level 10 | cryptogram | 1 won | 221 s | solver solved incl double lockers in one run; 3m19s |
-| level 11 deliberate loss | cryptogram | 1 lost | — | 3 wrong letters under race+chest hunt, Restart gives interstitial then same board with new lock/key positions |
+| level 11 deliberate loss | cryptogram | 1 won, 1 lost, 2 quit | 244 s | solver typed 99 cells, stalled at 0 mistakes on 3 cells of 3 numbers; hint on 1 (key slot), solver 1 more, last cell (one number, word with apostrophe after a name: unknown word) typed by hand. Lab ca |
+| level 12 | cryptogram | 1 lost, 1 quit | — | study, not a solver level: one solver round (24 cells, 2 key slots), then Q/Z/X into a known cell for the loss popup |
+| secret level | cryptogram | 1 quit | — | secret level: solver patched (3rd white arrow-like box confused keyboard detect), typed 105 moves, then post-win playable ad with no close; restart lost the win, Secret Level still CONTINUE |
+| secret level retry | cryptogram | 1 won | 235 s | secret level resumed after ad loss; solver patched for banner and purple theme; last 2 cells typed by hand (study) |

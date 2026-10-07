@@ -18,3 +18,6 @@ How to reach each place from the main screen, with tap points in the 730-px mode
 | Daily Challenge and Streak | Daily Challenge (365,1330); Retry AD (365,1380), ad X (695,118); yarn counter (365,110) opens Daily Streak | [s:20261005-143752-chrono-2FYKPJ#1] [s:20261006-021434-chrono-2FYKPJ#26-31] [s:20261005-223641-chrono-2FYKPJ#8] |
 | Golden fish bonus | Win screen Golden Fish (365,1217) > Tap to Continue (365,1394) > solve | [s:20261006-021434-chrono-2FYKPJ#18-20] |
 | Settings (Home) | Home gear (670,112): Language (365,870), Save progress (365,707), Terms (222,1119), Privacy (506,1119) | [s:20261006-010939-chrono-2FYKPJ#11] |
+| Pattern Mode | in-level gear (671,110) > toggle (575,758) > close (621,462) | [s:20261006-071212-chrono-2FYKPJ#2] [s:20261006-071212-chrono-2FYKPJ#3] [s:20261006-071212-chrono-2FYKPJ#4] |
+| Hint refill | hint at 0 shows a video badge > tap (367,1357) > rewarded ad > `launch` > hint 1 | [s:20261006-071212-chrono-2FYKPJ#12] [s:20261006-071212-chrono-2FYKPJ#13] |
+| Daily Streak | Home yarn counter (365,110) > Daily Streak; back (58,103) | [s:20261006-101030-chrono-2FYKPJ#1] [s:20261006-101030-chrono-2FYKPJ#2] |

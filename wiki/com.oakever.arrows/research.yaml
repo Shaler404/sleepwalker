@@ -2,74 +2,71 @@
 game: com.oakever.arrows
 version: 1.33.0
 play_version: 1.32.0
-play_checked: '2026-10-05T22:05:43'
+play_checked: '2026-10-06T10:09:39'
 phone_version: 1.33.0
 discovery: open
 ftue_verified: null
 progress:
-  text: level 17 continue-ad test
-  value: 17.0
-  at: '2026-10-05T23:47:23'
-  session: 20261005-233140-chrono-2FYKPJ
+  text: level 24
+  value: 24.0
+  at: '2026-10-06T11:58:18'
+  session: 20261006-114946-chrono-2FYKPJ
 gate: null
 synced:
-  chrono: '2026-10-06T04:02:50'
+  chrono: '2026-10-06T15:01:50'
 mechanics:
 - id: arrows-escape
   name: arrows-escape
-  status: broken
+  status: mastered
   method: solver
   levels:
-    won: 17
-    lost: 2
-    quit: 5
+    won: 26
+    lost: 3
+    quit: 6
   recent:
-  - level: level 12 zen on
+  - level: level 18 hard
     result: won
-    seconds: 165
-    model: sonnet
-    moves_before: 7
-  - level: level 13 hard
+    seconds: 328
+    model: opus
+  - level: level 19
     result: won
-    seconds: 160
-    model: sonnet
-  - level: level 14 continue test
+    seconds: 186
+    model: opus
+  - level: daily challenge Oct 6
     result: won
-    seconds: 132
-    model: sonnet
-    moves_before: 2
-  - level: level 15 hard
+    seconds: 335
+    model: opus
+  - level: daily challenge Oct 5 (past day)
+    result: won
+    seconds: 232
+    model: opus
+  - level: level 20 super hard
+    result: won
+    seconds: 300
+    model: opus
+  - level: level 21
+    result: won
+    seconds: 204
+    model: opus
+  - level: level 22 hard
     result: quit
-    seconds: 103
-    model: sonnet
-  - level: level 15 hard resume
-    result: quit
-    seconds: 24
-    model: sonnet
-  - level: level 15 hard retry
+    seconds: 323
+    model: opus
+  - level: level 22
     result: won
-    seconds: 455
-    model: sonnet
-  - level: level 16
+    seconds: 288
+    model: opus
+  - level: level 23
+    result: won
+    seconds: 92
+    model: opus
+  - level: daily Oct 4
     result: lost
-    seconds: 70
-    model: sonnet
-  - level: level 16
-    result: lost
-    seconds: 94
-    model: sonnet
+    seconds: 123
+    model: opus
     deliberate: true
-  - level: level 16
-    result: won
-    seconds: 272
-    model: opus
-  - level: level 17 continue-ad test
-    result: won
-    seconds: 385
-    model: opus
-  note: 'solver on every level (solve --run --rounds 20; Hard boards that do not fit:
-    --rounds 1 --settle 2.0); lab 2026-10-06: toasts over the board masked, idle tap
-    while a toast hides the board, map no longer polluted'
+  note: 'lab 2026-10-06 (7): hand-placed levels = 093640 L22 blocked session (pre-fix)
+    + deliberate Out of Lives; solver unchanged'
   best_s: 35
   solver: solvers/com.oakever.arrows/arrows-escape.py
 - id: worms-escape
@@ -95,9 +92,8 @@ mechanics:
     model: opus
   best_s: 268
   solver: solvers/com.oakever.arrows/worms-escape.py
-  note: 'solvers/worms-escape.py: arrows solver with a worm reader (beads, eyes =
-    head, dots); solve worms-escape --run --rounds 20 --settle 1.5; L1 replay 13 rounds
-    mismatch 0, L2 resume 34 worms read'
+  note: 'lab 2026-10-06 (7): unchanged, rechecked on 013740 #17 #50 #38 + menus; needs
+    its first phone run'
 features:
 - id: consent
   name: Consent screen
@@ -335,36 +331,113 @@ features:
     done: true
     source: 20261003-200141-chrono-2FYKPJ#3
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Home carousel: Daily Challenge card (date, Start) between the League card
+      and the Event card; it replaces the locked ''Unlock Lv.20'' card once level
+      20 is reached (after the L19 win)'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#127
+    version: 1.33.0
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Calendar screen: month header (2026 October), gold-medal counter 0/31,
+      trophy art, month grid with today circled, past days dark, future days grey,
+      selected date + Start at the bottom, trophy button top right, month arrow left'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#132
+    version: 1.33.0
   - id: chk-today
-    text: 'Today''s claim, task list or challenge: what it gives'
-    done: false
+    text: 'Today''s board (Oct 6): a shaped arrows board of ~112 arrows, header shows
+      the date, 3 drops, AD hint; win gives a gold medal on the day (counter 0/31
+      -> 1/31) and the ''You Did It!'' card (Difficulty, Time, Score, Today''s Levels);
+      no coins or other reward shown'
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#41
+    version: 1.33.0
   - id: chk-calendar
-    text: 'The calendar or the task list: every day or task and its reward'
-    done: false
+    text: Every day of the month is one board; a won day shows a gold medal in place
+      of its number and adds 1 to the month's counter (x/31); the only reward shown
+      is the medal, and all medals of a month earn that month's trophy (Trophy Room,
+      one distinct trophy per month). No coins or items on the win card
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#82
+    version: 1.33.0
   - id: chk-next-day
     text: 'The next day: what renews and when (a daily follow-up)'
     done: false
   - id: chk-missed
-    text: 'A missed day: what is lost or reset'
-    done: false
+    text: 'A missed day is not lost: past days (Oct 1-5, and every day of September
+      and earlier months via the month arrows or Trophy Room) stay playable for free,
+      no ad or cost; Oct 5 played on Oct 6 gave a full gold medal (2/31). After a
+      win the selection jumps to the latest unplayed past day'
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#82
+    version: 1.33.0
   - id: chk-play
-    text: 'If it is a board: play it once, its win and its loss'
-    done: false
+    text: 'Played as a board both ways: win on today''s Oct 6 and past Oct 5 (gold
+      medal, You Did It! card, interstitial after) [20261006-064018-chrono-2FYKPJ#41];
+      loss on past Oct 4 by 3 blocked taps: Out of Lives popup as on main levels (Continue
+      = ad for 3 lives, Restart), Restart plays an interstitial and reloads the same
+      board with 3 drops, the day stays unmedalled with a progress ring and Continue'
+    done: true
+    source: 20261006-114946-chrono-2FYKPJ#38
+  - id: intro
+    text: 'First open shows a 2-page intro: ''Complete challenges every day to win
+      Gold Medals!'' (Next) and ''Collect all Gold Medals this month to earn the Monthly
+      Trophy.'' (Start), which closes to the calendar'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#131
+    version: 1.33.0
+  - id: intro-repeat
+    text: The 2-page intro 'Welcome to Daily Challenge' shows again on the second
+      open (not only the first)
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#1
+    version: 1.33.0
+  - id: past-day
+    text: 'Past day Oct 5 played on Oct 6: free start, different shaped board, same
+      win card (Time with a green up arrow), medal counted'
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#82
+    version: 1.33.0
+  - id: trophy-room
+    text: 'Trophy button opens Trophy Room: per-month trophies for 2026 and 2025 with
+      medal counters (Oct 1/31 then), grey until earned; tapping a trophy opens that
+      month''s calendar'
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#43
+    version: 1.33.0
+  - id: win-ad
+    text: An interstitial starts by itself ~3 s after the daily win card (both wins);
+      it jumped to the Play Store by itself after ~35 s; launch returned to the win
+      card with its Continue
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#39
+    version: 1.33.0
+  - id: home-completed
+    text: After today's board is won the Home card button reads 'Completed'; daily
+      wins did not show the Daily Streak screen and the drop badge stayed 2
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#83
+    version: 1.33.0
+  - id: under-out-of-lives
+    text: 'Out of Lives on a past day: same popup as main levels (Continue = ad for
+      3 lives, Restart); Restart plays an interstitial then reloads the same board
+      with 3 drops; the day stays unmedalled, gets a progress ring and a Continue
+      button on the calendar'
+    done: true
+    source: 20261006-114946-chrono-2FYKPJ#41
+    version: 1.33.0
   type: daily
-  locked:
-    text: level 20
-    value: 20.0
   appeared:
     text: on the home carousel from first launch, locked (Unlock Lv.20)
     certainty: fact
     source: 20261003-200141-chrono-2FYKPJ#3
   page: features/daily-challenge.md
+  source: 20261006-041006-chrono-2FYKPJ#127
+  unlocked_at:
+    text: level 19
+    value: 19.0
+    source: 20261006-041006-chrono-2FYKPJ#127
+    lock: level 20
 - id: countryside-capers
   name: Event Countryside Capers
   status: in_progress
@@ -942,8 +1015,18 @@ features:
     done: true
     source: 20261003-232108-chrono-2FYKPJ#8
   - id: chk-interactions
-    text: How it interacts with the other pieces
-    done: false
+    text: Drops refill to 3 on Restart (gear or Out of Lives, after an interstitial)
+      and on the ad Continue (3 more); the same 3-drop allowance on main, Hard, Super
+      Hard and Daily boards; a re-tap of a red arrow is free; blocked taps count as
+      mistakes on the win card
+    done: true
+    source: 20261006-114946-chrono-2FYKPJ#40
+  - id: red-retap
+    text: 'A second tap on an arrow that is already red (blocked, tapped before) costs
+      no drop: Oct 4 daily, 2 drops before and after the re-tap (shots 47, 48); the
+      next tap on a different blocked arrow took the next drop (shot 49)'
+    done: true
+    source: 20261006-114946-chrono-2FYKPJ#36
   type: level-element
   appeared:
     text: three blue drops at the top left of the level HUD on level 3, the first
@@ -1294,7 +1377,7 @@ features:
   status: documented
   cases:
   - id: chk-screen
-    text: 'Profile popup: avatar with check, name Amaze-JtL with edit pencil, tabs
+    text: 'Profile popup: avatar with check, name [auto-assigned name] with edit pencil, tabs
       Avatar (12 avatars: default, arrow, star, crown, drop, animal portraits) and
       Frame, Save'
     done: true
@@ -1314,7 +1397,7 @@ features:
   - id: chk-options
     text: Avatar tab 20 avatars (none locked, selecting shows check and preview);
       Frame tab 12 frames (none locked); pencil opens text field with OK, name edited
-      to Amaze-JtL7; Save applies avatar, frame to Home button
+      to [edited name]; Save applies avatar, frame to Home button
     done: true
     source: 20261005-144428-chrono-2FYKPJ#10
     version: 1.33.0
@@ -1398,32 +1481,51 @@ features:
     certainty: fact
     source: 20261005-012010-chrono-2FYKPJ#32
 - id: super-hard-level
-  name: Red level node (level 20)
-  status: seen
+  name: Super Hard level (red, level 20)
+  status: in_progress
   cases:
   - id: chk-appeared
     text: 'Why it appeared: the trigger that brought it up (the first launch, a level
       won, a threshold, a timer, a loss): a fact with its frame, or a hypothesis to
       test'
-    done: false
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#128
   - id: chk-entry
-    text: 'Where to find it: the screen and the button that open it (mark --as entry
-      --at X,Y)'
-    done: false
+    text: 'Home: the red Play button ''Super Hard / Level 20'' (365,1265) when level
+      20 is next; also Next Level on the L19 win card'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#127
+    version: 1.33.0
   - id: chk-screen
-    text: 'What it looks like: its screen (mark --as screen)'
-    done: false
+    text: 'Header ''Level 20'' with a red ''Super Hard'' subtitle (Hard levels: purple
+      ''Hard''); red start toast instead of purple/brown; same 3 drops and AD hint
+      bulb'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#128
+    version: 1.33.0
   - id: chk-announce
-    text: 'How it is announced: the map node, the badge or the popup before it, and
-      what it says'
-    done: false
+    text: Announced by a red node on the level path (seen from L15 on, 5 nodes ahead)
+      and, once it is the next level, by a red Home Play button labelled 'Super Hard'
+      over 'Level 20' (Hard is purple 'Hard')
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#127
+    version: 1.33.0
   - id: chk-differs
-    text: 'What differs in play from the base level: the board, the rules, the limits,
-      stages, a timer'
-    done: false
+    text: 'Play is the base arrows-escape: same rules, 3 drops, AD hint, no timer
+      or stages; only the board differs (shaped, 130 arrows at a finer ~17 px pitch,
+      fits the screen). The solver read it in one frame and cleared it in 38 rounds,
+      4.5 min'
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#122
+    version: 1.33.0
   - id: chk-win
-    text: 'Its win: the win screen and the reward, against the base level''s'
-    done: false
+    text: 'Win: Silver League jump card first (+4 points, as any win), then a red-themed
+      card ''Unstoppable Today!'' with 3 stars, Time 04:11, Score 1163, Today''s Levels
+      6 (the base card is brown/orange); then an interstitial by itself. No extra
+      reward for Super Hard'
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#123
+    version: 1.33.0
   - id: chk-loss
     text: 'Each loss: its fail screen and what the loss costs (a life, a streak, stage
       progress)'
@@ -1433,17 +1535,24 @@ features:
       where a retry sends you (the start, the same stage)
     done: false
   - id: chk-frequency
-    text: 'Where and how often it comes up: which levels (fixed numbers, every Nth),
-      from which level'
-    done: false
+    text: 'Fixed level numbers: L20 red (first Super Hard), and the path after the
+      L20 win shows L25 red too, L22 purple Hard; L5/8/10/13/15/18 were Hard. So Super
+      Hard looks like every 5th level from 20 (20, 25); later ones unseen'
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#124
+    version: 1.33.0
   - id: under-quit
-    text: 'Back arrow top left leaves the level for home at once, no confirmation;
-      drops were full, no cost seen; Play still shows the same level under Red level
-      node (level 20): as the base, or what differs'
-    done: false
+    text: 'As the base: back arrow left L20 at once with no confirmation (no move
+      made, drops full); Home still shows the red ''Super Hard / Level 20'' Play'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#129
+    version: 1.33.0
   - id: under-win
-    text: 'Win screen under Red level node (level 20): as the base, or what differs'
-    done: false
+    text: 'Differs only in look: red background and red arrow art on the win card;
+      same league +4, same 3-star scoring, interstitial after it as in the base'
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#123
+    version: 1.33.0
   - id: under-out-of-lives
     text: 'Out of lives under Red level node (level 20): as the base, or what differs'
     done: false
@@ -1459,15 +1568,29 @@ features:
     text: 'Restart from the in-level gear popup (Restart board) under Red level node
       (level 20): as the base, or what differs'
     done: false
+  - id: board-shape
+    text: The L20 board is a shaped (paw/mitten) outline, not a rectangle, with a
+      finer grid (~17 px pitch at 730 vs ~21 px on Hard L18) and roughly 150+ arrows;
+      it fits the screen on open (no Pinch-to-zoom tip seen)
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#128
+    version: 1.33.0
+  - id: score-final
+    text: 'Win card score counts up: 1163 early frame -> 1597 final (base levels ~1200-1300)'
+    done: true
+    source: 20261006-064018-chrono-2FYKPJ#124
+    version: 1.33.0
   found_at:
     text: level 15 hard retry
     value: 15.0
   type: level-type
   appeared:
-    text: 'level 20 node is red on the path after L15 win: probably a harder tier
-      than purple Hard'
-    certainty: hypothesis
-    source: 20261005-224323-chrono-2FYKPJ#50
+    text: 'Fixed level tier by level number: level 20 is ''Super Hard'' (header subtitle,
+      red Home Play button); its node turns up red on the 5-node level path as soon
+      as it enters the window (after the L15 win), the same way purple Hard nodes
+      do'
+    certainty: fact
+    source: 20261006-041006-chrono-2FYKPJ#128
 - id: interstitial-ad
   name: Interstitial ad (after a gear-popup restart or a win)
   status: documented
@@ -1692,14 +1815,57 @@ features:
     done: true
     source: 20261006-013740-chrono-2FYKPJ#1
   - id: chk-points
-    text: What earns points (a level win, a score) and how many
-    done: false
+    text: 'A main level win (L17, normal board, 3 drops kept) gave 4 league points:
+      0 -> 4, rank 50th -> 43rd, shown on a jump card right after the win. No gold
+      arrows were visible on the L17 start frame (a toast covered the middle); Bronze
+      L11/L12 also gave +4 each, so likely 4 per win'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#35
+    version: 1.33.0
   - id: chk-rewards
     text: Rewards per rank, promotion and relegation
     done: false
   - id: chk-end
     text: 'The end of a period: the results screen and the reward (a follow-up)'
     done: false
+  - id: fill-over-time
+    text: 'The list fills over the period: 6 rows at 23h59m, 50 ranks at 21h27m, leader
+      at 60 points; a player with 0 points sits last (50th)'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#1
+    version: 1.33.0
+  - id: tier-ladder
+    text: 'Tier carousel (left/right arrows or swipe) shows 7 tiers: Bronze, Silver
+      (current), Gold, Emerald, Epic, Diamond, Glory (last, no right arrow); all above
+      Silver padlocked; the rank list below does not change with the carousel'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#9
+    version: 1.33.0
+  - id: promotion-demotion
+    text: 'Silver: top 10 promoted (green ''To be promoted'' divider under rank 10),
+      ranks 31-50 demoted (red ''To be demoted'' divider under rank 30); 11-30 stay.
+      Cut-offs at 21h25m: 40 points for 10th, 16 for 30th'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#13
+    version: 1.33.0
+  - id: gift-tap
+    text: 'Tapping the gift icon of rank 1 opens nothing: reward contents are not
+      shown on the board or in (i)'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#2
+    version: 1.33.0
+  - id: lets-play
+    text: Let's play on the Silver board opens the next main level (Level 17) directly
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#14
+    version: 1.33.0
+  - id: points-hard
+    text: 'A Hard level win (L18) also gives +4 league points (4 -> 8), rank 43rd
+      -> 39th, ''Excellent! You climbed up 4 spots fast.'': points do not depend on
+      difficulty'
+    done: true
+    source: 20261006-041006-chrono-2FYKPJ#91
+    version: 1.33.0
   found_at:
     text: level 17 continue-ad test
     value: 17.0
@@ -1771,13 +1937,15 @@ tasks:
   title: 'Unlock Daily Challenge: level 20'
   kind: unlock
   requires: any
-  status: open
+  status: done
   created: '2026-10-03T20:03:09'
   feature: daily-challenge
   source: session
-  note: the lock seen on screen (feature --locked)
+  note: seen open at level 19
   target_text: level 20
   target_value: 20.0
+  closed: '2026-10-06T04:30:20'
+  closed_by: planner
 - id: unlock-countryside-capers
   title: 'Unlock Event Countryside Capers: level 16'
   kind: unlock
@@ -2338,11 +2506,17 @@ tasks:
     do nothing?'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-04T01:10:05'
   feature: drops
   source: session
-  note: 20261003-233756-chrono-2FYKPJ#20 changed nothing
+  note: 'A tap on an arrow that is already red costs nothing: Oct 4 daily, 2 drops
+    before and after the re-tap (shots 47, 48), next blocked arrow took a drop (shot
+    49). Seen on a daily board; Hard boards run the same arrows-escape rules and 20261003-233756#20
+    on Hard also changed nothing'
+  closed: '2026-10-06T12:07:25'
+  closed_by: 20261006-114946-chrono-2FYKPJ#36
+  result: confirmed
 - id: make-hard-fast
   title: 'Make Hard arrows levels fast: tap every visibly free arrow in each hint
     frame, one batched command per hint pair; measure on Hard L8 (L5 took 863 s)'
@@ -2598,7 +2772,7 @@ tasks:
     path after L15 win: probably a harder tier than purple Hard'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T23:03:45'
   feature: super-hard-level
   source: session
@@ -2606,23 +2780,28 @@ tasks:
     it (level 20 node is red on the path after L15 win: probably a harder tier than
     purple Hard); confirmed when a frame shows the trigger. Record it with feature
     super-hard-level --appeared "...": the goal closes by itself'
+  closed: '2026-10-06T04:30:55'
+  closed_by: planner
+  note: 'the trigger is recorded as a fact: Fixed level tier by level number: level
+    20 is ''Super Hard'' (header subtitle, red Home Play button); its node turns up
+    red on the 5-node level path as soon as it enters the window (after the L15 win),
+    the same way purple Hard nodes do [20261006-041006-chrono-2FYKPJ#128]'
 - id: outcomes-super-hard-level
-  title: 'Run each outcome once under Red level node (level 20): Back arrow top left
-    leaves the level for home at once, no confirmation; drops were full, no cost seen;
-    Play still shows the same level, Win screen, Out of lives, Restart from Out of
-    Lives popup resets the board immediately, no confirmation, no life cost, Force-stop
-    and relaunch mid-level, Restart from the in-level gear popup (Restart board)'
+  title: 'Run each outcome once under Super Hard level (red, level 20): Out of lives,
+    Restart from Out of Lives popup resets the board immediately, no confirmation,
+    no life cost, Force-stop and relaunch mid-level, Restart from the in-level gear
+    popup (Restart board)'
   kind: experiment
   requires: any
   status: open
   created: '2026-10-05T23:03:45'
   feature: super-hard-level
   source: session
-  plan: 'while Red level node (level 20) is on, reach each listed outcome of the base
-    level once, one at a time (a deliberate loss is allowed unless it spends premium
-    currency); mark the outcome screen (mark --feature super-hard-level --as result)
-    and close its cell: case super-hard-level under-<outcome> "as the base" or "what
-    differs" --done'
+  plan: 'while Super Hard level (red, level 20) is on, reach each listed outcome of
+    the base level once, one at a time (a deliberate loss is allowed unless it spends
+    premium currency); mark the outcome screen (mark --feature super-hard-level --as
+    result) and close its cell: case super-hard-level under-<outcome> "as the base"
+    or "what differs" --done'
   rank: 7
 - id: exp-level20-red
   title: Find what the red level 20 node is (Hard tier above purple?) and which later
@@ -2673,10 +2852,17 @@ tasks:
     its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T23:09:25'
   feature: super-hard-level
   source: external
+  closed: '2026-10-06T07:00:34'
+  closed_by: 20261006-064018-chrono-2FYKPJ#124
+  note: Won Super Hard L20 by the solver (130 arrows, 38 rounds, 04:11, 3 stars, score
+    1597, 1 drop lost after the first chained round). Red win card 'Unstoppable Today!',
+    league +4 as any win, interstitial after. L25 red on the path (exp-super-hard-every-5
+    set). Loss/retry/restart/exit cases stay in outcomes-super-hard-level (now needs
+    L25 or a sacrificed board).
 - id: study-interstitial-ad
   title: 'Study Interstitial ad (after a gear-popup restart or a win): open it, walk
     its screens and tabs, verify its cases'
@@ -2788,7 +2974,7 @@ tasks:
   title: Interstitials skip a win soon after a rewarded ad and start at about L15
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-05T23:47:57'
   feature: interstitial-ad
   source: session
@@ -2796,6 +2982,13 @@ tasks:
     followed by an interstitial; then one win right after a rewarded Continue. Confirmed
     if every plain win from L15 on shows one and the win after a rewarded ad does
     not
+  closed: '2026-10-06T04:35:53'
+  closed_by: 20261006-041006-chrono-2FYKPJ#123
+  note: 'Three plain wins in a row (L17, Hard L18, L19, 3-7 min apart) each got an
+    interstitial: no one-level cooldown between plain wins. The win after a rewarded
+    Continue (L17 in 20261005-233140) got none. So plain wins from L16 on show one;
+    a win right after a rewarded ad skips it (one sample)'
+  result: confirmed
 - id: look-no-ads
   title: Look for a Remove Ads offer, shop or VIP now that interstitials run (from
     L15)
@@ -2848,13 +3041,20 @@ tasks:
     ended on the win card or its interstitial before the game wrote progress'
   kind: experiment
   requires: any
-  status: open
+  status: done
   created: '2026-10-06T01:53:26'
   feature: level
   source: session
   plan: after the next main-level win, go Home and read the Play button before ending;
     confirmed if a win left on its card/interstitial without reaching Home is lost
     after a force-stop
+  closed: '2026-10-06T04:35:54'
+  closed_by: 20261006-041006-chrono-2FYKPJ#127
+  note: 'The L19 win was left on its playable interstitial, then the app was force-restarted
+    without reaching Home: Home showed Super Hard Level 20, so the win was kept. A
+    win left on its card or interstitial is saved. The L17 win of 233140 came after
+    a rewarded Continue: see exp-continue-win-saved'
+  result: refuted
 - id: silver-league-end
   title: 'Open the Silver League after its first period ends: end card, rank, promotion
     or demotion, any reward; and the points a gold arrow gives in Silver'
@@ -2869,7 +3069,216 @@ tasks:
   title: 'Study Silver League: open it, walk its screens and tabs, verify its cases'
   kind: study
   requires: any
-  status: open
+  status: done
   created: '2026-10-06T02:09:25'
   feature: silver-league
   source: external
+  closed: '2026-10-06T04:17:17'
+  closed_by: 20261006-041006-chrono-2FYKPJ#38
+  note: 'Board filled to 50 ranks by 21h27m (leader 60); 7-tier ladder Bronze..Glory;
+    top 10 promote, 31-50 demote; gifts on 1-3 show nothing on tap; (i) same how-to;
+    Let''s play opens next main level; L17 win = +4 points, 50th -> 43rd via a jump
+    card. Open: chk-rewards (values unseen, exp-league-top3-reward) and chk-end (silver-league-end
+    after 2026-10-07 01:40)'
+- id: first-look-daily-challenge
+  title: 'First look at Daily Challenge: open it once, record what it is and decide
+    whether it needs a full study'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-06T04:30:20'
+  feature: daily-challenge
+  source: session
+  note: 'Unlocked when level 20 was reached (L19 win). 2-page intro (daily Gold Medals,
+    Monthly Trophy for all medals of the month), then a month calendar with 0/31 medals,
+    today circled, past days 1-5 dark (catch-up likely), Start for the selected date,
+    trophy button. Needs a full study: play today''s board, try a past day, open the
+    trophy room.'
+  rank: 0
+  closed: '2026-10-06T04:32:03'
+  closed_by: 20261006-041006-chrono-2FYKPJ#132
+- id: study-daily-challenge
+  title: 'Study Daily Challenge: play today''s board, try a past day (1-5), open the
+    trophy button, record medal and reward'
+  kind: study
+  requires: any
+  status: done
+  created: '2026-10-06T04:32:14'
+  feature: daily-challenge
+  source: session
+  closed: '2026-10-06T06:54:26'
+  closed_by: 20261006-064018-chrono-2FYKPJ#82
+  note: 'Played today Oct 6 (won, 04:44, score 997, gold medal, 1/31) and past day
+    Oct 5 (free, won 03:14, 2/31); Trophy Room = monthly trophies 2026/2025, tap opens
+    month calendar; past months fully playable; only reward is the medal toward the
+    month trophy; interstitial after each win. Left: next-day renew, loss case, medal-day
+    replay (tasks set)'
+- id: solver-step-cost
+  title: 'arrows solver: chain-like boards (Hard L18, 58 arrows with 1 free each)
+    cost one session step per arrow; find a safe way to tap more per round (e.g. re-read
+    between taps inside one solve step) so a Super Hard board fits a 140-step session'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T04:32:14'
+  feature: super-hard-level
+  source: session
+  plan: replay frames 47-101 of 20261006-041006 with the solver offline; measure rounds
+    per level; confirmed when Hard L18-size boards need under 25 rounds
+- id: exp-continue-win-saved
+  title: Find whether a win reached after a rewarded or free Continue is saved (L17
+    of 20261005-233140 was lost)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T04:35:54'
+  feature: level
+  source: session
+  plan: On a main level, run out of drops on purpose, take the free Continue (or a
+    rewarded one if the free one is used up), win, go Home and read the Play button;
+    force-stop and relaunch, then read it again. Confirmed if Home shows the same
+    level again after the Continue win; refuted if it moved on
+- id: daily-challenge-next-day
+  title: 'Daily Challenge on Oct 7: does a new board and the Home card date renew
+    at midnight; does the calendar keep Oct 5-6 medals'
+  kind: daily
+  requires: any
+  status: open
+  created: '2026-10-06T06:54:25'
+  feature: daily-challenge
+  not_before: '2026-10-07T09:00:00'
+  source: game
+- id: daily-challenge-loss
+  title: 'Daily Challenge: lose a past-day board on purpose (3 blocked taps) and record
+    Out of Lives, Continue/Restart offers, whether the day stays playable'
+  kind: experiment
+  requires: any
+  status: done
+  created: '2026-10-06T06:54:25'
+  feature: daily-challenge
+  source: session
+  plan: start a past day (Oct 4), tap 3 blocked arrows one per call, mark the fail
+    popup, Restart; confirmed if the day stays unmedalled and replayable
+  closed: '2026-10-06T12:02:36'
+  closed_by: 20261006-114946-chrono-2FYKPJ#41
+  note: 'Oct 4 past day: 3 blocked taps (a 2nd tap on an already red arrow cost no
+    drop) -> Out of Lives (Continue with an ad icon for 3 more lives, Restart). Restart
+    -> interstitial (Trivia ad, opened the Play Store by itself; launch returned)
+    -> same board, 3 drops. Back to the calendar: Oct 4 unmedalled, progress ring,
+    button Continue instead of Start, medals 2/31. Day stays replayable.'
+  result: confirmed
+- id: daily-challenge-replay-medal
+  title: 'Daily Challenge: tap a day that already has a medal (Oct 6): can it be replayed,
+    and does a replay change anything'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T06:54:26'
+  feature: daily-challenge
+  source: session
+  plan: tap the medal day, look at the bottom panel (Start or Completed)
+- id: exp-super-hard-every-5
+  title: Super Hard comes every 5th level from 20 (20, 25, 30)? L25 is red on the
+    path
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T07:00:28'
+  feature: super-hard-level
+  source: session
+  plan: after the L24 win, check L25 header 'Super Hard' and whether L30 shows red
+    on the path
+- id: exp-daily-league-points
+  title: Daily Challenge wins give no league points (Home card 34th before and after
+    two daily wins)
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T07:00:48'
+  feature: daily-challenge
+  source: session
+  plan: 'open the Silver League board, note points, win a past daily day, reopen:
+    confirmed if points unchanged'
+- id: solver-retap-drop
+  title: 'arrows solver: chained rounds with re-taps lose exactly one drop per board
+    (3 of 3 boards); find the tap that costs it and fix it so chained rounds lose
+    no drop'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-06T07:03:56'
+  feature: level
+  source: game
+  plan: 'replay the first chained rounds of 20261006-064018 (Oct 6 round 1, Oct 5
+    round 2, L20 round 1) offline: list each re-tap and chained tap with its time
+    after the parent tap and the arrow under it; test re-tap delay or no re-tap on
+    the next board. Confirmed fixed when three boards in a row play chained rounds
+    with 0 drops lost'
+  closed: '2026-10-06T11:57:51'
+  closed_by: 20261006-114946-chrono-2FYKPJ#31
+  note: 'Fixed by the lab 2026-10-06 (6) change (no re-taps; each arrow tapped once
+    on the arrow; chain budget drops-1). Three boards in a row with chained rounds
+    and 0 drops lost: L21 (20261006-093640, 18 chained rounds), Hard L22 (this session:
+    21 rounds, 131 moves, up to 9 chained per round, No Mistakes! 3 stars) and L23
+    (5 rounds, 2-3 chained each, Lightning Fast! 0 mistakes). No DROP LOST note in
+    any round.'
+  result: confirmed
+- id: daily-trophy-threshold
+  title: 'Daily Challenge: what earns a month''s trophy (all days of the month, or
+    a part) and what it gives besides the gold look'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T07:03:57'
+  feature: daily-challenge
+  source: session
+  plan: win past days of one short past month (September 0/30) across sessions by
+    the solver, opening Trophy Room every 10 medals; confirmed when the trophy changes
+    colour/state at a given count (note the count) and any reward popup; refuted if
+    30/30 gives no change
+- id: exp-third-star-rule
+  title: 'Find what the third win star needs: Normal L21 won in 02:14 with 0 mistakes,
+    0 hints, 100% got 2 stars'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T09:49:55'
+  feature: level
+  source: session
+  plan: On the next 3 solver wins note Time, the banner 'cleared in N seconds', mistakes,
+    hints and stars; compare with past 3-star wins (Hard L8 01:30, L20 Super Hard
+    3 stars). Confirmed time-per-level par if stars follow the green/red arrow next
+    to Time (green up arrow on L21 = slower than last time?); refutes exp-stars-by-time's
+    fixed 06:00 threshold if any win under 06:00 with 0 mistakes gets 2 stars again
+- id: solver-dense-pitch
+  title: 'arrows solver: the half-pitch fix reads dense Hard L22 on the phone (no
+    ''misread components, heads 0'') and wins it'
+  kind: followup
+  requires: any
+  status: done
+  created: '2026-10-06T09:49:56'
+  feature: hard-level
+  source: game
+  plan: Play Hard L22 with solve arrows-escape --run; confirmed when round 1 reads
+    ~138 arrows at ~25 px pitch (1080) and the level is won; if not, quit the level
+    at once (do not debug with the phone idle) and keep the shot
+  closed: '2026-10-06T11:55:06'
+  closed_by: 20261006-114946-chrono-2FYKPJ#21
+  note: Round 1 on the phone read 138 arrows (frame A1560, heads 138, 15 free), board
+    box 3..39 x 11..53, clearable; Hard L22 won in 21 rounds / 131 moves, 0 drops
+    lost, No Mistakes! 3 stars, 03:29, score 961 (shot 27).
+  result: confirmed
+- id: exp-daily-resume
+  title: 'Daily Challenge: does a left past day resume its board (cleared arrows and
+    drops kept) through the calendar''s Continue and progress ring?'
+  kind: experiment
+  requires: any
+  status: open
+  created: '2026-10-06T12:07:33'
+  feature: daily-challenge
+  source: session
+  plan: 'On a past day clear 5-10 arrows by the solver, tap one blocked arrow, Back
+    to the calendar (read the ring), then Continue: confirmed if the board comes back
+    with those arrows gone and 2 drops and the ring shows the part cleared; refuted
+    if it restarts fresh. Oct 4 now shows a ring and Continue after a lost attempt
+    in which no arrow was cleared'

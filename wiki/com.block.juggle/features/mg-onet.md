@@ -66,7 +66,7 @@ The tutorial is a board of its own: it lights one pair at a time with an animate
 around a corner [^s4] [^s13]. After the guided pairs the player cleared the
 rest of the practice board, and LEVEL 1 opened [^s14] [^s3].
 
-*The hand taps the first melon, the tile gets a rainbow frame, the second tap clears the pair and the hand moves to two lemons* (clip dropped: per-dream clip limit) [^s15]
+![The hand taps the first melon, the tile gets a rainbow frame, the second tap clears the pair and the hand moves to two lemons](../clips/20261005-onet-tutorial-match.webp) [^s15]
 *Clip 7.3 s · [original on YouTube from 12:05](https://youtu.be/YQn2vAf17A0?t=725)*
 
 ### Combo

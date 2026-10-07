@@ -22,6 +22,10 @@ confirmed on two versions in a row is deleted.
   accidental touch protection (the proximity sensor is covered). Do not repeat the taps: end the
   session with the status `blocked`; `sw.py` reports this itself. Long idle waits let the screen dim and
   sleep, after which taps fail the same way: wait for timers with a follow-up task, not inside a session.
+  Thinking, offline debugging and holding an ad count as idle: a 186 s think gap, a 229.8 s solver fix, an ad held 3.5 min
+  and about 3 min on a win screen each ended a session blocked. Quit the level first, or tap something harmless at least every 2 min.
+  *Confirmed (idle work, 2026-10-06): 20261006-053412-chrono-2FYKPJ, 20261006-111957-chrono-2FYKPJ, Block Blast 10.8.1; 20261006-080945-chrono-2FYKPJ, MeowTrail 1.0.2; 20261006-093640-chrono-2FYKPJ, Amaze GO 1.33.0.*
+  [s:20261006-053412-chrono-2FYKPJ#19] [s:20261006-111957-chrono-2FYKPJ#23] [s:20261006-080945-chrono-2FYKPJ#11] [s:20261006-093640-chrono-2FYKPJ#23]
   *Confirmed: manual check 2026-09-30, Samsung SM-A276B; 20261001-081207-chrono-2FYKPJ, Pull the Pin 241.5.1;
   20261001-175320-chrono-2FYKPJ, MeowTrail 1.0.2; idle wait: 20261001-223249-chrono-2FYKPJ, Meowdoku 1.18.0;
   a 3-min rewarded ad, screen awake and not dimmed: 20261004-001002-chrono-2FYKPJ, Pull the Pin 241.5.1.*
@@ -98,3 +102,7 @@ confirmed on two versions in a row is deleted.
   *Confirmed: 20261006-010939-chrono-2FYKPJ, Meowdoku 1.19.1; 20261006-024420-chrono-2FYKPJ, Cryptogram 3.6.1; Back on the end card after a wait: 20261005-231555-chrono-2FYKPJ, Block Blast 10.8.1.* [s:20261006-010939-chrono-2FYKPJ#28] [s:20261006-024420-chrono-2FYKPJ#32] [s:20261005-231555-chrono-2FYKPJ#20-25]
 - A tap sent in the coordinates of the previous frame misses after a hi-res frame or a popup that moves with the keyboard: take a frame after every layout change before the next tap.
   *Confirmed: 20261006-011754-chrono-2FYKPJ, Block Blast 10.8.1; 20261005-143208-chrono-2FYKPJ, Cryptogram 3.6.1.* [s:20261006-011754-chrono-2FYKPJ#7] [s:20261005-143208-chrono-2FYKPJ#3]
+- End a level with `level end` before tapping into the next one: `level start` is refused while a level is open, and a level played after that refusal has no record (its win and time are lost from the statistics).
+  *Confirmed: 20261006-101030-chrono-2FYKPJ, 20261006-122109-chrono-2FYKPJ, Meowdoku 1.19.1; 20261006-044907-chrono-2FYKPJ, MeowTrail 1.0.2.* [s:20261006-101030-chrono-2FYKPJ#7] [s:20261006-101030-chrono-2FYKPJ#9] [s:20261006-101030-chrono-2FYKPJ#10] [s:20261006-122109-chrono-2FYKPJ#15] [s:20261006-122109-chrono-2FYKPJ#16] [s:20261006-044907-chrono-2FYKPJ#20]
+- Do not mark a case done or call a rule confirmed from one or two observations that another explanation fits: note it as an observation and set an experiment. "CONTINUE shows no ad" was refuted one step later, "no ad on the first game after a launch" by the next session, and a relaunch result that could not tell two causes apart was closed as confirmed.
+  *Confirmed: 20261006-052618-chrono-2FYKPJ, Cryptogram 3.6.1; 20261006-133549-chrono-2FYKPJ, 20261006-141221-chrono-2FYKPJ, Block Blast 10.8.1; 20261006-044907-chrono-2FYKPJ, MeowTrail 1.0.2.* [s:20261006-052618-chrono-2FYKPJ#14] [s:20261006-052618-chrono-2FYKPJ#15] [s:20261006-133549-chrono-2FYKPJ#84] [s:20261006-141221-chrono-2FYKPJ#6] [s:20261006-044907-chrono-2FYKPJ#5]

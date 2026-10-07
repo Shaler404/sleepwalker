@@ -4,8 +4,8 @@ title: "Adventure diamond-collection levels"
 type: feature
 feature: adv-diamonds
 version_seen: 10.8.1
-verified_at: 2026-10-05
-sources: [20261003-235233-chrono-2FYKPJ, 20261005-004506-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-235233-chrono-2FYKPJ, 20261005-004506-chrono-2FYKPJ, 20261006-133549-chrono-2FYKPJ]
 ---
 
 # Adventure diamond-collection levels
@@ -14,7 +14,7 @@ Adventure levels where the goal is to collect gem tiles, not to reach a target s
 tray and the drag are the same as in [Classic](classic.md). The level starts on a pre-built layout. Some
 board cells and some cells of the tray pieces carry a gem, and clearing a row or column that holds a gem
 collects it. The header counts down the gems left of each kind, and the level is won when every count
-reaches zero. Seen on Adventure levels 2, 3 and 4 in version 10.8.1 [^s1] [^s2] [^s3].
+reaches zero. Seen on Adventure levels 2 to 8 in version 10.8.1 [^s1] [^s2] [^s3] [^s16].
 
 ## Why it appeared
 
@@ -48,6 +48,13 @@ cyan and yellow blocks, with gem tiles in it [^s6].
 
 ![Adventure level 3: two goals, 56 red and 54 orange gems; gem tiles in the frame-shaped layout and on the tray pieces](../img/20261003-adv-diamonds-screen-b0b94343.webp) [^s2]
 
+Levels 6 to 8 keep three goals: level 6 40 each of blue, red and purple gems, level 7 22, 22 and 20,
+level 8 30 blue diamonds, 30 orange pentagons and 30 red stars. Level 8's layout is a block of cyan
+cells with gem tiles in and around it, and all three tray pieces carry gem cells [^s17] [^s16].
+
+![Adventure level 8: goals 30 blue diamonds, 30 orange pentagons and 30 red stars; a pre-built layout of cyan blocks with gem tiles; gem cells on all three tray pieces](../img/20261006-adv-diamonds-screen-cbcb7cb4.webp) [^s16]
+*Level 8: three goals of 30 each*
+
 ### Target Collection banner
 
 At the start of a gem level a "Target Collection" banner slides across the board. It shows each goal
@@ -55,7 +62,7 @@ gem with its count (level 4: 22 blue diamonds, 20 orange gems, 20 yellow stars).
 into the header counters, and the banner leaves to show the pre-built layout. The banner also comes
 back when the level is restarted with Replay [^s6] [^s7].
 
-*The Target Collection banner on level 4: the three goals 22, 20 and 20 fly from the banner to the header, then the pre-built layout appears* (clip dropped: per-dream clip limit) [^s6]
+![The Target Collection banner on level 4: the three goals 22, 20 and 20 fly from the banner to the header, then the pre-built layout appears](../clips/20261005-target-collection-banner.webp) [^s6]
 *Clip 3 s · [original on YouTube from 1:34](https://youtu.be/pwB69H7MFAc?t=94)*
 
 ### Result
@@ -107,7 +114,10 @@ Version 10.8.1.
 - Gems are on the pre-built board and on cells of new tray pieces [^s1].
 - No move limit, timer, lives or boosters were seen [^s1] [^s11].
 - Goals per level so far: level 2, 60 diamonds; level 3, 56 red and 54 orange gems; level 4, 22 blue
-  diamonds, 20 orange gems and 20 yellow stars [^s1] [^s2] [^s6].
+  diamonds, 20 orange gems and 20 yellow stars [^s1] [^s2] [^s6]; level 6, 40/40/40; level 7, 22/22/20;
+  level 8, 30/30/30 [^s17] [^s16].
+- Levels 2 to 8 are all gem levels; level 1 and hard level 9 have a target score instead (see
+  [Adventure hard levels](adv-hard-levels.md)) [^s16] [^s18].
 - A restart keeps the layout and the goals, but the first tray is not the same: the tray after Replay
   differed from the tray before it [^s7].
 - The level 4 win took about 5 minutes and 45 moves, including the Replay ad [^s13].
@@ -140,13 +150,13 @@ The base level is the 8x8 board of Classic.
 | A loss <!-- case:chk-loss --> | Lost level 2 on purpose | ✅ No Space Left: the board dims and shows the diamonds left, "You Can Do It!" and Retry. The only cost is the Adventure win streak (x1 to x0); the daily counter stayed | [^s14] |
 | Retry and continue offers <!-- case:chk-retry --> | Back arrow, then Adventure > Level 2 | ✅ No continue or revive offer, no price. The level restarts with the same pre-built board and goal. The loss screen's Retry button was not tapped | [^s11] |
 | Restart from the gear <!-- case:under-restart --> | Gear > Replay on level 4 | ✅ A video ad, closed with the Back key on its end card, then level 4 again with the banner and the same goals 22/20/20; the first tray differed | [^s7] |
-| Where and how often it comes up <!-- case:chk-frequency --> | — | not verified: levels 2, 3 and 4 are gem levels and level 1 is a score level; later levels were not opened |  |
+| Gem goals on levels 6 to 8 <!-- case:levels-l6-l8 --> | Won levels 6, 7 and 8 | ✅ 40/40/40, 22/22/20, 30/30/30; level 1 and hard level 9 are score levels | [^s16] |
+| Where and how often it comes up <!-- case:chk-frequency --> | — | not verified: levels 2 to 8 are gem levels, levels 1 and 9 score levels; later levels were not opened |  |
 
 ## Not verified
 
-- Which levels are gem levels after level 4, and whether score levels come back <!-- case:chk-frequency -->
+- Which levels are gem levels after level 9; a score level came back on level 9 <!-- case:chk-frequency -->
 - Leaving the app in a gem level and coming back <!-- case:under-exit-app -->
-- What a "hard" level is: level 5 is offered as Next Hard Level but was not opened
 - What the Retry button on the loss screen does (the level was restarted from the map instead)
 - How many points or gems a single clear is worth when several gem tiles are in one line
 
@@ -165,3 +175,7 @@ The base level is the 8x8 board of Classic.
 [^s13]: session 20261005-004506-chrono-2FYKPJ, step 24 — [video at 6:19](https://youtu.be/pwB69H7MFAc?t=379)
 [^s14]: session 20261003-235233-chrono-2FYKPJ, step 29 — [video at 5:50](https://youtu.be/RE70Idi_jrA?t=350)
 [^s15]: session 20261003-235233-chrono-2FYKPJ, step 45 — [video at 9:42](https://youtu.be/RE70Idi_jrA?t=582)
+
+[^s16]: session 20261006-133549-chrono-2FYKPJ, step 73 — [video at 25:03](https://youtu.be/UNoU_1pbeJk?t=1503)
+[^s17]: session 20261006-133549-chrono-2FYKPJ, step 60 — [video at 20:18](https://youtu.be/UNoU_1pbeJk?t=1218)
+[^s18]: session 20261006-133549-chrono-2FYKPJ, step 104 — [video at 31:39](https://youtu.be/UNoU_1pbeJk?t=1899)

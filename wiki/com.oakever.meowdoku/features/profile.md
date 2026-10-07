@@ -4,8 +4,8 @@ title: "Profile (name, avatar, frame, skins)"
 type: feature
 feature: profile
 version_seen: 1.19.1
-verified_at: 2026-10-05
-sources: [20261003-200440-chrono-2FYKPJ, 20261005-223641-chrono-2FYKPJ]
+verified_at: 2026-10-06
+sources: [20261003-200440-chrono-2FYKPJ, 20261005-223641-chrono-2FYKPJ, 20261006-044214-chrono-2FYKPJ]
 ---
 
 # Profile (name, avatar, frame, skins)
@@ -23,7 +23,8 @@ Avatar button top-left of Home [^s1].
 
 On [Home](home.md), the avatar button top left opens the Profile popup [^s1]. On 5 October the avatar
 carried a red dot, as did the Skins tab inside; after the Skins tab was opened, both dots were gone
-[^s9] [^s10] [^s11].
+[^s9] [^s10] [^s11]. On 6 October both dots were back, with a trial skin newly in the Skins tab, and cleared
+again when that tab was opened [^s17] [^s18].
 No other screen was seen to open Profile.
 
 ![Home screen: the avatar button top left opens Profile](../img/20261003-profile-entry-ad85780f.webp) [^s2]
@@ -43,10 +44,10 @@ progress bar or collection counter anywhere in the popup [^s10].
 
 | Tab or button | What it does |
 |---|---|
-| [Skins](#skins) | the cat skins: 1 owned, 7 locked |
+| [Skins](#skins) | the cat skins: 1 owned, 7 locked; a trial skin can fill a slot for 24 hours |
 | [Avatar](#avatar) | 8 avatar pictures, all selectable |
 | [Frame](#frame) | the Leaderboard frames (locked) and the Classic frames (owned) |
-| [Locked frame tooltip](#locked-frame-tooltip) | the condition of a Leaderboard frame, with GO |
+| [Locked frame tooltip](#locked-frame-tooltip) | the condition of a Leaderboard frame, with GO: the same text on every locked frame tried |
 
 Confirm applies the choice; the cross closes the popup and drops an unconfirmed choice
 [^s11]. The pencil next to the name (to rename) and Confirm were not tapped.
@@ -58,8 +59,12 @@ Confirm applies the choice; the cross closes the popup and drops an unconfirmed 
 
 Eight slots: the black-and-white cat used on the board, owned, and seven cat silhouettes that are locked
 [^s3] [^s10]. Tapping a locked silhouette showed nothing: no price, no condition,
-on both 3 and 5 October [^s6] [^s12]. How they unlock is on
+on both 3 and 5 October [^s6] [^s12]. On 6 October the second slot held a trial skin from the Daily Challenge,
+a bow cat with a clock and 21:37 left, and six silhouettes remained [^s18]. How they unlock is on
 [Cat skins](cat-skins.md).
+
+![Skins tab on 6 October (the name field blacked out): the black-and-white cat, the trial bow cat with 21:37, six silhouettes](../img/20261006-cat-skins-screen-95976a69.webp) [^s18]
+*Skins tab on 6 October: a trial skin with its countdown in the second slot*
 
 ### Avatar
 
@@ -99,6 +104,15 @@ get this frame!" and an orange GO button [^s8]. A tap on the frame tagged 5
 left the same tooltip on screen [^s15]. GO closed the tooltip and stayed on the
 Frame tab: it led nowhere [^s16].
 
+![Tooltip over the frames tagged 5, 15, 30 and 50: "Get first place in the challenge to get this frame!" with GO (name blacked out)](../img/20261006-profile-popup-94966bc1.webp) [^s19]
+*6 October: the frame tagged 50 tapped, with the list scrolled to the frames tagged 5 to 50: the same tooltip as for the frame tagged 1*
+
+On 6 October, with the tooltip dismissed between taps (a tap on the Profile title), the frames tagged 5, 30
+and 50 each showed the same text as the frame tagged 1: "Get first place in the challenge to get this
+frame!" with GO [^s20] [^s19] [^s21]. While a tooltip is open, a tap on another frame leaves it unchanged
+(the frames tagged 15 and 50 tapped over it) [^s22]. The frame tagged 15 was not tapped with the tooltip
+closed.
+
 ## How it works
 
 - Choice of avatar and frame: all eight avatars and the Classic frames are open [^s1] [^s4]
@@ -109,9 +123,11 @@ Frame tab: it led nowhere [^s16].
 - Skins: one of eight owned on this account; locked skins show no condition [^s3]
   [^s12].
 - Leaderboard frames: the frame tagged 1 is earned by first place "in the challenge"
-  [^s8]. The [Fish leaderboard](fish-leaderboard.md) rules name "exclusive
-  frames" as a reward [^s7]. Inferred: the tags 5, 15, 30 and 50 are placement tiers on that board (top 5,
-  top 15 and so on); not verified.
+  [^s8]; the frames tagged 5, 30 and 50 show the same "first place" text [^s19] [^s21]. The
+  [Fish leaderboard](fish-leaderboard.md) rules name "exclusive frames" as a reward [^s7]. What the numbers
+  5, 15, 30 and 50 mean is not explained on screen. That they are placement tiers (top 5, top 15 and so on)
+  is not supported by the tooltips; after the leaderboard period rolled over on 6 October all five
+  Leaderboard frames were still locked, and the account's final place in that period is not known [^s19].
 - No collection bar, counter or completion reward [^s10].
 
 Version 1.19.1.
@@ -132,7 +148,7 @@ Version 1.19.1.
 ## Not verified
 
 - Confirm: whether it applies the avatar and frame to Home and the leaderboard at once; renaming with the pencil
-- The Leaderboard frames tagged 5, 15, 30 and 50: their own condition, and whether they are given at the end of a period for that placement (the experiment exp-frame-rank-tiers)
+- The Leaderboard frames tagged 5, 15, 30 and 50: what the number means (each tooltip tried says first place), and whether any is given at the end of a period (exp-frame-rank-tiers was inconclusive: all still locked after the 6 October rollover); the frame tagged 15's own tooltip
 - Which challenge "first place in the challenge" means (the fish leaderboard is inferred) and when the frame is given
 - The unlock condition of each locked skin (see [Cat skins](cat-skins.md))
 
@@ -154,3 +170,10 @@ Version 1.19.1.
 [^s14]: session 20261005-223641-chrono-2FYKPJ, step 20 — [video at 3:27](https://youtu.be/VXzhl0TX66c?t=207)
 [^s15]: session 20261005-223641-chrono-2FYKPJ, step 18 — [video at 3:04](https://youtu.be/VXzhl0TX66c?t=184)
 [^s16]: session 20261005-223641-chrono-2FYKPJ, step 19 — [video at 3:15](https://youtu.be/VXzhl0TX66c?t=195)
+
+[^s17]: session 20261006-044214-chrono-2FYKPJ, step 1 — [video at 0:23](https://youtu.be/0Is_yCgpg5I?t=23)
+[^s18]: session 20261006-044214-chrono-2FYKPJ, step 13 — [video at 2:18](https://youtu.be/0Is_yCgpg5I?t=138)
+[^s19]: session 20261006-044214-chrono-2FYKPJ, step 9 — [video at 1:40](https://youtu.be/0Is_yCgpg5I?t=100)
+[^s20]: session 20261006-044214-chrono-2FYKPJ, step 4 — [video at 0:49](https://youtu.be/0Is_yCgpg5I?t=49)
+[^s21]: session 20261006-044214-chrono-2FYKPJ, step 11 — [video at 1:58](https://youtu.be/0Is_yCgpg5I?t=118)
+[^s22]: session 20261006-044214-chrono-2FYKPJ, step 7 — [video at 1:27](https://youtu.be/0Is_yCgpg5I?t=87)

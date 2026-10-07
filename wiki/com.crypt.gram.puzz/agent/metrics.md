@@ -14,3 +14,4 @@ One line per dream from `sw.py stats` over the sessions of that dream (the wiki 
 | 2026-10-04 | chrono | 2 | 2.7 | 13% / 6% | 0/0 | cryptogram typical 1.9 min (best 1.9), 1 won / 0 lost / 1 quit, mastered; card-cryptogram typical None min (best None), 0 won / 0 lost / 0 quit, studying | 0 | 0 | 1 (0.0 min) | 0 (0 min) | opus (study) 1, sonnet:low (play) 1 |
 | 2026-10-05 | chrono | 1 | 1.1 | 17% / 25% | 0/0 | levels 0 won / 1 lost | 0 | 0 | 0 (0.0 min) | 0 (0 min) | sonnet:low (play) |
 | 2026-10-06 | chrono | 5 | 3.5 | 13% / 22% | 0/0 | median of medians 1.9 min; 9 won / 2 lost | 0 | 0 | 6 (0.5 min) | 0 (0 min) | sonnet:low (play) 4, opus (study) 1 |
+| 2026-10-07 | chrono | 4 | 2.8 | 9% / 24% | 0/0 | cryptogram typical 4.0 min (best 1.5), 12 won / 4 lost / 8 quit, mastered | 0 | 0 | 5 (1.9 min) | 0 (0 min) | sonnet:low (play) 2, opus (study) 2 |
